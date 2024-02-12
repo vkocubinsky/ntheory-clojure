@@ -5,13 +5,29 @@
   "Createst common divisor."
   [a b]
   (cond
-    (zero? a) b
-    (zero? b) a
-    :else (recur b (mod a b))
-    )
-  )
+    (neg? b) (gcd a (- b))
+    (zero? b) (abs a)
+    :else (recur b (mod a b))))
 
-;; a = bq + r 
-
+(defn gcd-extra
+  "Extended Euclid algorithm.
+  Returns greatest common divisor `d` for two given
+  numbers `a` and `b`. And also return a pair [s t] such that
+  a * s + b * t = d.
+  "
+  ([a b]
+   (if (neg? b)
+     (let [[d s t] (gcd-extra [a (- b)] [1 0] [0 1])] [d s (- t)])
+     (gcd-extra [a b] [1 0] [0 1])))
+  ([[a b] [s'' t''] [s' t']]
+   (if
+    (zero? b)
+     (if (neg? a)
+       [(- a) (- s'') (- t'')]
+       [a s'' t''])
+     (let [q (quot a b)
+           s (- s'' (* s' q))
+           t (- t'' (* t' q))]
+       (recur [b (mod a b)] [s' t'] [s t])))))
 
 
