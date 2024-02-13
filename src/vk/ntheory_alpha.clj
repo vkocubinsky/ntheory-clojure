@@ -1,33 +1,43 @@
 (ns vk.ntheory-alpha
   (:require [clojure.math :as math]))
 
+(defn sign
+  [n]
+  (cond
+    (pos? n) 1
+    (neg? n) -1
+    :else 0))
+
 (defn gcd
   "Createst common divisor."
   [a b]
-  (cond
-    (neg? b) (gcd a (- b))
-    (zero? b) (abs a)
-    :else (recur b (mod a b))))
+  (loop [a (abs a) b (abs b)]
+    (if (zero? b) a
+      (recur b (mod a b)
+    ))))
+    
 
-(defn gcd-extra
+(defn gcd-extended
   "Extended Euclid algorithm.
-  Returns greatest common divisor `d` for two given
-  numbers `a` and `b`. And also return a pair [s t] such that
-  a * s + b * t = d.
+  For two given number `a` and `b` returns vector `[d s t]`,
+  where d is the greatest common divisor `a` and `b` and
+  values `s` and `d` satisfied condition
+  `a * s + b * t = d`.
   "
-  ([a b]
-   (if (neg? b)
-     (let [[d s t] (gcd-extra [a (- b)] [1 0] [0 1])] [d s (- t)])
-     (gcd-extra [a b] [1 0] [0 1])))
+  ([a b] (let [[d s t] (gcd-extended [(abs a) (abs b)] [1 0] [0 1])
+               s' (* (sign a) s)
+               t' (* (sign b) t)]
+           (assert (= d (+ (* a s') (* b t'))))
+           [d s' t']))
   ([[a b] [s'' t''] [s' t']]
-   (if
-    (zero? b)
-     (if (neg? a)
-       [(- a) (- s'') (- t'')]
-       [a s'' t''])
+   (if (zero? b)
+     [a s'' t'']
      (let [q (quot a b)
            s (- s'' (* s' q))
            t (- t'' (* t' q))]
        (recur [b (mod a b)] [s' t'] [s t])))))
+
+
+
 
 
