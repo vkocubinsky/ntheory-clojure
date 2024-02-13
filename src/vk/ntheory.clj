@@ -58,11 +58,14 @@
               (recur n' cn primes')
               (recur n' (assoc cn p v) primes')))))
 
-(defn factorize
+(defn sieve-factorize
   "Factorize given positive integer `n`."
   [n]
   (when-not (pos? n) (throw (Exception. "Expected positive `n`")))
   (factorize' n (sorted-map) (sieve (int (math/sqrt n)))))
+
+(def factorize sieve-factorize)
+
 
 (defn de-factorize
   "Convert factorization map back to integer."
