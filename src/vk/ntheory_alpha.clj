@@ -13,9 +13,7 @@
   [a b]
   (loop [a (abs a) b (abs b)]
     (if (zero? b) a
-      (recur b (mod a b)
-    ))))
-    
+        (recur b (mod a b)))))
 
 (defn gcd-extended
   "Extended Euclid algorithm.
