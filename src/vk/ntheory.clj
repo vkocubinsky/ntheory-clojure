@@ -9,6 +9,15 @@
   [a n]
   (apply * (repeat n a)))
 
+
+(defn ldt
+  "Least divisors table"
+  ([n]
+   (int-array (range (inc n))))
+  ([n A start]
+   
+   ))
+
 (defn sieve'
   "Sieve of Eratosthenes.
   Return primes less or equal to `n`."
