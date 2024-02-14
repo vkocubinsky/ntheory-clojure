@@ -2,21 +2,57 @@
   (:require [clojure.set :as set]
             [clojure.math :as math]))
 
-(set! *warn-on-reflection* true)
-
 (defn pow
   "Power function."
   [a n]
   (apply * (repeat n a)))
 
 
-(defn ldt
-  "Least divisors table"
+(defn- ldt-find-prime
+  "Find next prime in least divisor table.
+  Parameters: 
+    T     - table
+    start - start index
+    end   - end index
+  "
+  ([T start] (ldt-find-prime T start (count T)))
+  ([^ints T start end]
+   (when (< start end)
+     (let [e (aget T start)]
+       (if (and (> start 1) (= e start))
+         start
+         (recur T (inc start) end))))))
+
+(defn- ldt-update
+             [^ints T ^Integer k ^Integer v]
+             (let [e (aget T k)]
+               (when-not (< e k)
+                 (aset T k v))))
+
+(defn ldt-sieve
+  "Build least divisors table"
   ([n]
-   (int-array (range (inc n))))
-  ([n A start]
-   
-   ))
+   (ldt-sieve (int-array (range (inc n))) n))
+  ([T n]
+   (loop [p (ldt-find-prime T 2)]
+       (if (or (nil? p) (> (* p p) n))
+         T
+         (do
+           (doseq [k (range (* p p) (inc n) p)]
+             (ldt-update T k p))
+           (recur (ldt-find-prime T (inc p))))))))
+
+
+(defn ldt-factorize
+  ([n] (ldt-factorize (ldt-sieve n) n))
+  ([^ints T ^Integer n]
+   (loop [n  n
+          ds []]
+     (if (= n 1)
+       ds
+       (let [d (aget T n)]
+         (recur (quot n d) (conj ds d)))))))
+
 
 (defn sieve'
   "Sieve of Eratosthenes.
