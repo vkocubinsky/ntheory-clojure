@@ -3,40 +3,6 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory :as  nt]))
 
-(deftest test-sieve
-  (testing "Non positive numbers"
-    (is (thrown? Exception (nt/sieve 0)))
-    (is (thrown? Exception (nt/sieve -1))))
-  (testing "Small Positive numbers"
-    (are [x y] (= x y)
-      #{} (nt/sieve 1)
-      #{2} (nt/sieve 2)
-      #{2 3} (nt/sieve 3)
-      #{2 3} (nt/sieve 4)
-      #{2 3 5} (nt/sieve 5)
-      #{2 3 5} (nt/sieve 6)
-      #{2 3 5 7} (nt/sieve 7)
-      #{2 3 5 7} (nt/sieve 8)
-      #{2 3 5 7} (nt/sieve 9)))
-  (testing "Big Numbers"
-    (is (= #{2 3 5 7 11 13 17 19 23 29} (nt/sieve 30)))))
-
-(deftest test-sieve-cache
-  (nt/reset-sieve-table!)
-  (is (= 1 (:upper (deref nt/sieve-table))))
-  (nt/sieve 30)
-  (is (= 30 (:upper (deref nt/sieve-table))))
-  (nt/sieve 10)
-  (is (= 30 (:upper (deref nt/sieve-table))))
-  (nt/sieve 40)
-  (is (= 40 (:upper (deref nt/sieve-table))))
-  )
-
-
-(deftest test-sieve-properties
-  (testing "sieve is a sorted set"
-    (doseq [n (range 1 100)]
-      (is (sorted? (nt/sieve n))))))
 
 (deftest test-factorize
   (testing "Negative numbers"
@@ -70,9 +36,7 @@
   (testing "factorize de-factorize is indentity function"
     (doseq [n (range 1 100)]
       (is (= n (nt/de-factorize (nt/factorize n))))))
-  (testing "factorize is a sorted map"
-    (doseq [n (range 1 100)]
-      (is (sorted? (nt/factorize n))))))
+  )
 
 (deftest test-divisors
   (testing "Non postive numbers"

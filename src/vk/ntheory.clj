@@ -24,94 +24,60 @@
          (recur T (inc start) end))))))
 
 (defn- ldt-update
-             [^ints T ^Integer k ^Integer v]
-             (let [e (aget T k)]
-               (when-not (< e k)
-                 (aset T k v))))
+  [^ints T ^Integer k ^Integer v]
+  (let [e (aget T k)]
+    (when-not (< e k)
+      (aset T k v))))
 
-(defn ldt-sieve
+(defn- ldt-build
   "Build least divisors table"
-  ([n]
-   (ldt-sieve (int-array (range (inc n))) n))
-  ([T n]
-   (loop [p (ldt-find-prime T 2)]
-       (if (or (nil? p) (> (* p p) n))
-         T
-         (do
-           (doseq [k (range (* p p) (inc n) p)]
-             (ldt-update T k p))
-           (recur (ldt-find-prime T (inc p))))))))
+  [n]
+  (loop [T (int-array (range (inc n)))
+         p (ldt-find-prime T 2)]
+    (if (or (nil? p) (> (* p p) n))
+      T
+      (do
+        (doseq [k (range (* p p) (inc n) p)]
+          (ldt-update T k p))
+        (recur T (ldt-find-prime T (inc p)))))))
+
+(def ldt (atom {:table nil :upper 0}))
+
+(defn ldt-get
+  [n]
+  (when-not (pos? n) (throw (Exception. "Expected positive number")))
+  (let [{:keys [table upper]} @ldt]
+    (if (<= n upper)
+      table
+      (let [table (ldt-build n)]
+        (reset! ldt {:table table :upper n})
+        table
+      )
+    )
+  ))
+
+(defn ldt-reset!
+  []
+  (reset! ldt {:table nil :upper 0}))
 
 
 (defn ldt-factorize
-  ([n] (ldt-factorize (ldt-sieve n) n))
-  ([^ints T ^Integer n]
-   (loop [n  n
+  ([^Integer n]
+   (loop [^ints T (ldt-get n)
+          n  n
           ds []]
      (if (= n 1)
        ds
        (let [d (aget T n)]
-         (recur (quot n d) (conj ds d)))))))
+         (recur T (quot n d) (conj ds d)))))))
 
 
-(defn sieve'
-  "Sieve of Eratosthenes.
-  Return primes less or equal to `n`."
+(defn factorize
   [n]
   (when-not (pos? n) (throw (Exception. "Expected positive number")))
-  (loop [v (apply sorted-set (range 2 (inc n)))
-         k 2]
-    (if (> (* k k) n)
-      v
-      (recur (set/difference v (set (range (* k k) (inc n) k))) (inc k)))))
+  (-> n ldt-factorize frequencies))
 
-(def sieve-table (atom {:table (sorted-set) :upper 1}))
-
-(defn reset-sieve-table!
-  []
-  (reset! sieve-table {:table (sorted-set) :upper 1}))
-
-(defn sieve
-  "Cached version of Sieve of Eratosthenes."
-  [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive number")))
-  (let [{:keys [table upper]} @sieve-table]
-    (if (<= n upper)
-      (apply sorted-set (subseq table <= n))
-      (let [table (sieve' n)]
-        (reset! sieve-table {:table (sieve' n) :upper n})
-        table))))
-
-(defn- div-p-adic-valuation
-  "Divide given number `n` on highest order of prime number `p` divides `n`.
-   Return pair [v n'] where `v` - highest order of p divides n and
-   n' -  quotient of n and p^v i.e. n/p^v."
-  [p n]
-  (loop [v 0
-         n' n]
-    (if (= (mod n' p) 0)
-      (recur (inc v) (quot n' p))
-      [v n'])))
-
-(defn-  factorize'
-  [n cn [p & primes']]
-  (cond
-    (= n 1) cn
-    (or (nil? p) (> (* p p) n)) (assoc cn n 1)
-    :else (let [[v n'] (div-p-adic-valuation p n)]
-            (if (zero? v)
-              (recur n' cn primes')
-              (recur n' (assoc cn p v) primes')))))
-
-(defn sieve-factorize
-  "Factorize given positive integer `n`."
-  [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive `n`")))
-  (factorize' n (sorted-map) (sieve (int (math/sqrt n)))))
-
-(def factorize sieve-factorize)
-
-
+  
 (defn de-factorize
   "Convert factorization map back to integer."
   [cn]
@@ -241,7 +207,10 @@
 
 
 (comment
-  (f-equals
+  (reset-ldt!)
+  (ldt-get 100000)
+  (time (/ (reduce + (map divisors-count (range 1 100000))) 100000.0))
+    (f-equals
    (dirichlet-convolution nt/mobius nt/one)
    nt/unit))
 
