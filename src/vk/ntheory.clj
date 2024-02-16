@@ -1,6 +1,8 @@
 (ns vk.ntheory
   (:require [clojure.set :as set]
-            [clojure.math :as math]))
+            [clojure.math :as math])
+  (:import [java.util Arrays])
+  (:gen-class))
 
 (defn pow
   "Power function."
@@ -19,7 +21,7 @@
   ([^ints T start end]
    (when (< start end)
      (let [e (aget T start)]
-       (if (and (> start 1) (= e start))
+       (if (and (> start 1) (= e start)) ;; todo: >=
          start
          (recur T (inc start) end))))))
 
@@ -40,6 +42,40 @@
         (doseq [k (range (* p p) (inc n) p)]
           (ldt-update T k p))
         (recur T (ldt-find-prime T (inc p)))))))
+
+
+(defn- ldt-range-array
+  "Create or extend an array as range from zero to `n`"
+  ([n] (ldt-range-array (int-array 0) n))
+  ([^ints a ^Integer n]
+   (let [l (alength a)]
+     (if (< l n)
+       (let [b (int-array (range l n))
+             c (Arrays/copyOf a n)]
+         (System/arraycopy b 0 c l (- n l))
+         c)
+       a))))
+
+;; todo: calculation of (n'/p + 1) * p is not nesesarry if
+;; we double size, only if n > n'*n' we have some optimization.
+;; but it is minimal optimization. 
+(defn ldt-extend
+  [^ints a n]
+  (let [n' (dec (alength a))]
+    (if (< n' n)
+      (loop [b (ldt-range-array a (inc n))
+             p (ldt-find-prime b 2)]
+        (if (or (nil? p) (> (* p p) n))
+          b
+          (let [s (max (* (inc (quot n' p)) p)
+                       (* p p))]
+            (doseq [k (range (* p p) (inc n) p)]
+              (ldt-update b k p))
+            (recur b (ldt-find-prime b (inc p))))))
+      a)))
+
+
+
 
 (def ldt (atom {:table nil :upper 0}))
 
