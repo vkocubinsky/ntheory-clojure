@@ -1,83 +1,60 @@
 (ns vk.ntheory
-  (:require [clojure.set :as set]
-            [clojure.math :as math])
-  (:import [java.util Arrays])
-  (:gen-class))
+  (:require [clojure.math :as math]))
 
 (defn pow
   "Power function."
   [a n]
   (apply * (repeat n a)))
 
-
 (defn- ldt-find-prime
   "Find next prime in least divisor table.
   Parameters: 
-    T     - table
+    xs     - table
     start - start index
     end   - end index
   "
-  ([T start] (ldt-find-prime T start (count T)))
-  ([^ints T start end]
+  ([xs start] (ldt-find-prime xs start (count xs)))
+  ([^ints xs start end]
    (when (< start end)
-     (let [e (aget T start)]
-       (if (and (> start 1) (= e start)) ;; todo: >=
+     (let [e (aget xs start)]
+       (if (and (> start 1) (= e start)) 
          start
-         (recur T (inc start) end))))))
+         (recur xs (inc start) end))))))
 
 (defn- ldt-update
-  [^ints T ^Integer k ^Integer v]
-  (let [e (aget T k)]
+  "Update least divisor table to new value if it was not set."
+  [^ints xs ^Integer k ^Integer v]
+  (let [e (aget xs k)]
     (when-not (< e k)
-      (aset T k v))))
+      (aset xs k v))))
 
 (defn- ldt-build
-  "Build least divisors table"
+  "Build least divisors table."
   [n]
-  (loop [T (int-array (range (inc n)))
-         p (ldt-find-prime T 2)]
+  (println "Rebuild least divisor table for n = " n)
+  (loop [xs (int-array (range (inc n)))
+         p (ldt-find-prime xs 2)]
     (if (or (nil? p) (> (* p p) n))
-      T
+      xs
       (do
         (doseq [k (range (* p p) (inc n) p)]
-          (ldt-update T k p))
-        (recur T (ldt-find-prime T (inc p)))))))
+          (ldt-update xs k p))
+        (recur xs (ldt-find-prime xs (inc p)))))))
 
-
-(defn- ldt-range-array
-  "Create or extend an array as range from zero to `n`"
-  ([n] (ldt-range-array (int-array 0) n))
-  ([^ints a ^Integer n]
-   (let [l (alength a)]
-     (if (< l n)
-       (let [b (int-array (range l n))
-             c (Arrays/copyOf a n)]
-         (System/arraycopy b 0 c l (- n l))
-         c)
-       a))))
-
-;; todo: calculation of (n'/p + 1) * p is not nesesarry if
-;; we double size, only if n > n'*n' we have some optimization.
-;; but it is minimal optimization. 
-(defn ldt-extend
-  [^ints a n]
-  (let [n' (dec (alength a))]
-    (if (< n' n)
-      (loop [b (ldt-range-array a (inc n))
-             p (ldt-find-prime b 2)]
-        (if (or (nil? p) (> (* p p) n))
-          b
-          (let [s (max (* (inc (quot n' p)) p)
-                       (* p p))]
-            (doseq [k (range (* p p) (inc n) p)]
-              (ldt-update b k p))
-            (recur b (ldt-find-prime b (inc p))))))
-      a)))
 
 
 
 
 (def ldt (atom {:table nil :upper 0}))
+
+(defn- ldt-auto-extend
+  "Return auto extend number for given `n`."
+  [n]
+  (->> n
+       math/log10
+       math/ceil
+       (math/pow 10)
+       int))
 
 (defn ldt-get
   [n]
@@ -85,16 +62,30 @@
   (let [{:keys [table upper]} @ldt]
     (if (<= n upper)
       table
-      (let [table (ldt-build n)]
+      (let [n (ldt-auto-extend n)
+            table (ldt-build n)]
         (reset! ldt {:table table :upper n})
-        table
-      )
-    )
-  ))
+        table))))
 
 (defn ldt-reset!
   []
   (reset! ldt {:table nil :upper 0}))
+
+(defn- ldt-primes
+  [xs]
+  (->> (map vector xs (range))
+         (drop-while #(< (second %) 2))
+         (filter #(= (first %) (second %)))
+         (map first)))
+
+
+(defn primes
+  "Get primes less or equal to given `n`."
+  [n]
+  (->> (ldt-get n)
+      ldt-primes
+      (take-while #(<= % n)))
+  )
 
 
 (defn ldt-factorize
@@ -113,11 +104,10 @@
   (when-not (pos? n) (throw (Exception. "Expected positive number")))
   (-> n ldt-factorize frequencies))
 
-  
 (defn de-factorize
   "Convert factorization map back to integer."
   [cn]
-  (apply * (for [[x y] cn] (pow x y))))
+  (reduce * (for [[x y] cn] (pow x y))))
 
 (defn- divisors'
   "Divisors of factorized numbers.
@@ -158,7 +148,7 @@
       (->> n
            factorize
            (map (fn [[p k]] (f p k)))
-           (apply *)))))
+           (reduce *)))))
 
 (def divisors-count
   "Divisors count - σ₀"
@@ -221,14 +211,13 @@
 (defn dirichlet-convolution
   "Dirichlet convolution."
   ([f g]
-   (fn [n] (apply + (for [d (divisors n)] (* (f d) (g (/ n d)))))))
+   (fn [n] (reduce + (for [d (divisors n)] (* (f d) (g (/ n d)))))))
   ([f g & more] (reduce dirichlet-convolution f (cons g more))))
 
 (defn f-equals
   ([f g] (f-equals f g (range 1 100)))
   ([f g xs]
    (every? (fn [[a b]] (= a b))  (map (fn [n] [(f n) (g n)]) xs))))
-
 
 (defn dirichlet-inverse
   "Dirichlet inverse."
@@ -238,15 +227,14 @@
               (/ 1 (f 1))
               (*
                (/ (- 1) (one 1))
-               (apply + (for [d (divisors n) :when (< d n)] (* (f (/ n d)) (f-inverse f d)))))))]
+               (reduce + (for [d (divisors n) :when (< d n)] (* (f (/ n d)) (f-inverse f d)))))))]
     (partial f-inverse f)))
 
-
 (comment
-  (reset-ldt!)
-  (ldt-get 100000)
+  (ldt-reset!)
+  (ldt-get 300)
   (time (/ (reduce + (map divisors-count (range 1 100000))) 100000.0))
-    (f-equals
+  (f-equals
    (dirichlet-convolution nt/mobius nt/one)
    nt/unit))
 

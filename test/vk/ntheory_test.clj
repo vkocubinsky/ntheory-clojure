@@ -3,6 +3,9 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory :as  nt]))
 
+(deftest test-primes
+  (is [2 3 5 7 11 13 17 19 23 29] (nt/primes 30)))
+
 
 (deftest test-factorize
   (testing "Negative numbers"
