@@ -4,8 +4,11 @@
    [vk.ntheory :as  nt]))
 
 (deftest test-primes
-  (is [2 3 5 7 11 13 17 19 23 29] (nt/primes 30)))
-
+  (testing "cache"
+    (nt/ldt-reset!)
+    (is (= 0 (:upper @nt/ldt))))
+  (testing "small numbers"
+    (is [2 3 5 7 11 13 17 19 23 29] (nt/primes 30))))
 
 (deftest test-factorize
   (testing "Negative numbers"
@@ -38,8 +41,7 @@
 (deftest test-factorize-properties
   (testing "factorize de-factorize is indentity function"
     (doseq [n (range 1 100)]
-      (is (= n (nt/de-factorize (nt/factorize n))))))
-  )
+      (is (= n (nt/de-factorize (nt/factorize n)))))))
 
 (deftest test-divisors
   (testing "Non postive numbers"
@@ -179,21 +181,20 @@
            10 130}))
 
 (deftest test-divisors-sum-a
-  (is (nt/f-equals nt/divisors-count (nt/divisors-sum-x 0)))
-  (is (nt/f-equals nt/divisors-sum (nt/divisors-sum-x 1)))
-  (is (nt/f-equals nt/divisors-square-sum (nt/divisors-sum-x 2))))
+  (is (nt/f= nt/divisors-count (nt/divisors-sum-x 0)))
+  (is (nt/f= nt/divisors-sum (nt/divisors-sum-x 1)))
+  (is (nt/f= nt/divisors-square-sum (nt/divisors-sum-x 2))))
 
 (deftest test-relations
-  (is (nt/f-equals nt/unit (nt/dirichlet-convolution nt/mobius nt/one)))
-  (is (nt/f-equals nt/id (nt/dirichlet-convolution nt/totient nt/one)))
-  (is (nt/f-equals nt/divisors-count (nt/dirichlet-convolution nt/one nt/one)))
-  (is (nt/f-equals nt/divisors-sum (nt/dirichlet-convolution nt/id nt/one)))
-  (is (nt/f-equals nt/divisors-sum (nt/dirichlet-convolution nt/totient nt/divisors-count))))
+  (is (nt/f= nt/unit (nt/f* nt/mobius nt/one)))
+  (is (nt/f= nt/id (nt/f* nt/totient nt/one)))
+  (is (nt/f= nt/divisors-count (nt/f* nt/one nt/one)))
+  (is (nt/f= nt/divisors-sum (nt/f* nt/id nt/one)))
+  (is (nt/f= nt/divisors-sum (nt/f* nt/totient nt/divisors-count))))
 
 (deftest test-inverse
-  (is (nt/f-equals (nt/dirichlet-inverse nt/one) nt/mobius))
-  (is (nt/f-equals (nt/dirichlet-inverse nt/mobius) nt/one))
-  )
+  (is (nt/f= (nt/inverse nt/one) nt/mobius))
+  (is (nt/f= (nt/inverse nt/mobius) nt/one)))
 
 
 

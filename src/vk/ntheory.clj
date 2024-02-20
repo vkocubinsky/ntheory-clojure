@@ -21,7 +21,7 @@
          start
          (recur xs (inc start) end))))))
 
-(defn- ldt-update
+(defn- ldt-update!
   "Update least divisor table to new value if it was not set."
   [^ints xs ^Integer k ^Integer v]
   (let [e (aget xs k)]
@@ -31,45 +31,14 @@
 (defn- ldt-build
   "Build least divisors table."
   [n]
-  (println "Rebuild least divisor table for n = " n)
   (loop [xs (int-array (range (inc n)))
          p (ldt-find-prime xs 2)]
     (if (or (nil? p) (> (* p p) n))
       xs
       (do
         (doseq [k (range (* p p) (inc n) p)]
-          (ldt-update xs k p))
+          (ldt-update! xs k p))
         (recur xs (ldt-find-prime xs (inc p)))))))
-
-
-
-
-
-(def ldt (atom {:table nil :upper 0}))
-
-(defn- ldt-auto-extend
-  "Return auto extend number for given `n`."
-  [n]
-  (->> n
-       math/log10
-       math/ceil
-       (math/pow 10)
-       int))
-
-(defn ldt-get
-  [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive number")))
-  (let [{:keys [table upper]} @ldt]
-    (if (<= n upper)
-      table
-      (let [n (ldt-auto-extend n)
-            table (ldt-build n)]
-        (reset! ldt {:table table :upper n})
-        table))))
-
-(defn ldt-reset!
-  []
-  (reset! ldt {:table nil :upper 0}))
 
 (defn- ldt-primes
   [xs]
@@ -79,18 +48,47 @@
          (map first)))
 
 
-(defn primes
-  "Get primes less or equal to given `n`."
+(defn- ldt-auto-upper
+  "Return auto extend upper number for given `n`."
   [n]
-  (->> (ldt-get n)
-      ldt-primes
-      (take-while #(<= % n)))
-  )
+  (if (< n 10) 10
+  (->> n
+       math/log10
+       math/ceil
+       (math/pow 10)
+       int)))
 
+
+(def ldt (atom {:least-divisor-table nil :primes nil :upper 0}))
+
+
+(defn- ldt-auto-extend!
+  [n]
+  (let [{:keys [least-divisor-table primes upper] :as all} @ldt]
+    (if (<= n upper)
+      all
+      (let [n (ldt-auto-upper n)
+            table (ldt-build n)
+            primes (ldt-primes table)]
+        (reset! ldt {:least-divisor-table table :primes primes :upper n})
+        ))))
+
+(defn ldt-reset!
+  []
+  (reset! ldt {:least-divisor-table nil :primes nil :upper 0}))
+
+(defn primes
+  [n]
+  (take-while #(< % n) (:primes (ldt-auto-extend! n))))
+
+(defn- least-divisor-table
+  "Convenience function for return least divisor table not less than given `n`."
+  [n]
+  (:least-divisor-table (ldt-auto-extend! n)))
 
 (defn ldt-factorize
   ([^Integer n]
-   (loop [^ints T (ldt-get n)
+   (loop [^ints T (least-divisor-table n)
           n  n
           ds []]
      (if (= n 1)
@@ -208,18 +206,19 @@
     (when-not (pos? n) (throw (Exception. "Expected positive number")))
     (pow n a)))
 
-(defn dirichlet-convolution
+(defn f*
   "Dirichlet convolution."
   ([f g]
    (fn [n] (reduce + (for [d (divisors n)] (* (f d) (g (/ n d)))))))
-  ([f g & more] (reduce dirichlet-convolution f (cons g more))))
+  ([f g & more] (reduce f* f (cons g more))))
 
-(defn f-equals
-  ([f g] (f-equals f g (range 1 100)))
+(defn f=
+  ([f g] (f= f g (range 1 100)))
   ([f g xs]
    (every? (fn [[a b]] (= a b))  (map (fn [n] [(f n) (g n)]) xs))))
 
-(defn dirichlet-inverse
+
+(defn inverse
   "Dirichlet inverse."
   [f]
   (letfn [(f-inverse [f n]
@@ -230,12 +229,12 @@
                (reduce + (for [d (divisors n) :when (< d n)] (* (f (/ n d)) (f-inverse f d)))))))]
     (partial f-inverse f)))
 
+
+
 (comment
-  (ldt-reset!)
-  (ldt-get 300)
   (time (/ (reduce + (map divisors-count (range 1 100000))) 100000.0))
-  (f-equals
-   (dirichlet-convolution nt/mobius nt/one)
+  (f=
+   (f* nt/mobius nt/one)
    nt/unit))
 
 
