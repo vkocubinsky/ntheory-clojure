@@ -4,7 +4,13 @@
 (defn pow
   "Power function."
   [a n]
-  (apply * (repeat n a)))
+  (reduce * (repeat n a)))
+
+(defn check-positive
+  "Throw an execption if given `n` is not positive."
+  [n]
+  (when-not (pos? n) (throw (Exception. "Expected positive number")))
+  n)
 
 (defn- ldt-find-prime
   "Find next prime in least divisor table.
@@ -64,7 +70,7 @@
 
 (defn- ldt-auto-extend!
   [n]
-  (let [{:keys [least-divisor-table primes upper] :as all} @ldt]
+  (let [{:keys [_ _ upper] :as all} @ldt]
     (if (<= n upper)
       all
       (let [n (ldt-auto-upper n)
@@ -79,7 +85,7 @@
 
 (defn primes
   [n]
-  (take-while #(< % n) (:primes (ldt-auto-extend! n))))
+  (take-while #(<= % n) (:primes (ldt-auto-extend! n))))
 
 (defn- least-divisor-table
   "Convenience function for return least divisor table not less than given `n`."
@@ -99,7 +105,7 @@
 
 (defn factorize
   [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive number")))
+  (check-positive n)
   (-> n ldt-factorize frequencies))
 
 (defn de-factorize
@@ -130,23 +136,71 @@
 (defn divisors
   "Divisors of whole integer."
   [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive number")))
+  (check-positive n)
   (map de-factorize (-> n factorize (divisors' ,,, [{}]))))
 
-(defn multiplicative-function
-  "Higher order which return multiplicative function based on values on primes.
+
+(defn reduce-on-prime
+  "Higher order which return arithmetical function based on
+  function defined on power of a prime.
   Parameters:
-  f - function which accept [p k], where p is a prime and k is an order of prime, it returns value on order of prime.
-  "
-  [f]
+  rf - reduce functions such as `*` or `+`
+  f - function defined on power of a prime, which accept [p k],
+      where p is a prime and k is an order of prime,
+      it returns value on order of prime."
+  [rf f]
   (fn [n]
-    (when-not (pos? n) (throw (Exception. "Expected positive number")))
-    (if (= n 1)
-      1
-      (->> n
-           factorize
-           (map (fn [[p k]] (f p k)))
-           (reduce *)))))
+    (check-positive n)
+    (->> n
+         factorize
+         (map (fn [[p k]] (f p k)))
+         (reduce rf))))
+
+(defn multiplicative-function
+  "Higher order which return multiplicative function based on
+  function defined on power of a prime.
+  Parameters:
+  f - function defined on power of a prime, which accept [p k],
+      where p is a prime and k is an order of prime,
+      it returns value on order of prime."
+  [f]
+  (reduce-on-prime * f))
+
+(defn additive-function
+  "Higher order which return additive function based on
+  function defined on power of a prime.
+  Parameters:
+  f - function defined on power of a prime, which accept [p k],
+      where p is a prime and k is an order of prime,
+      it returns value on order of prime."
+  [f]
+  (reduce-on-prime + f))
+
+
+(def primes-count-distinct
+  "Number of primes divides given `n` - ω."
+  (additive-function (fn [_ _] 1)))
+
+(def primes-count-total
+  "Number of primes and their powers divides given `n` - Ω."
+  (additive-function (fn [_ k] k))
+  )
+
+(defn liouville
+  "Liouville function - λ"
+  [n]
+  (check-positive n)
+  (pow (- 1) (primes-count-total n))
+  )
+
+(defn mangoldt
+  "Mangoldt function - Λ"
+  [n]
+  (let [cn (factorize n)]
+    (if (= 1 (count cn) )
+    (math/log (-> cn keys first))
+    0))
+  )
 
 (def divisors-count
   "Divisors count - σ₀"
@@ -182,7 +236,7 @@
 (defn unit
   "Unit function - ϵ."
   [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive number")))
+  (check-positive n)
   (if (= n 1)
     1
     0))
@@ -190,35 +244,48 @@
 (defn one
   "Constant function returns 1."
   [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive number")))
+  (check-positive n)
   1)
 
 (defn id
   "Identity function."
   [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive number")))
+  (check-positive n)
   n)
 
-(defn id-x
-  "Higher order function which return power function for given `a`."
-  [a]
-  (fn [n]
-    (when-not (pos? n) (throw (Exception. "Expected positive number")))
-    (pow n a)))
+(defn chebyshev-first
+  "The first Chebyshev function - θ."
+  [n]
+  (check-positive n)
+  (->> n
+      primes
+      (map math/log)
+      (reduce +)))
 
-(defn f*
+(defn chebyshev-second
+  "The second Chebyshev function - ψ."
+  [n]
+  (check-positive n)
+  (->> (range 1 (inc n))
+      (map mangoldt)
+      (reduce +)
+      )
+  )
+
+
+(defn dirichlet-convolution
   "Dirichlet convolution."
   ([f g]
    (fn [n] (reduce + (for [d (divisors n)] (* (f d) (g (/ n d)))))))
-  ([f g & more] (reduce f* f (cons g more))))
+  ([f g & more] (reduce dirichlet-convolution f (cons g more))))
 
-(defn f=
-  ([f g] (f= f g (range 1 100)))
+(defn f-equals
+  ([f g] (f-equals f g (range 1 100)))
   ([f g xs]
    (every? (fn [[a b]] (= a b))  (map (fn [n] [(f n) (g n)]) xs))))
 
 
-(defn inverse
+(defn dirichlet-inverse
   "Dirichlet inverse."
   [f]
   (letfn [(f-inverse [f n]
@@ -233,8 +300,6 @@
 
 (comment
   (time (/ (reduce + (map divisors-count (range 1 100000))) 100000.0))
-  (f=
-   (f* nt/mobius nt/one)
-   nt/unit))
+  )
 
 
