@@ -104,6 +104,7 @@
 
 
 (defn factorize
+  "Factorize given `n`."
   [n]
   (check-positive n)
   (-> n ldt-factorize frequencies))
