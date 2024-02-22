@@ -1,42 +1,24 @@
 (ns vk.ntheory-test
   (:require
    [clojure.test :refer [deftest is are testing]]
+   [clojure.math :as math]
    [vk.ntheory :as  nt]))
 
-(deftest test-sieve
-  (testing "Non positive numbers"
-    (is (thrown? Exception (nt/sieve 0)))
-    (is (thrown? Exception (nt/sieve -1))))
-  (testing "Small Positive numbers"
-    (are [x y] (= x y)
-      #{} (nt/sieve 1)
-      #{2} (nt/sieve 2)
-      #{2 3} (nt/sieve 3)
-      #{2 3} (nt/sieve 4)
-      #{2 3 5} (nt/sieve 5)
-      #{2 3 5} (nt/sieve 6)
-      #{2 3 5 7} (nt/sieve 7)
-      #{2 3 5 7} (nt/sieve 8)
-      #{2 3 5 7} (nt/sieve 9)))
-  (testing "Big Numbers"
-    (is (= #{2 3 5 7 11 13 17 19 23 29} (nt/sieve 30)))))
-
-(deftest test-sieve-cache
-  (nt/reset-sieve-table!)
-  (is (= 1 (:upper (deref nt/sieve-table))))
-  (nt/sieve 30)
-  (is (= 30 (:upper (deref nt/sieve-table))))
-  (nt/sieve 10)
-  (is (= 30 (:upper (deref nt/sieve-table))))
-  (nt/sieve 40)
-  (is (= 40 (:upper (deref nt/sieve-table))))
-  )
-
-
-(deftest test-sieve-properties
-  (testing "sieve is a sorted set"
-    (doseq [n (range 1 100)]
-      (is (sorted? (nt/sieve n))))))
+(deftest test-primes
+  (testing "cache"
+    (nt/ldt-reset!)
+    (is (= 0 (:upper @nt/ldt))))
+  (testing "small numbers"
+    (is [2] (nt/primes 2))
+    (is [2 3] (nt/primes 3))
+    (is [2 3] (nt/primes 4))
+    (is [2 3 5] (nt/primes 5))
+    (is [2 3 5] (nt/primes 6))
+    (is [2 3 5 7] (nt/primes 7))
+    (is [2 3 5 7] (nt/primes 8))
+    (is [2 3 5 7] (nt/primes 9))
+    (is [2 3 5 7] (nt/primes 10))
+    (is [2 3 5 7 11 13 17 19 23 29] (nt/primes 30))))
 
 (deftest test-factorize
   (testing "Negative numbers"
@@ -69,10 +51,7 @@
 (deftest test-factorize-properties
   (testing "factorize de-factorize is indentity function"
     (doseq [n (range 1 100)]
-      (is (= n (nt/de-factorize (nt/factorize n))))))
-  (testing "factorize is a sorted map"
-    (doseq [n (range 1 100)]
-      (is (sorted? (nt/factorize n))))))
+      (is (= n (nt/de-factorize (nt/factorize n)))))))
 
 (deftest test-divisors
   (testing "Non postive numbers"
@@ -108,6 +87,75 @@
     (doseq [[x fe] m]
       (let [fa (f x)]
         (is (= fe fa) (format "Expected f(%s) == %s, but got %s" x fe fa))))))
+
+(deftest test-primes-count-distinct
+  (f-test nt/primes-count-distinct
+          {1 0
+           2 1
+           3 1
+           4 1
+           5 1
+           6 2
+           7 1
+           8 1
+           9 1
+           10 2}))
+
+(deftest test-primes-count-total
+  (f-test nt/primes-count-total
+          {1 0
+           2 1
+           3 1
+           4 2
+           5 1
+           6 2
+           7 1
+           8 3
+           9 2
+           10 2}))
+
+(deftest test-chebyshev-first
+  (f-test nt/chebyshev-first
+          {1 0
+           2 (math/log 2)
+           3 (+ (math/log 2) (math/log 3))
+           4 (+ (math/log 2) (math/log 3))
+           5 (+ (math/log 2) (math/log 3) (math/log 5))
+           }))
+
+(deftest test-chebyshev-second
+  (f-test nt/chebyshev-second
+          {1 0
+           2 (+ (nt/mangoldt 1) (nt/mangoldt 2))
+           3 (+ (nt/mangoldt 1) (nt/mangoldt 2) (nt/mangoldt 3))
+           }))
+
+
+(deftest test-mangoldt
+  (f-test nt/mangoldt
+          {1 0
+           2 (math/log 2)
+           3 (math/log 3)
+           4 (math/log 2)
+           5 (math/log 5)
+           6 0
+           7 (math/log 7)
+           8 (math/log 2)
+           9 (math/log 3)
+           10 0}))
+
+(deftest test-liouville
+  (f-test nt/liouville
+          {1 1
+           2 -1
+           3 -1
+           4 1
+           5 -1
+           6 1
+           7 -1
+           8 -1
+           9 1
+           10 1}))
 
 (deftest test-mobius
   (f-test nt/mobius
@@ -159,18 +207,6 @@
            4 4
            5 5}))
 
-(deftest test-id-a
-  (f-test (nt/id-x 2)
-          {1    1
-           2    4
-           3    9
-           4   16
-           5   25
-           6   36
-           7   49
-           8   64
-           9   81
-           10 100}))
 
 (deftest test-divisors-count
   (f-test nt/divisors-count
@@ -225,8 +261,7 @@
 
 (deftest test-inverse
   (is (nt/f-equals (nt/dirichlet-inverse nt/one) nt/mobius))
-  (is (nt/f-equals (nt/dirichlet-inverse nt/mobius) nt/one))
-  )
+  (is (nt/f-equals (nt/dirichlet-inverse nt/mobius) nt/one)))
 
 
 

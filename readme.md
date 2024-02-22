@@ -5,7 +5,7 @@ theory, especially arithmetic functions, further more multiplicative
 functions. There are set of well known multiplicative functions and one
 can define custom multiplicative functions.
 
-I wrote this document with Emacs org mode. Then I generated markdown
+I wrote this document with Emacs Org Mode. Then I generated markdown
 file to show it nicely on github. I use Emacs babel to produce real
 output inside the document.
 
@@ -17,40 +17,75 @@ In this document I load number theory package as:
 
 So below I will use `nt` alias.
 
+# Notation
+
+$\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
+
+$\mathbf C$ - Complex numbers $\mathbf Z$ - Integers
+$\dots -3, -2, -1, 0, 1, 2, 3, \dots$
+
+If $n \in \mathbf N$ there is canonical representation of $n$ $$
+\[
+n = {p_1}^{a_1} {p_2}^{a_2} \dots {p_k}^{a_k} = \prod_{i=1}^{k} {p_i}^{a_i} = \prod_{p | n} {p^a}
+\]
+$$
+
+# Performance and cache
+
+This library is designed to work with realtive small integers. Library
+keep in cache least divisor table for fast integer factorization. Cache
+grows automatically. The strategy of growing is round required number to
+the nearest power of `10`. For instance, if client asked to factorize
+number `18`, cache grows to `100`, if client asked to factorize number
+`343`, cache grows to `1000`, etc. List of primes also cached and
+recalculated together with least divisor table. Recalculation is not
+incremental, but every recalculation of least divisor table make a table
+which is in `10` times more than previous, and time for previous
+calculation is `10` times less than for new one. So we can say that the
+library spent almost all time for latest least divisor table.
+
+Internally, least divisor table is java array of int, so to store least
+divisor table for first `10 000 000` number approximately `40M` memory
+is required, `4` bytes per number.
+
+To free memory cache can be reset
+
+``` clojure
+(nt/ldt-reset!)
+```
+
+``` example
+{:least-divisor-table , :primes , :upper 0}
+
+```
+
+Least divisor table is implementation details, but one can see it
+
+``` clojure
+(nt/ldt-factorize 5); load first 10
+@ldt
+
+```
+
+``` example
+{:least-divisor-table [0, 1, 2, 3, 2, 5, 2, 7, 2, 3, 2],
+ :primes (2 3 5 7),
+ :upper 10}
+
+```
+
 # Prime numbers
 
-There is `sieve` functions which returns prime numbers which not exceeds
-given `n`.
+There is `primes` functions which returns prime numbers which not
+exceeds given `n`.
 
 ``` clojure
-(nt/sieve 30)
+(nt/primes 30)
 ```
 
 ``` example
-#{2 3 5 7 11 13 17 19 23 29}
+(2 3 5 7 11 13 17 19 23 29)
 
-```
-
-Prime numbers which returns by `sieve` function cached, and then in next
-time if one call `sieve` function again, real calculation only happened
-when new `n` more than cached upper limit, otherwise cached prime
-numbers is used to get the result.
-
-Cache is stored in `sieve-table` atom.
-
-``` clojure
-@nt/sieve-table
-```
-
-``` example
-{:table #{2 3 5 7 11 13 17 19 23 29}, :upper 30}
-
-```
-
-To reset cache just call
-
-``` clojure
-(nt/reset-sieve-table!)
 ```
 
 # Integer factorization
@@ -67,8 +102,8 @@ numbers can be represent uniquely as a product of primes. For example
 $360 = 2^3 3^2 5^1$.
 
 There is a function `factorize` which return factorization for given
-`n`. The result is a sorted map for which key is a prime number and
-value is an order of prime in `n`.
+`n`. The result is a map for which key is a prime number and value is an
+order of prime in `n`.
 
 ``` clojure
 (nt/factorize 360)
@@ -91,11 +126,9 @@ factorization and return integer.
 
 ```
 
-Implementation of `factorize` function use table of primes calculated by
-`sieve` function. To factorize number `n` it is enough to calculate
-prime numbers less or equals to $\sqrt n$. So keep table for primes less
-or equal to 1000 enough to factorize any number less or equal to
-1000000.
+Implementation of `factorize` function use least divisor table. To
+factorize number `n` it is enough to calculate least divisor table with
+size less or equals to $\sqrt n$.
 
 # Divisors
 
@@ -113,30 +146,31 @@ List of divisors is unordered.
 
 # Arithmetical functions
 
-Arithmetical function is an any function which accept natural number. I
-mainly works which functions which also returns integer.
+Arithmetical function is an any function which accept natural number and
+return complex number $f: \mathbf N \to \mathbf C$. I mainly works with
+functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
 # Function equality
 
 Two arithmetical function $f$ and $g$ are equal if $f(n)=g(n)$ for all
-natual $n$. There is helper function `f-equals` which compare two
-functions on some subset of natual numbers. Function `f-equals` accept
-two functions and subset of natural numbers. There is a default for
-subset of natural numbers, currently it is `range(1,100)`.
+natual $n$. There is helper function `f=` which compare two functions on
+some subset of natual numbers. Function `f=` accept two functions and
+subset of natural numbers. There is a default for subset of natural
+numbers, currently it is `range(1,100)`.
 
 If we like identify does two function `f` and `g` equals on some subset
 of natural number we can for example do next:
 
 ``` clojure
-(nt/f-equals f g)
-(nt/f-equals f g (range 1 1000))
-(nt/f-equals f g (filter even? (range 1 100)))
+(nt/f= f g)
+(nt/f= f g (range 1 1000))
+(nt/f= f g (filter even? (range 1 100)))
 ```
 
 # Multiplicative functions
 
 Important class of arithmetical functions consists multiplicative
-functions. Multiplicative function is a function for which $f(1)=1$ and
+functions. Multiplicative function is a function for which
 
 $$ f(mn) = f(m)f(n) \quad \text{if } m \text{ relatively prime to } n $$
 
@@ -172,13 +206,13 @@ $$ \sigma_0(n) = \prod_{i=1}^{k} (a_i + 1) $$
 Of course there is predefined function `disvisors-count`, but it is an
 example how to define custom function.
 
-# Predefined functions
+# Some multiplicative functions
 
 ## Mobius function - $\mu$.
 
 Mobius function defined as:
 
-$$ f(n) = \begin{cases}
+$$ \mu(n) = \begin{cases}
 1        &  \quad \text{if } n = 1 \\
 (-1)^k   &  \quad \text{if } n \text{ product of distinct primes} \\
 0        &  \quad \text{otherwise}
@@ -197,9 +231,9 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
 ## Euler totient function - $\phi$
 
 Euler totient function is a count of numbers relative prime to given
-number `n`. Totient can be calculated by formula:
+number `n`. Totient function can be calculated by formula:
 
-$$ \phi = \prod_{i=1}^k (p^k - p^{k-1}) $$
+$$ \phi(n) = \prod_{p|n} (p^a - p^{a-1}) $$
 
 For example, count of numbers relative prime to $6$ are $1$ and $5$, so
 $\phi(6) = 2$
@@ -216,9 +250,9 @@ $\phi(6) = 2$
 
 Unit function defined as
 
-$$ f(n) = \begin{cases}
+$$ \epsilon(n) = \begin{cases}
 1,&  \text{if } n = 1 \\
-0,&  \text{if } n = 0
+0,&  \text{if } n > 1
 \end{cases} $$
 
 ``` clojure
@@ -232,7 +266,7 @@ $$ f(n) = \begin{cases}
 
 ## Constant one function - $1$
 
-$$ f(n) = 1 $$
+$$ 1(n) = 1 $$
 
 ``` clojure
 (nt/one 6)
@@ -341,8 +375,8 @@ $$ f^{-1}(n) = \begin{cases}
 For example, $1(n) * 1(n) = \sigma_0$
 
 ``` clojure
-(nt/f-equals
-   (nt/dirichlet-convolution nt/one nt/one)
+(nt/f=
+   (nt/f* nt/one nt/one)
    nt/divisors-count
 )
 ```
@@ -353,11 +387,11 @@ true
 ```
 
 Dirichlet convolution is associative so clojure method support more than
-two function as parameter of `dirichlet-convolution`
+two function as parameter of `f*`
 
 ``` clojure
-(nt/f-equals
-  (nt/dirichlet-convolution nt/mobius nt/one nt/mobius nt/one)
+(nt/f=
+  (nt/f* nt/mobius nt/one nt/mobius nt/one)
   nt/unit
 )
 ```
@@ -370,11 +404,15 @@ true
 Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 
 ``` clojure
-(nt/f-equals (nt/dirichlet-inverse nt/one) nt/mobius)
-(nt/f-equals (nt/dirichlet-inverse nt/mobius) nt/one)
+(nt/f= (nt/inverse nt/one) nt/mobius)
+(nt/f= (nt/inverse nt/mobius) nt/one)
 ```
 
-|      |
-|------|
-| true |
-| true |
+|                                                |
+|------------------------------------------------|
+| class clojure.lang.Compiler\$CompilerException |
+| class clojure.lang.Compiler\$CompilerException |
+
+``` clojure
+(nt/inverse nt/mobius)
+```
