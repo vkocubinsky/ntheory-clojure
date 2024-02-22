@@ -23,7 +23,7 @@
   ([^ints xs start end]
    (when (< start end)
      (let [e (aget xs start)]
-       (if (and (> start 1) (= e start)) 
+       (if (and (> start 1) (= e start))
          start
          (recur xs (inc start) end))))))
 
@@ -49,24 +49,21 @@
 (defn- ldt-primes
   [xs]
   (->> (map vector xs (range))
-         (drop-while #(< (second %) 2))
-         (filter #(= (first %) (second %)))
-         (map first)))
-
+       (drop-while #(< (second %) 2))
+       (filter #(= (first %) (second %)))
+       (map first)))
 
 (defn- ldt-auto-upper
   "Return auto extend upper number for given `n`."
   [n]
   (if (< n 10) 10
-  (->> n
-       math/log10
-       math/ceil
-       (math/pow 10)
-       int)))
-
+      (->> n
+           math/log10
+           math/ceil
+           (math/pow 10)
+           int)))
 
 (def ldt (atom {:least-divisor-table nil :primes nil :upper 0}))
-
 
 (defn- ldt-auto-extend!
   [n]
@@ -76,8 +73,7 @@
       (let [n (ldt-auto-upper n)
             table (ldt-build n)
             primes (ldt-primes table)]
-        (reset! ldt {:least-divisor-table table :primes primes :upper n})
-        ))))
+        (reset! ldt {:least-divisor-table table :primes primes :upper n})))))
 
 (defn ldt-reset!
   []
@@ -92,6 +88,48 @@
   [n]
   (:least-divisor-table (ldt-auto-extend! n)))
 
+(defn integer->factors-all-lazy
+  ([^Integer n] (integer->factors-all-lazy (least-divisor-table n) n))
+  ([^ints xs ^Integer n]
+   (lazy-seq
+      (when (> n 1)
+        (let [d (aget xs n)]
+          (cons d (integer->factors-all-lazy xs (quot n d))))))))
+
+(defn integer->factors-all
+  ([^Integer n] (integer->factors-all (least-divisor-table n) n))
+  ([^ints xs ^Integer n]
+   (loop [n  n
+          ds []]
+     (if (= n 1)
+       ds
+       (let [d (aget xs n)]
+         (recur (quot n d) (conj ds d)))))))
+
+
+(defn integer->factors-distinct
+  [n]
+  (->> n integer->factors-all dedupe)
+  )
+
+(defn integer->factors-partitions
+  [n]
+  (->> n integer->factors-all (partition-by identity))
+  )
+
+(defn integer->factors-count
+  [n]
+  (->> n
+       integer->factors-all
+       (partition-by identity)
+       (map (fn [xs] [(first xs) (count xs)]))
+       ))
+
+(defn integer->factors-map
+  [n]
+  (into {} (integer->factors-count n)
+  ))
+
 (defn ldt-factorize
   ([^Integer n]
    (loop [^ints T (least-divisor-table n)
@@ -102,12 +140,13 @@
        (let [d (aget T n)]
          (recur T (quot n d) (conj ds d)))))))
 
-
 (defn factorize
   "Factorize given `n`."
   [n]
   (check-positive n)
-  (-> n ldt-factorize frequencies))
+  ;;(-> n ldt-factorize frequencies)
+  (integer->factors-map n)
+  )
 
 (defn de-factorize
   "Convert factorization map back to integer."
@@ -140,7 +179,6 @@
   (check-positive n)
   (map de-factorize (-> n factorize (divisors' ,,, [{}]))))
 
-
 (defn reduce-on-prime
   "Higher order which return arithmetical function based on
   function defined on power of a prime.
@@ -153,7 +191,7 @@
   (fn [n]
     (check-positive n)
     (->> n
-         factorize
+         integer->factors-count 
          (map (fn [[p k]] (f p k)))
          (reduce rf))))
 
@@ -177,31 +215,27 @@
   [f]
   (reduce-on-prime + f))
 
-
 (def primes-count-distinct
   "Number of primes divides given `n` - ω."
   (additive-function (fn [_ _] 1)))
 
 (def primes-count-total
   "Number of primes and their powers divides given `n` - Ω."
-  (additive-function (fn [_ k] k))
-  )
+  (additive-function (fn [_ k] k)))
 
 (defn liouville
   "Liouville function - λ"
   [n]
   (check-positive n)
-  (pow (- 1) (primes-count-total n))
-  )
+  (pow (- 1) (primes-count-total n)))
 
 (defn mangoldt
   "Mangoldt function - Λ"
   [n]
   (let [cn (factorize n)]
-    (if (= 1 (count cn) )
-    (math/log (-> cn keys first))
-    0))
-  )
+    (if (= 1 (count cn))
+      (math/log (-> cn keys first))
+      0)))
 
 (def divisors-count
   "Divisors count - σ₀"
@@ -259,20 +293,17 @@
   [n]
   (check-positive n)
   (->> n
-      primes
-      (map math/log)
-      (reduce +)))
+       primes
+       (map math/log)
+       (reduce +)))
 
 (defn chebyshev-second
   "The second Chebyshev function - ψ."
   [n]
   (check-positive n)
   (->> (range 1 (inc n))
-      (map mangoldt)
-      (reduce +)
-      )
-  )
-
+       (map mangoldt)
+       (reduce +)))
 
 (defn dirichlet-convolution
   "Dirichlet convolution."
@@ -285,7 +316,6 @@
   ([f g xs]
    (every? (fn [[a b]] (= a b))  (map (fn [n] [(f n) (g n)]) xs))))
 
-
 (defn dirichlet-inverse
   "Dirichlet inverse."
   [f]
@@ -297,10 +327,12 @@
                (reduce + (for [d (divisors n) :when (< d n)] (* (f (/ n d)) (f-inverse f d)))))))]
     (partial f-inverse f)))
 
-
-
 (comment
-  (time (/ (reduce + (map divisors-count (range 1 100000))) 100000.0))
-  )
+  (time (reduce + (map totient (range 1 100000))));;378ms
+  (time (reduce + (map mobius (range 1 100000))));;300ms
+  (time (reduce + (map mangoldt (range 1 100000))));;196ms
+  (time (reduce + (map chebyshev-first (range 1 5000))));;672ms
+  (time (reduce + (map chebyshev-second (range 1 1000))));;767ms
+  (+ 1 2))
 
 
