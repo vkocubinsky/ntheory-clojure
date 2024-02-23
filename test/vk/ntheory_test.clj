@@ -126,8 +126,10 @@
 (deftest test-chebyshev-second
   (f-test nt/chebyshev-second
           {1 0
-           2 (+ (nt/mangoldt 1) (nt/mangoldt 2))
-           3 (+ (nt/mangoldt 1) (nt/mangoldt 2) (nt/mangoldt 3))
+           2 (+ (nt/mangoldt 2))
+           3 (+ (nt/mangoldt 2) (nt/mangoldt 3))
+           4 (+ (nt/mangoldt 2) (nt/mangoldt 4) (nt/mangoldt 3))
+           5 (+ (nt/mangoldt 2) (nt/mangoldt 4) (nt/mangoldt 3) (nt/mangoldt 5))
            }))
 
 
