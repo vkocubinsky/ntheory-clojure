@@ -1,15 +1,18 @@
 (ns vk.ntheory
   (:require [clojure.math :as math]))
 
+(def max-integer 100000000)
+
 (defn pow
   "Power function."
   [a n]
-  (reduce * (repeat n a)))
+  (apply * (repeat n a)))
 
 (defn check-positive
-  "Throw an execption if given `n` is not positive."
+  "Throw an execption if given `n` is not positive or more than `max-integer`."
   [n]
   (when-not (pos? n) (throw (Exception. "Expected positive number")))
+  (when-not (<= n max-integer) (throw (Exception. "Expected number <= ")))
   n)
 
 (defn- ldt-find-prime
@@ -88,70 +91,43 @@
   [n]
   (:least-divisor-table (ldt-auto-extend! n)))
 
-(defn integer->factors-all-lazy
-  ([^Integer n] (integer->factors-all-lazy (least-divisor-table n) n))
+(defn integer->factors
+  ([^Integer n] (integer->factors (least-divisor-table n) n))
   ([^ints xs ^Integer n]
    (lazy-seq
-      (when (> n 1)
-        (let [d (aget xs n)]
-          (cons d (integer->factors-all-lazy xs (quot n d))))))))
-
-(defn integer->factors-all
-  ([^Integer n] (integer->factors-all (least-divisor-table n) n))
-  ([^ints xs ^Integer n]
-   (loop [n  n
-          ds []]
-     (if (= n 1)
-       ds
-       (let [d (aget xs n)]
-         (recur (quot n d) (conj ds d)))))))
-
+    (when (> n 1)
+      (let [d (aget xs n)]
+        (cons d (integer->factors xs (quot n d))))))))
 
 (defn integer->factors-distinct
   [n]
-  (->> n integer->factors-all dedupe)
-  )
+  (->> n integer->factors dedupe))
 
 (defn integer->factors-partitions
   [n]
-  (->> n integer->factors-all (partition-by identity))
-  )
+  (->> n integer->factors (partition-by identity)))
 
 (defn integer->factors-count
   [n]
   (->> n
-       integer->factors-all
-       (partition-by identity)
-       (map (fn [xs] [(first xs) (count xs)]))
-       ))
+       integer->factors-partitions
+       (map (fn [xs] [(first xs) (count xs)]))))
 
 (defn integer->factors-map
   [n]
-  (into {} (integer->factors-count n)
-  ))
-
-(defn ldt-factorize
-  ([^Integer n]
-   (loop [^ints T (least-divisor-table n)
-          n  n
-          ds []]
-     (if (= n 1)
-       ds
-       (let [d (aget T n)]
-         (recur T (quot n d) (conj ds d)))))))
+  (into {} (integer->factors-count n)))
 
 (defn factorize
   "Factorize given `n`."
   [n]
   (check-positive n)
   ;;(-> n ldt-factorize frequencies)
-  (integer->factors-map n)
-  )
+  (integer->factors-map n))
 
-(defn de-factorize
+(defn factors->integer
   "Convert factorization map back to integer."
   [cn]
-  (reduce * (for [[x y] cn] (pow x y))))
+  (apply * (for [[x y] cn] (pow x y))))
 
 (defn- divisors'
   "Divisors of factorized numbers.
@@ -170,14 +146,14 @@
                            d acc]
                        (if (zero? i)
                          d
-                         (assoc d p i))))
+                         (conj d [p i]))))
     acc))
 
 (defn divisors
   "Divisors of whole integer."
   [n]
   (check-positive n)
-  (map de-factorize (-> n factorize (divisors' ,,, [{}]))))
+  (map factors->integer (-> n integer->factors-count (divisors' ,,, [[]]))))
 
 (defn reduce-on-prime
   "Higher order which return arithmetical function based on
@@ -191,7 +167,7 @@
   (fn [n]
     (check-positive n)
     (->> n
-         integer->factors-count 
+         integer->factors-count
          (map (fn [[p k]] (f p k)))
          (reduce rf))))
 
@@ -215,13 +191,18 @@
   [f]
   (reduce-on-prime + f))
 
-(def primes-count-distinct
+(defn primes-count-distinct
   "Number of primes divides given `n` - ω."
-  (additive-function (fn [_ _] 1)))
+  [n]
+  (check-positive n)
+  (-> n integer->factors-distinct count))
 
-(def primes-count-total
+(defn primes-count-total
   "Number of primes and their powers divides given `n` - Ω."
-  (additive-function (fn [_ k] k)))
+  [n]
+  (check-positive n)
+  (-> n integer->factors count))
+
 
 (defn liouville
   "Liouville function - λ"
@@ -264,6 +245,7 @@
   "Mobius function - μ."
   (multiplicative-function (fn [_ k] (if (> k 1) 0 -1))))
 
+  
 (def totient
   "Euler's totient function - ϕ."
   (multiplicative-function (fn [p k] (- (pow p k) (pow p (dec k))))))
@@ -295,15 +277,18 @@
   (->> n
        primes
        (map math/log)
-       (reduce +)))
+       (apply +)))
 
 (defn chebyshev-second
   "The second Chebyshev function - ψ."
   [n]
   (check-positive n)
-  (->> (range 1 (inc n))
-       (map mangoldt)
-       (reduce +)))
+  (->> n
+       primes
+       (map #(* (math/log %)
+                (math/floor (/ (math/log n)
+                               (math/log %)))))
+       (apply +)))
 
 (defn dirichlet-convolution
   "Dirichlet convolution."
@@ -316,6 +301,7 @@
   ([f g xs]
    (every? (fn [[a b]] (= a b))  (map (fn [n] [(f n) (g n)]) xs))))
 
+;; todo: think about do I need dirichlet-inverse of fully multiplicative function - f^-1 = mu * f or delegate it to customer?
 (defn dirichlet-inverse
   "Dirichlet inverse."
   [f]
@@ -328,11 +314,13 @@
     (partial f-inverse f)))
 
 (comment
-  (time (reduce + (map totient (range 1 100000))));;378ms
-  (time (reduce + (map mobius (range 1 100000))));;300ms
-  (time (reduce + (map mangoldt (range 1 100000))));;196ms
-  (time (reduce + (map chebyshev-first (range 1 5000))));;672ms
-  (time (reduce + (map chebyshev-second (range 1 1000))));;767ms
+  (time (doseq [x (range 1 100000)] (divisors x)));;219
+  (time (apply + (map primes-count-total (range 1 100000))));;66
+  (time (apply + (map totient (range 1 100000))));;268ms
+  (time (apply + (map mobius (range 1 100000))));;231ms
+  (time (apply + (map mangoldt (range 1 100000))));;225ms
+  (time (apply + (map chebyshev-first (range 1 5000))));;419ms
+  (time (apply + (map chebyshev-second (range 1 5000))));;877ms
   (+ 1 2))
 
 
