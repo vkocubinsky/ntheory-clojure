@@ -22,36 +22,36 @@
 
 (deftest test-factorize
   (testing "Negative numbers"
-    (is (thrown? Exception (nt/factorize 0)))
-    (is (thrown? Exception (nt/factorize -1))))
+    (is (thrown? Exception (nt/integer->factors-map 0)))
+    (is (thrown? Exception (nt/integer->factors-map -1))))
   (testing "Unit"
-    (is (= {} (nt/factorize 1))))
+    (is (= {} (nt/integer->factors-map 1))))
   (testing "Positive numbers"
     (are [x y] (= x y)
-      {2 1} (nt/factorize 2)
-      {3 1} (nt/factorize 3)
-      {2 2} (nt/factorize 4)
-      {5 1} (nt/factorize 5)
-      {2 1, 3 1} (nt/factorize 6)
-      {7 1} (nt/factorize 7)
-      {2 3} (nt/factorize 8)
-      {3 2} (nt/factorize 9)
-      {2 1, 5 1} (nt/factorize 10)
-      {11 1} (nt/factorize 11)
-      {2 2, 3 1} (nt/factorize 12)
-      {13 1} (nt/factorize 13)
-      {2 1, 7 1} (nt/factorize 14)
-      {3 1, 5 1} (nt/factorize 15)
-      {2 4} (nt/factorize 16)
-      {17 1} (nt/factorize 17)
-      {2 1, 3 2} (nt/factorize 18)
-      {19 1} (nt/factorize 19)
-      {2 2, 5 1} (nt/factorize 20))))
+      {2 1} (nt/integer->factors-map 2)
+      {3 1} (nt/integer->factors-map 3)
+      {2 2} (nt/integer->factors-map 4)
+      {5 1} (nt/integer->factors-map 5)
+      {2 1, 3 1} (nt/integer->factors-map 6)
+      {7 1} (nt/integer->factors-map 7)
+      {2 3} (nt/integer->factors-map 8)
+      {3 2} (nt/integer->factors-map 9)
+      {2 1, 5 1} (nt/integer->factors-map 10)
+      {11 1} (nt/integer->factors-map 11)
+      {2 2, 3 1} (nt/integer->factors-map 12)
+      {13 1} (nt/integer->factors-map 13)
+      {2 1, 7 1} (nt/integer->factors-map 14)
+      {3 1, 5 1} (nt/integer->factors-map 15)
+      {2 4} (nt/integer->factors-map 16)
+      {17 1} (nt/integer->factors-map 17)
+      {2 1, 3 2} (nt/integer->factors-map 18)
+      {19 1} (nt/integer->factors-map 19)
+      {2 2, 5 1} (nt/integer->factors-map 20))))
 
 (deftest test-factorize-properties
   (testing "factorize de-factorize is indentity function"
     (doseq [n (range 1 100)]
-      (is (= n (nt/de-factorize (nt/factorize n)))))))
+      (is (= n (nt/factors-count->integer (nt/integer->factors-count n)))))))
 
 (deftest test-divisors
   (testing "Non postive numbers"

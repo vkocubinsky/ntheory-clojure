@@ -8,7 +8,7 @@
   [a n]
   (apply * (repeat n a)))
 
-(defn check-positive
+(defn check-integer-range
   "Throw an execption if given `n` is not positive or more than `max-integer`."
   [n]
   (when-not (pos? n) (throw (Exception. "Expected positive number")))
@@ -92,7 +92,9 @@
   (:least-divisor-table (ldt-auto-extend! n)))
 
 (defn integer->factors
-  ([^Integer n] (integer->factors (least-divisor-table n) n))
+  ([^Integer n]
+   (check-integer-range n)
+   (integer->factors (least-divisor-table n) n))
   ([^ints xs ^Integer n]
    (lazy-seq
     (when (> n 1)
@@ -117,14 +119,8 @@
   [n]
   (into {} (integer->factors-count n)))
 
-(defn factorize
-  "Factorize given `n`."
-  [n]
-  (check-positive n)
-  ;;(-> n ldt-factorize frequencies)
-  (integer->factors-map n))
 
-(defn factors->integer
+(defn factors-count->integer
   "Convert factorization map back to integer."
   [cn]
   (apply * (for [[x y] cn] (pow x y))))
@@ -152,8 +148,8 @@
 (defn divisors
   "Divisors of whole integer."
   [n]
-  (check-positive n)
-  (map factors->integer (-> n integer->factors-count (divisors' ,,, [[]]))))
+  (check-integer-range n)
+  (map factors-count->integer (-> n integer->factors-count (divisors' ,,, [[]]))))
 
 (defn reduce-on-prime
   "Higher order which return arithmetical function based on
@@ -165,7 +161,7 @@
       it returns value on order of prime."
   [rf f]
   (fn [n]
-    (check-positive n)
+    (check-integer-range n)
     (->> n
          integer->factors-count
          (map (fn [[p k]] (f p k)))
@@ -194,26 +190,26 @@
 (defn primes-count-distinct
   "Number of primes divides given `n` - ω."
   [n]
-  (check-positive n)
+  (check-integer-range n)
   (-> n integer->factors-distinct count))
 
 (defn primes-count-total
   "Number of primes and their powers divides given `n` - Ω."
   [n]
-  (check-positive n)
+  (check-integer-range n)
   (-> n integer->factors count))
 
 
 (defn liouville
   "Liouville function - λ"
   [n]
-  (check-positive n)
+  (check-integer-range n)
   (pow (- 1) (primes-count-total n)))
 
 (defn mangoldt
   "Mangoldt function - Λ"
   [n]
-  (check-positive n)
+  (check-integer-range n)
   (let [[[p & _] & r] (integer->factors-partitions n)]
     (if (and p (nil? r))
       (math/log p)
@@ -255,7 +251,7 @@
 (defn unit
   "Unit function - ϵ."
   [n]
-  (check-positive n)
+  (check-integer-range n)
   (if (= n 1)
     1
     0))
@@ -263,19 +259,19 @@
 (defn one
   "Constant function returns 1."
   [n]
-  (check-positive n)
+  (check-integer-range n)
   1)
 
 (defn id
   "Identity function."
   [n]
-  (check-positive n)
+  (check-integer-range n)
   n)
 
 (defn chebyshev-first
   "The first Chebyshev function - θ."
   [n]
-  (check-positive n)
+  (check-integer-range n)
   (->> n
        primes
        (map math/log)
@@ -284,7 +280,7 @@
 (defn chebyshev-second
   "The second Chebyshev function - ψ."
   [n]
-  (check-positive n)
+  (check-integer-range n)
   (->> n
        primes
        (map #(* (math/log %)
@@ -295,7 +291,7 @@
 (defn dirichlet-convolution
   "Dirichlet convolution."
   ([f g]
-   (fn [n] (reduce + (for [d (divisors n)] (* (f d) (g (/ n d)))))))
+   (fn [n] (apply + (for [d (divisors n)] (* (f d) (g (/ n d)))))))
   ([f g & more] (reduce dirichlet-convolution f (cons g more))))
 
 (defn f-equals
@@ -320,7 +316,7 @@
   (time (apply + (map primes-count-total (range 1 100000))));;66
   (time (apply + (map totient (range 1 100000))));;268ms
   (time (apply + (map mobius (range 1 100000))));;231ms
-  (time (apply + (map mangoldt (range 1 100000))));;225ms
+  (time (apply + (map mangoldt (range 1 100000))));;106ms
   (time (apply + (map chebyshev-first (range 1 5000))));;419ms
   (time (apply + (map chebyshev-second (range 1 5000))));;877ms
   (+ 1 2))
