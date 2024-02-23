@@ -1,7 +1,7 @@
 (ns vk.ntheory
   (:require [clojure.math :as math]))
 
-(def max-integer 100000000)
+(def max-integer 10000000)
 
 (defn pow
   "Power function."
@@ -132,7 +132,7 @@
 (defn- divisors'
   "Divisors of factorized numbers.
   Parameters:
-  cn  - factorized number
+  cn  - factorized number in format ([k1 v1] [k2 v2])
   acc - sequence of factorized numbers which
         divides original value
 
@@ -213,10 +213,12 @@
 (defn mangoldt
   "Mangoldt function - Λ"
   [n]
-  (let [cn (factorize n)]
-    (if (= 1 (count cn))
-      (math/log (-> cn keys first))
-      0)))
+  (check-positive n)
+  (let [[[p & _] & r] (integer->factors-partitions n)]
+    (if (and p (nil? r))
+      (math/log p)
+      0
+      )))
 
 (def divisors-count
   "Divisors count - σ₀"
