@@ -22,7 +22,7 @@
     (is [2 3 5 7] (nt/primes 10))
     (is [2 3 5 7 11 13 17 19 23 29] (nt/primes 30))))
 
-(deftest test-integer-factors-map
+(deftest test-integer>factors-map
   (testing "Negative numbers"
     (is (thrown? Exception (nt/integer->factors-map 0)))
     (is (thrown? Exception (nt/integer->factors-map -1))))
@@ -50,33 +50,62 @@
       {19 1} (nt/integer->factors-map 19)
       {2 2, 5 1} (nt/integer->factors-map 20))))
 
-(deftest test-integer-factors-distinct
+(deftest test-integer>factors-count
   (testing "Negative numbers"
-    (is (thrown? Exception (nt/integer->factors-map 0)))
-    (is (thrown? Exception (nt/integer->factors-map -1))))
+    (is (thrown? Exception (nt/integer->factors-count 0)))
+    (is (thrown? Exception (nt/integer->factors-count -1))))
   (testing "Unit"
-    (is (= [] (nt/integer->factors-distinct 1))))
+    (is (= [] (nt/integer->factors-count 1))))
   (testing "Positive numbers"
     (are [x y] (= x y)
-      [2] (nt/integer->factors-distinct 2)
-      [3] (nt/integer->factors-distinct 3)
-      [2] (nt/integer->factors-distinct 4)
-      [5] (nt/integer->factors-distinct 5)
-      [2, 3] (nt/integer->factors-distinct 6)
-      [7] (nt/integer->factors-distinct 7)
-      [2] (nt/integer->factors-distinct 8)
-      [3] (nt/integer->factors-distinct 9)
-      [2, 5] (nt/integer->factors-distinct 10)
-      [11] (nt/integer->factors-distinct 11)
-      [2, 3] (nt/integer->factors-distinct 12)
-      [13] (nt/integer->factors-distinct 13)
-      [2, 7] (nt/integer->factors-distinct 14)
-      [3, 5] (nt/integer->factors-distinct 15)
-      [2] (nt/integer->factors-distinct 16)
-      [17] (nt/integer->factors-distinct 17)
-      [2, 3] (nt/integer->factors-distinct 18)
-      [19] (nt/integer->factors-distinct 19)
-      [2, 5] (nt/integer->factors-distinct 20))))
+      [[2 1]] (nt/integer->factors-count 2)
+      [[3 1]] (nt/integer->factors-count 3)
+      [[2 2]] (nt/integer->factors-count 4)
+      [[5 1]] (nt/integer->factors-count 5)
+      [[2 1] [3 1]] (nt/integer->factors-count 6)
+      [[7 1]] (nt/integer->factors-count 7)
+      [[2 3]] (nt/integer->factors-count 8)
+      [[3 2]] (nt/integer->factors-count 9)
+      [[2 1] [5 1]] (nt/integer->factors-count 10)
+      [[11 1]] (nt/integer->factors-count 11)
+      [[2 2] [3 1]] (nt/integer->factors-count 12)
+      [[13 1]] (nt/integer->factors-count 13)
+      [[2 1] [7 1]] (nt/integer->factors-count 14)
+      [[3 1] [5 1]] (nt/integer->factors-count 15)
+      [[2 4]] (nt/integer->factors-count 16)
+      [[17 1]] (nt/integer->factors-count 17)
+      [[2 1] [3 2]] (nt/integer->factors-count 18)
+      [[19 1]] (nt/integer->factors-count 19)
+      [[2 2] [5 1]] (nt/integer->factors-count 20))))
+
+(deftest test-integer>factors-paritions
+  (testing "Negative numbers"
+    (is (thrown? Exception (nt/integer->factors-partitions 0)))
+    (is (thrown? Exception (nt/integer->factors-partitions -1))))
+  (testing "Unit"
+    (is (= [] (nt/integer->factors-partitions 1))))
+  (testing "Positive numbers"
+    (are [x y] (= x y)
+      [[2]] (nt/integer->factors-partitions 2)
+      [[3]] (nt/integer->factors-partitions 3)
+      [[2 2]] (nt/integer->factors-partitions 4)
+      [[5]] (nt/integer->factors-partitions 5)
+      [[2] [3]] (nt/integer->factors-partitions 6)
+      [[7]] (nt/integer->factors-partitions 7)
+      [[2 2 2]] (nt/integer->factors-partitions 8)
+      [[3 3]] (nt/integer->factors-partitions 9)
+      [[2] [5]] (nt/integer->factors-partitions 10)
+      [[11]] (nt/integer->factors-partitions 11)
+      [[2 2] [3]] (nt/integer->factors-partitions 12)
+      [[13]] (nt/integer->factors-partitions 13)
+      [[2] [7]] (nt/integer->factors-partitions 14)
+      [[3] [5]] (nt/integer->factors-partitions 15)
+      [[2 2 2 2]] (nt/integer->factors-partitions 16)
+      [[17]] (nt/integer->factors-partitions 17)
+      [[2] [3 3]] (nt/integer->factors-partitions 18)
+      [[19]] (nt/integer->factors-partitions 19)
+      [[2 2] [5]] (nt/integer->factors-partitions 20))))
+
 
 
 (deftest test-factorize-properties
