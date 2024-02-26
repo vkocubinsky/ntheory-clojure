@@ -6,6 +6,23 @@
 
 (def test-natural-sample (range 1 100))
 
+(deftest test-pow
+  (testing "negative numbers"
+    (is (thrown? Exception (nt/pow 2 -1))))
+  (testing "power of 2"
+    (are [x y] (= x y)
+      1 (nt/pow 2 0)
+      2 (nt/pow 2 1)
+      4 (nt/pow 2 2)
+      8 (nt/pow 2 3)
+      16 (nt/pow 2 4)
+      32 (nt/pow 2 5)
+      64 (nt/pow 2 6)
+      128 (nt/pow 2 7)
+      256 (nt/pow 2 8)
+      512 (nt/pow 2 9)
+      1024 (nt/pow 2 10))))
+
 (deftest test-primes
   (testing "cache"
     (nt/ldt-reset!)
@@ -106,15 +123,12 @@
       [[19]] (nt/integer->factors-partitions 19)
       [[2 2] [5]] (nt/integer->factors-partitions 20))))
 
-
-
 (deftest test-factorize-properties
   (doseq [n test-natural-sample]
-      (is (= n (nt/factors-count->integer (nt/integer->factors-count n))))
-      (is (= n (nt/factors-count->integer (nt/integer->factors-map n))))
-      (is (= (nt/integer->factors-map n) (into {} (nt/integer->factors-count n))))
-      (is (= n (apply * (nt/integer->factors n))))
-      ))
+    (is (= n (nt/factors-count->integer (nt/integer->factors-count n))))
+    (is (= n (nt/factors-count->integer (nt/integer->factors-map n))))
+    (is (= (nt/integer->factors-map n) (into {} (nt/integer->factors-count n))))
+    (is (= n (apply * (nt/integer->factors n))))))
 
 (deftest test-divisors
   (testing "Non postive numbers"
@@ -183,8 +197,7 @@
            2 (math/log 2)
            3 (+ (math/log 2) (math/log 3))
            4 (+ (math/log 2) (math/log 3))
-           5 (+ (math/log 2) (math/log 3) (math/log 5))
-           }))
+           5 (+ (math/log 2) (math/log 3) (math/log 5))}))
 
 (deftest test-chebyshev-second
   (f-test nt/chebyshev-second
@@ -192,9 +205,7 @@
            2 (+ (nt/mangoldt 2))
            3 (+ (nt/mangoldt 2) (nt/mangoldt 3))
            4 (+ (nt/mangoldt 2) (nt/mangoldt 4) (nt/mangoldt 3))
-           5 (+ (nt/mangoldt 2) (nt/mangoldt 4) (nt/mangoldt 3) (nt/mangoldt 5))
-           }))
-
+           5 (+ (nt/mangoldt 2) (nt/mangoldt 4) (nt/mangoldt 3) (nt/mangoldt 5))}))
 
 (deftest test-mangoldt
   (f-test nt/mangoldt
@@ -263,8 +274,6 @@
            3 1
            4 1
            5 1}))
-
-
 
 (deftest test-divisors-count
   (f-test nt/divisors-count

@@ -7,6 +7,7 @@
 (defn pow
   "Power function."
   [a n]
+  (when (neg? n) (throw (Exception. "Expected positive number")))
   (apply * (repeat n a)))
 
 (defn check-integer-range
@@ -300,12 +301,12 @@
   (time (apply + (map divisors-sum (range 1 100000))));;640ms
   (time (apply + (map divisors-square-sum (range 1 100000))));;500ms
 
-  (time (apply + (map mobius (range 1 100000))));;327ms
+  (time (apply + (map mobius (range 1 100000))));;327ms, 171ms
   (time (apply + (map totient (range 1 100000))));;585ms
 
 
   (time (apply + (map chebyshev-first (range 1 5000))));;733ms
   (time (apply + (map chebyshev-second (range 1 5000))));;877ms
-  (+ 1 2))
+  )
 
 
