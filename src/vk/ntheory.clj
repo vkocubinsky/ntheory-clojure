@@ -7,8 +7,24 @@
 (defn pow
   "Power function."
   [a n]
-  (when (neg? n) (throw (Exception. "Expected positive number")))
+  (when (neg? n) (throw (Exception. "Expected non negative number")))
   (apply * (repeat n a)))
+
+(defn bit-count [n]
+  (count (take-while pos? (iterate #(bit-shift-right % 1) n))))
+
+(defn pow'
+  "Power function for natural numbers"
+  [a n]
+  (if (= n 0)
+    1
+    (loop [bit (dec (dec (bit-count n)))
+           acc a]
+      (if (< bit 0)
+        acc
+        (recur (dec bit) (if (bit-test n bit)
+                           (* (* acc acc) a)
+                           (* acc acc)))))))
 
 (defn check-integer-range
   "Throw an execption if given `n` is not positive or more than `max-integer`."
@@ -121,7 +137,6 @@
   [n]
   (into {} (integer->factors-count n)))
 
-
 (defn factors-count->integer
   "Convert factors map or factors counts back to integer."
   [cn]
@@ -179,7 +194,6 @@
   (check-integer-range n)
   (-> n integer->factors count))
 
-
 (defn liouville
   "Liouville function - λ"
   [n]
@@ -193,8 +207,7 @@
   (let [[[p & _] & r] (integer->factors-partitions n)]
     (if (and p (nil? r))
       (math/log p)
-      0
-      )))
+      0)))
 
 (def divisors-count
   "Divisors count - σ₀"
@@ -206,10 +219,10 @@
   (if (= a 0)
     divisors-count
     (reduce-on-prime-count *' (fn [p k] (/
-                                   (dec (pow p
-                                             (* (inc k)
-                                                a)))
-                                   (dec (pow p a)))))))
+                                         (dec (pow p
+                                                   (* (inc k)
+                                                      a)))
+                                         (dec (pow p a)))))))
 
 (def divisors-sum
   "Divisors sum - σ₁."
@@ -224,11 +237,9 @@
   [n]
   (check-integer-range n)
   (->> n
-      integer->factors-count
-      (reduce (fn [a [_ k]] (if (= k 1) (* a -1) (reduced 0))) 1)
-  ))
+       integer->factors-count
+       (reduce (fn [a [_ k]] (if (= k 1) (* a -1) (reduced 0))) 1)))
 
-  
 (def totient
   "Euler's totient function - ϕ."
   (reduce-on-prime-count * (fn [p k] (- (pow p k) (pow p (dec k))))))
@@ -278,7 +289,6 @@
   ([f g xs]
    (every? (fn [[a b]] (= a b))  (map (fn [n] [(f n) (g n)]) xs))))
 
-
 (defn dirichlet-inverse
   "Dirichlet inverse."
   [f]
@@ -302,8 +312,7 @@
   (time (apply + (map divisors-square-sum (range 1 100000))));;500ms
 
   (time (apply + (map mobius (range 1 100000))));;327ms, 171ms
-  (time (apply + (map totient (range 1 100000))));;585ms
-
+  (time (apply + (map totient (range 1 100000))));;585ms, 281
 
   (time (apply + (map chebyshev-first (range 1 5000))));;733ms
   (time (apply + (map chebyshev-second (range 1 5000))));;877ms
