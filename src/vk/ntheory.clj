@@ -1,7 +1,8 @@
 (ns vk.ntheory
   (:require [clojure.math :as math]))
 
-(def max-integer 10000000)
+(def max-integer 1000000)
+(def default-natural-sample (range 1 100))
 
 (defn pow
   "Power function."
@@ -121,7 +122,7 @@
 
 
 (defn factors-count->integer
-  "Convert factorization map back to integer."
+  "Convert factors map or factors counts back to integer."
   [cn]
   (apply * (for [[x y] cn] (pow x y))))
 
@@ -130,12 +131,7 @@
   Parameters:
   cn  - factorized number in format ([k1 v1] [k2 v2])
   acc - sequence of factorized numbers which
-        divides original value
-
-  The implementation based on fact that if we have number `a = m * n`
-  and `m` and `n` are relative prime then any divisor of `a` can be
-  written in form `d = dm * dn` where `dm`,`dn` are divisors of `m`
-  and `n` respectively. And this exactly one such representation."
+        divides original value."
   [cn acc]
   (if-let [[p k] (first cn)]
     (recur (rest cn) (for [i (range 0 (inc k))
@@ -149,9 +145,12 @@
   "Divisors of whole integer."
   [n]
   (check-integer-range n)
-  (map factors-count->integer (-> n integer->factors-count (divisors' ,,, [[]]))))
+  (as-> n v
+    (integer->factors-count v)
+    (divisors' v [[]])
+    (map factors-count->integer v)))
 
-(defn reduce-on-prime
+(defn reduce-on-prime-count
   "Higher order which return arithmetical function based on
   function defined on power of a prime.
   Parameters:
@@ -166,26 +165,6 @@
          integer->factors-count
          (map (fn [[p k]] (f p k)))
          (reduce rf))))
-
-(defn multiplicative-function
-  "Higher order which return multiplicative function based on
-  function defined on power of a prime.
-  Parameters:
-  f - function defined on power of a prime, which accept [p k],
-      where p is a prime and k is an order of prime,
-      it returns value on order of prime."
-  [f]
-  (reduce-on-prime * f))
-
-(defn additive-function
-  "Higher order which return additive function based on
-  function defined on power of a prime.
-  Parameters:
-  f - function defined on power of a prime, which accept [p k],
-      where p is a prime and k is an order of prime,
-      it returns value on order of prime."
-  [f]
-  (reduce-on-prime + f))
 
 (defn primes-count-distinct
   "Number of primes divides given `n` - ω."
@@ -218,18 +197,18 @@
 
 (def divisors-count
   "Divisors count - σ₀"
-  (multiplicative-function (fn [_ k] (inc k))))
+  (reduce-on-prime-count * (fn [_ k] (inc k))))
 
 (defn  divisors-sum-x
   "Higher order function which return divisors sum of `a` powers function - σₐ."
   [a]
   (if (= a 0)
     divisors-count
-    (multiplicative-function (fn [p k] (/
-                                        (dec (pow p
-                                                  (* (inc k)
-                                                     a)))
-                                        (dec (pow p a)))))))
+    (reduce-on-prime-count *' (fn [p k] (/
+                                   (dec (pow p
+                                             (* (inc k)
+                                                a)))
+                                   (dec (pow p a)))))))
 
 (def divisors-sum
   "Divisors sum - σ₁."
@@ -239,14 +218,19 @@
   "Divisors square sum - σ₂."
   (divisors-sum-x 2))
 
-(def mobius
+(defn mobius
   "Mobius function - μ."
-  (multiplicative-function (fn [_ k] (if (> k 1) 0 -1))))
+  [n]
+  (check-integer-range n)
+  (->> n
+      integer->factors-count
+      (reduce (fn [a [_ k]] (if (= k 1) (* a -1) (reduced 0))) 1)
+  ))
 
   
 (def totient
   "Euler's totient function - ϕ."
-  (multiplicative-function (fn [p k] (- (pow p k) (pow p (dec k))))))
+  (reduce-on-prime-count * (fn [p k] (- (pow p k) (pow p (dec k))))))
 
 (defn unit
   "Unit function - ϵ."
@@ -261,12 +245,6 @@
   [n]
   (check-integer-range n)
   1)
-
-(defn id
-  "Identity function."
-  [n]
-  (check-integer-range n)
-  n)
 
 (defn chebyshev-first
   "The first Chebyshev function - θ."
@@ -295,11 +273,11 @@
   ([f g & more] (reduce dirichlet-convolution f (cons g more))))
 
 (defn f-equals
-  ([f g] (f-equals f g (range 1 100)))
+  ([f g] (f-equals f g default-natural-sample))
   ([f g xs]
    (every? (fn [[a b]] (= a b))  (map (fn [n] [(f n) (g n)]) xs))))
 
-;; todo: think about do I need dirichlet-inverse of fully multiplicative function - f^-1 = mu * f or delegate it to customer?
+
 (defn dirichlet-inverse
   "Dirichlet inverse."
   [f]
@@ -313,11 +291,20 @@
 
 (comment
   (time (doseq [x (range 1 100000)] (divisors x)));;219
-  (time (apply + (map primes-count-total (range 1 100000))));;66
-  (time (apply + (map totient (range 1 100000))));;268ms
-  (time (apply + (map mobius (range 1 100000))));;231ms
-  (time (apply + (map mangoldt (range 1 100000))));;106ms
-  (time (apply + (map chebyshev-first (range 1 5000))));;419ms
+  (time (apply + (map primes-count-distinct (range 1 100000))));;225
+  (time (apply + (map primes-count-total (range 1 100000))));;124
+  (time (apply + (map liouville (range 1 100000))));;172
+  (time (apply + (map mangoldt (range 1 100000))));;190ms
+
+  (time (apply + (map divisors-count (range 1 100000))));;500ms
+  (time (apply + (map divisors-sum (range 1 100000))));;640ms
+  (time (apply + (map divisors-square-sum (range 1 100000))));;500ms
+
+  (time (apply + (map mobius (range 1 100000))));;327ms
+  (time (apply + (map totient (range 1 100000))));;585ms
+
+
+  (time (apply + (map chebyshev-first (range 1 5000))));;733ms
   (time (apply + (map chebyshev-second (range 1 5000))));;877ms
   (+ 1 2))
 

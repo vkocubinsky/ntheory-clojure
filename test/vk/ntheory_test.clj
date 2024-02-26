@@ -4,6 +4,8 @@
    [clojure.math :as math]
    [vk.ntheory :as  nt]))
 
+(def test-natural-sample (range 1 100))
+
 (deftest test-primes
   (testing "cache"
     (nt/ldt-reset!)
@@ -20,7 +22,7 @@
     (is [2 3 5 7] (nt/primes 10))
     (is [2 3 5 7 11 13 17 19 23 29] (nt/primes 30))))
 
-(deftest test-factorize
+(deftest test-integer-factors-map
   (testing "Negative numbers"
     (is (thrown? Exception (nt/integer->factors-map 0)))
     (is (thrown? Exception (nt/integer->factors-map -1))))
@@ -48,10 +50,42 @@
       {19 1} (nt/integer->factors-map 19)
       {2 2, 5 1} (nt/integer->factors-map 20))))
 
+(deftest test-integer-factors-distinct
+  (testing "Negative numbers"
+    (is (thrown? Exception (nt/integer->factors-map 0)))
+    (is (thrown? Exception (nt/integer->factors-map -1))))
+  (testing "Unit"
+    (is (= [] (nt/integer->factors-distinct 1))))
+  (testing "Positive numbers"
+    (are [x y] (= x y)
+      [2] (nt/integer->factors-distinct 2)
+      [3] (nt/integer->factors-distinct 3)
+      [2] (nt/integer->factors-distinct 4)
+      [5] (nt/integer->factors-distinct 5)
+      [2, 3] (nt/integer->factors-distinct 6)
+      [7] (nt/integer->factors-distinct 7)
+      [2] (nt/integer->factors-distinct 8)
+      [3] (nt/integer->factors-distinct 9)
+      [2, 5] (nt/integer->factors-distinct 10)
+      [11] (nt/integer->factors-distinct 11)
+      [2, 3] (nt/integer->factors-distinct 12)
+      [13] (nt/integer->factors-distinct 13)
+      [2, 7] (nt/integer->factors-distinct 14)
+      [3, 5] (nt/integer->factors-distinct 15)
+      [2] (nt/integer->factors-distinct 16)
+      [17] (nt/integer->factors-distinct 17)
+      [2, 3] (nt/integer->factors-distinct 18)
+      [19] (nt/integer->factors-distinct 19)
+      [2, 5] (nt/integer->factors-distinct 20))))
+
+
 (deftest test-factorize-properties
-  (testing "factorize de-factorize is indentity function"
-    (doseq [n (range 1 100)]
-      (is (= n (nt/factors-count->integer (nt/integer->factors-count n)))))))
+  (doseq [n test-natural-sample]
+      (is (= n (nt/factors-count->integer (nt/integer->factors-count n))))
+      (is (= n (nt/factors-count->integer (nt/integer->factors-map n))))
+      (is (= (nt/integer->factors-map n) (into {} (nt/integer->factors-count n))))
+      (is (= n (apply * (nt/integer->factors n))))
+      ))
 
 (deftest test-divisors
   (testing "Non postive numbers"
@@ -74,7 +108,7 @@
 
 (deftest test-divisors-properties
   (testing "Divisors count comparison"
-    (doseq [n (range 1 100)]
+    (doseq [n test-natural-sample]
       (is (= (nt/divisors-count n) (count (nt/divisors n)))))))
 
 (defn f-test
@@ -201,13 +235,6 @@
            4 1
            5 1}))
 
-(deftest test-id
-  (f-test nt/id
-          {1 1
-           2 2
-           3 3
-           4 4
-           5 5}))
 
 
 (deftest test-divisors-count
@@ -256,9 +283,9 @@
 
 (deftest test-relations
   (is (nt/f-equals nt/unit (nt/dirichlet-convolution nt/mobius nt/one)))
-  (is (nt/f-equals nt/id (nt/dirichlet-convolution nt/totient nt/one)))
+  (is (nt/f-equals identity (nt/dirichlet-convolution nt/totient nt/one)))
   (is (nt/f-equals nt/divisors-count (nt/dirichlet-convolution nt/one nt/one)))
-  (is (nt/f-equals nt/divisors-sum (nt/dirichlet-convolution nt/id nt/one)))
+  (is (nt/f-equals nt/divisors-sum (nt/dirichlet-convolution identity nt/one)))
   (is (nt/f-equals nt/divisors-sum (nt/dirichlet-convolution nt/totient nt/divisors-count))))
 
 (deftest test-inverse
