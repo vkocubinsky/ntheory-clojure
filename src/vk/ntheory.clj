@@ -121,6 +121,10 @@
   [n]
   (into {} (integer->factors-count n)))
 
+(defn factors->integer
+  [xs]
+  (apply * xs))
+
 (defn factors-count->integer
   "Convert factors map or factors counts back to integer."
   [cn]

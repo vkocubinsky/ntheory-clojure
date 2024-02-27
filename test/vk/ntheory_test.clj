@@ -123,41 +123,42 @@
       [[19]] (nt/integer->factors-partitions 19)
       [[2 2] [5]] (nt/integer->factors-partitions 20))))
 
+
+(deftest test-integer>factors
+  (testing "Negative numbers"
+    (is (thrown? Exception (nt/integer->factors 0)))
+    (is (thrown? Exception (nt/integer->factors -1))))
+  (testing "Unit"
+    (is (= [] (nt/integer->factors 1))))
+  (testing "Positive numbers"
+    (are [x y] (= x y)
+      [2] (nt/integer->factors 2)
+      [3] (nt/integer->factors 3)
+      [2 2] (nt/integer->factors 4)
+      [5] (nt/integer->factors 5)
+      [2 3] (nt/integer->factors 6)
+      [7] (nt/integer->factors 7)
+      [2 2 2] (nt/integer->factors 8)
+      [3 3] (nt/integer->factors 9)
+      [2 5] (nt/integer->factors 10)
+      [11] (nt/integer->factors 11)
+      [2 2 3] (nt/integer->factors 12)
+      [13] (nt/integer->factors 13)
+      [2 7] (nt/integer->factors 14)
+      [3 5] (nt/integer->factors 15)
+      [2 2 2 2] (nt/integer->factors 16)
+      [17] (nt/integer->factors 17)
+      [2 3 3] (nt/integer->factors 18)
+      [19] (nt/integer->factors 19)
+      [2 2 5] (nt/integer->factors 20))))
+
+
 (deftest test-factorize-properties
   (doseq [n test-natural-sample]
     (is (= n (nt/factors-count->integer (nt/integer->factors-count n))))
     (is (= n (nt/factors-count->integer (nt/integer->factors-map n))))
     (is (= n (nt/factors-partitions->integer (nt/integer->factors-partitions n))))
-    (is (= (nt/integer->factors-map n) (into {} (nt/integer->factors-count n))))
-    (is (= n (apply * (nt/integer->factors n))))))
-
-(deftest test-integer>factors-distinct
-  (testing "Negative numbers"
-    (is (thrown? Exception (nt/integer->factors-distinct 0)))
-    (is (thrown? Exception (nt/integer->factors-distinct -1))))
-  (testing "Unit"
-    (is (= [] (nt/integer->factors-count 1))))
-  (testing "Positive numbers"
-    (are [x y] (= x y)
-      [2] (nt/integer->factors-distinct 2)
-      [3] (nt/integer->factors-distinct 3)
-      [2] (nt/integer->factors-distinct 4)
-      [5] (nt/integer->factors-distinct 5)
-      [2 3] (nt/integer->factors-distinct 6)
-      [7] (nt/integer->factors-distinct 7)
-      [2] (nt/integer->factors-distinct 8)
-      [3] (nt/integer->factors-distinct 9)
-      [2 5] (nt/integer->factors-distinct 10)
-      [11] (nt/integer->factors-distinct 11)
-      [2 3] (nt/integer->factors-distinct 12)
-      [13] (nt/integer->factors-distinct 13)
-      [2 7] (nt/integer->factors-distinct 14)
-      [3 5] (nt/integer->factors-distinct 15)
-      [2] (nt/integer->factors-distinct 16)
-      [17] (nt/integer->factors-distinct 17)
-      [2 3] (nt/integer->factors-distinct 18)
-      [19] (nt/integer->factors-distinct 19)
-      [2 5] (nt/integer->factors-distinct 20))))
+    (is (= n (nt/factors->integer (nt/integer->factors n))))))
 
 
 (deftest test-divisors
