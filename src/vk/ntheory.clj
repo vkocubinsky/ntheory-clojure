@@ -126,6 +126,13 @@
   [cn]
   (apply * (for [[x y] cn] (pow x y))))
 
+(defn factors-partitions->integer
+  [xss]
+  (->> xss
+       (map #(apply * %))
+       (apply *))
+  )
+
 (defn- divisors'
   "Divisors of factorized numbers.
   Parameters:
@@ -140,6 +147,7 @@
                          d
                          (conj d [p i]))))
     acc))
+
 
 (defn divisors
   "Divisors of whole integer."
@@ -285,7 +293,7 @@
     (partial f-inverse f)))
 
 (comment
-  (time (doseq [x (range 1 100000)] (divisors x)));;219
+  (time (doseq [x (range 1 100000)] (divisors x)));;400-500ms
   (time (apply + (map primes-count-distinct (range 1 100000))));;225
   (time (apply + (map primes-count-total (range 1 100000))));;124
   (time (apply + (map liouville (range 1 100000))));;172
