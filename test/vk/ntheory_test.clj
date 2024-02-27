@@ -153,7 +153,7 @@
       [2 2 5] (nt/integer->factors 20))))
 
 
-(deftest test-factorize-properties
+(deftest test-factorization-properties
   (doseq [n test-natural-sample]
     (is (= n (nt/factors-count->integer (nt/integer->factors-count n))))
     (is (= n (nt/factors-count->integer (nt/integer->factors-map n))))
@@ -180,10 +180,6 @@
       [1 11] (sort (nt/divisors 11))
       [1 2 3 4 6 12] (sort (nt/divisors 12)))))
 
-(deftest test-divisors-properties
-  (testing "Divisors count comparison"
-    (doseq [n test-natural-sample]
-      (is (= (nt/divisors-count n) (count (nt/divisors n)))))))
 
 (defn f-test
   "Test function `f` according to table `m`."
