@@ -10,22 +10,6 @@
   (when (neg? n) (throw (Exception. "Expected non negative number")))
   (apply * (repeat n a)))
 
-(defn bit-count [n]
-  (count (take-while pos? (iterate #(bit-shift-right % 1) n))))
-
-(defn pow'
-  "Power function for natural numbers"
-  [a n]
-  (if (= n 0)
-    1
-    (loop [bit (dec (dec (bit-count n)))
-           acc a]
-      (if (< bit 0)
-        acc
-        (recur (dec bit) (if (bit-test n bit)
-                           (* (* acc acc) a)
-                           (* acc acc)))))))
-
 (defn check-integer-range
   "Throw an execption if given `n` is not positive or more than `max-integer`."
   [n]
