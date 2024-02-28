@@ -3,14 +3,14 @@
 
 * About
 
-Number theory with Clojure. This project cover some topics in number
-theory, especially arithmetic functions, further more multiplicative
-functions. There are set of well known multiplicative functions and
-one can define custom multiplicative functions.
+This project cover some topics in number theory, especially arithmetic
+functions, further more multiplicative functions. There are set of
+well known arithmetic functions and one can define custom arithmetic
+functions.
 
 I wrote this document with Emacs Org Mode. Then I generated markdown
-file to show it nicely on github. I use Emacs babel to produce real
-output inside the document.
+file with =pandoc= to show it nicely on github. I use Emacs babel to
+produce real output inside the document.
 
 In this document I load number theory package as: 
 
@@ -23,36 +23,29 @@ So below I will use ~nt~ alias.
 * Notation
 
 $\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
-
 $\mathbf C$ - Complex numbers
 $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
-
-If $n \in \mathbf N$ there is canonical representation of $n$ 
-$$
-\[
-n = {p_1}^{a_1} {p_2}^{a_2} \dots {p_k}^{a_k} = \prod_{i=1}^{k} {p_i}^{a_i} = \prod_{p | n} {p^a}
-\]
-$$
 
 * Performance and cache
 
 This library is designed to work with realtive small integers. Library
-keep in cache least divisor table for fast integer factorization.
-Cache grows automatically. The strategy of growing is round required
-number to the nearest power of ~10~. For instance, if client asked to
-factorize number ~18~, cache grows to ~100~, if client asked to factorize
-number ~343~, cache grows to ~1000~, etc. List of primes also cached and
-recalculated together with least divisor table. Recalculation is not
-incremental, but every recalculation of least divisor table make a
-table which is in ~10~ times more than previous, and time for previous
-calculation is ~10~ times less than for new one. So we can say that the
-library spent almost all time for latest least divisor table.
+keep in cache least prime divisor table for fast integer
+factorization.  Cache grows automatically. The strategy of growing is
+round required number to the nearest power of ~10~. For instance, if
+client asked to factorize number ~18~, cache grows to ~100~, if client
+asked to factorize number ~343~, cache grows to ~1000~, etc. List of
+primes also cached and recalculated together with least prime divisor
+table. Recalculation is not incremental, but every recalculation of
+least prime divisor table make a table which is in ~10~ times more
+than previous, and time for previous calculation is ~10~ times less
+than for new one. So we can say that recalculation spent almost all
+time for recalculate latest least prime divisor table.
 
-Internally, least divisor table is java array of int, so to store
-least divisor table for first ~10 000 000~ number approximately ~40M~
+Internally, least prime divisor table is java array of int, so to store
+least divisor table for first ~1 000 000~ number approximately ~4M~
 memory is required, ~4~ bytes per number.
 
-To free memory cache can be reset
+To free memory cache can be reset:
 
 #+begin_src clojure :results pp :exports both
   (nt/ldt-reset!)
@@ -62,12 +55,12 @@ To free memory cache can be reset
 : {:least-divisor-table , :primes , :upper 0}
 : 
 
-Least divisor table is implementation details, but one can see it
+Least prime divisor table is implementation details, but one can see
+it:
 
 #+begin_src clojure :results pp :exports both
-  (nt/ldt-factorize 5); load first 10
+  (nt/integer->factors-map 5); load first 10 natural numbers
   @ldt
-
 #+end_src
 
 #+RESULTS:
@@ -76,10 +69,13 @@ Least divisor table is implementation details, but one can see it
 :  :upper 10}
 : 
 
+For instance, for get least prime divisor of number 6 we need to get
+element with index 6, whihc is 2. Index zero is not used, value for
+index 1 is 1.
+
 * Prime numbers
 
-There is ~primes~ functions which returns prime numbers which not
-exceeds given ~n~.
+~primes~ function returns prime numbers which not exceeds given ~n~.
 
 #+begin_src clojure :results pp :exports both
 (nt/primes 30)
@@ -94,38 +90,76 @@ exceeds given ~n~.
 Every integer more than $1$ can be represented uniquely as a product
 of primes.
 
+
 \[
-n = {p_1}^{a_1} {p_2}^{a_2} \dots {p_k}^{a_k} = \prod_{i=1}^{k} {p_i}^{a_i}
+n = {p_1}^{a_1} {p_2}^{a_2} \dots {p_k}^{a_k}
 \]
+
+or in more compact form
+
+\[
+n = \prod_{i=1}^{k} {p_i}^{a_i}
+\]
+
 
 If we accept that empty product is $1$ we can say that every natural
 numbers can be represent uniquely as a product of primes. For example
 $360 = 2^3 3^2 5^1$.
 
-There is a function ~factorize~ which return factorization for given
-~n~.  The result is a map for which key is a prime number and
-value is an order of prime in ~n~.
+There are functions to factorize integers. All them accept natural
+number as argument and returns factorized value. It have slightly
+different output, which may be more appropriate to different use
+cases. For each factorize function there is also inverse function,
+which accept factorized value and convert it back to integer.
 
-#+begin_src clojure :results pp :exports both
-  (nt/factorize 360)
+First factorization representation is ordered sequence of primes:
+
+#+begin_src clojure :results value :exports both
+  (nt/integer->factors 360)
+  (nt/factors->integer [2 2 2 3 3 5])
 #+end_src
 
 #+RESULTS:
-: {2 3, 3 2, 5 1}
-: 
+| (2 2 2 3 3 5) |
+|           360 |
 
-There is also inverse function of ~factorize~ which accept prime
-factorization and return integer.
+Second factorization representation is ordered sequence of primes
+splited by partitions
 
-#+begin_src clojure :results pp :exports both
-  (nt/de-factorize {2 3, 3 2, 5 1})
+#+begin_src clojure :results value :exports both
+  (nt/integer->factors-partitions 360)
+  (nt/factors-partitions->integer [[2 2 2] [3 3] [5]])
 #+end_src
 
 #+RESULTS:
-: 360
-: 
+| ((2 2 2) (3 3) (5)) |
+|                 360 |
 
-Implementation of ~factorize~ function use least divisor table. To
+3-rd factorization representation is ordered sequence of pairs ~(p k)~,
+where ~p~ is a prime and ~k~ is a power of prime
+
+#+begin_src clojure :results value :exports both
+  (nt/integer->factors-count 360)
+  (nt/factors-count->integer [[2 3] [3 2] [5 1]])
+#+end_src
+
+#+RESULTS:
+| ([2 3] [3 2] [5 1]) |
+|                 360 |
+
+4-th factorization representation is very similar to 3-rd, but it
+is a map. And it has the same inverse function as 3-rd.
+
+#+begin_src clojure :results value :exports both
+  (nt/integer->factors-map 360)
+  (nt/factors-count->integer {2 3, 3 2, 5 1})
+#+end_src
+
+#+RESULTS:
+| {2 3, 3 2, 5 1} |
+|             360 |
+
+Implementation of factorization use least prime divisor table. To
 factorize number ~n~ it is enough to calculate least divisor table
 with size less or equals to $\sqrt n$. 
 
