@@ -4,6 +4,25 @@
    [clojure.math :as math]
    [vk.ntheory :as  nt]))
 
+(def test-natural-sample (range 1 100))
+
+(deftest test-pow
+  (testing "negative numbers"
+    (is (thrown? Exception (nt/pow 2 -1))))
+  (testing "power of 2"
+    (are [x y] (= x y)
+      1 (nt/pow 2 0)
+      2 (nt/pow 2 1)
+      4 (nt/pow 2 2)
+      8 (nt/pow 2 3)
+      16 (nt/pow 2 4)
+      32 (nt/pow 2 5)
+      64 (nt/pow 2 6)
+      128 (nt/pow 2 7)
+      256 (nt/pow 2 8)
+      512 (nt/pow 2 9)
+      1024 (nt/pow 2 10))))
+
 (deftest test-primes
   (testing "cache"
     (nt/ldt-reset!)
@@ -20,38 +39,127 @@
     (is [2 3 5 7] (nt/primes 10))
     (is [2 3 5 7 11 13 17 19 23 29] (nt/primes 30))))
 
-(deftest test-factorize
+(deftest test-integer>factors-map
   (testing "Negative numbers"
-    (is (thrown? Exception (nt/factorize 0)))
-    (is (thrown? Exception (nt/factorize -1))))
+    (is (thrown? Exception (nt/integer->factors-map 0)))
+    (is (thrown? Exception (nt/integer->factors-map -1))))
   (testing "Unit"
-    (is (= {} (nt/factorize 1))))
+    (is (= {} (nt/integer->factors-map 1))))
   (testing "Positive numbers"
     (are [x y] (= x y)
-      {2 1} (nt/factorize 2)
-      {3 1} (nt/factorize 3)
-      {2 2} (nt/factorize 4)
-      {5 1} (nt/factorize 5)
-      {2 1, 3 1} (nt/factorize 6)
-      {7 1} (nt/factorize 7)
-      {2 3} (nt/factorize 8)
-      {3 2} (nt/factorize 9)
-      {2 1, 5 1} (nt/factorize 10)
-      {11 1} (nt/factorize 11)
-      {2 2, 3 1} (nt/factorize 12)
-      {13 1} (nt/factorize 13)
-      {2 1, 7 1} (nt/factorize 14)
-      {3 1, 5 1} (nt/factorize 15)
-      {2 4} (nt/factorize 16)
-      {17 1} (nt/factorize 17)
-      {2 1, 3 2} (nt/factorize 18)
-      {19 1} (nt/factorize 19)
-      {2 2, 5 1} (nt/factorize 20))))
+      {2 1} (nt/integer->factors-map 2)
+      {3 1} (nt/integer->factors-map 3)
+      {2 2} (nt/integer->factors-map 4)
+      {5 1} (nt/integer->factors-map 5)
+      {2 1, 3 1} (nt/integer->factors-map 6)
+      {7 1} (nt/integer->factors-map 7)
+      {2 3} (nt/integer->factors-map 8)
+      {3 2} (nt/integer->factors-map 9)
+      {2 1, 5 1} (nt/integer->factors-map 10)
+      {11 1} (nt/integer->factors-map 11)
+      {2 2, 3 1} (nt/integer->factors-map 12)
+      {13 1} (nt/integer->factors-map 13)
+      {2 1, 7 1} (nt/integer->factors-map 14)
+      {3 1, 5 1} (nt/integer->factors-map 15)
+      {2 4} (nt/integer->factors-map 16)
+      {17 1} (nt/integer->factors-map 17)
+      {2 1, 3 2} (nt/integer->factors-map 18)
+      {19 1} (nt/integer->factors-map 19)
+      {2 2, 5 1} (nt/integer->factors-map 20))))
 
-(deftest test-factorize-properties
-  (testing "factorize de-factorize is indentity function"
-    (doseq [n (range 1 100)]
-      (is (= n (nt/de-factorize (nt/factorize n)))))))
+(deftest test-integer>factors-count
+  (testing "Negative numbers"
+    (is (thrown? Exception (nt/integer->factors-count 0)))
+    (is (thrown? Exception (nt/integer->factors-count -1))))
+  (testing "Unit"
+    (is (= [] (nt/integer->factors-count 1))))
+  (testing "Positive numbers"
+    (are [x y] (= x y)
+      [[2 1]] (nt/integer->factors-count 2)
+      [[3 1]] (nt/integer->factors-count 3)
+      [[2 2]] (nt/integer->factors-count 4)
+      [[5 1]] (nt/integer->factors-count 5)
+      [[2 1] [3 1]] (nt/integer->factors-count 6)
+      [[7 1]] (nt/integer->factors-count 7)
+      [[2 3]] (nt/integer->factors-count 8)
+      [[3 2]] (nt/integer->factors-count 9)
+      [[2 1] [5 1]] (nt/integer->factors-count 10)
+      [[11 1]] (nt/integer->factors-count 11)
+      [[2 2] [3 1]] (nt/integer->factors-count 12)
+      [[13 1]] (nt/integer->factors-count 13)
+      [[2 1] [7 1]] (nt/integer->factors-count 14)
+      [[3 1] [5 1]] (nt/integer->factors-count 15)
+      [[2 4]] (nt/integer->factors-count 16)
+      [[17 1]] (nt/integer->factors-count 17)
+      [[2 1] [3 2]] (nt/integer->factors-count 18)
+      [[19 1]] (nt/integer->factors-count 19)
+      [[2 2] [5 1]] (nt/integer->factors-count 20))))
+
+(deftest test-integer>factors-paritions
+  (testing "Negative numbers"
+    (is (thrown? Exception (nt/integer->factors-partitions 0)))
+    (is (thrown? Exception (nt/integer->factors-partitions -1))))
+  (testing "Unit"
+    (is (= [] (nt/integer->factors-partitions 1))))
+  (testing "Positive numbers"
+    (are [x y] (= x y)
+      [[2]] (nt/integer->factors-partitions 2)
+      [[3]] (nt/integer->factors-partitions 3)
+      [[2 2]] (nt/integer->factors-partitions 4)
+      [[5]] (nt/integer->factors-partitions 5)
+      [[2] [3]] (nt/integer->factors-partitions 6)
+      [[7]] (nt/integer->factors-partitions 7)
+      [[2 2 2]] (nt/integer->factors-partitions 8)
+      [[3 3]] (nt/integer->factors-partitions 9)
+      [[2] [5]] (nt/integer->factors-partitions 10)
+      [[11]] (nt/integer->factors-partitions 11)
+      [[2 2] [3]] (nt/integer->factors-partitions 12)
+      [[13]] (nt/integer->factors-partitions 13)
+      [[2] [7]] (nt/integer->factors-partitions 14)
+      [[3] [5]] (nt/integer->factors-partitions 15)
+      [[2 2 2 2]] (nt/integer->factors-partitions 16)
+      [[17]] (nt/integer->factors-partitions 17)
+      [[2] [3 3]] (nt/integer->factors-partitions 18)
+      [[19]] (nt/integer->factors-partitions 19)
+      [[2 2] [5]] (nt/integer->factors-partitions 20))))
+
+
+(deftest test-integer>factors
+  (testing "Negative numbers"
+    (is (thrown? Exception (nt/integer->factors 0)))
+    (is (thrown? Exception (nt/integer->factors -1))))
+  (testing "Unit"
+    (is (= [] (nt/integer->factors 1))))
+  (testing "Positive numbers"
+    (are [x y] (= x y)
+      [2] (nt/integer->factors 2)
+      [3] (nt/integer->factors 3)
+      [2 2] (nt/integer->factors 4)
+      [5] (nt/integer->factors 5)
+      [2 3] (nt/integer->factors 6)
+      [7] (nt/integer->factors 7)
+      [2 2 2] (nt/integer->factors 8)
+      [3 3] (nt/integer->factors 9)
+      [2 5] (nt/integer->factors 10)
+      [11] (nt/integer->factors 11)
+      [2 2 3] (nt/integer->factors 12)
+      [13] (nt/integer->factors 13)
+      [2 7] (nt/integer->factors 14)
+      [3 5] (nt/integer->factors 15)
+      [2 2 2 2] (nt/integer->factors 16)
+      [17] (nt/integer->factors 17)
+      [2 3 3] (nt/integer->factors 18)
+      [19] (nt/integer->factors 19)
+      [2 2 5] (nt/integer->factors 20))))
+
+
+(deftest test-factorization-properties
+  (doseq [n test-natural-sample]
+    (is (= n (nt/factors-count->integer (nt/integer->factors-count n))))
+    (is (= n (nt/factors-count->integer (nt/integer->factors-map n))))
+    (is (= n (nt/factors-partitions->integer (nt/integer->factors-partitions n))))
+    (is (= n (nt/factors->integer (nt/integer->factors n))))))
+
 
 (deftest test-divisors
   (testing "Non postive numbers"
@@ -72,10 +180,6 @@
       [1 11] (sort (nt/divisors 11))
       [1 2 3 4 6 12] (sort (nt/divisors 12)))))
 
-(deftest test-divisors-properties
-  (testing "Divisors count comparison"
-    (doseq [n (range 1 100)]
-      (is (= (nt/divisors-count n) (count (nt/divisors n)))))))
 
 (defn f-test
   "Test function `f` according to table `m`."
@@ -120,16 +224,15 @@
            2 (math/log 2)
            3 (+ (math/log 2) (math/log 3))
            4 (+ (math/log 2) (math/log 3))
-           5 (+ (math/log 2) (math/log 3) (math/log 5))
-           }))
+           5 (+ (math/log 2) (math/log 3) (math/log 5))}))
 
 (deftest test-chebyshev-second
   (f-test nt/chebyshev-second
           {1 0
-           2 (+ (nt/mangoldt 1) (nt/mangoldt 2))
-           3 (+ (nt/mangoldt 1) (nt/mangoldt 2) (nt/mangoldt 3))
-           }))
-
+           2 (+ (nt/mangoldt 2))
+           3 (+ (nt/mangoldt 2) (nt/mangoldt 3))
+           4 (+ (nt/mangoldt 2) (nt/mangoldt 4) (nt/mangoldt 3))
+           5 (+ (nt/mangoldt 2) (nt/mangoldt 4) (nt/mangoldt 3) (nt/mangoldt 5))}))
 
 (deftest test-mangoldt
   (f-test nt/mangoldt
@@ -199,15 +302,6 @@
            4 1
            5 1}))
 
-(deftest test-id
-  (f-test nt/id
-          {1 1
-           2 2
-           3 3
-           4 4
-           5 5}))
-
-
 (deftest test-divisors-count
   (f-test nt/divisors-count
           {1  1
@@ -254,9 +348,9 @@
 
 (deftest test-relations
   (is (nt/f-equals nt/unit (nt/dirichlet-convolution nt/mobius nt/one)))
-  (is (nt/f-equals nt/id (nt/dirichlet-convolution nt/totient nt/one)))
+  (is (nt/f-equals identity (nt/dirichlet-convolution nt/totient nt/one)))
   (is (nt/f-equals nt/divisors-count (nt/dirichlet-convolution nt/one nt/one)))
-  (is (nt/f-equals nt/divisors-sum (nt/dirichlet-convolution nt/id nt/one)))
+  (is (nt/f-equals nt/divisors-sum (nt/dirichlet-convolution identity nt/one)))
   (is (nt/f-equals nt/divisors-sum (nt/dirichlet-convolution nt/totient nt/divisors-count))))
 
 (deftest test-inverse
