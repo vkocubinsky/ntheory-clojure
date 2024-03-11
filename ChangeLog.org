@@ -2,6 +2,17 @@
 #+author: Valery Kocubinsky
 #+language: en
 
+* Version 0.3.0 <2024-03-11 Mon>
+
+- Factorize into different format
+  - ordered sequence of primes
+  - ordered sequence of primes partitioned by a prime
+  - sequence of prime, power of prime  
+  - map 
+- Use most appropriate factorization format when implement
+  arithmetic functions
+- Update documentation
+
 * Version 0.2.0 <2024-02-22 Thu>
 
 - Switch to lein
