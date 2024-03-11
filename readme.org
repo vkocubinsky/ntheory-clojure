@@ -448,7 +448,7 @@ Liouville function can be defind by formula:
 
 $$\lambda(n) = (-1)^{\Omega(n)}$$
 
-where $$\Omega$$ defined as below in [[*Total count of primes - $\Omega$]]
+where [[*Total count of primes - $\Omega$][$\Omega$]] have been descibed above.
 
 #+begin_src clojure :results pp :exports both
   (nt/liouville (* 2 3)) 
@@ -489,7 +489,7 @@ second $\psi$ defined as
 
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
-where $\Lambda(n)$ [[*Mangoldt - $\Lambda$]]
+where [[*Mangoldt - $\Lambda$][$\Lambda$]] have been described above
 
 
 #+begin_src clojure :exports both
