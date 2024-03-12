@@ -1,38 +1,38 @@
 
 # Table of Contents
 
-1.  [About](#org72b523b)
-2.  [Notation](#orgd645ca2)
-3.  [Performance and cache](#org4a91474)
-4.  [Prime numbers](#org901c706)
-5.  [Integer factorization](#org9def528)
-6.  [Divisors](#orgd44ef7d)
-7.  [Arithmetical functions](#orge5b4e22)
-8.  [Function equality](#org9e96a77)
-9.  [Additive functions](#org15d1931)
-10. [Multiplicative functions](#org3161317)
-11. [Higher order function for define multiplicative and additive functions](#org9101339)
-12. [Some additive functions](#orgf8047ae)
-    1.  [Count of distinct primes - $\omega$](#org2c835d4)
-    2.  [Total count of primes - $\Omega$](#orge3f1cb7)
-13. [Some multiplicative functions](#org872ed1e)
-    1.  [Mobius function - $\mu$.](#org88fbb92)
-    2.  [Euler totient function - $\phi$](#org4f72496)
-    3.  [Unit function - $\epsilon$](#org53135ae)
-    4.  [Constant one function - $1$](#org8dfc004)
-    5.  [Divisors count - $\sigma_0$](#orgbce56c4)
-    6.  [Divisors sum - $\sigma_1$](#org5cbce57)
-    7.  [Divisors square sum](#orgca18557)
-    8.  [Divisors higher order function - $\sigma_{x}$](#org221f954)
-    9.  [Liouville - $\lambda$](#org2b200e3)
-14. [Some other arithmetic functions](#org25f5ad8)
-    1.  [Mangoldt - $\Lambda$](#org54defe8)
-    2.  [Chebyshev functions $\theta$ and $\psi$](#orgf1405e2)
-15. [Dirichlet convolution](#orgca37855)
+1.  [About](#orgae17cd3)
+2.  [Notation](#org10fc942)
+3.  [Performance and cache](#org447efe1)
+4.  [Prime numbers](#org5010e6e)
+5.  [Integer factorization](#org2ad13b7)
+6.  [Divisors](#org570ccc2)
+7.  [Arithmetical functions](#orgb6a0ae5)
+8.  [Function equality](#orgf78c79a)
+9.  [Additive functions](#orgd3f1b0b)
+10. [Multiplicative functions](#orgd7696a4)
+11. [Higher order function for define multiplicative and additive functions](#org9157cb2)
+12. [Some additive functions](#org72c6e71)
+    1.  [Count of distinct primes - $\omega$](#org848ffd8)
+    2.  [Total count of primes - $\Omega$](#org72340bf)
+13. [Some multiplicative functions](#org97f4dfe)
+    1.  [Mobius function - $\mu$.](#org959cc01)
+    2.  [Euler totient function - $\phi$](#org7ebf0dd)
+    3.  [Unit function - $\epsilon$](#org842a2f1)
+    4.  [Constant one function - $1$](#org29f60cd)
+    5.  [Divisors count - $\sigma_0$](#org23009e5)
+    6.  [Divisors sum - $\sigma_1$](#org48692d2)
+    7.  [Divisors square sum](#org8f06074)
+    8.  [Divisors higher order function - $\sigma_{x}$](#org8036182)
+    9.  [Liouville - $\lambda$](#org9527a92)
+14. [Some other arithmetic functions](#orgffdcaf2)
+    1.  [Mangoldt - $\Lambda$](#orgd3a4609)
+    2.  [Chebyshev functions $\theta$ and $\psi$](#orgd0074f6)
+15. [Dirichlet convolution](#orga9136d8)
 
 
 
-<a id="org72b523b"></a>
+<a id="orgae17cd3"></a>
 
 # About
 
@@ -53,16 +53,16 @@ In this document I load number theory package as:
 So below I will use `nt` alias.
 
 
-<a id="orgd645ca2"></a>
+<a id="org10fc942"></a>
 
 # Notation
 
-$\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
-$\mathbf C$ - Complex numbers
-$\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
+-   $\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
+-   $\mathbf C$ - Complex numbers
+-   $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
 
 
-<a id="org4a91474"></a>
+<a id="org447efe1"></a>
 
 # Performance and cache
 
@@ -105,7 +105,7 @@ element with index 6, which is 2. Index zero is not used, value for
 index 1 is 1.
 
 
-<a id="org901c706"></a>
+<a id="org5010e6e"></a>
 
 # Prime numbers
 
@@ -116,7 +116,7 @@ index 1 is 1.
     (2 3 5 7 11 13 17 19 23 29)
 
 
-<a id="org9def528"></a>
+<a id="org2ad13b7"></a>
 
 # Integer factorization
 
@@ -150,104 +150,52 @@ which accept factorized value and convert it back to integer.
 1-st factorization representation is ordered sequence of primes:
 
     (nt/integer->factors 360)
+
+    (2 2 2 3 3 5)
+
     (nt/factors->integer [2 2 2 3 3 5])
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-right" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-right">(2 2 2 3 3 5)</td>
-</tr>
-
-
-<tr>
-<td class="org-right">360</td>
-</tr>
-</tbody>
-</table>
+    360
 
 2-nd factorization representation is ordered sequence of primes
 splited by partitions by a prime:
 
     (nt/integer->factors-partitions 360)
+
+    ((2 2 2) (3 3) (5))
+
     (nt/factors-partitions->integer [[2 2 2] [3 3] [5]])
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-right" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-right">((2 2 2) (3 3) (5))</td>
-</tr>
-
-
-<tr>
-<td class="org-right">360</td>
-</tr>
-</tbody>
-</table>
+    360
 
 3-rd factorization representation is ordered sequence of pairs `[p
 k]`, where `p` is a prime and `k` is a power of prime
 
     (nt/integer->factors-count 360)
+
+    ([2 3] [3 2] [5 1])
+
     (nt/factors-count->integer [[2 3] [3 2] [5 1]])
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-right" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-right">([2 3] [3 2] [5 1])</td>
-</tr>
-
-
-<tr>
-<td class="org-right">360</td>
-</tr>
-</tbody>
-</table>
+    360
 
 4-th factorization representation is very similar to 3-rd, but it
 is a map. And it has the same inverse function as 3-rd.
 
     (nt/integer->factors-map 360)
+
+    {2 3, 3 2, 5 1}
+
     (nt/factors-count->integer {2 3, 3 2, 5 1})
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-right" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-right">{2 3, 3 2, 5 1}</td>
-</tr>
-
-
-<tr>
-<td class="org-right">360</td>
-</tr>
-</tbody>
-</table>
+    360
 
 Implementation of factorization use least prime divisor table. To
 factorize number `n` it is enough to calculate least divisor table
 with size less or equals to $\sqrt n$. 
 
 
-<a id="orgd44ef7d"></a>
+<a id="org570ccc2"></a>
 
 # Divisors
 
@@ -259,7 +207,7 @@ function. List of divisors is unordered.
     (1 2 3 6 5 10 15 30)
 
 
-<a id="orge5b4e22"></a>
+<a id="orgb6a0ae5"></a>
 
 # Arithmetical functions
 
@@ -268,7 +216,7 @@ and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
 with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
 
-<a id="org9e96a77"></a>
+<a id="orgf78c79a"></a>
 
 # Function equality
 
@@ -291,7 +239,7 @@ sequence of natural number we can for example do next:
     (nt/f-equals f g (filter even? (range 1 100)))
 
 
-<a id="org15d1931"></a>
+<a id="orgd3f1b0b"></a>
 
 # Additive functions
 
@@ -309,7 +257,7 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="org3161317"></a>
+<a id="orgd7696a4"></a>
 
 # Multiplicative functions
 
@@ -328,7 +276,7 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 $$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="org9101339"></a>
+<a id="org9157cb2"></a>
 
 # Higher order function for define multiplicative and additive functions
 
@@ -350,21 +298,20 @@ With helper function it can be defined as
 
     (def my-divisors-count
     (nt/reduce-on-prime-count * (fn [p k] (inc k))))
-
     (my-divisors-count 6)
 
-    class clojure.lang.Compiler$CompilerException
+    4
 
 Of course there is predefined function `divisors-count`, but it
 is an example how to define custom function.
 
 
-<a id="orgf8047ae"></a>
+<a id="org72c6e71"></a>
 
 # Some additive functions
 
 
-<a id="org2c835d4"></a>
+<a id="org848ffd8"></a>
 
 ## Count of distinct primes - $\omega$
 
@@ -376,7 +323,7 @@ divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k
     2
 
 
-<a id="orge3f1cb7"></a>
+<a id="org72340bf"></a>
 
 ## Total count of primes - $\Omega$
 
@@ -390,12 +337,12 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
     3
 
 
-<a id="org872ed1e"></a>
+<a id="org97f4dfe"></a>
 
 # Some multiplicative functions
 
 
-<a id="org88fbb92"></a>
+<a id="org959cc01"></a>
 
 ## Mobius function - $\mu$.
 
@@ -414,7 +361,7 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
     1
 
 
-<a id="org4f72496"></a>
+<a id="org7ebf0dd"></a>
 
 ## Euler totient function - $\phi$
 
@@ -430,7 +377,7 @@ For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6)
     2
 
 
-<a id="org53135ae"></a>
+<a id="org842a2f1"></a>
 
 ## Unit function - $\epsilon$
 
@@ -446,7 +393,7 @@ $$ \epsilon(n) = \begin{cases}
     0
 
 
-<a id="org8dfc004"></a>
+<a id="org29f60cd"></a>
 
 ## Constant one function - $1$
 
@@ -457,7 +404,7 @@ $$ 1(n) = 1 $$
     1
 
 
-<a id="orgbce56c4"></a>
+<a id="org23009e5"></a>
 
 ## Divisors count - $\sigma_0$
 
@@ -472,7 +419,7 @@ For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
     4
 
 
-<a id="org5cbce57"></a>
+<a id="org48692d2"></a>
 
 ## Divisors sum - $\sigma_1$
 
@@ -485,7 +432,7 @@ For number 6 it is $12 = 1 + 2 + 3 + 6$
     12
 
 
-<a id="orgca18557"></a>
+<a id="org8f06074"></a>
 
 ## Divisors square sum
 
@@ -498,7 +445,7 @@ For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
     50
 
 
-<a id="org221f954"></a>
+<a id="org8036182"></a>
 
 ## Divisors higher order function - $\sigma_{x}$
 
@@ -520,7 +467,7 @@ accept `x` and return appropriate function.
     (def my-divisors-square-sum (nt/divisors-sum-x 2))
 
 
-<a id="org2b200e3"></a>
+<a id="org9527a92"></a>
 
 ## Liouville - $\lambda$
 
@@ -528,19 +475,19 @@ Liouville function can be defind by formula:
 
 $$\lambda(n) = (-1)^{\Omega(n)}$$
 
-where [$\Omega$](#orge3f1cb7) have been descibed above.
+where [$\Omega$](#org72340bf) have been descibed above.
 
     (nt/liouville (* 2 3)) 
 
     1
 
 
-<a id="org25f5ad8"></a>
+<a id="orgffdcaf2"></a>
 
 # Some other arithmetic functions
 
 
-<a id="org54defe8"></a>
+<a id="orgd3a4609"></a>
 
 ## Mangoldt - $\Lambda$
 
@@ -552,28 +499,15 @@ $$\Lambda(n) = \begin{cases}
 For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$  
 
     (nt/mangoldt 2)
+
+    0.6931471805599453
+
     (nt/mangoldt 6)
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+    0
 
 
-<colgroup>
-<col  class="org-right" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-right">0.6931471805599453</td>
-</tr>
-
-
-<tr>
-<td class="org-right">0</td>
-</tr>
-</tbody>
-</table>
-
-
-<a id="orgf1405e2"></a>
+<a id="orgd0074f6"></a>
 
 ## Chebyshev functions $\theta$ and $\psi$
 
@@ -585,31 +519,18 @@ second $\psi$ defined as
 
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
-where [$\Lambda$](#org54defe8) have been described above
+where [$\Lambda$](#orgd3a4609) have been described above
 
     (nt/chebyshev-first 2)
+
+    0.6931471805599453
+
     (nt/chebyshev-second 2)
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+    0.6931471805599453
 
 
-<colgroup>
-<col  class="org-right" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-right">0.6931471805599453</td>
-</tr>
-
-
-<tr>
-<td class="org-right">0.6931471805599453</td>
-</tr>
-</tbody>
-</table>
-
-
-<a id="orgca37855"></a>
+<a id="orga9136d8"></a>
 
 # Dirichlet convolution
 
@@ -663,23 +584,10 @@ function as parameter of `f*`
 Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 
     (nt/f-equals (nt/dirichlet-inverse nt/one) nt/mobius)
+
+    true
+
     (nt/f-equals (nt/dirichlet-inverse nt/mobius) nt/one)
 
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-</colgroup>
-<tbody>
-<tr>
-<td class="org-left">true</td>
-</tr>
-
-
-<tr>
-<td class="org-left">true</td>
-</tr>
-</tbody>
-</table>
+    true
 

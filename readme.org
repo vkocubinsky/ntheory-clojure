@@ -1,5 +1,6 @@
 #+title: Number theory with Clojure
 #+startup: nolatexpreview
+#+PROPERTY: header-args:clojure :session *clojure-1* :cache yes :exports both :results pp
 
 * About
 
@@ -23,9 +24,9 @@ So below I will use ~nt~ alias.
 
 * Notation
 
-$\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
-$\mathbf C$ - Complex numbers
-$\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
+- $\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
+- $\mathbf C$ - Complex numbers
+- $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
 
 * Performance and cache
 
@@ -49,23 +50,23 @@ memory is required, ~4~ bytes per number.
 
 Cache can be reset:
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
   (nt/ldt-reset!)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[cfa53206fc7267849381fd5f79c6df8d156608c0]:
 : {:least-divisor-table , :primes , :upper 0}
 : 
 
 Least prime divisor table is implementation details, but one can see
 it:
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
   (nt/integer->factors-map 5); load first 10 natural numbers
   @ldt
 #+end_src
 
-#+RESULTS:
+#+RESULTS[a41225de7dd2af0bb687d53e85df64dd53aa7a13]:
 : {:least-divisor-table [0, 1, 2, 3, 2, 5, 2, 7, 2, 3, 2],
 :  :primes (2 3 5 7),
 :  :upper 10}
@@ -79,13 +80,14 @@ index 1 is 1.
 
 ~primes~ function returns prime numbers which not exceeds given ~n~.
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
 (nt/primes 30)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[763796e7ffa04546417c55a7b12dc1b756c02534]:
 : (2 3 5 7 11 13 17 19 23 29)
 : 
+
 
 * Integer factorization
 
@@ -120,50 +122,78 @@ which accept factorized value and convert it back to integer.
 
 1-st factorization representation is ordered sequence of primes:
 
-#+begin_src clojure :results value :exports both
+#+begin_src clojure
   (nt/integer->factors 360)
+#+end_src
+
+#+RESULTS[6822178aec96d1cfeeb597af7d3633fede07b2eb]:
+: (2 2 2 3 3 5)
+: 
+  
+#+begin_src clojure
   (nt/factors->integer [2 2 2 3 3 5])
 #+end_src
 
-#+RESULTS:
-| (2 2 2 3 3 5) |
-|           360 |
+#+RESULTS[be5dc481f46fd3b607346dd9644742d71b4f7556]:
+: 360
+: 
 
 2-nd factorization representation is ordered sequence of primes
 splited by partitions by a prime:
 
-#+begin_src clojure :results value :exports both
+#+begin_src clojure
   (nt/integer->factors-partitions 360)
+#+end_src
+
+#+RESULTS[7e4f4eada98811a1359eddac44c8a0bb5f66cdff]:
+: ((2 2 2) (3 3) (5))
+: 
+  
+#+begin_src clojure
   (nt/factors-partitions->integer [[2 2 2] [3 3] [5]])
 #+end_src
 
-#+RESULTS:
-| ((2 2 2) (3 3) (5)) |
-|                 360 |
+#+RESULTS[4f3000a8f01bb3bffb6f1c145bbbc4cfd9e42c16]:
+: 360
+: 
 
 3-rd factorization representation is ordered sequence of pairs ~[p
 k]~, where ~p~ is a prime and ~k~ is a power of prime
 
-#+begin_src clojure :results value :exports both
+#+begin_src clojure
   (nt/integer->factors-count 360)
+#+end_src
+
+#+RESULTS[deb84c857b6e7c95f8cf1bed52b147f3757c98ea]:
+: ([2 3] [3 2] [5 1])
+: 
+  
+#+begin_src clojure
   (nt/factors-count->integer [[2 3] [3 2] [5 1]])
 #+end_src
 
-#+RESULTS:
-| ([2 3] [3 2] [5 1]) |
-|                 360 |
+#+RESULTS[337833a77e534d69e5bd1a2655a79412e0a99bd3]:
+: 360
+: 
 
 4-th factorization representation is very similar to 3-rd, but it
 is a map. And it has the same inverse function as 3-rd.
 
-#+begin_src clojure :results value :exports both
+#+begin_src clojure
   (nt/integer->factors-map 360)
+#+end_src
+
+#+RESULTS[6f56766d178fd644b1e6dd9d5c530dc3c936abc7]:
+: {2 3, 3 2, 5 1}
+: 
+
+#+begin_src clojure
   (nt/factors-count->integer {2 3, 3 2, 5 1})
 #+end_src
 
-#+RESULTS:
-| {2 3, 3 2, 5 1} |
-|             360 |
+#+RESULTS[85c61af8e9717c094e6d06e3abbbbbc1303673e6]:
+: 360
+: 
 
 Implementation of factorization use least prime divisor table. To
 factorize number ~n~ it is enough to calculate least divisor table
@@ -174,11 +204,11 @@ with size less or equals to $\sqrt n$.
 For get list of all divisors of number ~n~ there is ~divisor~
 function. List of divisors is unordered.
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
   (nt/divisors 30)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
 : (1 2 3 6 5 10 15 30)
 : 
 
@@ -225,7 +255,6 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
-
 * Multiplicative functions
 
 Multiplicative function is a function not equal to zero for all n
@@ -260,16 +289,13 @@ $$ \sigma_0(n) = \prod_{i=1}^{k} (a_i + 1) $$
 
 With helper function it can be defined as
 
-#+begin_src clojure :results silent 
+#+begin_src clojure
   (def my-divisors-count
   (nt/reduce-on-prime-count * (fn [p k] (inc k))))
-#+end_src
-
-#+begin_src clojure :results pp :exports both
   (my-divisors-count 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[70b9288870478d799579fafdb999ad04378c2803]:
 : 4
 : 
 
@@ -283,11 +309,11 @@ is an example how to define custom function.
 Count of distinct primes is a number of distinct primes which
 divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k$.
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
    (nt/primes-count-distinct (* 2 2 3))
 #+end_src
 
-#+RESULTS:
+#+RESULTS[3552f94a82caf8b47add374a87b582087b94f377]:
 : 2
 : 
 
@@ -298,11 +324,11 @@ which divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 
 $$\Omega = a_1 + a_2 + \dots + a_k$$
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
   (nt/primes-count-total (* 2 2 3))
 #+end_src
 
-#+RESULTS:
+#+RESULTS[51c9f0f12a6224d26735728783dec13755a0633e]:
 : 3
 : 
 
@@ -321,12 +347,13 @@ $$ \mu(n) = \begin{cases}
 
 For example, $\mu(6)=\mu(2 \cdot 3)=1$
 
-#+begin_src clojure :exports both
+#+begin_src clojure
   (nt/mobius 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[cf4859295d68505bb9cd0db612b385de1ebf5376]:
 : 1
+: 
 
 
 ** Euler totient function - $\phi$
@@ -339,12 +366,13 @@ $$ \phi(n) = \prod_{p|n} (p^a - p^{a-1}) $$
 
 For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6) = 2$
 
-#+begin_src clojure :exports both
+#+begin_src clojure
   (nt/totient 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[c7763e09447503d128331d4f95f7799db7bd4679]:
 : 2
+: 
 
 ** Unit function - $\epsilon$
 
@@ -355,11 +383,11 @@ $$ \epsilon(n) = \begin{cases}
 0,&  \text{if } n > 1
 \end{cases} $$
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
   (nt/unit 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[fe946ead0f672382244e7788ffc0800baecdad98]:
 : 0
 : 
 
@@ -367,11 +395,11 @@ $$ \epsilon(n) = \begin{cases}
 
 $$ 1(n) = 1 $$
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
   (nt/one 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[a9b4f951368a936801ef98b7badd4dc39dea886f]:
 : 1
 : 
 
@@ -384,11 +412,11 @@ $$ \sigma_0(n) = \sum_{d|n} 1 $$
 
 For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
   (nt/divisors-count 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[decfebfc920e6b3c30105d4e96db3a33f2f50e35]:
 : 4
 : 
 
@@ -399,11 +427,11 @@ $$ \sigma_1(n) = \sum_{d | n} d $$
 
 For number 6 it is $12 = 1 + 2 + 3 + 6$
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
   (nt/divisors-sum 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[937569fa024eae6602b07f07b2c3b364ac62cf0c]:
 : 12
 : 
 
@@ -413,11 +441,11 @@ $$ \sigma_2(n) = \sum_{d | n} d^2 $$
 
 For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
   (nt/divisors-square-sum 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[e37fb8014bf18bca9cc23b39e26bb461bc7ce6d6]:
 : 50
 : 
 
@@ -450,11 +478,11 @@ $$\lambda(n) = (-1)^{\Omega(n)}$$
 
 where [[*Total count of primes - $\Omega$][$\Omega$]] have been descibed above.
 
-#+begin_src clojure :results pp :exports both
+#+begin_src clojure
   (nt/liouville (* 2 3)) 
 #+end_src
 
-#+RESULTS:
+#+RESULTS[869850b293d2a60abef6a5639489018149613db4]:
 : 1
 : 
 
@@ -469,14 +497,21 @@ $$\Lambda(n) = \begin{cases}
 
 For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$  
 
-#+begin_src clojure :results value :exports both
+#+begin_src clojure
   (nt/mangoldt 2)
+#+end_src
+
+#+RESULTS[542691e004afaeca227b31c85287fa1086ef1c7a]:
+: 0.6931471805599453
+: 
+  
+#+begin_src clojure
   (nt/mangoldt 6)
 #+end_src
 
-#+RESULTS:
-| 0.6931471805599453 |
-|                  0 |
+#+RESULTS[c45312e6447f258aca43ab10d232e6e8c943b095]:
+: 0
+: 
 
 
 ** Chebyshev functions $\theta$ and $\psi$
@@ -492,15 +527,21 @@ $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 where [[*Mangoldt - $\Lambda$][$\Lambda$]] have been described above
 
 
-#+begin_src clojure :exports both
+#+begin_src clojure
   (nt/chebyshev-first 2)
+#+end_src
+
+#+RESULTS[cebd13d9e26c3ad5f4dffa6d9b3318e352ecaf8b]:
+: 0.6931471805599453
+: 
+  
+#+begin_src clojure
   (nt/chebyshev-second 2)
 #+end_src
 
-#+RESULTS:
-| 0.6931471805599453 |
-| 0.6931471805599453 |
-
+#+RESULTS[2a19f1e0aa91c0b965be5aee1939f687592600b2]:
+: 0.6931471805599453
+: 
 
 * Dirichlet convolution
 
@@ -535,41 +576,48 @@ $$ f^{-1}(n) = \begin{cases}
 
 For example, $1(n) * 1(n) = \sigma_0$
 
-#+begin_src clojure :exports both :results pp
+#+begin_src clojure
   (nt/f-equals
      (nt/dirichlet-convolution nt/one nt/one)
      nt/divisors-count
   )
 #+end_src
 
-#+RESULTS:
+#+RESULTS[57087c9ba65232b20217853c2e785c62527b3666]:
 : true
 : 
 
 Dirichlet convolution is associative so clojure method support more than two
 function as parameter of ~f*~
 
-#+begin_src clojure :exports both :results pp
+#+begin_src clojure
   (nt/f-equals
     (nt/dirichlet-convolution nt/mobius nt/one nt/mobius nt/one)
     nt/unit
   )
 #+end_src
 
-#+RESULTS:
+#+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
 : true
 : 
 
 Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 
-#+begin_src clojure :exports both :results value
-    (nt/f-equals (nt/dirichlet-inverse nt/one) nt/mobius)
-    (nt/f-equals (nt/dirichlet-inverse nt/mobius) nt/one)
+#+begin_src clojure
+  (nt/f-equals (nt/dirichlet-inverse nt/one) nt/mobius)
 #+end_src
 
-#+RESULTS:
-| true |
-| true |
+#+RESULTS[33bbf9139c179db71af6a5d185b937afad79f0f6]:
+: true
+: 
+  
+#+begin_src clojure
+  (nt/f-equals (nt/dirichlet-inverse nt/mobius) nt/one)
+#+end_src
+
+#+RESULTS[e17afcfeaabbc9d50d6f000814f6e2e43b7f447e]:
+: true
+: 
 
 
 
