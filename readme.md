@@ -1,38 +1,38 @@
 
 # Table of Contents
 
-1.  [About](#org4f962e8)
-2.  [Notation](#org7330813)
-3.  [Performance and cache](#orge90e30b)
-4.  [Prime numbers](#org3c37e3c)
-5.  [Integer factorization](#orgcdccc8d)
-6.  [Divisors](#orgf0b5515)
-7.  [Arithmetical functions](#org001016d)
-8.  [Function equality](#orgd581eb5)
-9.  [Additive functions](#org85b928d)
-10. [Multiplicative functions](#org26bd516)
-11. [Higher order function for define multiplicative and additive functions](#orga365abd)
-12. [Some additive functions](#orgf378e5d)
-    1.  [Count of distinct primes - $\omega$](#org129273d)
-    2.  [Total count of primes - $\Omega$](#org8692c61)
-13. [Some multiplicative functions](#org7ff4a20)
-    1.  [Mobius function - $\mu$.](#org3c62f26)
-    2.  [Euler totient function - $\phi$](#orge211f76)
-    3.  [Unit function - $\epsilon$](#org4c3d8a0)
-    4.  [Constant one function - $1$](#org9c66d3c)
-    5.  [Divisors count - $\sigma_0$](#org2275a96)
-    6.  [Divisors sum - $\sigma_1$](#org2759379)
-    7.  [Divisors square sum](#org71cdfb7)
-    8.  [Divisors higher order function - $\sigma_{x}$](#org9300166)
-    9.  [Liouville - $\lambda$](#orgb0159b3)
-14. [Some other arithmetic functions](#org32ab870)
-    1.  [Mangoldt - $\Lambda$](#org5829afe)
-    2.  [Chebyshev functions $\theta$ and $\psi$](#org3f7b702)
-15. [Dirichlet convolution](#org3a056f1)
+1.  [About](#org72b523b)
+2.  [Notation](#orgd645ca2)
+3.  [Performance and cache](#org4a91474)
+4.  [Prime numbers](#org901c706)
+5.  [Integer factorization](#org9def528)
+6.  [Divisors](#orgd44ef7d)
+7.  [Arithmetical functions](#orge5b4e22)
+8.  [Function equality](#org9e96a77)
+9.  [Additive functions](#org15d1931)
+10. [Multiplicative functions](#org3161317)
+11. [Higher order function for define multiplicative and additive functions](#org9101339)
+12. [Some additive functions](#orgf8047ae)
+    1.  [Count of distinct primes - $\omega$](#org2c835d4)
+    2.  [Total count of primes - $\Omega$](#orge3f1cb7)
+13. [Some multiplicative functions](#org872ed1e)
+    1.  [Mobius function - $\mu$.](#org88fbb92)
+    2.  [Euler totient function - $\phi$](#org4f72496)
+    3.  [Unit function - $\epsilon$](#org53135ae)
+    4.  [Constant one function - $1$](#org8dfc004)
+    5.  [Divisors count - $\sigma_0$](#orgbce56c4)
+    6.  [Divisors sum - $\sigma_1$](#org5cbce57)
+    7.  [Divisors square sum](#orgca18557)
+    8.  [Divisors higher order function - $\sigma_{x}$](#org221f954)
+    9.  [Liouville - $\lambda$](#org2b200e3)
+14. [Some other arithmetic functions](#org25f5ad8)
+    1.  [Mangoldt - $\Lambda$](#org54defe8)
+    2.  [Chebyshev functions $\theta$ and $\psi$](#orgf1405e2)
+15. [Dirichlet convolution](#orgca37855)
 
 
 
-<a id="org4f962e8"></a>
+<a id="org72b523b"></a>
 
 # About
 
@@ -53,7 +53,7 @@ In this document I load number theory package as:
 So below I will use `nt` alias.
 
 
-<a id="org7330813"></a>
+<a id="orgd645ca2"></a>
 
 # Notation
 
@@ -62,7 +62,7 @@ $\mathbf C$ - Complex numbers
 $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
 
 
-<a id="orge90e30b"></a>
+<a id="org4a91474"></a>
 
 # Performance and cache
 
@@ -88,7 +88,7 @@ Cache can be reset:
 
     (nt/ldt-reset!)
 
-    class clojure.lang.Compiler$CompilerException
+    {:least-divisor-table , :primes , :upper 0}
 
 Least prime divisor table is implementation details, but one can see
 it:
@@ -96,14 +96,16 @@ it:
     (nt/integer->factors-map 5); load first 10 natural numbers
     @ldt
 
-    class clojure.lang.Compiler$CompilerException
+    {:least-divisor-table [0, 1, 2, 3, 2, 5, 2, 7, 2, 3, 2],
+     :primes (2 3 5 7),
+     :upper 10}
 
 For instance, for get least prime divisor of number 6 we need to get
 element with index 6, which is 2. Index zero is not used, value for
 index 1 is 1.
 
 
-<a id="org3c37e3c"></a>
+<a id="org901c706"></a>
 
 # Prime numbers
 
@@ -111,10 +113,10 @@ index 1 is 1.
 
     (nt/primes 30)
 
-    class clojure.lang.Compiler$CompilerException
+    (2 3 5 7 11 13 17 19 23 29)
 
 
-<a id="orgcdccc8d"></a>
+<a id="org9def528"></a>
 
 # Integer factorization
 
@@ -154,16 +156,16 @@ which accept factorized value and convert it back to integer.
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="org-right" />
 </colgroup>
 <tbody>
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">(2 2 2 3 3 5)</td>
 </tr>
 
 
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">360</td>
 </tr>
 </tbody>
 </table>
@@ -178,16 +180,16 @@ splited by partitions by a prime:
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="org-right" />
 </colgroup>
 <tbody>
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">((2 2 2) (3 3) (5))</td>
 </tr>
 
 
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">360</td>
 </tr>
 </tbody>
 </table>
@@ -202,16 +204,16 @@ k]`, where `p` is a prime and `k` is a power of prime
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="org-right" />
 </colgroup>
 <tbody>
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">([2 3] [3 2] [5 1])</td>
 </tr>
 
 
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">360</td>
 </tr>
 </tbody>
 </table>
@@ -226,16 +228,16 @@ is a map. And it has the same inverse function as 3-rd.
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="org-right" />
 </colgroup>
 <tbody>
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">{2 3, 3 2, 5 1}</td>
 </tr>
 
 
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">360</td>
 </tr>
 </tbody>
 </table>
@@ -245,7 +247,7 @@ factorize number `n` it is enough to calculate least divisor table
 with size less or equals to $\sqrt n$. 
 
 
-<a id="orgf0b5515"></a>
+<a id="orgd44ef7d"></a>
 
 # Divisors
 
@@ -254,10 +256,10 @@ function. List of divisors is unordered.
 
     (nt/divisors 30)
 
-    class clojure.lang.Compiler$CompilerException
+    (1 2 3 6 5 10 15 30)
 
 
-<a id="org001016d"></a>
+<a id="orge5b4e22"></a>
 
 # Arithmetical functions
 
@@ -266,7 +268,7 @@ and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
 with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
 
-<a id="orgd581eb5"></a>
+<a id="org9e96a77"></a>
 
 # Function equality
 
@@ -289,7 +291,7 @@ sequence of natural number we can for example do next:
     (nt/f-equals f g (filter even? (range 1 100)))
 
 
-<a id="org85b928d"></a>
+<a id="org15d1931"></a>
 
 # Additive functions
 
@@ -307,7 +309,7 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="org26bd516"></a>
+<a id="org3161317"></a>
 
 # Multiplicative functions
 
@@ -326,7 +328,7 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 $$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="orga365abd"></a>
+<a id="org9101339"></a>
 
 # Higher order function for define multiplicative and additive functions
 
@@ -357,12 +359,12 @@ Of course there is predefined function `divisors-count`, but it
 is an example how to define custom function.
 
 
-<a id="orgf378e5d"></a>
+<a id="orgf8047ae"></a>
 
 # Some additive functions
 
 
-<a id="org129273d"></a>
+<a id="org2c835d4"></a>
 
 ## Count of distinct primes - $\omega$
 
@@ -371,10 +373,10 @@ divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k
 
     (nt/primes-count-distinct (* 2 2 3))
 
-    class clojure.lang.Compiler$CompilerException
+    2
 
 
-<a id="org8692c61"></a>
+<a id="orge3f1cb7"></a>
 
 ## Total count of primes - $\Omega$
 
@@ -385,15 +387,15 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
 
     (nt/primes-count-total (* 2 2 3))
 
-    class clojure.lang.Compiler$CompilerException
+    3
 
 
-<a id="org7ff4a20"></a>
+<a id="org872ed1e"></a>
 
 # Some multiplicative functions
 
 
-<a id="org3c62f26"></a>
+<a id="org88fbb92"></a>
 
 ## Mobius function - $\mu$.
 
@@ -409,10 +411,10 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
 
     (nt/mobius 6)
 
-    class clojure.lang.Compiler$CompilerException
+    1
 
 
-<a id="orge211f76"></a>
+<a id="org4f72496"></a>
 
 ## Euler totient function - $\phi$
 
@@ -425,10 +427,10 @@ For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6)
 
     (nt/totient 6)
 
-    class clojure.lang.Compiler$CompilerException
+    2
 
 
-<a id="org4c3d8a0"></a>
+<a id="org53135ae"></a>
 
 ## Unit function - $\epsilon$
 
@@ -441,10 +443,10 @@ $$ \epsilon(n) = \begin{cases}
 
     (nt/unit 6)
 
-    class clojure.lang.Compiler$CompilerException
+    0
 
 
-<a id="org9c66d3c"></a>
+<a id="org8dfc004"></a>
 
 ## Constant one function - $1$
 
@@ -452,10 +454,10 @@ $$ 1(n) = 1 $$
 
     (nt/one 6)
 
-    class clojure.lang.Compiler$CompilerException
+    1
 
 
-<a id="org2275a96"></a>
+<a id="orgbce56c4"></a>
 
 ## Divisors count - $\sigma_0$
 
@@ -467,10 +469,10 @@ For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
 
     (nt/divisors-count 6)
 
-    class clojure.lang.Compiler$CompilerException
+    4
 
 
-<a id="org2759379"></a>
+<a id="org5cbce57"></a>
 
 ## Divisors sum - $\sigma_1$
 
@@ -480,10 +482,10 @@ For number 6 it is $12 = 1 + 2 + 3 + 6$
 
     (nt/divisors-sum 6)
 
-    class clojure.lang.Compiler$CompilerException
+    12
 
 
-<a id="org71cdfb7"></a>
+<a id="orgca18557"></a>
 
 ## Divisors square sum
 
@@ -493,10 +495,10 @@ For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
 
     (nt/divisors-square-sum 6)
 
-    class clojure.lang.Compiler$CompilerException
+    50
 
 
-<a id="org9300166"></a>
+<a id="org221f954"></a>
 
 ## Divisors higher order function - $\sigma_{x}$
 
@@ -518,7 +520,7 @@ accept `x` and return appropriate function.
     (def my-divisors-square-sum (nt/divisors-sum-x 2))
 
 
-<a id="orgb0159b3"></a>
+<a id="org2b200e3"></a>
 
 ## Liouville - $\lambda$
 
@@ -526,19 +528,19 @@ Liouville function can be defind by formula:
 
 $$\lambda(n) = (-1)^{\Omega(n)}$$
 
-where [$\Omega$](#org8692c61) have been descibed above.
+where [$\Omega$](#orge3f1cb7) have been descibed above.
 
     (nt/liouville (* 2 3)) 
 
-    class clojure.lang.Compiler$CompilerException
+    1
 
 
-<a id="org32ab870"></a>
+<a id="org25f5ad8"></a>
 
 # Some other arithmetic functions
 
 
-<a id="org5829afe"></a>
+<a id="org54defe8"></a>
 
 ## Mangoldt - $\Lambda$
 
@@ -556,22 +558,22 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="org-right" />
 </colgroup>
 <tbody>
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">0.6931471805599453</td>
 </tr>
 
 
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">0</td>
 </tr>
 </tbody>
 </table>
 
 
-<a id="org3f7b702"></a>
+<a id="orgf1405e2"></a>
 
 ## Chebyshev functions $\theta$ and $\psi$
 
@@ -583,7 +585,7 @@ second $\psi$ defined as
 
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
-where [$\Lambda$](#org5829afe) have been described above
+where [$\Lambda$](#org54defe8) have been described above
 
     (nt/chebyshev-first 2)
     (nt/chebyshev-second 2)
@@ -592,22 +594,22 @@ where [$\Lambda$](#org5829afe) have been described above
 
 
 <colgroup>
-<col  class="org-left" />
+<col  class="org-right" />
 </colgroup>
 <tbody>
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">0.6931471805599453</td>
 </tr>
 
 
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-right">0.6931471805599453</td>
 </tr>
 </tbody>
 </table>
 
 
-<a id="org3a056f1"></a>
+<a id="orgca37855"></a>
 
 # Dirichlet convolution
 
@@ -646,7 +648,7 @@ For example, $1(n) * 1(n) = \sigma_0$
        nt/divisors-count
     )
 
-    class clojure.lang.Compiler$CompilerException
+    true
 
 Dirichlet convolution is associative so clojure method support more than two
 function as parameter of `f*`
@@ -656,7 +658,7 @@ function as parameter of `f*`
       nt/unit
     )
 
-    class clojure.lang.Compiler$CompilerException
+    true
 
 Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 
@@ -671,12 +673,12 @@ Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 </colgroup>
 <tbody>
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-left">true</td>
 </tr>
 
 
 <tr>
-<td class="org-left">class clojure.lang.Compiler$CompilerException</td>
+<td class="org-left">true</td>
 </tr>
 </tbody>
 </table>
