@@ -10,8 +10,9 @@ well known arithmetic functions and one can define custom arithmetic
 functions.
 
 I wrote this document with Emacs Org Mode. Then I generated markdown
-file with =pandoc= to show it nicely on github. I use Emacs babel to
-produce real output inside the document.
+file with Org Mode export to markdown =C-c C-e m m= to show it nicely
+on github. I use Emacs babel to produce real output inside the
+document.
 
 In this document I load number theory package as: 
 
