@@ -1,38 +1,40 @@
 
 # Table of Contents
 
-1.  [About](#orgae17cd3)
-2.  [Notation](#org10fc942)
-3.  [Performance and cache](#org447efe1)
-4.  [Prime numbers](#org5010e6e)
-5.  [Integer factorization](#org2ad13b7)
-6.  [Divisors](#org570ccc2)
-7.  [Arithmetical functions](#orgb6a0ae5)
-8.  [Function equality](#orgf78c79a)
-9.  [Additive functions](#orgd3f1b0b)
-10. [Multiplicative functions](#orgd7696a4)
-11. [Higher order function for define multiplicative and additive functions](#org9157cb2)
-12. [Some additive functions](#org72c6e71)
-    1.  [Count of distinct primes - $\omega$](#org848ffd8)
-    2.  [Total count of primes - $\Omega$](#org72340bf)
-13. [Some multiplicative functions](#org97f4dfe)
-    1.  [Mobius function - $\mu$.](#org959cc01)
-    2.  [Euler totient function - $\phi$](#org7ebf0dd)
-    3.  [Unit function - $\epsilon$](#org842a2f1)
-    4.  [Constant one function - $1$](#org29f60cd)
-    5.  [Divisors count - $\sigma_0$](#org23009e5)
-    6.  [Divisors sum - $\sigma_1$](#org48692d2)
-    7.  [Divisors square sum](#org8f06074)
-    8.  [Divisors higher order function - $\sigma_{x}$](#org8036182)
-    9.  [Liouville - $\lambda$](#org9527a92)
-14. [Some other arithmetic functions](#orgffdcaf2)
-    1.  [Mangoldt - $\Lambda$](#orgd3a4609)
-    2.  [Chebyshev functions $\theta$ and $\psi$](#orgd0074f6)
-15. [Dirichlet convolution](#orga9136d8)
+1.  [About](#orgb474e2d)
+2.  [Notation](#org3fc85b7)
+3.  [Primes and Integer factorization](#org5547596)
+    1.  [Performance and cache](#org9cc3c64)
+    2.  [Primes](#org315ed9b)
+    3.  [Integer factorization](#org2e528f6)
+    4.  [Divisors](#orge8c6762)
+4.  [Arithmetical functions](#org300ce48)
+    1.  [Function equality](#orgb367740)
+    2.  [Additive functions](#org559898d)
+    3.  [Multiplicative functions](#orgfdf55ca)
+    4.  [Higher order function for define multiplicative and additive functions](#org24475e9)
+    5.  [Some additive functions](#org1578409)
+        1.  [Count of distinct primes - $\omega$](#orga33dfb9)
+        2.  [Total count of primes - $\Omega$](#orgf54c312)
+    6.  [Some multiplicative functions](#org6d6ebae)
+        1.  [Mobius function - $\mu$.](#org9972da4)
+        2.  [Euler totient function - $\phi$](#org7e01624)
+        3.  [Unit function - $\epsilon$](#orgb0e758b)
+        4.  [Constant one function - $1$](#orgc4f36b7)
+        5.  [Divisors count - $\sigma_0$](#org805ab4b)
+        6.  [Divisors sum - $\sigma_1$](#orgcdbaf93)
+        7.  [Divisors square sum](#org89a60e3)
+        8.  [Divisors higher order function - $\sigma_{x}$](#org39f90b1)
+        9.  [Liouville - $\lambda$](#org5463101)
+    7.  [Some other arithmetic functions](#org8950de0)
+        1.  [Mangoldt - $\Lambda$](#org468bcb3)
+        2.  [Chebyshev functions $\theta$ and $\psi$](#orge6708fb)
+    8.  [Dirichlet convolution](#orgc4a795c)
+5.  [Euclid Algorithm](#org1c143b6)
 
 
 
-<a id="orgae17cd3"></a>
+<a id="orgb474e2d"></a>
 
 # About
 
@@ -42,8 +44,9 @@ well known arithmetic functions and one can define custom arithmetic
 functions.
 
 I wrote this document with Emacs Org Mode. Then I generated markdown
-file with `pandoc` to show it nicely on github. I use Emacs babel to
-produce real output inside the document.
+file with Org Mode export to markdown `C-c C-e m m` to show it nicely
+on github. I use Emacs babel to produce real output inside the
+document.
 
 In this document I load number theory package as: 
 
@@ -53,7 +56,7 @@ In this document I load number theory package as:
 So below I will use `nt` alias.
 
 
-<a id="org10fc942"></a>
+<a id="org3fc85b7"></a>
 
 # Notation
 
@@ -62,9 +65,14 @@ So below I will use `nt` alias.
 -   $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
 
 
-<a id="org447efe1"></a>
+<a id="org5547596"></a>
 
-# Performance and cache
+# Primes and Integer factorization
+
+
+<a id="org9cc3c64"></a>
+
+## Performance and cache
 
 This library is designed to work with realtive small integers. Library
 keep in cache least prime divisor table for fast integer
@@ -105,9 +113,9 @@ element with index 6, which is 2. Index zero is not used, value for
 index 1 is 1.
 
 
-<a id="org5010e6e"></a>
+<a id="org315ed9b"></a>
 
-# Prime numbers
+## Primes
 
 `primes` function returns prime numbers which not exceeds given `n`.
 
@@ -116,9 +124,9 @@ index 1 is 1.
     (2 3 5 7 11 13 17 19 23 29)
 
 
-<a id="org2ad13b7"></a>
+<a id="org2e528f6"></a>
 
-# Integer factorization
+## Integer factorization
 
 Every integer more than $1$ can be represented uniquely as a product
 of primes.
@@ -195,9 +203,9 @@ factorize number `n` it is enough to calculate least divisor table
 with size less or equals to $\sqrt n$. 
 
 
-<a id="org570ccc2"></a>
+<a id="orge8c6762"></a>
 
-# Divisors
+## Divisors
 
 For get list of all divisors of number `n` there is `divisor`
 function. List of divisors is unordered.
@@ -207,7 +215,7 @@ function. List of divisors is unordered.
     (1 2 3 6 5 10 15 30)
 
 
-<a id="orgb6a0ae5"></a>
+<a id="org300ce48"></a>
 
 # Arithmetical functions
 
@@ -216,9 +224,9 @@ and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
 with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
 
-<a id="orgf78c79a"></a>
+<a id="orgb367740"></a>
 
-# Function equality
+## Function equality
 
 Two arithmetical function $f$ and $g$ are equal if $f(n)=g(n)$ for all
 natual $n$. There is helper function `f-equlas` which compare two
@@ -239,9 +247,9 @@ sequence of natural number we can for example do next:
     (nt/f-equals f g (filter even? (range 1 100)))
 
 
-<a id="orgd3f1b0b"></a>
+<a id="org559898d"></a>
 
-# Additive functions
+## Additive functions
 
 Additive function is a function for which
 
@@ -257,9 +265,9 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="orgd7696a4"></a>
+<a id="orgfdf55ca"></a>
 
-# Multiplicative functions
+## Multiplicative functions
 
 Multiplicative function is a function not equal to zero for all n
 for which 
@@ -276,9 +284,9 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 $$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="org9157cb2"></a>
+<a id="org24475e9"></a>
 
-# Higher order function for define multiplicative and additive functions
+## Higher order function for define multiplicative and additive functions
 
 As we have seen, to define either multiplicative or additive function
 it is enough define function on power of a prime.  There is helper
@@ -306,14 +314,14 @@ Of course there is predefined function `divisors-count`, but it
 is an example how to define custom function.
 
 
-<a id="org72c6e71"></a>
+<a id="org1578409"></a>
 
-# Some additive functions
+## Some additive functions
 
 
-<a id="org848ffd8"></a>
+<a id="orga33dfb9"></a>
 
-## Count of distinct primes - $\omega$
+### Count of distinct primes - $\omega$
 
 Count of distinct primes is a number of distinct primes which
 divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k$.
@@ -323,9 +331,9 @@ divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k
     2
 
 
-<a id="org72340bf"></a>
+<a id="orgf54c312"></a>
 
-## Total count of primes - $\Omega$
+### Total count of primes - $\Omega$
 
 Total count of primes is a number of primes and power of primes
 which divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
@@ -337,14 +345,14 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
     3
 
 
-<a id="org97f4dfe"></a>
+<a id="org6d6ebae"></a>
 
-# Some multiplicative functions
+## Some multiplicative functions
 
 
-<a id="org959cc01"></a>
+<a id="org9972da4"></a>
 
-## Mobius function - $\mu$.
+### Mobius function - $\mu$.
 
 Mobius function defined as:
 
@@ -361,9 +369,9 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
     1
 
 
-<a id="org7ebf0dd"></a>
+<a id="org7e01624"></a>
 
-## Euler totient function - $\phi$
+### Euler totient function - $\phi$
 
 Euler totient function  is a count of numbers relative  prime to given
 number `n`.  Totient function can be calculated by formula:
@@ -377,9 +385,9 @@ For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6)
     2
 
 
-<a id="org842a2f1"></a>
+<a id="orgb0e758b"></a>
 
-## Unit function - $\epsilon$
+### Unit function - $\epsilon$
 
 Unit function defined as
 
@@ -393,9 +401,9 @@ $$ \epsilon(n) = \begin{cases}
     0
 
 
-<a id="org29f60cd"></a>
+<a id="orgc4f36b7"></a>
 
-## Constant one function - $1$
+### Constant one function - $1$
 
 $$ 1(n) = 1 $$
 
@@ -404,9 +412,9 @@ $$ 1(n) = 1 $$
     1
 
 
-<a id="org23009e5"></a>
+<a id="org805ab4b"></a>
 
-## Divisors count - $\sigma_0$
+### Divisors count - $\sigma_0$
 
 Divisors count is number of divisors which divides given number $n$.
 
@@ -419,9 +427,9 @@ For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
     4
 
 
-<a id="org48692d2"></a>
+<a id="orgcdbaf93"></a>
 
-## Divisors sum - $\sigma_1$
+### Divisors sum - $\sigma_1$
 
 $$ \sigma_1(n) = \sum_{d | n} d $$
 
@@ -432,9 +440,9 @@ For number 6 it is $12 = 1 + 2 + 3 + 6$
     12
 
 
-<a id="org8f06074"></a>
+<a id="org89a60e3"></a>
 
-## Divisors square sum
+### Divisors square sum
 
 $$ \sigma_2(n) = \sum_{d | n} d^2 $$
 
@@ -445,9 +453,9 @@ For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
     50
 
 
-<a id="org8036182"></a>
+<a id="org39f90b1"></a>
 
-## Divisors higher order function - $\sigma_{x}$
+### Divisors higher order function - $\sigma_{x}$
 
 In general $\sigma_x$ function is a sum of x-th powers divisors of given n
 
@@ -467,29 +475,29 @@ accept `x` and return appropriate function.
     (def my-divisors-square-sum (nt/divisors-sum-x 2))
 
 
-<a id="org9527a92"></a>
+<a id="org5463101"></a>
 
-## Liouville - $\lambda$
+### Liouville - $\lambda$
 
 Liouville function can be defind by formula:
 
 $$\lambda(n) = (-1)^{\Omega(n)}$$
 
-where [$\Omega$](#org72340bf) have been descibed above.
+where [$\Omega$](#orgf54c312) have been descibed above.
 
     (nt/liouville (* 2 3)) 
 
     1
 
 
-<a id="orgffdcaf2"></a>
+<a id="org8950de0"></a>
 
-# Some other arithmetic functions
+## Some other arithmetic functions
 
 
-<a id="orgd3a4609"></a>
+<a id="org468bcb3"></a>
 
-## Mangoldt - $\Lambda$
+### Mangoldt - $\Lambda$
 
 $$\Lambda(n) = \begin{cases}
    \log p,& \text{if $n$ is power of prime i.e. $n = p^k$} \\
@@ -507,9 +515,9 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
     0
 
 
-<a id="orgd0074f6"></a>
+<a id="orge6708fb"></a>
 
-## Chebyshev functions $\theta$ and $\psi$
+### Chebyshev functions $\theta$ and $\psi$
 
 There are two Chebyshev functions, one $\theta$ is defined as
 
@@ -519,7 +527,7 @@ second $\psi$ defined as
 
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
-where [$\Lambda$](#orgd3a4609) have been described above
+where [$\Lambda$](#org468bcb3) have been described above
 
     (nt/chebyshev-first 2)
 
@@ -530,9 +538,9 @@ where [$\Lambda$](#orgd3a4609) have been described above
     0.6931471805599453
 
 
-<a id="orga9136d8"></a>
+<a id="orgc4a795c"></a>
 
-# Dirichlet convolution
+## Dirichlet convolution
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
 new arithmetic function defined as
@@ -590,4 +598,9 @@ Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
     (nt/f-equals (nt/dirichlet-inverse nt/mobius) nt/one)
 
     true
+
+
+<a id="org1c143b6"></a>
+
+# Euclid Algorithm
 

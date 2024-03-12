@@ -1,5 +1,5 @@
 #+title: Number theory with Clojure
-#+startup: nolatexpreview
+#+startup: nolatexpreview content
 #+PROPERTY: header-args:clojure :session *clojure-1* :cache yes :exports both :results pp
 
 * About
@@ -29,7 +29,8 @@ So below I will use ~nt~ alias.
 - $\mathbf C$ - Complex numbers
 - $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
 
-* Performance and cache
+* Primes and Integer factorization
+** Performance and cache
 
 This library is designed to work with realtive small integers. Library
 keep in cache least prime divisor table for fast integer
@@ -77,7 +78,7 @@ For instance, for get least prime divisor of number 6 we need to get
 element with index 6, which is 2. Index zero is not used, value for
 index 1 is 1.
 
-* Prime numbers
+** Primes
 
 ~primes~ function returns prime numbers which not exceeds given ~n~.
 
@@ -89,8 +90,7 @@ index 1 is 1.
 : (2 3 5 7 11 13 17 19 23 29)
 : 
 
-
-* Integer factorization
+** Integer factorization
 
 Every integer more than $1$ can be represented uniquely as a product
 of primes.
@@ -200,7 +200,7 @@ Implementation of factorization use least prime divisor table. To
 factorize number ~n~ it is enough to calculate least divisor table
 with size less or equals to $\sqrt n$. 
 
-* Divisors
+** Divisors
 
 For get list of all divisors of number ~n~ there is ~divisor~
 function. List of divisors is unordered.
@@ -219,7 +219,7 @@ Arithmetical function is an any function which accept natural number
 and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
 with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
-* Function equality
+** Function equality
 
 Two arithmetical function $f$ and $g$ are equal if $f(n)=g(n)$ for all
 natual $n$. There is helper function ~f-equlas~ which compare two
@@ -241,7 +241,7 @@ sequence of natural number we can for example do next:
   (nt/f-equals f g (filter even? (range 1 100)))
 #+end_src
 
-* Additive functions
+** Additive functions
 
 Additive function is a function for which
 
@@ -256,7 +256,7 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
-* Multiplicative functions
+** Multiplicative functions
 
 Multiplicative function is a function not equal to zero for all n
 for which 
@@ -272,7 +272,7 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 
 $$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
 
-* Higher order function for define multiplicative and additive functions
+** Higher order function for define multiplicative and additive functions
 
 As we have seen, to define either multiplicative or additive function
 it is enough define function on power of a prime.  There is helper
@@ -303,9 +303,9 @@ With helper function it can be defined as
 Of course there is predefined function ~divisors-count~, but it
 is an example how to define custom function.
 
-* Some additive functions
+** Some additive functions
 
-** Count of distinct primes - $\omega$
+*** Count of distinct primes - $\omega$
 
 Count of distinct primes is a number of distinct primes which
 divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k$.
@@ -318,7 +318,7 @@ divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k
 : 2
 : 
 
-** Total count of primes - $\Omega$
+*** Total count of primes - $\Omega$
 
 Total count of primes is a number of primes and power of primes
 which divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
@@ -333,9 +333,9 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
 : 3
 : 
 
-* Some multiplicative functions
+** Some multiplicative functions
 
-** Mobius function - $\mu$.
+*** Mobius function - $\mu$.
 
 Mobius function defined as:
 
@@ -357,7 +357,7 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
 : 
 
 
-** Euler totient function - $\phi$
+*** Euler totient function - $\phi$
 
 Euler totient function  is a count of numbers relative  prime to given
 number ~n~.  Totient function can be calculated by formula:
@@ -375,7 +375,7 @@ For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6)
 : 2
 : 
 
-** Unit function - $\epsilon$
+*** Unit function - $\epsilon$
 
 Unit function defined as
 
@@ -392,7 +392,7 @@ $$ \epsilon(n) = \begin{cases}
 : 0
 : 
 
-** Constant one function - $1$
+*** Constant one function - $1$
 
 $$ 1(n) = 1 $$
 
@@ -405,7 +405,7 @@ $$ 1(n) = 1 $$
 : 
 
 
-** Divisors count - $\sigma_0$
+*** Divisors count - $\sigma_0$
 
 Divisors count is number of divisors which divides given number $n$.
 
@@ -421,7 +421,7 @@ For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
 : 4
 : 
 
-** Divisors sum - $\sigma_1$
+*** Divisors sum - $\sigma_1$
 
 
 $$ \sigma_1(n) = \sum_{d | n} d $$
@@ -436,7 +436,7 @@ For number 6 it is $12 = 1 + 2 + 3 + 6$
 : 12
 : 
 
-** Divisors square sum
+*** Divisors square sum
 
 $$ \sigma_2(n) = \sum_{d | n} d^2 $$
 
@@ -450,7 +450,7 @@ For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
 : 50
 : 
 
-** Divisors higher order function - $\sigma_{x}$
+*** Divisors higher order function - $\sigma_{x}$
 
 In general $\sigma_x$ function is a sum of x-th powers divisors of given n
 
@@ -471,7 +471,7 @@ accept ~x~ and return appropriate function.
   (def my-divisors-square-sum (nt/divisors-sum-x 2))
 #+end_src
 
-** Liouville - $\lambda$
+*** Liouville - $\lambda$
 
 Liouville function can be defind by formula:
 
@@ -487,9 +487,9 @@ where [[*Total count of primes - $\Omega$][$\Omega$]] have been descibed above.
 : 1
 : 
 
-* Some other arithmetic functions
+** Some other arithmetic functions
 
-** Mangoldt - $\Lambda$
+*** Mangoldt - $\Lambda$
 
 $$\Lambda(n) = \begin{cases}
    \log p,& \text{if $n$ is power of prime i.e. $n = p^k$} \\
@@ -515,7 +515,7 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
 : 
 
 
-** Chebyshev functions $\theta$ and $\psi$
+*** Chebyshev functions $\theta$ and $\psi$
 
 There are two Chebyshev functions, one $\theta$ is defined as
 
@@ -544,7 +544,7 @@ where [[*Mangoldt - $\Lambda$][$\Lambda$]] have been described above
 : 0.6931471805599453
 : 
 
-* Dirichlet convolution
+** Dirichlet convolution
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
 new arithmetic function defined as
@@ -621,4 +621,4 @@ Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 : 
 
 
-
+* Euclid Algorithm  
