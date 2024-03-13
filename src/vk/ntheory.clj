@@ -1,14 +1,9 @@
 (ns vk.ntheory
-  (:require [clojure.math :as math]))
+  (:require [clojure.math :as math]
+            [vk.least-prime-divisor-table :as table]))
 
 (def max-integer 1000000)
 (def default-natural-sample (range 1 100))
-
-(defn pow
-  "Power function."
-  [a n]
-  (when (neg? n) (throw (Exception. "Expected non negative number")))
-  (apply * (repeat n a)))
 
 (defn check-integer-range
   "Throw an execption if given `n` is not positive or more than `max-integer`."
@@ -17,86 +12,10 @@
   (when-not (<= n max-integer) (throw (Exception. "Expected number <= ")))
   n)
 
-(defn- ldt-find-prime
-  "Find next prime in least divisor table.
-  Parameters: 
-    xs     - table
-    start - start index
-    end   - end index
-  "
-  ([xs start] (ldt-find-prime xs start (count xs)))
-  ([^ints xs start end]
-   (when (< start end)
-     (let [e (aget xs start)]
-       (if (and (> start 1) (= e start))
-         start
-         (recur xs (inc start) end))))))
-
-(defn- ldt-update!
-  "Update least divisor table to new value if it was not set."
-  [^ints xs ^Integer k ^Integer v]
-  (let [e (aget xs k)]
-    (when-not (< e k)
-      (aset xs k v))))
-
-(defn- ldt-build
-  "Build least divisors table."
-  [n]
-  (loop [xs (int-array (range (inc n)))
-         p (ldt-find-prime xs 2)]
-    (if (or (nil? p) (> (* p p) n))
-      xs
-      (do
-        (doseq [k (range (* p p) (inc n) p)]
-          (ldt-update! xs k p))
-        (recur xs (ldt-find-prime xs (inc p)))))))
-
-(defn- ldt-primes
-  [xs]
-  (->> (map vector xs (range))
-       (drop-while #(< (second %) 2))
-       (filter #(= (first %) (second %)))
-       (map first)))
-
-(defn- ldt-auto-upper
-  "Return auto extend upper number for given `n`."
-  [n]
-  (if (< n 10) 10
-      (->> n
-           math/log10
-           math/ceil
-           (math/pow 10)
-           int)))
-
-(def ldt (atom {:least-divisor-table nil :primes nil :upper 0}))
-
-(defn- ldt-auto-extend!
-  [n]
-  (let [{:keys [_ _ upper] :as all} @ldt]
-    (if (<= n upper)
-      all
-      (let [n (ldt-auto-upper n)
-            table (ldt-build n)
-            primes (ldt-primes table)]
-        (reset! ldt {:least-divisor-table table :primes primes :upper n})))))
-
-(defn ldt-reset!
-  []
-  (reset! ldt {:least-divisor-table nil :primes nil :upper 0}))
-
-(defn primes
-  [n]
-  (take-while #(<= % n) (:primes (ldt-auto-extend! n))))
-
-(defn- least-divisor-table
-  "Convenience function for return least divisor table not less than given `n`."
-  [n]
-  (:least-divisor-table (ldt-auto-extend! n)))
-
 (defn integer->factors
   ([^Integer n]
    (check-integer-range n)
-   (integer->factors (least-divisor-table n) n))
+   (integer->factors (table/least-divisor-table n) n))
   ([^ints xs ^Integer n]
    (lazy-seq
     (when (> n 1)
