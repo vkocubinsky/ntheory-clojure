@@ -5,25 +5,23 @@
 
 
 (defn check-integer-non-negative
-  "Throw an execption if given `n` is negative."
+  "Throw an exeption if given `n` is negative."
   [n]
   (when (neg? n) (throw (Exception. "Expected non negative number")))
   n)
 
 
 (defn check-integer-pos
-  "Throw an execption if given `n` is not positive."
+  "Throw an exeption if given `n` is not positive."
   [n]
   (when-not (pos? n) (throw (Exception. "Expected positive number")))
   n)
 
 
-
-
 (defn check-integer-max
-  "Throw an execption if given `n` is not positive."
+  "Throw an exeption if given `n` is more than `max-integer`."
   [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive number")))
+  (when-not (<= n max-integer) (throw (Exception. (str "Expected value less or equal to" max-integer))))
   n)
 
 (defn check-integer-range

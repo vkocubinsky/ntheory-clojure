@@ -1,7 +1,13 @@
 (ns vk.ntheory.basic-test
   (:require
    [clojure.test :refer [deftest is are testing]]
-   [vk.ntheory.basic :as b :refer [pow gcd gcd-extended]]))
+   [vk.ntheory.basic :as b :refer [pow gcd gcd-extended sign]]))
+
+(deftest test-sign
+  (is (= 1 (sign 2)))
+  (is (= (- 1) (sign (- 2))))
+  (is (= 0 (sign 0)))
+  )
 
 (deftest test-pow
   (testing "negative numbers"

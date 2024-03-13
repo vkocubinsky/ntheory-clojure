@@ -61,7 +61,7 @@
 
 (defn- table-auto-extend
   [n]
-  (v/check-integer-max n)
+  (v/check-integer-range n)
   (let [{:keys [_ _ upper] :as all} @cache]
     (if (<= n upper)
       all
