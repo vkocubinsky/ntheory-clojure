@@ -76,7 +76,7 @@
   (:least-divisor-table (table-auto-extend n)))
 
 
-(defn cache-reset
+(defn cache-reset!
   []
   (reset! cache {:least-divisor-table nil :primes nil :upper 0}))
 
@@ -120,7 +120,7 @@
 (defn factors-count->integer
   "Convert factors map or factors counts back to integer."
   [cn]
-  (apply * (for [[x y] cn] (basic/pow x y))))
+  (apply * (for [[x y] cn] (pow x y))))
 
 (defn factors-partitions->integer
   [xss]

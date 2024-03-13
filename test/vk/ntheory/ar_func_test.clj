@@ -4,8 +4,6 @@
    [clojure.math :as math]
    [vk.ntheory.ar-func :as nt]))
 
-(def test-natural-sample (range 1 100))
-
 (deftest test-divisors
   (testing "Non postive numbers"
     (is (thrown? Exception (nt/divisors 0)))

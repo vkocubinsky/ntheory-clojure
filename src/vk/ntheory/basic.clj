@@ -6,7 +6,7 @@
 (defn pow
   "Power function."
   [a n]
-  (v/check-integer-pos n)
+  (v/check-integer-non-negative n)
   (apply * (repeat n a)))
 
 
