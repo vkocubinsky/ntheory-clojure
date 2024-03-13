@@ -1,60 +1,18 @@
 (ns vk.ntheory
   (:require [clojure.math :as math]
-            [vk.least-prime-divisor-table :as table]))
+            [vk.least-divisor-table :as table
+             :refer [integer->factors
+                     integer->factors-distinct
+                     integer-factors-partitions
+                     integer->factors-count
+                     integers->factors-map
+                     factors->integer
+                     factors-count->integer
+                     factors-partitions->integer
+                     ]]
+            [vk.core :as c]))
 
-(def max-integer 1000000)
 (def default-natural-sample (range 1 100))
-
-(defn check-integer-range
-  "Throw an execption if given `n` is not positive or more than `max-integer`."
-  [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive number")))
-  (when-not (<= n max-integer) (throw (Exception. "Expected number <= ")))
-  n)
-
-(defn integer->factors
-  ([^Integer n]
-   (check-integer-range n)
-   (integer->factors (table/least-divisor-table n) n))
-  ([^ints xs ^Integer n]
-   (lazy-seq
-    (when (> n 1)
-      (let [d (aget xs n)]
-        (cons d (integer->factors xs (quot n d))))))))
-
-(defn integer->factors-distinct
-  [n]
-  (->> n integer->factors dedupe))
-
-(defn integer->factors-partitions
-  [n]
-  (->> n integer->factors (partition-by identity)))
-
-(defn integer->factors-count
-  [n]
-  (->> n
-       integer->factors-partitions
-       (map (fn [xs] [(first xs) (count xs)]))))
-
-(defn integer->factors-map
-  [n]
-  (into {} (integer->factors-count n)))
-
-(defn factors->integer
-  [xs]
-  (apply * xs))
-
-(defn factors-count->integer
-  "Convert factors map or factors counts back to integer."
-  [cn]
-  (apply * (for [[x y] cn] (pow x y))))
-
-(defn factors-partitions->integer
-  [xss]
-  (->> xss
-       (map #(apply * %))
-       (apply *))
-  )
 
 (defn- divisors'
   "Divisors of factorized numbers.
@@ -75,7 +33,7 @@
 (defn divisors
   "Divisors of whole integer."
   [n]
-  (check-integer-range n)
+  (c/check-integer-range n)
   (as-> n v
     (integer->factors-count v)
     (divisors' v [[]])

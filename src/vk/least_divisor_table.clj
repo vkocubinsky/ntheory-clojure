@@ -60,6 +60,7 @@
 
 (defn- table-auto-extend
   [n]
+  (c/check-max-integer n)
   (let [{:keys [_ _ upper] :as all} @cache]
     (if (<= n upper)
       all
@@ -84,18 +85,8 @@
   (take-while #(<= % n) (:primes (table-auto-extend n))))
 
 
-(def max-integer 1000000)
-
-(defn check-integer-range
-  "Throw an execption if given `n` is not positive or more than `max-integer`."
-  [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive number")))
-  (when-not (<= n max-integer) (throw (Exception. "Expected number <= ")))
-  n)
-
 (defn integer->factors
   ([^Integer n]
-   (check-integer-range n)
    (integer->factors (least-divisor-table n) n))
   ([^ints xs ^Integer n]
    (lazy-seq
