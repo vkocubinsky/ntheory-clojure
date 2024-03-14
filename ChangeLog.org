@@ -5,6 +5,9 @@
 * Version 0.4.0
 
 - Switch from pandoc to Org Mode export
+- Split ntheory.clj into namespaces
+- Add order function
+- Update tests  
 
 * Version 0.3.0 <2024-03-11 Mon>
 

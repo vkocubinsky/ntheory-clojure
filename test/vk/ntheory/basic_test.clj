@@ -1,7 +1,7 @@
 (ns vk.ntheory.basic-test
   (:require
    [clojure.test :refer [deftest is are testing]]
-   [vk.ntheory.basic :as b :refer [pow gcd gcd-extended sign]]))
+   [vk.ntheory.basic :as b :refer [pow gcd gcd-extended sign order]]))
 
 (deftest test-sign
   (is (= 1 (sign 2)))
@@ -25,6 +25,19 @@
       256 (pow 2 8)
       512 (pow 2 9)
       1024 (pow 2 10))))
+
+(deftest test-order
+  (are [x y] (= x y)
+    0 (order 2 1)
+    1 (order 2 2)
+    0 (order 2 3)
+    2 (order 2 4)
+    0 (order 2 5)
+    1 (order 2 6)
+    0 (order 2 7)
+    3 (order 2 8)
+    0 (order 2 9)
+    1 (order 2 10)))
 
 
 (deftest test-gcd

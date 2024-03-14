@@ -9,6 +9,16 @@
   (v/check-integer-non-negative n)
   (apply * (repeat n a)))
 
+(defn order
+  "Greatest power of p divides n."
+  [p n]
+  (loop [n  n
+         k  0]
+    (let [q (quot n p)
+          r (mod n p)]
+      (if (= r 0)
+        (recur q (inc k))
+        k))))
 
 (defn sign
   [n]
