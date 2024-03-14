@@ -1,6 +1,10 @@
-;;select buffer
-;;run export
-(progn
-  (org-md-export-as-markdown)
-  (org-latex-export-to-pdf) 
- )
+(save-window-excursion
+  (let* ((prj (project-current t))
+         (root (project-root prj))
+         (readme (concat root "readme.org")))
+    (find-file readme)
+    (org-md-export-as-markdown)
+    (find-file readme)
+    (org-latex-export-to-pdf) 
+    )
+  )

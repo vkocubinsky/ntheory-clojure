@@ -9,10 +9,15 @@ functions, further more multiplicative functions. There are set of
 well known arithmetic functions and one can define custom arithmetic
 functions.
 
-I wrote this document with Emacs Org Mode. Then I generated markdown
-file with Org Mode export to markdown =C-c C-e m m= to show it nicely
-on github. I use Emacs babel to produce real output inside the
-document.
+I wrote this document =readme.org= with Emacs Org Mode. Then I
+generate markdown file =readme.md= with Org Mode export to markdown
+=C-c C-e m m=, and generate pdf file =readme.odf= with Org Mode export
+to pdf =C-c C-e l p=.  Github by default show =readme.md= if a project
+has such file.  It looks enough good, even math equation is
+supported. But I see some issue with greek characters in table of
+content. If it is a problem =readme.pdf= looks better. Emacs file
+"make.el" can be used to export markdown and pdf with one call. I use
+Emacs babel for clojure to produce real output inside the document.
 
 In this document I load number theory packages as: 
 
@@ -682,5 +687,29 @@ Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 #+RESULTS[e17afcfeaabbc9d50d6f000814f6e2e43b7f447e]:
 : true
 : 
+
+
+Function ~dirichlet-inverse~ defined as recursive function, it may
+execute slow. But inverse of completely multiplicative function $f(n)$
+is $f(n) \mu(n)$(usual multiplication), for instance inverse
+of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
+
+#+begin_src clojure
+  (f/f-equals
+   (f/dirichlet-convolution 
+      #(* (identity %) (f/mobius %))
+      identity
+   )
+   f/unit)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+
+
+
+
 
 
