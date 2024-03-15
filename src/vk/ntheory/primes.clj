@@ -46,7 +46,6 @@
        (filter #(= (first %) (second %)))
        (map first)))
 
-
 (defn- table-extend-size
   "Return auto extend upper number for given `n`."
   [n]
@@ -75,15 +74,38 @@
   [n]
   (:least-divisor-table (table-auto-extend n)))
 
-
 (defn cache-reset!
   []
   (reset! cache {:least-divisor-table nil :primes nil :upper 0}))
 
-
 (defn primes
   [n]
   (take-while #(<= % n) (:primes (table-auto-extend n))))
+
+(defn unit?
+  [n]
+  (v/check-integer-pos n)
+  "Is given `n` a unit?"
+  (= n 1))
+
+(defn prime?
+  "Is given `n` a prime number?"
+  [n]
+  (v/check-integer-pos n)
+  (if (unit? n)
+    false
+    (let [table (least-divisor-table n)
+          e (aget table n)]
+      (= e n))))
+
+(defn composite?
+  "Is given `n` a composite number?"
+  [n]
+  (v/check-integer-pos n)
+  (if (unit? n)
+    false
+    ((complement prime?) n)))
+
 
 
 (defn integer->factors
@@ -126,8 +148,7 @@
   [xss]
   (->> xss
        (map #(apply * %))
-       (apply *))
-  )
+       (apply *)))
 
 
 

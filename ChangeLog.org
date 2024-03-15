@@ -6,8 +6,11 @@
 
 - Switch from pandoc to Org Mode export
 - Split ntheory.clj into namespaces
-- Add order function
-- Update tests  
+- Add primes/order function
+- Add primes/composite? function
+- Add primes/prime? function
+- Add basic/divides? function  
+- Add congruence namespace
 
 * Version 0.3.0 <2024-03-11 Mon>
 

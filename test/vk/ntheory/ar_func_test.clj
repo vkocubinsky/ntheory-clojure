@@ -4,7 +4,7 @@
    [clojure.math :as math]
    [vk.ntheory.ar-func :as  f]))
 
-(deftest test-divisors
+(deftest divisors-test
   (testing "Non postive numbers"
     (is (thrown? Exception (f/divisors 0)))
     (is (thrown? Exception (f/divisors -1))))
@@ -35,7 +35,7 @@
       (let [fa (f x)]
         (is (= fe fa) (format "Expected f(%s) == %s, but got %s" x fe fa))))))
 
-(deftest test-primes-count-distinct
+(deftest primes-count-distinct-test
   (f-test f/primes-count-distinct
           {1 0
            2 1
@@ -48,7 +48,7 @@
            9 1
            10 2}))
 
-(deftest test-primes-count-total
+(deftest primes-count-total-test
   (f-test f/primes-count-total
           {1 0
            2 1
@@ -61,7 +61,7 @@
            9 2
            10 2}))
 
-(deftest test-chebyshev-first
+(deftest chebyshev-first-test
   (f-test f/chebyshev-first
           {1 0
            2 (math/log 2)
@@ -69,7 +69,7 @@
            4 (+ (math/log 2) (math/log 3))
            5 (+ (math/log 2) (math/log 3) (math/log 5))}))
 
-(deftest test-chebyshev-second
+(deftest chebyshev-second-test
   (f-test f/chebyshev-second
           {1 0
            2 (+ (f/mangoldt 2))
@@ -77,7 +77,7 @@
            4 (+ (f/mangoldt 2) (f/mangoldt 4) (f/mangoldt 3))
            5 (+ (f/mangoldt 2) (f/mangoldt 4) (f/mangoldt 3) (f/mangoldt 5))}))
 
-(deftest test-mangoldt
+(deftest mangoldt-test
   (f-test f/mangoldt
           {1 0
            2 (math/log 2)
@@ -90,7 +90,7 @@
            9 (math/log 3)
            10 0}))
 
-(deftest test-liouville
+(deftest liouville-test
   (f-test f/liouville
           {1 1
            2 -1
@@ -103,7 +103,7 @@
            9 1
            10 1}))
 
-(deftest test-mobius
+(deftest mobius-test
   (f-test f/mobius
           {1  1
            2 -1
@@ -116,7 +116,7 @@
            9  0
            10 1}))
 
-(deftest test-totient
+(deftest totient-test
   (f-test f/totient
           {1  1
            2  1
@@ -129,7 +129,7 @@
            9  6
            10 4}))
 
-(deftest test-unit
+(deftest unit-test
   (f-test f/unit
           {1 1
            2 0
@@ -137,7 +137,7 @@
            4 0
            5 0}))
 
-(deftest test-one
+(deftest one-test
   (f-test f/one
           {1 1
            2 1
@@ -145,7 +145,7 @@
            4 1
            5 1}))
 
-(deftest test-divisors-count
+(deftest divisors-count-test
   (f-test f/divisors-count
           {1  1
            2  2
@@ -158,7 +158,7 @@
            9  3
            10 4}))
 
-(deftest test-divisors-sum
+(deftest divisors-sum-test
   (f-test f/divisors-sum
           {1   1
            2   3
@@ -171,7 +171,7 @@
            9  13
            10 18}))
 
-(deftest test-divisors-square-sum
+(deftest divisors-square-sum-test
   (f-test f/divisors-square-sum
           {1    1
            2    5
@@ -184,19 +184,19 @@
            9   91
            10 130}))
 
-(deftest test-divisors-sum-a
+(deftest divisors-sum-a-test
   (is (f/f-equals f/divisors-count (f/divisors-sum-x 0)))
   (is (f/f-equals f/divisors-sum (f/divisors-sum-x 1)))
   (is (f/f-equals f/divisors-square-sum (f/divisors-sum-x 2))))
 
-(deftest test-relations
+(deftest relations-test
   (is (f/f-equals f/unit (f/dirichlet-convolution f/mobius f/one)))
   (is (f/f-equals identity (f/dirichlet-convolution f/totient f/one)))
   (is (f/f-equals f/divisors-count (f/dirichlet-convolution f/one f/one)))
   (is (f/f-equals f/divisors-sum (f/dirichlet-convolution identity f/one)))
   (is (f/f-equals f/divisors-sum (f/dirichlet-convolution f/totient f/divisors-count))))
 
-(deftest test-inverse
+(deftest inverse-test
   (is (f/f-equals (f/dirichlet-inverse f/one) f/mobius))
   (is (f/f-equals (f/dirichlet-inverse f/mobius) f/one)))
 

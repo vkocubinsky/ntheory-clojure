@@ -5,7 +5,7 @@
   )
 
 
-(deftest test-primes
+(deftest primes-test
   (testing "cache"
     (p/cache-reset!)
     (is (= 0 (:upper @p/cache))))
@@ -21,7 +21,14 @@
     (is [2 3 5 7] (p/primes 10))
     (is [2 3 5 7 11 13 17 19 23 29] (p/primes 30))))
 
-(deftest test-integer>factors-map
+(deftest prime?-test
+  (are [x y] (= x y)
+    true (p/prime? 2)
+  ))
+
+
+
+(deftest integer>factors-map-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/integer->factors-map 0)))
     (is (thrown? Exception (p/integer->factors-map -1))))
@@ -49,7 +56,7 @@
       {19 1} (p/integer->factors-map 19)
       {2 2, 5 1} (p/integer->factors-map 20))))
 
-(deftest test-integer>factors-count
+(deftest integer>factors-count-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/integer->factors-count 0)))
     (is (thrown? Exception (p/integer->factors-count -1))))
@@ -77,7 +84,7 @@
       [[19 1]] (p/integer->factors-count 19)
       [[2 2] [5 1]] (p/integer->factors-count 20))))
 
-(deftest test-integer>factors-paritions
+(deftest integer>factors-paritions-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/integer->factors-partitions 0)))
     (is (thrown? Exception (p/integer->factors-partitions -1))))
@@ -106,7 +113,7 @@
       [[2 2] [5]] (p/integer->factors-partitions 20))))
 
 
-(deftest test-integer>factors
+(deftest integer>factors-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/integer->factors 0)))
     (is (thrown? Exception (p/integer->factors -1))))
@@ -135,7 +142,7 @@
       [2 2 5] (p/integer->factors 20))))
 
 
-(deftest test-factorization-properties
+(deftest factorization-properties-test
   (doseq [n (range 1 100)]
     (is (= n (p/factors-count->integer (p/integer->factors-count n))))
     (is (= n (p/factors-count->integer (p/integer->factors-map n))))

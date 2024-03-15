@@ -2,6 +2,11 @@
   (:require [vk.ntheory.validation :as v])
   )
 
+(defn divides?
+  "Return true if `a` divides `b` otherwise false"
+ [a b]
+ (zero? (mod b a)))
+
 
 (defn pow
   "Power function."

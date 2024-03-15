@@ -3,7 +3,7 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.validation :as v]))
 
-(deftest test-integer-positive
+(deftest integer-positive-test
   (testing "Fail"
     (is (thrown? Exception (v/check-integer-pos -1)))
     (is (thrown? Exception (v/check-integer-pos 0))))
@@ -11,7 +11,7 @@
     (is (= 1 (v/check-integer-pos 1)))
     (is (= 2 (v/check-integer-pos 2)))))
 
-(deftest test-integer-non-negative
+(deftest integer-non-negative-test
   (testing "Fail"
     (is (thrown? Exception (v/check-integer-non-negative -1)))
     (is (thrown? Exception (v/check-integer-non-negative -2))))
@@ -19,14 +19,14 @@
     (is (= 0 (v/check-integer-non-negative 0)))
     (is (= 1 (v/check-integer-non-negative 1)))))
 
-(deftest test-integer-max
+(deftest integer-max-test
   (testing "Fail"
     (is (thrown? Exception (v/check-integer-max (inc v/max-integer)))))
   (testing "Success"
     (is (= 0 (v/check-integer-non-negative 0)))
     (is (= 1 (v/check-integer-non-negative 1)))))
 
-(deftest test-integer-range
+(deftest integer-range-test
   (testing "Fail"
     (is (thrown? Exception (v/check-integer-range -1)))
     (is (thrown? Exception (v/check-integer-range 0))))
