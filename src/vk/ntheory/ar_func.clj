@@ -1,16 +1,6 @@
 (ns vk.ntheory.ar-func
   (:require [clojure.math :as math]
-            [vk.ntheory.primes :as p
-             :refer [integer->factors
-                     integer->factors-distinct
-                     integer->factors-partitions
-                     integer->factors-count
-                     integer->factors-map
-                     factors->integer
-                     factors-count->integer
-                     factors-partitions->integer
-                     primes
-                     ]]
+            [vk.ntheory.primes :as p]
             [vk.ntheory.validation :as v]
             [vk.ntheory.basic :refer [pow]]))
 
@@ -31,15 +21,14 @@
                          (conj d [p i]))))
     acc))
 
-
 (defn divisors
   "Divisors of whole integer."
   [n]
   (v/check-integer-range n)
   (as-> n v
-    (integer->factors-count v)
+    (p/integer->factors-count v)
     (divisors' v [[]])
-    (map factors-count->integer v)))
+    (map p/factors-count->integer v)))
 
 (defn reduce-on-prime-count
   "Higher order which return arithmetical function based on
@@ -53,7 +42,7 @@
   (fn [n]
     (v/check-integer-range n)
     (->> n
-         integer->factors-count
+         p/integer->factors-count
          (map (fn [[p k]] (f p k)))
          (reduce rf))))
 
@@ -61,13 +50,13 @@
   "Number of primes divides given `n` - ω."
   [n]
   (v/check-integer-range n)
-  (-> n integer->factors-distinct count))
+  (-> n p/integer->factors-distinct count))
 
 (defn primes-count-total
   "Number of primes and their powers divides given `n` - Ω."
   [n]
   (v/check-integer-range n)
-  (-> n integer->factors count))
+  (-> n p/integer->factors count))
 
 (defn liouville
   "Liouville function - λ"
@@ -79,7 +68,7 @@
   "Mangoldt function - Λ"
   [n]
   (v/check-integer-range n)
-  (let [[[p & _] & r] (integer->factors-partitions n)]
+  (let [[[p & _] & r] (p/integer->factors-partitions n)]
     (if (and p (nil? r))
       (math/log p)
       0)))
@@ -112,7 +101,7 @@
   [n]
   (v/check-integer-range n)
   (->> n
-       integer->factors-count
+       p/integer->factors-count
        (reduce (fn [a [_ k]] (if (= k 1) (* a -1) (reduced 0))) 1)))
 
 (def totient
@@ -138,7 +127,7 @@
   [n]
   (v/check-integer-range n)
   (->> n
-       primes
+       p/primes
        (map math/log)
        (apply +)))
 
@@ -147,7 +136,7 @@
   [n]
   (v/check-integer-range n)
   (->> n
-       primes
+       p/primes
        (map #(* (math/log %)
                 (math/floor (/ (math/log n)
                                (math/log %)))))

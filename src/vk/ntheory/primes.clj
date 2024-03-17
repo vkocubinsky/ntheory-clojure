@@ -83,9 +83,9 @@
   (take-while #(<= % n) (:primes (table-auto-extend n))))
 
 (defn unit?
+  "Is given `n` a unit?"
   [n]
   (v/check-integer-pos n)
-  "Is given `n` a unit?"
   (= n 1))
 
 (defn prime?
