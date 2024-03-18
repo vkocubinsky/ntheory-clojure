@@ -30,6 +30,15 @@
 
       (sorted-set))))
 
-
+(defn solve-2-remainders
+  "Solve system of two congruences such that:
+  x ≡ c₁ (mode m₁)
+  x ≡ c₂ (mod m₂)"
+  [m1 c1
+   m2 c2]
+  (let [M (b/lcm m1 m2)
+        [a & _] (solve-linear m1 (- c2 c1) m2)]
+    (when-not (nil? a)
+      [M (+ c1 (* m1 a))])))
 
 

@@ -39,6 +39,12 @@
     (if (zero? b) a
         (recur b (mod a b)))))
 
+(defn lcm
+  "Least common multiple"
+  [a b]
+  (abs (/ (* a b) (gcd a b))))
+
+
 (defn gcd-extended
   "Extended Euclid algorithm.
   For two given number `a` and `b` returns vector `[d s t]`,

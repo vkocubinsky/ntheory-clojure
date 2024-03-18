@@ -6,6 +6,7 @@
 
 - Switch from pandoc to Org Mode export
 - Split ntheory.clj into namespaces
+- Add basic/lcm function
 - Add primes/order function
 - Add primes/composite? function
 - Add primes/prime? function
