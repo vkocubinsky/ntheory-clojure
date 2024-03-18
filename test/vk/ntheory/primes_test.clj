@@ -8,146 +8,141 @@
     (p/cache-reset!)
     (is (= 0 (:upper @p/cache))))
   (testing "small numbers"
-    (are [x y] (= x (p/primes y))
-      [2] 2
-      [2 3] 3
-      [2 3] 4
-      [2 3 5] 5
-      [2 3 5] 6
-      [2 3 5 7] 7
-      [2 3 5 7] 9
-      [2 3 5 7] 8
-      [2 3 5 7] 10
-      [2 3 5 7 11 13 17 19 23 29] 30)))
-
+    (are [x y] (= (p/primes x) y)
+      1 []
+      2 [2]
+      3 [2 3]
+      4 [2 3]
+      5 [2 3 5]
+      6 [2 3 5]
+      7 [2 3 5 7]
+      8 [2 3 5 7]
+      9 [2 3 5 7]
+      10 [2 3 5 7]
+      30 [2 3 5 7 11 13 17 19 23 29])))
 
 (deftest categorize-test
   (testing "small numbers"
-    (are [x y] (= x ((juxt p/unit? p/prime? p/composite?) y))
-      ;; unit? prime? composite? 
-      [true false false] 1
-      [false true false] 2
-      [false true false] 3
-      [false false true] 4
-      [false true false] 5
-      [false false true] 6
-      [false true false] 7
-      [false false true] 8
-      [false false true] 9
-      [false false true] 10)))
+    (are [x y] (= ((juxt p/unit? p/prime? p/composite?) x) y)
+      ;; number [unit? prime? composite?] 
+      1 [true false false]
+      2 [false true false]
+      3 [false true false]
+      4 [false false true]
+      5 [false true false]
+      6 [false false true]
+      7 [false true false]
+      8 [false false true]
+      9 [false false true]
+      10 [false false true])))
 
 (deftest integer>factors-map-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/integer->factors-map 0)))
     (is (thrown? Exception (p/integer->factors-map -1))))
-  (testing "Unit"
-    (is (= {} (p/integer->factors-map 1))))
   (testing "Positive numbers"
-    (are [x y] (= x (p/integer->factors-map y))
-      {} 1 
-      {2 1} 2
-      {3 1} 3
-      {2 2} 4
-      {5 1} 5
-      {2 1, 3 1} 6
-      {7 1} 7
-      {2 3} 8
-      {3 2} 9
-      {2 1, 5 1} 10
-      {11 1} 11
-      {2 2, 3 1} 12
-      {13 1} 13
-      {2 1, 7 1} 14
-      {3 1, 5 1} 15
-      {2 4} 16
-      {17 1} 17
-      {2 1, 3 2} 18
-      {19 1} 19
-      {2 2, 5 1} 20)))
+    (are [x y] (= (p/integer->factors-map x) y)
+      1  {}
+      2  {2 1}
+      3  {3 1}
+      4  {2 2}
+      5  {5 1}
+      6  {2 1, 3 1}
+      7  {7 1}
+      8  {2 3}
+      9  {3 2}
+      10 {2 1, 5 1}
+      11 {11 1}
+      12 {2 2, 3 1}
+      13 {13 1}
+      14 {2 1, 7 1}
+      15 {3 1, 5 1}
+      16 {2 4}
+      17 {17 1}
+      18 {2 1, 3 2}
+      19 {19 1}
+      20 {2 2, 5 1})))
 
 (deftest integer>factors-count-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/integer->factors-count 0)))
     (is (thrown? Exception (p/integer->factors-count -1))))
-  (testing "Unit"
-    (is (= [] (p/integer->factors-count 1))))
   (testing "Positive numbers"
-    (are [x y] (= x y)
-      [[2 1]] (p/integer->factors-count 2)
-      [[3 1]] (p/integer->factors-count 3)
-      [[2 2]] (p/integer->factors-count 4)
-      [[5 1]] (p/integer->factors-count 5)
-      [[2 1] [3 1]] (p/integer->factors-count 6)
-      [[7 1]] (p/integer->factors-count 7)
-      [[2 3]] (p/integer->factors-count 8)
-      [[3 2]] (p/integer->factors-count 9)
-      [[2 1] [5 1]] (p/integer->factors-count 10)
-      [[11 1]] (p/integer->factors-count 11)
-      [[2 2] [3 1]] (p/integer->factors-count 12)
-      [[13 1]] (p/integer->factors-count 13)
-      [[2 1] [7 1]] (p/integer->factors-count 14)
-      [[3 1] [5 1]] (p/integer->factors-count 15)
-      [[2 4]] (p/integer->factors-count 16)
-      [[17 1]] (p/integer->factors-count 17)
-      [[2 1] [3 2]] (p/integer->factors-count 18)
-      [[19 1]] (p/integer->factors-count 19)
-      [[2 2] [5 1]] (p/integer->factors-count 20))))
+    (are [x y] (= (p/integer->factors-count x) y)
+      1  []
+      2  [[2 1]]
+      3  [[3 1]]
+      4  [[2 2]]
+      5  [[5 1]]
+      6  [[2 1] [3 1]]
+      7  [[7 1]]
+      8  [[2 3]]
+      9  [[3 2]]
+      10 [[2 1] [5 1]]
+      11 [[11 1]]
+      12 [[2 2] [3 1]]
+      13 [[13 1]]
+      14 [[2 1] [7 1]]
+      15 [[3 1] [5 1]]
+      16 [[2 4]]
+      17 [[17 1]]
+      18 [[2 1] [3 2]]
+      19 [[19 1]]
+      20 [[2 2] [5 1]])))
 
 (deftest integer>factors-paritions-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/integer->factors-partitions 0)))
     (is (thrown? Exception (p/integer->factors-partitions -1))))
-  (testing "Unit"
-    (is (= [] (p/integer->factors-partitions 1))))
   (testing "Positive numbers"
-    (are [x y] (= x y)
-      [[2]] (p/integer->factors-partitions 2)
-      [[3]] (p/integer->factors-partitions 3)
-      [[2 2]] (p/integer->factors-partitions 4)
-      [[5]] (p/integer->factors-partitions 5)
-      [[2] [3]] (p/integer->factors-partitions 6)
-      [[7]] (p/integer->factors-partitions 7)
-      [[2 2 2]] (p/integer->factors-partitions 8)
-      [[3 3]] (p/integer->factors-partitions 9)
-      [[2] [5]] (p/integer->factors-partitions 10)
-      [[11]] (p/integer->factors-partitions 11)
-      [[2 2] [3]] (p/integer->factors-partitions 12)
-      [[13]] (p/integer->factors-partitions 13)
-      [[2] [7]] (p/integer->factors-partitions 14)
-      [[3] [5]] (p/integer->factors-partitions 15)
-      [[2 2 2 2]] (p/integer->factors-partitions 16)
-      [[17]] (p/integer->factors-partitions 17)
-      [[2] [3 3]] (p/integer->factors-partitions 18)
-      [[19]] (p/integer->factors-partitions 19)
-      [[2 2] [5]] (p/integer->factors-partitions 20))))
+    (are [x y] (= (p/integer->factors-partitions x) y)
+      1  []
+      2  [[2]]
+      3  [[3]]
+      4  [[2 2]]
+      5  [[5]]
+      6  [[2] [3]]
+      7  [[7]]
+      8  [[2 2 2]]
+      9  [[3 3]]
+      10 [[2] [5]]
+      11 [[11]]
+      12 [[2 2] [3]]
+      13 [[13]]
+      14 [[2] [7]]
+      15 [[3] [5]]
+      16 [[2 2 2 2]]
+      17 [[17]]
+      18 [[2] [3 3]]
+      19 [[19]]
+      20 [[2 2] [5]])))
 
 (deftest integer>factors-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/integer->factors 0)))
     (is (thrown? Exception (p/integer->factors -1))))
-  (testing "Unit"
-    (is (= [] (p/integer->factors 1))))
   (testing "Positive numbers"
-    (are [x y] (= x y)
-      [2] (p/integer->factors 2)
-      [3] (p/integer->factors 3)
-      [2 2] (p/integer->factors 4)
-      [5] (p/integer->factors 5)
-      [2 3] (p/integer->factors 6)
-      [7] (p/integer->factors 7)
-      [2 2 2] (p/integer->factors 8)
-      [3 3] (p/integer->factors 9)
-      [2 5] (p/integer->factors 10)
-      [11] (p/integer->factors 11)
-      [2 2 3] (p/integer->factors 12)
-      [13] (p/integer->factors 13)
-      [2 7] (p/integer->factors 14)
-      [3 5] (p/integer->factors 15)
-      [2 2 2 2] (p/integer->factors 16)
-      [17] (p/integer->factors 17)
-      [2 3 3] (p/integer->factors 18)
-      [19] (p/integer->factors 19)
-      [2 2 5] (p/integer->factors 20))))
+    (are [x y] (= (p/integer->factors x) y)
+      1  []
+      2  [2]
+      3  [3]
+      4  [2 2]
+      5  [5]
+      6  [2 3]
+      7  [7]
+      8  [2 2 2]
+      9  [3 3]
+      10 [2 5]
+      11 [11]
+      12 [2 2 3]
+      13 [13]
+      14 [2 7]
+      15 [3 5]
+      16 [2 2 2 2]
+      17 [17]
+      18 [2 3 3]
+      19 [19]
+      20 [2 2 5])))
 
 (deftest factorization-properties-test
   (doseq [n (range 1 100)]
