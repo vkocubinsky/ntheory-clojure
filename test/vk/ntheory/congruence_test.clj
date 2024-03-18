@@ -18,3 +18,10 @@
     (is (= #{16} (c/solve-linear 9 8 34))))
   (testing "Example 55x ≡ 7 (mod 87)"
     (is (= #{46} (c/solve-linear 55 7 87)))))
+
+
+(deftest solve-remainders-test
+  (testing "Trivial x ≡ 3 (mod 5)"
+    (is (= [3 5] (c/solve-reminders [[3 5]])))
+    )
+  )
