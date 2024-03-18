@@ -1,6 +1,7 @@
 (ns vk.ntheory.congruence
   (:require
-   [vk.ntheory.basic :as b]))
+   [vk.ntheory.basic :as b]
+   [vk.ntheory.validation :as v]))
 
 (defn- mod-m [m] #(mod % m))
 
@@ -30,15 +31,42 @@
 
       (sorted-set))))
 
+
 (defn solve-2-remainders
   "Solve system of two congruences such that:
   x ≡ c₁ (mode m₁)
   x ≡ c₂ (mod m₂)"
   [m1 c1
    m2 c2]
-  (let [M (b/lcm m1 m2)
-        [a & _] (solve-linear m1 (- c2 c1) m2)]
-    (when-not (nil? a)
-      [M (+ c1 (* m1 a))])))
+  (v/check-integer-pos m1)
+  (v/check-integer-pos m2)
+  (let [[d a' _] (b/gcd-extended m1 m2)]
+    (when (b/divides? d (- c2 c1))
+      (let [c (/ (- c2 c1) d)
+            a (* a' c)
+            M (/ (* m1 m2) d)]
+        [M (mod (+ c1 (* m1 a)) M)]
+        )
+      )
+    )
+)
 
 
+(defn solve-n-reminders
+  "Solve system of n congruences such that
+  x ≡ c₁ (mod m₁)
+  x ≡ c₂ (mod m₂)
+  ...
+  Parameter `m` is a map of modulus to remainder i.e. {m₁ c₁ m₂ c₂ ... }.
+  Returns pair [M r], where M is least common mulitple of m₁, m₂, ..., and
+  r is residue to modulus M."
+  [m]
+  (condp = (count m)
+    1 (let [[x & _] m] x)
+    2 (let [[[m1 c1] [m2 c2] & _] m] (solve-2-remainders m1 c1 m2 c2) )
+    "more than 2")
+  )
+
+
+(solve-n-reminders {34 9})
+(solve-n-reminders {34 9 19 4})
