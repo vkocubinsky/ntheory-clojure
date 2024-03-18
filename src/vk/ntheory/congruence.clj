@@ -62,7 +62,14 @@
       (when-let [[c m] (solve-2-remainders c1 m1 c2 m2)]
         (recur (cons [c m] rest))))))
 
-(solve-reminders [[9 34]])
-(solve-reminders [[9 34] [4 19]])
-(solve-reminders [[9 34] [4 19] [8 1]])
+
+(defn solve-chinese-remainders
+  "Solve system of n conguences of by coprimes modulus
+  x ≡ c₁ (m₁)
+  x ≡ c₂ (m₂)
+  ...
+  Parameter `xs` is a sequence of pairs ([c₁ m₁] [c₂ m₂] ...)
+  Returns pair [M r], where M is m₁ * m₂ ... and r is residue to modulus M."
+  [xs])
+
 

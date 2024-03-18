@@ -32,4 +32,9 @@
     (is (= [86 315] (c/solve-reminders [[2 7][5 9][11 15]]))))
   )
 
+;; todo : replace to solve-coprime-reimainders
+(deftest solve-coprime-remainders-test
+  (testing "x ≡ 6 (mod 17); x ≡ 4 (mod 11); x ≡ -3 (mod 8)"
+    (is (= [125 1496] (c/solve-reminders [[6 17] [4 11] [-3 8]])))
+    ))
 
