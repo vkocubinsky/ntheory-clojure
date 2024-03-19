@@ -12,6 +12,9 @@
 - Add primes/prime? function
 - Add basic/divides? function  
 - Add congruence namespace
+  - linear congruence
+  - system of remainders
+  - chinese remainder theorem
 
 * Version 0.3.0 <2024-03-11 Mon>
 
