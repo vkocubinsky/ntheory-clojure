@@ -1,32 +1,58 @@
-(ns vk.ntheory.validation)
+(ns vk.ntheory.validation
+  (:require [clojure.spec.alpha :as s])
+  )
 
+(def max-int
+  "Max integer which can be factorized."
+  1000000)
 
-(def max-integer 1000000)
-
-
-(defn check-integer-non-negative
-  "Throw an exeption if given `n` is negative."
+(defn- less-equal-max-int?
+  "Less or equal to `max-int`"
   [n]
-  (when (neg? n) (throw (Exception. "Expected non negative number")))
+  (<= n max-int))
+
+(defn- check-spec
+  "Check is `data` conform to `spec`.
+  If not throw an exception."
+  [spec data]
+  (let [parsed (s/conform spec data)]
+    (if (s/invalid? parsed)
+      (throw (IllegalArgumentException. (str "Invalid input: " (s/explain-str spec data))))
+      data
+      )
+    )
+  )
+
+(defn check-int-pos
+  "Check if given `n` is positive integer."
+  [n]
+  (check-spec (s/and int? pos?) n)
   n)
 
-
-(defn check-integer-pos
-  "Throw an exeption if given `n` is not positive."
+(defn check-int-non-neg
+  "Check is given integer `n` non negative integer."
   [n]
-  (when-not (pos? n) (throw (Exception. "Expected positive number")))
-  n)
+  (check-spec (s/and int? (complement neg?))  n))
 
-
-(defn check-integer-max
-  "Throw an exeption if given `n` is more than `max-integer`."
+(defn check-int-non-zero
+  "Check is given integer `n` is not zero."
   [n]
-  (when-not (<= n max-integer) (throw (Exception. (str "Expected value less or equal to" max-integer))))
-  n)
+  (check-spec (s/and int? (complement zero?)) n))
 
-(defn check-integer-range
-  "Throw an execption if given `n` is not positive or more than `max-integer`."
+
+
+(defn check-int-pos-max
+  "Check `0 < n <= max-int`."
   [n]
-  (check-integer-pos n)
-  (check-integer-max n)
-  n)
+  (check-spec (s/and int? pos? less-equal-max-int?) n))
+
+(defn check-int-non-neg-max
+  "Check `0 <= n <= max-int`" 
+  [n]
+  (check-spec (s/and int? (complement neg?) less-equal-max-int?) n))
+
+(defn check-int-non-zero-max
+  "Check is given integer `n` is not zero and less or equal to max-int "
+  [n]
+  (check-spec (s/and int? (complement zero?) less-equal-max-int?) n))
+  

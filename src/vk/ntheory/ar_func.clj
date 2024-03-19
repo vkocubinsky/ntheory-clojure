@@ -24,7 +24,7 @@
 (defn divisors
   "Divisors of whole integer."
   [n]
-  (v/check-integer-range n)
+  (v/check-int-pos-max n)
   (as-> n v
     (p/integer->factors-count v)
     (divisors' v [[]])
@@ -40,7 +40,7 @@
       it returns value on order of prime."
   [rf f]
   (fn [n]
-    (v/check-integer-range n)
+    (v/check-int-pos-max n)
     (->> n
          p/integer->factors-count
          (map (fn [[p k]] (f p k)))
@@ -49,25 +49,25 @@
 (defn primes-count-distinct
   "Number of primes divides given `n` - ω."
   [n]
-  (v/check-integer-range n)
+  (v/check-int-pos-max n)
   (-> n p/integer->factors-distinct count))
 
 (defn primes-count-total
   "Number of primes and their powers divides given `n` - Ω."
   [n]
-  (v/check-integer-range n)
+  (v/check-int-pos-max n)
   (-> n p/integer->factors count))
 
 (defn liouville
   "Liouville function - λ"
   [n]
-  (v/check-integer-range n)
+  (v/check-int-pos-max n)
   (pow (- 1) (primes-count-total n)))
 
 (defn mangoldt
   "Mangoldt function - Λ"
   [n]
-  (v/check-integer-range n)
+  (v/check-int-pos-max n)
   (let [[[p & _] & r] (p/integer->factors-partitions n)]
     (if (and p (nil? r))
       (math/log p)
@@ -99,7 +99,7 @@
 (defn mobius
   "Mobius function - μ."
   [n]
-  (v/check-integer-range n)
+  (v/check-int-pos-max n)
   (->> n
        p/integer->factors-count
        (reduce (fn [a [_ k]] (if (= k 1) (* a -1) (reduced 0))) 1)))
@@ -111,7 +111,7 @@
 (defn unit
   "Unit function - ϵ."
   [n]
-  (v/check-integer-range n)
+  (v/check-int-pos-max n)
   (if (= n 1)
     1
     0))
@@ -119,13 +119,13 @@
 (defn one
   "Constant function returns 1."
   [n]
-  (v/check-integer-range n)
+  (v/check-int-pos-max n)
   1)
 
 (defn chebyshev-first
   "The first Chebyshev function - θ."
   [n]
-  (v/check-integer-range n)
+  (v/check-int-pos-max n)
   (->> n
        p/primes
        (map math/log)
@@ -134,7 +134,7 @@
 (defn chebyshev-second
   "The second Chebyshev function - ψ."
   [n]
-  (v/check-integer-range n)
+  (v/check-int-pos-max n)
   (->> n
        p/primes
        (map #(* (math/log %)

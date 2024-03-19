@@ -11,7 +11,7 @@
 (defn pow
   "Power function."
   [a n]
-  (v/check-integer-non-negative n)
+  (v/check-int-non-neg n)
   (apply * (repeat n a)))
 
 (defn order

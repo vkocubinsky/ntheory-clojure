@@ -37,8 +37,8 @@
   x ≡ c₂ (mod m₂)"
   [c1 m1
    c2 m2]
-  (v/check-integer-pos m1)
-  (v/check-integer-pos m2)
+  (v/check-int-pos m1)
+  (v/check-int-pos m2)
   (let [[d a' _] (b/gcd-extended m1 m2)]
     (when (b/divides? d (- c2 c1))
       (let [c (/ (- c2 c1) d)

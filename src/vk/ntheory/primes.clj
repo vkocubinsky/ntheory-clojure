@@ -60,7 +60,7 @@
 
 (defn- table-auto-extend
   [n]
-  (v/check-integer-range n)
+  (v/check-int-pos-max n)
   (let [{:keys [_ _ upper] :as all} @cache]
     (if (<= n upper)
       all
@@ -85,13 +85,13 @@
 (defn unit?
   "Is given `n` a unit?"
   [n]
-  (v/check-integer-pos n)
+  (v/check-int-pos n)
   (= n 1))
 
 (defn prime?
   "Is given `n` a prime number?"
   [n]
-  (v/check-integer-pos n)
+  (v/check-int-pos n)
   (if (unit? n)
     false
     (let [table (least-divisor-table n)
@@ -101,7 +101,7 @@
 (defn composite?
   "Is given `n` a composite number?"
   [n]
-  (v/check-integer-pos n)
+  (v/check-int-pos n)
   (if (unit? n)
     false
     ((complement prime?) n)))
