@@ -3,20 +3,25 @@
   )
 
 (defn divides?
-  "Return true if `a` divides `b` otherwise false"
- [a b]
+  "Return true if `a` divides `b` otherwise false."
+  [a b]
+  (v/check-int-non-zero a)
+  (v/check-int b)
  (zero? (mod b a)))
 
 
 (defn pow
   "Power function."
   [a n]
+  (v/check-int a)
   (v/check-int-non-neg n)
   (apply * (repeat n a)))
 
 (defn order
   "Greatest power of p divides n."
   [p n]
+  (v/check-int-pos p)
+  (v/check-int-pos n)
   (loop [n  n
          k  0]
     (let [q (quot n p)
@@ -27,6 +32,7 @@
 
 (defn sign
   [n]
+  (v/check-int n)
   (cond
     (pos? n) 1
     (neg? n) -1
@@ -35,14 +41,21 @@
 (defn gcd
   "Createst common divisor."
   [a b]
+  (v/check-int a)
+  (v/check-int b)
   (loop [a (abs a) b (abs b)]
     (if (zero? b) a
         (recur b (mod a b)))))
 
 (defn lcm
-  "Least common multiple"
+  "Least common multiple."
   [a b]
-  (abs (/ (* a b) (gcd a b))))
+  (v/check-int a)
+  (v/check-int b)
+  (let [d (gcd a b)]
+    (if (= d 0)
+      0
+      (abs (/ (* a b) d)))))
 
 
 (defn gcd-extended
@@ -52,7 +65,10 @@
   values `s` and `d` satisfied condition
   `a * s + b * t = d`.
   "
-  ([a b] (let [[d s t] (gcd-extended [(abs a) (abs b)] [1 0] [0 1])
+  ([a b]
+   (v/check-int a)
+   (v/check-int b)
+   (let [[d s t] (gcd-extended [(abs a) (abs b)] [1 0] [0 1])
                s' (* (sign a) s)
                t' (* (sign b) t)]
            (assert (= d (+ (* a s') (* b t'))))
