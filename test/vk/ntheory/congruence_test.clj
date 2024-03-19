@@ -22,19 +22,19 @@
 
 (deftest solve-remainders-test
   (testing "Trivial x ≡ 3 (mod 5)"
-    (is (= [3 5] (c/solve-reminders [[3 5]])))
+    (is (= [3 5] (c/solve-remainders [[3 5]])))
     )
   (testing "x ≡ 9 (mod 34); x ≡ 4 (mod 19)"
-    (is (= [213 646] (c/solve-reminders [[9 34] [4 19]]))))
+    (is (= [213 646] (c/solve-remainders [[9 34] [4 19]]))))
   (testing "x ≡ 29 (mod 63); x ≡ 9 (mod 35)"
-    (is (nil? (c/solve-reminders [[29 63][9 35]]))))
+    (is (nil? (c/solve-remainders [[29 63][9 35]]))))
   (testing "x ≡ 2 (mod 7); x ≡ 5 (mod 9); x ≡ 11 (mod 15)"
-    (is (= [86 315] (c/solve-reminders [[2 7][5 9][11 15]]))))
+    (is (= [86 315] (c/solve-remainders [[2 7][5 9][11 15]]))))
   )
 
 ;; todo : replace to solve-coprime-reimainders
 (deftest solve-coprime-remainders-test
   (testing "x ≡ 6 (mod 17); x ≡ 4 (mod 11); x ≡ -3 (mod 8)"
-    (is (= [125 1496] (c/solve-reminders [[6 17] [4 11] [-3 8]])))
+    (is (= [125 1496] (c/solve-coprime-remainders [[6 17] [4 11] [-3 8]])))
     ))
 

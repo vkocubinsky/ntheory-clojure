@@ -46,7 +46,7 @@
             M (/ (* m1 m2) d)]
         [(mod (+ c1 (* m1 a)) M) M]))))
 
-(defn solve-reminders
+(defn solve-remainders
   "Solve system of n congruences such that
   x ≡ c₁ (mod m₁)
   x ≡ c₂ (mod m₂)
@@ -62,14 +62,32 @@
       (when-let [[c m] (solve-2-remainders c1 m1 c2 m2)]
         (recur (cons [c m] rest))))))
 
-
-(defn solve-chinese-remainders
+(defn solve-coprime-remainders
   "Solve system of n conguences of by coprimes modulus
   x ≡ c₁ (m₁)
   x ≡ c₂ (m₂)
   ...
+  It is Chinese Remainder Theorem. 
   Parameter `xs` is a sequence of pairs ([c₁ m₁] [c₂ m₂] ...)
   Returns pair [M r], where M is m₁ * m₂ ... and r is residue to modulus M."
-  [xs])
+  [xs]
+  (let [
+      M (->> xs (map second) (apply *))
+      x0 (->> xs
+              (map
+               (fn [[c m]] (let [M' (/ M m)
+                                 [d s _] (b/gcd-extended M' m)]
+                             (when-not (= d 1) (throw (Exception. "Expected taht all modulus are coprime.")))
+                             (* M' s c))))
+              (apply +)
+              ((mod-m M))
+          )
+      ] [x0 M])
+  )
+
+
+
+
+
 
 
