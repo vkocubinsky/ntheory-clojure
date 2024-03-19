@@ -26,9 +26,8 @@
       (is (= -1 (v/check-int-non-zero -1)))
       (is (= 1 (v/check-int-non-zero 1))))))
 
-
 ;;;;;
-(deftest check-int-pos-max-test 
+(deftest check-int-pos-max-test
   (testing "Fail"
     (is (thrown? Exception (v/check-int-pos-max (inc v/max-int))))
     (is (thrown? Exception (v/check-int-pos-max -1)))
@@ -46,8 +45,7 @@
   (testing "Success"
     (is (= 0 (v/check-int-non-neg-max 0)))
     (is (= 1 (v/check-int-non-neg-max 1)))
-    (is (= v/max-int (v/check-int-non-neg-max v/max-int)))
-    ))
+    (is (= v/max-int (v/check-int-non-neg-max v/max-int)))))
 
 (deftest check-int-non-zero-max-test
   (testing "Fail"
@@ -56,8 +54,7 @@
     (testing "Success"
       (is (= -1 (v/check-int-non-zero-max -1)))
       (is (= 1 (v/check-int-non-zero-max 1))))
-      (is (= v/max-int (v/check-int-non-zero-max v/max-int)))
-    ))
+    (is (= v/max-int (v/check-int-non-zero-max v/max-int)))))
 
 
 
