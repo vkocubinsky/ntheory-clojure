@@ -111,8 +111,10 @@
 
 (defn int->factors
   ([^Integer n]
+   (v/check-int-pos-max n)
    (int->factors (least-divisor-table n) n))
   ([^ints xs ^Integer n]
+   (v/check-int-pos-max n)
    (lazy-seq
     (when (> n 1)
       (let [d (aget xs n)]
@@ -120,20 +122,24 @@
 
 (defn int->factors-distinct
   [n]
+  (v/check-int-pos-max n)
   (->> n int->factors dedupe))
 
 (defn int->factors-partitions
   [n]
+  (v/check-int-pos-max n)
   (->> n int->factors (partition-by identity)))
 
 (defn int->factors-count
   [n]
+  (v/check-int-pos-max n)
   (->> n
        int->factors-partitions
        (map (fn [xs] [(first xs) (count xs)]))))
 
 (defn int->factors-map
   [n]
+  (v/check-int-pos-max n)
   (into {} (int->factors-count n)))
 
 (defn factors->int
