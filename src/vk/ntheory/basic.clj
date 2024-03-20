@@ -1,24 +1,22 @@
 (ns vk.ntheory.basic
-  (:require [vk.ntheory.validation :as v])
-  )
+  (:require [vk.ntheory.validation :as v]))
 
 (defn divides?
-  "Return true if `a` divides `b` otherwise false."
+  "Return true if `a != 0` divides `b`, otherwise false."
   [a b]
   (v/check-int-non-zero a)
   (v/check-int b)
- (zero? (mod b a)))
-
+  (zero? (mod b a)))
 
 (defn pow
-  "Power function."
+  "Return `a` raised to the power of `n >= 0`."
   [a n]
   (v/check-int a)
   (v/check-int-non-neg n)
   (apply * (repeat n a)))
 
 (defn order
-  "Greatest power of p divides n."
+  "Greatest power of `p > 0` divides `n > 0`."
   [p n]
   (v/check-int-pos p)
   (v/check-int-pos n)
@@ -31,6 +29,7 @@
         k))))
 
 (defn sign
+  "Sign for given `n`"
   [n]
   (v/check-int n)
   (cond
@@ -39,7 +38,8 @@
     :else 0))
 
 (defn gcd
-  "Createst common divisor."
+  "Createst common divisor of `a` and `b`.
+  If both `a` and `b` are equlas to zero returns zero."
   [a b]
   (v/check-int a)
   (v/check-int b)
@@ -48,7 +48,8 @@
         (recur b (mod a b)))))
 
 (defn lcm
-  "Least common multiple."
+  "Least common multiple of `a` and `b`.
+  If both `a` and `b` equals to zero returns zero."
   [a b]
   (v/check-int a)
   (v/check-int b)
@@ -56,7 +57,6 @@
     (if (= d 0)
       0
       (abs (/ (* a b) d)))))
-
 
 (defn gcd-extended
   "Extended Euclid algorithm.
@@ -69,10 +69,10 @@
    (v/check-int a)
    (v/check-int b)
    (let [[d s t] (gcd-extended [(abs a) (abs b)] [1 0] [0 1])
-               s' (* (sign a) s)
-               t' (* (sign b) t)]
-           (assert (= d (+ (* a s') (* b t'))))
-           [d s' t']))
+         s' (* (sign a) s)
+         t' (* (sign b) t)]
+     (assert (= d (+ (* a s') (* b t'))))
+     [d s' t']))
   ([[a b] [s'' t''] [s' t']]
    (if (zero? b)
      [a s'' t'']

@@ -3,12 +3,6 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.basic :as b]))
 
-(deftest sign-test
-  (is (= 1 (b/sign 2)))
-  (is (= (- 1) (b/sign (- 2))))
-  (is (= 0 (b/sign 0)))
-  )
-
 (deftest divides?-test
   (testing "Divide by zero"
     (is (thrown? Exception (b/divides? 0 8)))
@@ -19,6 +13,8 @@
     ) 
   (testing "simple cases"
     (are [x y] (= x y)
+      true (b/divides? 1 1)
+      true (b/divides? 1 1)
       true (b/divides? 2 8)
       true (b/divides? -2 8)
       true (b/divides? 2 -8)
@@ -44,6 +40,16 @@
       256 (b/pow 2 8)
       512 (b/pow 2 9)
       1024 (b/pow 2 10))))
+
+(deftest sign-test
+  (is (= 1 (b/sign 2)))
+  (is (= (- 1) (b/sign (- 2))))
+  (is (= 0 (b/sign 0)))
+  )
+
+
+
+
 
 (deftest order-test
   (are [x y] (= x y)
