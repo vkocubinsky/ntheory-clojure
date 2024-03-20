@@ -36,12 +36,12 @@
       9 [false false true]
       10 [false false true])))
 
-(deftest integer>factors-map-test
+(deftest int->factors-map-test
   (testing "Negative numbers"
-    (is (thrown? Exception (p/integer->factors-map 0)))
-    (is (thrown? Exception (p/integer->factors-map -1))))
+    (is (thrown? Exception (p/int->factors-map 0)))
+    (is (thrown? Exception (p/int->factors-map -1))))
   (testing "Positive numbers"
-    (are [x y] (= (p/integer->factors-map x) y)
+    (are [x y] (= (p/int->factors-map x) y)
       1  {}
       2  {2 1}
       3  {3 1}
@@ -63,12 +63,12 @@
       19 {19 1}
       20 {2 2, 5 1})))
 
-(deftest integer>factors-count-test
+(deftest int->factors-count-test
   (testing "Negative numbers"
-    (is (thrown? Exception (p/integer->factors-count 0)))
-    (is (thrown? Exception (p/integer->factors-count -1))))
+    (is (thrown? Exception (p/int->factors-count 0)))
+    (is (thrown? Exception (p/int->factors-count -1))))
   (testing "Positive numbers"
-    (are [x y] (= (p/integer->factors-count x) y)
+    (are [x y] (= (p/int->factors-count x) y)
       1  []
       2  [[2 1]]
       3  [[3 1]]
@@ -90,12 +90,12 @@
       19 [[19 1]]
       20 [[2 2] [5 1]])))
 
-(deftest integer>factors-paritions-test
+(deftest int->factors-paritions-test
   (testing "Negative numbers"
-    (is (thrown? Exception (p/integer->factors-partitions 0)))
-    (is (thrown? Exception (p/integer->factors-partitions -1))))
+    (is (thrown? Exception (p/int->factors-partitions 0)))
+    (is (thrown? Exception (p/int->factors-partitions -1))))
   (testing "Positive numbers"
-    (are [x y] (= (p/integer->factors-partitions x) y)
+    (are [x y] (= (p/int->factors-partitions x) y)
       1  []
       2  [[2]]
       3  [[3]]
@@ -117,12 +117,12 @@
       19 [[19]]
       20 [[2 2] [5]])))
 
-(deftest integer>factors-test
+(deftest int->factors-test
   (testing "Negative numbers"
-    (is (thrown? Exception (p/integer->factors 0)))
-    (is (thrown? Exception (p/integer->factors -1))))
+    (is (thrown? Exception (p/int->factors 0)))
+    (is (thrown? Exception (p/int->factors -1))))
   (testing "Positive numbers"
-    (are [x y] (= (p/integer->factors x) y)
+    (are [x y] (= (p/int->factors x) y)
       1  []
       2  [2]
       3  [3]
@@ -146,7 +146,7 @@
 
 (deftest factorization-properties-test
   (doseq [n (range 1 100)]
-    (is (= n (p/factors-count->integer (p/integer->factors-count n))))
-    (is (= n (p/factors-count->integer (p/integer->factors-map n))))
-    (is (= n (p/factors-partitions->integer (p/integer->factors-partitions n))))
-    (is (= n (p/factors->integer (p/integer->factors n))))))
+    (is (= n (p/factors-count->int (p/int->factors-count n))))
+    (is (= n (p/factors-count->int (p/int->factors-map n))))
+    (is (= n (p/factors-partitions->int (p/int->factors-partitions n))))
+    (is (= n (p/factors->int (p/int->factors n))))))

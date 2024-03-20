@@ -26,9 +26,9 @@
   [n]
   (v/check-int-pos-max n)
   (as-> n v
-    (p/integer->factors-count v)
+    (p/int->factors-count v)
     (divisors' v [[]])
-    (map p/factors-count->integer v)))
+    (map p/factors-count->int v)))
 
 (defn reduce-on-prime-count
   "Higher order which return arithmetical function based on
@@ -42,7 +42,7 @@
   (fn [n]
     (v/check-int-pos-max n)
     (->> n
-         p/integer->factors-count
+         p/int->factors-count
          (map (fn [[p k]] (f p k)))
          (reduce rf))))
 
@@ -50,13 +50,13 @@
   "Number of primes divides given `n` - ω."
   [n]
   (v/check-int-pos-max n)
-  (-> n p/integer->factors-distinct count))
+  (-> n p/int->factors-distinct count))
 
 (defn primes-count-total
   "Number of primes and their powers divides given `n` - Ω."
   [n]
   (v/check-int-pos-max n)
-  (-> n p/integer->factors count))
+  (-> n p/int->factors count))
 
 (defn liouville
   "Liouville function - λ"
@@ -68,7 +68,7 @@
   "Mangoldt function - Λ"
   [n]
   (v/check-int-pos-max n)
-  (let [[[p & _] & r] (p/integer->factors-partitions n)]
+  (let [[[p & _] & r] (p/int->factors-partitions n)]
     (if (and p (nil? r))
       (math/log p)
       0)))
@@ -101,7 +101,7 @@
   [n]
   (v/check-int-pos-max n)
   (->> n
-       p/integer->factors-count
+       p/int->factors-count
        (reduce (fn [a [_ k]] (if (= k 1) (* a -1) (reduced 0))) 1)))
 
 (def totient

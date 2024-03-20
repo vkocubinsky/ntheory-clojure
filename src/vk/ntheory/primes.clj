@@ -80,18 +80,19 @@
 
 (defn primes
   [n]
+  (v/check-int-pos-max n)
   (take-while #(<= % n) (:primes (table-auto-extend n))))
 
 (defn unit?
   "Is given `n` a unit?"
   [n]
-  (v/check-int-pos n)
+  (v/check-int-pos-max n)
   (= n 1))
 
 (defn prime?
-  "Is given `n` a prime number?"
+  "Is given `0 < n <= max-int` a prime number?"
   [n]
-  (v/check-int-pos n)
+  (v/check-int-pos-max n)
   (if (unit? n)
     false
     (let [table (least-divisor-table n)
@@ -99,52 +100,52 @@
       (= e n))))
 
 (defn composite?
-  "Is given `n` a composite number?"
+  "Is given `0 < n <= max-int` a composite number?"
   [n]
-  (v/check-int-pos n)
+  (v/check-int-pos-max n)
   (if (unit? n)
     false
     ((complement prime?) n)))
 
 
 
-(defn integer->factors
+(defn int->factors
   ([^Integer n]
-   (integer->factors (least-divisor-table n) n))
+   (int->factors (least-divisor-table n) n))
   ([^ints xs ^Integer n]
    (lazy-seq
     (when (> n 1)
       (let [d (aget xs n)]
-        (cons d (integer->factors xs (quot n d))))))))
+        (cons d (int->factors xs (quot n d))))))))
 
-(defn integer->factors-distinct
+(defn int->factors-distinct
   [n]
-  (->> n integer->factors dedupe))
+  (->> n int->factors dedupe))
 
-(defn integer->factors-partitions
+(defn int->factors-partitions
   [n]
-  (->> n integer->factors (partition-by identity)))
+  (->> n int->factors (partition-by identity)))
 
-(defn integer->factors-count
+(defn int->factors-count
   [n]
   (->> n
-       integer->factors-partitions
+       int->factors-partitions
        (map (fn [xs] [(first xs) (count xs)]))))
 
-(defn integer->factors-map
+(defn int->factors-map
   [n]
-  (into {} (integer->factors-count n)))
+  (into {} (int->factors-count n)))
 
-(defn factors->integer
+(defn factors->int
   [xs]
   (apply * xs))
 
-(defn factors-count->integer
+(defn factors-count->int
   "Convert factors map or factors counts back to integer."
   [cn]
   (apply * (for [[x y] cn] (pow x y))))
 
-(defn factors-partitions->integer
+(defn factors-partitions->int
   [xss]
   (->> xss
        (map #(apply * %))
