@@ -9,20 +9,19 @@
     (is (thrown? Exception (f/divisors 0)))
     (is (thrown? Exception (f/divisors -1))))
   (testing "Small Positive Numbers"
-    (are [x y] (= x y)
-      [1] (sort (f/divisors 1))
-      [1 2] (sort (f/divisors 2))
-      [1 3] (sort (f/divisors 3))
-      [1 2 4] (sort (f/divisors 4))
-      [1 5] (sort (f/divisors 5))
-      [1 2 3 6] (sort (f/divisors 6))
-      [1 7] (sort (f/divisors 7))
-      [1 2 4 8] (sort (f/divisors 8))
-      [1 3 9] (sort (f/divisors 9))
-      [1 2 5 10] (sort (f/divisors 10))
-      [1 11] (sort (f/divisors 11))
-      [1 2 3 4 6 12] (sort (f/divisors 12)))))
-
+    (are [x y] (= (sort (f/divisors x)) y)
+      1  [1]
+      2  [1 2]
+      3  [1 3]
+      4  [1 2 4]
+      5  [1 5]
+      6  [1 2 3 6]
+      7  [1 7]
+      8  [1 2 4 8]
+      9  [1 3 9]
+      10 [1 2 5 10]
+      11 [1 11]
+      12 [1 2 3 4 6 12])))
 
 (defn f-test
   "Test function `f` according to table `m`."
