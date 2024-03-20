@@ -1,43 +1,43 @@
 
 # Table of Contents
 
-1.  [About](#orgfc9de7a)
-2.  [Notation](#org97819b2)
-3.  [Some basic functions](#orgd85730e)
-    1.  [Power function](#orgd8a8b9a)
-    2.  [Sign function](#org1f1de1a)
-    3.  [Order function](#org697ef4c)
-    4.  [The greatest common divisor](#org1828e98)
-4.  [Performance and cache](#orgb6f24d5)
-5.  [Primes](#org5793154)
-6.  [Integer factorization](#orgda8e4e2)
-7.  [Divisors](#org089b36c)
-8.  [Arithmetical functions](#orgdbd1a34)
-    1.  [Function equality](#org7a271a1)
-    2.  [Additive functions](#org0ae6899)
-    3.  [Multiplicative functions](#orgf52608f)
-    4.  [Higher order function for define multiplicative and additive functions](#org06d05f2)
-    5.  [Some additive functions](#org1fc8883)
-        1.  [Count of distinct primes - $\omega$](#org9beac49)
-        2.  [Total count of primes - $\Omega$](#org11cd79a)
-    6.  [Some multiplicative functions](#orga7dc6ad)
-        1.  [Mobius function - $\mu$.](#org599313a)
-        2.  [Euler totient function - $\phi$](#orgfaae835)
-        3.  [Unit function - $\epsilon$](#orga17a65e)
-        4.  [Constant one function - $1$](#org60f8486)
-        5.  [Divisors count - $\sigma_0$](#org30b0207)
-        6.  [Divisors sum - $\sigma_1$](#orge7315fb)
-        7.  [Divisors square sum](#org2adc9f3)
-        8.  [Divisors higher order function - $\sigma_{x}$](#orged7f0da)
-        9.  [Liouville - $\lambda$](#orgf7ef098)
-    7.  [Some other arithmetic functions](#org86d8e37)
-        1.  [Mangoldt - $\Lambda$](#orgae39926)
-        2.  [Chebyshev functions $\theta$ and $\psi$](#orgf37db70)
-    8.  [Dirichlet convolution](#org017cc41)
+1.  [About](#org7394127)
+2.  [Notation](#org5b0ae31)
+3.  [Some basic functions](#org976742a)
+    1.  [Power function](#org446ba72)
+    2.  [Sign function](#org493242a)
+    3.  [Order function](#org487a64e)
+    4.  [The greatest common divisor](#orgc59f317)
+4.  [Performance and cache](#orga30ac8b)
+5.  [Primes](#orga9968e5)
+6.  [Integer factorization](#orga59ea89)
+7.  [Divisors](#org2fa9ef1)
+8.  [Arithmetical functions](#org22e65af)
+    1.  [Function equality](#org331fe5d)
+    2.  [Additive functions](#org70251fd)
+    3.  [Multiplicative functions](#org111c3a5)
+    4.  [Higher order function for define multiplicative and additive functions](#org02caf23)
+    5.  [Some additive functions](#org8270240)
+        1.  [Count of distinct primes - $\omega$](#orgbfeebb6)
+        2.  [Total count of primes - $\Omega$](#org2b210cc)
+    6.  [Some multiplicative functions](#org46d7156)
+        1.  [Mobius function - $\mu$.](#org13a96a8)
+        2.  [Euler totient function - $\phi$](#orgd3df2fe)
+        3.  [Unit function - $\epsilon$](#orgc9068d9)
+        4.  [Constant one function - $1$](#orga98029a)
+        5.  [Divisors count - $\sigma_0$](#org0137656)
+        6.  [Divisors sum - $\sigma_1$](#org24306ec)
+        7.  [Divisors square sum](#orga507709)
+        8.  [Divisors higher order function - $\sigma_{x}$](#orga2892b5)
+        9.  [Liouville - $\lambda$](#org7f24dd9)
+    7.  [Some other arithmetic functions](#orgfa032d3)
+        1.  [Mangoldt - $\Lambda$](#org09ef779)
+        2.  [Chebyshev functions $\theta$ and $\psi$](#orgafdee60)
+    8.  [Dirichlet convolution](#org1bc2cff)
 
 
 
-<a id="orgfc9de7a"></a>
+<a id="org7394127"></a>
 
 # About
 
@@ -61,12 +61,13 @@ In this document I load number theory packages as:
     (require '[vk.ntheory.basic :as b])
     (require '[vk.ntheory.primes :as p])
     (require '[vk.ntheory.ar-func :as f])
+    (require '[vk.ntheory.congruence :as c])
     (require '[clojure.math :as math])
 
 So below I will use above aliases.
 
 
-<a id="org97819b2"></a>
+<a id="org5b0ae31"></a>
 
 # Notation
 
@@ -75,12 +76,12 @@ So below I will use above aliases.
 -   $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
 
 
-<a id="orgd85730e"></a>
+<a id="org976742a"></a>
 
 # Some basic functions
 
 
-<a id="orgd8a8b9a"></a>
+<a id="org446ba72"></a>
 
 ## Power function
 
@@ -92,7 +93,7 @@ Clojure has built-in `clojure.math/pow` function, but it return
     8
 
 
-<a id="org1f1de1a"></a>
+<a id="org493242a"></a>
 
 ## Sign function
 
@@ -101,7 +102,7 @@ Clojure has built-in `clojure.math/pow` function, but it return
     [-1 1 0]
 
 
-<a id="org697ef4c"></a>
+<a id="org487a64e"></a>
 
 ## Order function
 
@@ -112,7 +113,7 @@ Order function $ord_p(n)$ is a greatest power of $p$ divides $n$
     3
 
 
-<a id="org1828e98"></a>
+<a id="orgc59f317"></a>
 
 ## The greatest common divisor
 
@@ -135,7 +136,7 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
     [6 -1 1]
 
 
-<a id="orgb6f24d5"></a>
+<a id="orga30ac8b"></a>
 
 # Performance and cache
 
@@ -167,7 +168,7 @@ Least prime divisor table is implementation details, but one can see
 it:
 
     ;; load first 10 numbers into cache
-    (p/integer->factors-map 5)
+    (p/int->factors-map 5)
 
     {5 1}
 
@@ -176,7 +177,7 @@ element with index 6, which is 2. Index zero is not used, value for
 index 1 is 1.
 
 
-<a id="org5793154"></a>
+<a id="orga9968e5"></a>
 
 # Primes
 
@@ -187,7 +188,7 @@ index 1 is 1.
     (2 3 5 7 11 13 17 19 23 29)
 
 
-<a id="orgda8e4e2"></a>
+<a id="orga59ea89"></a>
 
 # Integer factorization
 
@@ -220,44 +221,44 @@ which accept factorized value and convert it back to integer.
 
 1-st factorization representation is ordered sequence of primes:
 
-    (p/integer->factors 360)
+    (p/int->factors 360)
 
     (2 2 2 3 3 5)
 
-    (p/factors->integer [2 2 2 3 3 5])
+    (p/factors->int [2 2 2 3 3 5])
 
     360
 
 2-nd factorization representation is ordered sequence of primes
 splited by partitions by a prime:
 
-    (p/integer->factors-partitions 360)
+    (p/int->factors-partitions 360)
 
     ((2 2 2) (3 3) (5))
 
-    (p/factors-partitions->integer [[2 2 2] [3 3] [5]])
+    (p/factors-partitions->int [[2 2 2] [3 3] [5]])
 
     360
 
 3-rd factorization representation is ordered sequence of pairs `[p
 k]`, where `p` is a prime and `k` is a power of prime
 
-    (p/integer->factors-count 360)
+    (p/int->factors-count 360)
 
     ([2 3] [3 2] [5 1])
 
-    (p/factors-count->integer [[2 3] [3 2] [5 1]])
+    (p/factors-count->int [[2 3] [3 2] [5 1]])
 
     360
 
 4-th factorization representation is very similar to 3-rd, but it
 is a map. And it has the same inverse function as 3-rd.
 
-    (p/integer->factors-map 360)
+    (p/int->factors-map 360)
 
     {2 3, 3 2, 5 1}
 
-    (p/factors-count->integer {2 3, 3 2, 5 1})
+    (p/factors-count->int {2 3, 3 2, 5 1})
 
     360
 
@@ -266,7 +267,7 @@ factorize number `n` it is enough to calculate least divisor table
 with size less or equals to $\sqrt n$. 
 
 
-<a id="org089b36c"></a>
+<a id="org2fa9ef1"></a>
 
 # Divisors
 
@@ -278,7 +279,7 @@ function. List of divisors is unordered.
     (1 2 3 6 5 10 15 30)
 
 
-<a id="orgdbd1a34"></a>
+<a id="org22e65af"></a>
 
 # Arithmetical functions
 
@@ -287,7 +288,7 @@ and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
 with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
 
-<a id="org7a271a1"></a>
+<a id="org331fe5d"></a>
 
 ## Function equality
 
@@ -310,7 +311,7 @@ sequence of natural number we can for example do next:
     (f/f-equals f g (filter even? (range 1 100)))
 
 
-<a id="org0ae6899"></a>
+<a id="org70251fd"></a>
 
 ## Additive functions
 
@@ -328,7 +329,7 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="orgf52608f"></a>
+<a id="org111c3a5"></a>
 
 ## Multiplicative functions
 
@@ -347,7 +348,7 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 $$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="org06d05f2"></a>
+<a id="org02caf23"></a>
 
 ## Higher order function for define multiplicative and additive functions
 
@@ -377,12 +378,12 @@ Of course there is predefined function `divisors-count`, but it
 is an example how to define custom function.
 
 
-<a id="org1fc8883"></a>
+<a id="org8270240"></a>
 
 ## Some additive functions
 
 
-<a id="org9beac49"></a>
+<a id="orgbfeebb6"></a>
 
 ### Count of distinct primes - $\omega$
 
@@ -394,7 +395,7 @@ divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k
     2
 
 
-<a id="org11cd79a"></a>
+<a id="org2b210cc"></a>
 
 ### Total count of primes - $\Omega$
 
@@ -408,12 +409,12 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
     3
 
 
-<a id="orga7dc6ad"></a>
+<a id="org46d7156"></a>
 
 ## Some multiplicative functions
 
 
-<a id="org599313a"></a>
+<a id="org13a96a8"></a>
 
 ### Mobius function - $\mu$.
 
@@ -432,7 +433,7 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
     1
 
 
-<a id="orgfaae835"></a>
+<a id="orgd3df2fe"></a>
 
 ### Euler totient function - $\phi$
 
@@ -448,7 +449,7 @@ For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6)
     2
 
 
-<a id="orga17a65e"></a>
+<a id="orgc9068d9"></a>
 
 ### Unit function - $\epsilon$
 
@@ -464,7 +465,7 @@ $$ \epsilon(n) = \begin{cases}
     0
 
 
-<a id="org60f8486"></a>
+<a id="orga98029a"></a>
 
 ### Constant one function - $1$
 
@@ -475,7 +476,7 @@ $$ 1(n) = 1 $$
     1
 
 
-<a id="org30b0207"></a>
+<a id="org0137656"></a>
 
 ### Divisors count - $\sigma_0$
 
@@ -490,7 +491,7 @@ For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
     4
 
 
-<a id="orge7315fb"></a>
+<a id="org24306ec"></a>
 
 ### Divisors sum - $\sigma_1$
 
@@ -503,7 +504,7 @@ For number 6 it is $12 = 1 + 2 + 3 + 6$
     12
 
 
-<a id="org2adc9f3"></a>
+<a id="orga507709"></a>
 
 ### Divisors square sum
 
@@ -516,7 +517,7 @@ For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
     50
 
 
-<a id="orged7f0da"></a>
+<a id="orga2892b5"></a>
 
 ### Divisors higher order function - $\sigma_{x}$
 
@@ -538,7 +539,7 @@ accept `x` and return appropriate function.
     (def my-divisors-square-sum (f/divisors-sum-x 2))
 
 
-<a id="orgf7ef098"></a>
+<a id="org7f24dd9"></a>
 
 ### Liouville - $\lambda$
 
@@ -546,19 +547,19 @@ Liouville function can be defind by formula:
 
 $$\lambda(n) = (-1)^{\Omega(n)}$$
 
-where [$\Omega$](#org11cd79a) have been descibed above.
+where [$\Omega$](#org2b210cc) have been descibed above.
 
     (f/liouville (* 2 3)) 
 
     1
 
 
-<a id="org86d8e37"></a>
+<a id="orgfa032d3"></a>
 
 ## Some other arithmetic functions
 
 
-<a id="orgae39926"></a>
+<a id="org09ef779"></a>
 
 ### Mangoldt - $\Lambda$
 
@@ -578,7 +579,7 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
     0
 
 
-<a id="orgf37db70"></a>
+<a id="orgafdee60"></a>
 
 ### Chebyshev functions $\theta$ and $\psi$
 
@@ -590,7 +591,7 @@ second $\psi$ defined as
 
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
-where [$\Lambda$](#orgae39926) have been described above
+where [$\Lambda$](#org09ef779) have been described above
 
     (f/chebyshev-first 2)
 
@@ -601,7 +602,7 @@ where [$\Lambda$](#orgae39926) have been described above
     0.6931471805599453
 
 
-<a id="org017cc41"></a>
+<a id="org1bc2cff"></a>
 
 ## Dirichlet convolution
 
@@ -636,43 +637,43 @@ $$ f^{-1}(n) = \begin{cases}
 For example, $1(n) * 1(n) = \sigma_0$
 
     (f/f-equals
-       (f/dirichlet-convolution f/one f/one)
+       (f/d-* f/one f/one)
        f/divisors-count
     )
 
-    true
+    class clojure.lang.Compiler$CompilerException
 
 Dirichlet convolution is associative so clojure method support more than two
 function as parameter of `f*`
 
     (f/f-equals
-      (f/dirichlet-convolution f/mobius f/one f/mobius f/one)
+      (f/d-* f/mobius f/one f/mobius f/one)
       f/unit
     )
 
-    true
+    class clojure.lang.Compiler$CompilerException
 
 Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 
-    (f/f-equals (f/dirichlet-inverse f/one) f/mobius)
+    (f/f-equals (f/d-inv f/one) f/mobius)
 
-    true
+    class clojure.lang.Compiler$CompilerException
 
-    (f/f-equals (f/dirichlet-inverse f/mobius) f/one)
+    (f/f-equals (f/d-inv f/mobius) f/one)
 
-    true
+    class clojure.lang.Compiler$CompilerException
 
-Function `dirichlet-inverse` defined as recursive function, it may
+Function `d-inv` defined as recursive function, it may
 execute slow. But inverse of completely multiplicative function $f(n)$
 is $f(n) \mu(n)$(usual multiplication), for instance inverse
 of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
 
     (f/f-equals
-     (f/dirichlet-convolution 
+     (f/d-* 
         #(* (identity %) (f/mobius %))
         identity
      )
      f/unit)
 
-    true
+    class clojure.lang.Compiler$CompilerException
 
