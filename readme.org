@@ -25,6 +25,7 @@ In this document I load number theory packages as:
   (require '[vk.ntheory.basic :as b])
   (require '[vk.ntheory.primes :as p])
   (require '[vk.ntheory.ar-func :as f])
+  (require '[vk.ntheory.congruence :as c])
   (require '[clojure.math :as math])
 #+end_src
 
@@ -136,7 +137,7 @@ it:
 
 #+begin_src clojure
   ;; load first 10 numbers into cache
-  (p/integer->factors-map 5)
+  (p/int->factors-map 5)
 #+end_src
 
 #+RESULTS:
@@ -195,7 +196,7 @@ which accept factorized value and convert it back to integer.
 1-st factorization representation is ordered sequence of primes:
 
 #+begin_src clojure
-  (p/integer->factors 360)
+  (p/int->factors 360)
 #+end_src
 
 #+RESULTS[9c25c3f8eb84068aa435602e9f7a7f8ab139c556]:
@@ -203,7 +204,7 @@ which accept factorized value and convert it back to integer.
 : 
   
 #+begin_src clojure
-  (p/factors->integer [2 2 2 3 3 5])
+  (p/factors->int [2 2 2 3 3 5])
 #+end_src
 
 #+RESULTS[be5dc481f46fd3b607346dd9644742d71b4f7556]:
@@ -214,7 +215,7 @@ which accept factorized value and convert it back to integer.
 splited by partitions by a prime:
 
 #+begin_src clojure
-  (p/integer->factors-partitions 360)
+  (p/int->factors-partitions 360)
 #+end_src
 
 #+RESULTS[d0d83022dd7e56c435f86f912ed0520410830802]:
@@ -222,7 +223,7 @@ splited by partitions by a prime:
 : 
   
 #+begin_src clojure
-  (p/factors-partitions->integer [[2 2 2] [3 3] [5]])
+  (p/factors-partitions->int [[2 2 2] [3 3] [5]])
 #+end_src
 
 #+RESULTS[4f3000a8f01bb3bffb6f1c145bbbc4cfd9e42c16]:
@@ -233,7 +234,7 @@ splited by partitions by a prime:
 k]~, where ~p~ is a prime and ~k~ is a power of prime
 
 #+begin_src clojure
-  (p/integer->factors-count 360)
+  (p/int->factors-count 360)
 #+end_src
 
 #+RESULTS[deb84c857b6e7c95f8cf1bed52b147f3757c98ea]:
@@ -241,7 +242,7 @@ k]~, where ~p~ is a prime and ~k~ is a power of prime
 : 
   
 #+begin_src clojure
-  (p/factors-count->integer [[2 3] [3 2] [5 1]])
+  (p/factors-count->int [[2 3] [3 2] [5 1]])
 #+end_src
 
 #+RESULTS[337833a77e534d69e5bd1a2655a79412e0a99bd3]:
@@ -252,7 +253,7 @@ k]~, where ~p~ is a prime and ~k~ is a power of prime
 is a map. And it has the same inverse function as 3-rd.
 
 #+begin_src clojure
-  (p/integer->factors-map 360)
+  (p/int->factors-map 360)
 #+end_src
 
 #+RESULTS[6f56766d178fd644b1e6dd9d5c530dc3c936abc7]:
@@ -260,7 +261,7 @@ is a map. And it has the same inverse function as 3-rd.
 : 
 
 #+begin_src clojure
-  (p/factors-count->integer {2 3, 3 2, 5 1})
+  (p/factors-count->int {2 3, 3 2, 5 1})
 #+end_src
 
 #+RESULTS[85c61af8e9717c094e6d06e3abbbbbc1303673e6]:
@@ -647,7 +648,7 @@ For example, $1(n) * 1(n) = \sigma_0$
 
 #+begin_src clojure
   (f/f-equals
-     (f/dirichlet-convolution f/one f/one)
+     (f/d-* f/one f/one)
      f/divisors-count
   )
 #+end_src
@@ -661,7 +662,7 @@ function as parameter of ~f*~
 
 #+begin_src clojure
   (f/f-equals
-    (f/dirichlet-convolution f/mobius f/one f/mobius f/one)
+    (f/d-* f/mobius f/one f/mobius f/one)
     f/unit
   )
 #+end_src
@@ -673,7 +674,7 @@ function as parameter of ~f*~
 Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 
 #+begin_src clojure
-  (f/f-equals (f/dirichlet-inverse f/one) f/mobius)
+  (f/f-equals (f/d-inv f/one) f/mobius)
 #+end_src
 
 #+RESULTS[33bbf9139c179db71af6a5d185b937afad79f0f6]:
@@ -681,7 +682,7 @@ Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 : 
   
 #+begin_src clojure
-  (f/f-equals (f/dirichlet-inverse f/mobius) f/one)
+  (f/f-equals (f/d-inv f/mobius) f/one)
 #+end_src
 
 #+RESULTS[e17afcfeaabbc9d50d6f000814f6e2e43b7f447e]:
@@ -689,14 +690,14 @@ Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 : 
 
 
-Function ~dirichlet-inverse~ defined as recursive function, it may
+Function ~d-inv~ defined as recursive function, it may
 execute slow. But inverse of completely multiplicative function $f(n)$
 is $f(n) \mu(n)$(usual multiplication), for instance inverse
 of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
 
 #+begin_src clojure
   (f/f-equals
-   (f/dirichlet-convolution 
+   (f/d-* 
       #(* (identity %) (f/mobius %))
       identity
    )

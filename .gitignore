@@ -1,5 +1,6 @@
 # github template
 readme.tex
+readme.html
 pom.xml
 pom.xml.asc
 *.jar
