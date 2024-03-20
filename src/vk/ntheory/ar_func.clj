@@ -143,7 +143,7 @@
        (apply +)))
 
 (defn dirichlet-convolution
-  "Dirichlet convolution."
+  "Dirichlet product(or convolution)."
   ([f g]
    (fn [n] (apply + (for [d (divisors n)] (* (f d) (g (/ n d)))))))
   ([f g & more] (reduce dirichlet-convolution f (cons g more))))
@@ -164,22 +164,6 @@
                (reduce + (for [d (divisors n) :when (< d n)] (* (f (/ n d)) (f-inverse f d)))))))]
     (partial f-inverse f)))
 
-(comment
-  (time (doseq [x (range 1 100000)] (divisors x)));;400-500ms
-  (time (apply + (map primes-count-distinct (range 1 100000))));;225
-  (time (apply + (map primes-count-total (range 1 100000))));;124
-  (time (apply + (map liouville (range 1 100000))));;172
-  (time (apply + (map mangoldt (range 1 100000))));;190ms
 
-  (time (apply + (map divisors-count (range 1 100000))));;500ms
-  (time (apply + (map divisors-sum (range 1 100000))));;640ms
-  (time (apply + (map divisors-square-sum (range 1 100000))));;500ms
-
-  (time (apply + (map mobius (range 1 100000))));;327ms, 171ms
-  (time (apply + (map totient (range 1 100000))));;585ms, 281
-
-  (time (apply + (map chebyshev-first (range 1 5000))));;733ms
-  (time (apply + (map chebyshev-second (range 1 5000))));;877ms
-  )
 
 
