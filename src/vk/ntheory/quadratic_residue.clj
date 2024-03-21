@@ -91,13 +91,7 @@
   (t/testing "p | n"
     (t/is (zero? (euler-criteria 0 11)))))
 
-(defn report [p]
-  (let [r (R p)
-        n (N p)]
-    (println "quadratic residue size: " (count r))
-    (println "quadratic non residue size: " (count n))
-    (println "quadratic residue: "  r)
-    (println "quadratic non residue : " n)))
+
 
 
 

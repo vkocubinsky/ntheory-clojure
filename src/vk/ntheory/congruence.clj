@@ -3,8 +3,6 @@
    [vk.ntheory.basic :as b]
    [vk.ntheory.validation :as v]))
 
-(defn- mod-m [m] #(mod % m))
-
 (defn solve
   "Solve congruence f(x) ≡ 0 (mod m).
   Solve congruence by try each number of completely residue system.
@@ -14,7 +12,7 @@
   m - modulo "
   [f m]
   (->> (range m)
-       (filter (comp zero? (mod-m m) f))))
+       (filter (comp zero? #(mod % m) f))))
 
 (defn solve-linear
   "Solve congruence ax ≡ b (mod m). Returns sorted set."
@@ -26,7 +24,7 @@
             m' (/ m d)]
         (->> (range d)
              (map #(+ x0 (* m' %)))
-             (map (mod-m m))
+             (map #(mod % m))
              (apply sorted-set)))
 
       (sorted-set))))
@@ -80,7 +78,7 @@
                              (when-not (= d 1) (throw (Exception. "Expected taht all modulus are coprime.")))
                              (* M' s c))))
               (apply +)
-              ((mod-m M))
+              (#(mod % M))
           )
       ] [x0 M])
   )
