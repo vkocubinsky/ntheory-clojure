@@ -44,13 +44,23 @@
                   (R p)))
 
 (defn euler-criteria
-  "Legendre's symbol (n | p) based on Euler criteria."
+  "Legendre's symbol (n|p) based on Euler criteria."
   [n p]
   (let [l (pow-mod-quick n (/ (dec p) 2) p)]
     (condp = l
       1 1
       (dec p) -1
       0 0)))
+
+(defn gauss-lemma-criteria
+  "Legendre's symbol (n|p) based on Gauss lemma.
+  Slow."
+  [n p]
+  (let [p-half (/ p 2)]
+    (apply * (for [r (range 1 p-half)
+                   :let [v (mod (* n r) p)]
+                   :when (> v p-half)]
+               -1))))
 
 (defn legendre-minus-one
   "Return (1|p)"
