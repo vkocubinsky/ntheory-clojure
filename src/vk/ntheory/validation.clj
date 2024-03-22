@@ -10,7 +10,7 @@
   [n]
   (<= n max-int))
 
-(defn- check-spec
+(defn check-spec
   "Check is `data` conform to `spec`.
   If not throw an exception."
   [spec data]

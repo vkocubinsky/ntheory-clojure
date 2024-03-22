@@ -2,7 +2,9 @@
   "Quadratic Residue."
   (:require [clojure.set :as set]
             [vk.ntheory.basic :as b]
+            [vk.ntheory.primes :as p]
             [vk.ntheory.validation :as v]
+            [clojure.spec.alpha :as s]
             [clojure.test :as t]))
 
 (defn R
@@ -21,6 +23,7 @@
   "Legendre's symbol (n|p) based on Euler criteria.
   Here `p` is a prime."
   [n p]
+  (v/check-spec (s/and odd? p/prime?) p)
   (let [l (b/m** p n (/ (dec p) 2))]
     (condp = l
       1 1
@@ -32,11 +35,14 @@
   Here `p` is a prime, `p` is not divides `n` .
   Slow compare to Euler Criteria."
   [n p]
-  (let [p-half (/ p 2)]
-    (apply * (for [r (range 1 p-half)
-                   :let [v (b/m* p n r)]
-                   :when (> v p-half)]
-               -1))))
+  (v/check-spec (s/and odd? p/prime?) p)
+  (if (p/divides? p n)
+    0
+    (let [p-half (/ p 2)]
+      (apply * (for [r (range 1 p-half)
+                     :let [v (b/m* p n r)]
+                     :when (> v p-half)]
+                 -1)))))
 
 (defn legendre-minus-one
   "Return (1|p)"
