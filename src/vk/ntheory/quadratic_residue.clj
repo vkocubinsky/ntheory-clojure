@@ -1,64 +1,40 @@
 (ns vk.ntheory.quadratic-residue
+  "Quadratic Residue."
   (:require [clojure.set :as set]
             [vk.ntheory.basic :as b]
             [vk.ntheory.validation :as v]
             [clojure.test :as t]))
 
-(defn pow-mod
-  "Raise `a` to the power of `n` modulo `m`"
-  [a n m]
-  (v/check-int a)
-  (v/check-int-non-neg n)
-  (v/check-int-non-neg m)
-  (reduce (fn [acc v] (mod (* acc v) m)) 1 (repeat n a)))
+(defn R
+  "Returns set of quadratic residue to prime modulo `p`."
+  [p] (->> (range 1 (/ p 2))
+           (map #(b/m* p % %))
+           (into (sorted-set))))
 
-(defn bit-count
-  [n]
-  (count (Integer/toBinaryString n)))
-
-(defn pow-mod-quick
-  "Raise `a` to the power of `n` modulo `m`."
-  [a n m]
-  (v/check-int a)
-  (v/check-int-non-neg n)
-  (v/check-int-non-neg m)
-  (let [c (bit-count n)]
-    (reduce
-     (fn [acc bit] (let [s (mod (* acc acc) m)]
-                     (if bit
-                       (mod (* s a) m)
-                       s)))
-     1
-     (for [b1 (range c 0 -1)
-           :let [b0 (dec b1)
-                 bit (bit-test n b0)]]
-       bit))))
-
-(defn R [p] (->> (range 1 p)
-                 (map #(* % %))
-                 (map #(mod % p))
-                 (into (sorted-set))))
-
-(defn N [p]
+(defn N
+  "Returns of set of quadratic non residue to prime modulo `p`."
+  [p]
   (set/difference (into (sorted-set) (range 1 p))
                   (R p)))
 
-(defn euler-criteria
-  "Legendre's symbol (n|p) based on Euler criteria."
+(defn legendre-by-euler-criteria
+  "Legendre's symbol (n|p) based on Euler criteria.
+  Here `p` is a prime."
   [n p]
-  (let [l (pow-mod-quick n (/ (dec p) 2) p)]
+  (let [l (b/m** p n (/ (dec p) 2))]
     (condp = l
       1 1
       (dec p) -1
       0 0)))
 
-(defn gauss-lemma-criteria
+(defn legendre-by-gauss-lemma
   "Legendre's symbol (n|p) based on Gauss lemma.
-  Slow."
+  Here `p` is a prime, `p` is not divides `n` .
+  Slow compare to Euler Criteria."
   [n p]
   (let [p-half (/ p 2)]
     (apply * (for [r (range 1 p-half)
-                   :let [v (mod (* n r) p)]
+                   :let [v (b/m* p n r)]
                    :when (> v p-half)]
                -1))))
 
@@ -81,15 +57,9 @@
       3  -1 ;;  3 (mod 8)
       5  -1 ;; -3 (mod 8)
       )))
-(t/deftest euler-criteria-test
-  (t/testing "Qudratic residue"
-    (doseq [n (R 11)]
-      (t/is (= 1 (euler-criteria n 11)))))
-  (t/testing "Quadratic non residue"
-    (doseq [n (N 11)]
-      (t/is (= -1 (euler-criteria n 11)))))
-  (t/testing "p | n"
-    (t/is (zero? (euler-criteria 0 11)))))
+
+
+
 
 
 

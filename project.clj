@@ -7,5 +7,7 @@
   :repl-options {:init-ns user
                  :init (require '[vk.ntheory.basic :as b]
                                 '[vk.ntheory.primes :as p]
-                                '[vk.ntheory.ar-func :as f]
-                                '[vk.ntheory.congruence :as c])})
+                                '[vk.ntheory.ar-func :as af]
+                                '[vk.ntheory.congruence :as c]
+                                '[vk.ntheory.quadratic-residue :as qr]
+                                '[vk.ntheory.roots :as r])})

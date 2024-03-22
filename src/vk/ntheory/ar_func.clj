@@ -142,27 +142,27 @@
                                (math/log %)))))
        (apply +)))
 
-(defn dirichlet-convolution
+(defn d*
   "Dirichlet product(or convolution)."
   ([f g]
    (fn [n] (apply + (for [d (divisors n)] (* (f d) (g (/ n d)))))))
-  ([f g & more] (reduce dirichlet-convolution f (cons g more))))
+  ([f g & more] (reduce d* f (cons g more))))
 
-(defn f-equals
-  ([f g] (f-equals f g default-natural-sample))
+(defn f=
+  ([f g] (f= f g default-natural-sample))
   ([f g xs]
    (every? (fn [[a b]] (= a b))  (map (fn [n] [(f n) (g n)]) xs))))
 
-(defn dirichlet-inverse
+(defn inverse
   "Dirichlet inverse."
   [f]
-  (letfn [(f-inverse [f n]
+  (letfn [(inv [f n]
             (if (= n 1)
               (/ 1 (f 1))
               (*
                (/ (- 1) (one 1))
-               (reduce + (for [d (divisors n) :when (< d n)] (* (f (/ n d)) (f-inverse f d)))))))]
-    (partial f-inverse f)))
+               (reduce + (for [d (divisors n) :when (< d n)] (* (f (/ n d)) (inv f d)))))))]
+    (partial inv f)))
 
 
 
