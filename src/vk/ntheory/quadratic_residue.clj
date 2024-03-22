@@ -20,8 +20,7 @@
                   (R p)))
 
 (defn legendre-by-euler-criteria
-  "Legendre's symbol (n|p) based on Euler criteria.
-  Here `p` is a prime."
+  "Legendre's symbol (n|p) based on Euler criteria."
   [n p]
   (v/check-spec (s/and odd? p/prime?) p)
   (let [l (b/m** p n (/ (dec p) 2))]
@@ -32,11 +31,10 @@
 
 (defn legendre-by-gauss-lemma
   "Legendre's symbol (n|p) based on Gauss lemma.
-  Here `p` is a prime, `p` is not divides `n` .
   Slow compare to Euler Criteria."
   [n p]
   (v/check-spec (s/and odd? p/prime?) p)
-  (if (p/divides? p n)
+  (if (b/divides? p n)
     0
     (let [p-half (/ p 2)]
       (apply * (for [r (range 1 p-half)
@@ -45,8 +43,9 @@
                  -1)))))
 
 (defn legendre-minus-one
-  "Return (1|p)"
+  "Return (-1|p)."
   [p]
+  (v/check-spec (s/and odd? p/prime?) p)
   (let [r (mod p 4)]
     (condp = r
       0  0
@@ -54,7 +53,9 @@
       3 -1)))
 
 (defn legendre-two
+  "Return (2|p)."
   [p]
+  (v/check-spec (s/and odd? p/prime?) p)
   (let [r (mod p 8)]
     (condp = r
       0   0 ;;  0 (mod 8)
@@ -63,13 +64,4 @@
       3  -1 ;;  3 (mod 8)
       5  -1 ;; -3 (mod 8)
       )))
-
-
-
-
-
-
-
-
-
 
