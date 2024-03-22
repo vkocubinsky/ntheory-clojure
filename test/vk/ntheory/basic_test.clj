@@ -27,6 +27,23 @@
       0 (b/m+ 3 2 1)
       1 (b/m+ 3 2 2))))
 
+(deftest m**-test
+  (are [x y] (= x y)
+    1 (b/m** 11 2 0)
+    2 (b/m** 11 2 1)
+    4 (b/m** 11 2 2)
+    8 (b/m** 11 2 3)
+    5 (b/m** 11 2 4)
+    10 (b/m** 11 2 5)
+    9 (b/m** 11 2 6)
+    7 (b/m** 11 2 7)
+    3 (b/m** 11 2 8)
+    6 (b/m** 11 2 9)
+    1 (b/m** 11 2 10)
+    )
+  )
+
+
 (deftest divides?-test
   (testing "Divide by zero"
     (is (thrown? Exception (b/divides? 0 8)))
