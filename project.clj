@@ -10,4 +10,5 @@
                                 '[vk.ntheory.ar-func :as af]
                                 '[vk.ntheory.congruence :as c]
                                 '[vk.ntheory.quadratic-residue :as qr]
-                                '[vk.ntheory.roots :as r])})
+                                '[vk.ntheory.roots :as r]
+                                '[vk.ntheory.validation :as v])})

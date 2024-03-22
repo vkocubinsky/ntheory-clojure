@@ -293,7 +293,7 @@ with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
 Two arithmetical function $f$ and $g$ are equal if $f(n)=g(n)$ for all
 natual $n$. There is helper function `f-equlas` which compare two
-functions on some sequence of natual numbers. Function `f-equals`
+functions on some sequence of natual numbers. Function `f=`
 accept two functions and optionally sequence of natural numbers. There
 is a default for sequence of natural numbers, it is a variable
 `default-natural-sample`, which is currently `range(1,100)`.
@@ -305,9 +305,9 @@ sequence of natural number we can for example do next:
     (def f identity)
     (def g (constantly 1))
     ;; Then we able to check does those functions are equals
-    (f/f-equals f g)
-    (f/f-equals f g (range 1 1000))
-    (f/f-equals f g (filter even? (range 1 100)))
+    (f/f= f g)
+    (f/f= f g (range 1 1000))
+    (f/f= f g (filter even? (range 1 100)))
 
 
 <a id="org0ae6899"></a>
@@ -635,7 +635,7 @@ $$ f^{-1}(n) = \begin{cases}
 
 For example, $1(n) * 1(n) = \sigma_0$
 
-    (f/f-equals
+    (f/f=
        (f/d-* f/one f/one)
        f/divisors-count
     )
@@ -645,7 +645,7 @@ For example, $1(n) * 1(n) = \sigma_0$
 Dirichlet convolution is associative so clojure method support more than two
 function as parameter of `f*`
 
-    (f/f-equals
+    (f/f=
       (f/d-* f/mobius f/one f/mobius f/one)
       f/unit
     )
@@ -654,11 +654,11 @@ function as parameter of `f*`
 
 Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 
-    (f/f-equals (f/d-inv f/one) f/mobius)
+    (f/f= (f/d-inv f/one) f/mobius)
 
     true
 
-    (f/f-equals (f/d-inv f/mobius) f/one)
+    (f/f= (f/d-inv f/mobius) f/one)
 
     true
 
@@ -667,7 +667,7 @@ execute slow. But inverse of completely multiplicative function $f(n)$
 is $f(n) \mu(n)$(usual multiplication), for instance inverse
 of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
 
-    (f/f-equals
+    (f/f=
      (f/d-* 
         #(* (identity %) (f/mobius %))
         identity

@@ -7,6 +7,10 @@
 - Switch from pandoc to Org Mode export
 - Split ntheory.clj into namespaces
 - Add basic/lcm function
+- Add modulo arithmetic
+  - m*
+  - m+
+  - m**
 - Add primes/order function
 - Add primes/composite? function
 - Add primes/prime? function
@@ -15,6 +19,7 @@
   - linear congruence
   - system of remainders
   - chinese remainder theorem
+- 
 
 * Version 0.3.0 <2024-03-11 Mon>
 
