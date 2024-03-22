@@ -1,6 +1,50 @@
 (ns vk.ntheory.basic
   (:require [vk.ntheory.validation :as v]))
 
+
+(defn m*
+  "Multiplication modulo `m`.
+  From performance reason, there is no checks that numbers `a` and `b`
+  are relatively prime. "
+  ([m] 1)
+  ([m a] (mod a m))
+  ([m a b] (mod (* a b) m))
+  ([m a b & more] (reduce (partial m* m) (m* m a b) more))
+  )
+
+(defn m+
+  "Addition modulo `m`."
+  ([m] 0)
+  ([m a] (mod a m))
+  ([m a b] (mod (+ a b) m))
+  ([m a b & more] (reduce (partial m+ m) (m+ m a b) more))
+  )
+
+(defn bit-count
+  [n]
+  (count (Integer/toBinaryString n)))
+
+(defn m**
+  "Raise `a` to the power of `n` modulo `m`.
+  See D.Knuth, The Art of Computer Programming, Volume II."
+  [m a n]
+  (v/check-int-non-neg m)
+  (v/check-int a)
+  (v/check-int-non-neg n)
+  (let [c (bit-count n)
+        m*' (partial m* m)]
+    (reduce
+     (fn [acc bit] (let [s (m*' acc acc)]
+                     (if bit
+                       (m*' s a)
+                       s)))
+     1
+     (for [b1 (range c 0 -1)
+           :let [b0 (dec b1)
+                 bit (bit-test n b0)]]
+       bit))))
+
+
 (defn divides?
   "Return true if `a != 0` divides `b`, otherwise false."
   [a b]

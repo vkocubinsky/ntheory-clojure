@@ -3,14 +3,37 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.basic :as b]))
 
+(deftest m*-test
+  (testing "Arity"
+    (is (= 1 (b/m* 6)))
+    (is (= 5 (b/m* 6 5)))
+    (is (= 1 (b/m* 6 7)))
+    (is (= 5 (b/m* 6 7 5)))
+    (is (= 5 (b/m* 6 5 5 5))))
+  (testing "Relatively prime to modulo 6"
+    (are [x y] (= x y)
+      1 (b/m* 6 1 1)
+      5 (b/m* 6 1 5)
+      5 (b/m* 6 5 1)
+      1 (b/m* 6 5 5))))
+
+(deftest m+-test
+  (testing "Addition to modulo 6"
+    (are [x y] (= x y)
+      1 (b/m+ 3 1 0)
+      2 (b/m+ 3 1 1)
+      0 (b/m+ 3 1 2)
+      2 (b/m+ 3 2 0)
+      0 (b/m+ 3 2 1)
+      1 (b/m+ 3 2 2))))
+
 (deftest divides?-test
   (testing "Divide by zero"
     (is (thrown? Exception (b/divides? 0 8)))
     (is (thrown? Exception (b/divides? 0 -8)))
-  (testing "Everything divides 0, but 0"
-    (is (b/divides? 2 0))
-    (is (thrown? Exception (b/divides? 0 0))))
-    ) 
+    (testing "Everything divides 0, but 0"
+      (is (b/divides? 2 0))
+      (is (thrown? Exception (b/divides? 0 0)))))
   (testing "simple cases"
     (are [x y] (= x y)
       true (b/divides? 1 1)
@@ -44,12 +67,7 @@
 (deftest sign-test
   (is (= 1 (b/sign 2)))
   (is (= (- 1) (b/sign (- 2))))
-  (is (= 0 (b/sign 0)))
-  )
-
-
-
-
+  (is (= 0 (b/sign 0))))
 
 (deftest order-test
   (are [x y] (= x y)
@@ -63,7 +81,6 @@
     3 (b/order 2 8)
     0 (b/order 2 9)
     1 (b/order 2 10)))
-
 
 (deftest gcd-test
   (are [x y] (= x y)
