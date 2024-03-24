@@ -3,19 +3,7 @@
             [vk.ntheory.quadratic-residue :as qr]))
 
 
-(deftest check-int-non-neg-test
-  (testing "Fail"
-    (is (thrown? Exception (qr/check-odd-prime 0)))
-    (is (thrown? Exception (qr/check-odd-prime 1)))
-    (is (thrown? Exception (qr/check-odd-prime 2)))
-    (is (thrown? Exception (qr/check-odd-prime 1.1)))
-    (is (thrown? Exception (qr/check-odd-prime -1)))
-    (is (thrown? Exception (qr/check-odd-prime -2))))
-  (testing "Success"
-    (is (= 3 (qr/check-odd-prime 3)))
-    (is (= 5 (qr/check-odd-prime 5)))
-    (is (= 7 (qr/check-odd-prime 7)))
-    (is (= 11 (qr/check-odd-prime 11)))))
+
 
 (deftest R-N-test
   (is (= #{1 3 4 5 9} (qr/R 11)))

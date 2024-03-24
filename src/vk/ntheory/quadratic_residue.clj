@@ -5,12 +5,7 @@
             [vk.ntheory.primes :as p]
             [clojure.test :as t]))
 
-(defn check-odd-prime
-  [n]
-  (let [n (b/check-int-pos n)]
-    (b/check (every-pred odd? p/prime?) n (format "%s is not odd prime" n))
-    )
-  )
+
 
 
 (defn R
@@ -28,7 +23,7 @@
 (defn legendre-by-euler-criteria
   "Legendre's symbol (n|p) based on Euler criteria."
   [n p]
-  (check-odd-prime p)
+  (p/check-odd-prime p)
   (let [l (b/m** p n (/ (dec p) 2))]
     (condp = l
       1 1
@@ -39,7 +34,7 @@
   "Legendre's symbol (n|p) based on Gauss lemma.
   Slow compare to Euler Criteria."
   [n p]
-  (check-odd-prime p)
+  (p/check-odd-prime p)
   (if (b/divides? p n)
     0
     (let [p-half (/ p 2)]
@@ -51,7 +46,7 @@
 (defn legendre-minus-one
   "Return (-1|p)."
   [p]
-  (check-odd-prime p)
+  (p/check-odd-prime p)
   (let [r (mod p 4)]
     (condp = r
       0  0
@@ -61,7 +56,7 @@
 (defn legendre-two
   "Return (2|p)."
   [p]
-  (check-odd-prime p)
+  (p/check-odd-prime p)
   (let [r (mod p 8)]
     (condp = r
       0   0 ;;  0 (mod 8)

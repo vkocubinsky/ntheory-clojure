@@ -36,6 +36,34 @@
     (is (= p/max-int (p/check-int-non-zero-max p/max-int)))))
 
 
+(deftest check-prime
+  (testing "Fail"
+    (is (thrown? Exception (p/check-prime 0)))
+    (is (thrown? Exception (p/check-prime 1)))
+    (is (thrown? Exception (p/check-prime 1.1)))
+    (is (thrown? Exception (p/check-prime -1)))
+    (is (thrown? Exception (p/check-prime -2))))
+  (testing "Success"
+    (is (= 3 (p/check-odd-prime 3)))
+    (is (= 5 (p/check-odd-prime 5)))
+    (is (= 7 (p/check-odd-prime 7)))
+    (is (= 11 (p/check-odd-prime 11)))))
+
+(deftest check-odd-primeest
+  (testing "Fail"
+    (is (thrown? Exception (p/check-odd-prime 0)))
+    (is (thrown? Exception (p/check-odd-prime 1)))
+    (is (thrown? Exception (p/check-odd-prime 2)))
+    (is (thrown? Exception (p/check-odd-prime 1.1)))
+    (is (thrown? Exception (p/check-odd-prime -1)))
+    (is (thrown? Exception (p/check-odd-prime -2))))
+  (testing "Success"
+    (is (= 3 (p/check-odd-prime 3)))
+    (is (= 5 (p/check-odd-prime 5)))
+    (is (= 7 (p/check-odd-prime 7)))
+    (is (= 11 (p/check-odd-prime 11)))))
+
+
 
 (deftest primes-test
   (testing "cache"
