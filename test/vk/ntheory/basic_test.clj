@@ -3,6 +3,39 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.basic :as b]))
 
+(deftest check-int
+  (testing "Fail"
+    (is (thrown? Exception (b/check-int 1.1))))
+  (testing "Success"
+    (is (= 1 (b/check-int 1)))))
+
+(deftest check-int-pos-test
+  (testing "Fail"
+    (is (thrown? Exception (b/check-int-pos 1.1)))
+    (is (thrown? Exception (b/check-int-pos -1)))
+    (is (thrown? Exception (b/check-int-pos 0))))
+  (testing "Success"
+    (is (= 1 (b/check-int-pos 1)))
+    (is (= 2 (b/check-int-pos 2)))))
+
+(deftest check-int-non-neg-test
+  (testing "Fail"
+    (is (thrown? Exception (b/check-int-non-neg 1.1)))
+    (is (thrown? Exception (b/check-int-non-neg -1)))
+    (is (thrown? Exception (b/check-int-non-neg -2))))
+  (testing "Success"
+    (is (= 0 (b/check-int-non-neg 0)))
+    (is (= 1 (b/check-int-non-neg 1)))))
+
+(deftest check-int-non-zero-test
+  (testing "Fail"
+    (is (thrown? Exception (b/check-int-non-zero 1.1)))
+    (is (thrown? Exception (b/check-int-non-zero 0)))
+      (is (= -1 (b/check-int-non-zero -1)))
+    (testing "Success"
+      (is (= 1 (b/check-int-non-zero 1))))))
+
+
 (deftest m*-test
   (testing "Arity"
     (is (= 1 (b/m* 6)))

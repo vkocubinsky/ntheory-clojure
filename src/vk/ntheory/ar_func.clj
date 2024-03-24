@@ -1,8 +1,8 @@
 (ns vk.ntheory.ar-func
   (:require [clojure.math :as math]
             [vk.ntheory.primes :as p]
-            [vk.ntheory.validation :as v]
-            [vk.ntheory.basic :refer [pow]]))
+            [vk.ntheory.basic :as b]
+            ))
 
 (def default-natural-sample (range 1 100))
 
@@ -24,7 +24,7 @@
 (defn divisors
   "Divisors of whole integer."
   [n]
-  (v/check-int-pos-max n)
+  (p/check-int-pos-max n)
   (as-> n v
     (p/int->factors-count v)
     (divisors' v [[]])
@@ -40,7 +40,7 @@
       it returns value on order of prime."
   [rf f]
   (fn [n]
-    (v/check-int-pos-max n)
+    (p/check-int-pos-max n)
     (->> n
          p/int->factors-count
          (map (fn [[p k]] (f p k)))
@@ -49,25 +49,25 @@
 (defn primes-count-distinct
   "Number of primes divides given `n` - ω."
   [n]
-  (v/check-int-pos-max n)
+  (p/check-int-pos-max n)
   (-> n p/int->factors-distinct count))
 
 (defn primes-count-total
   "Number of primes and their powers divides given `n` - Ω."
   [n]
-  (v/check-int-pos-max n)
+  (p/check-int-pos-max n)
   (-> n p/int->factors count))
 
 (defn liouville
   "Liouville function - λ"
   [n]
-  (v/check-int-pos-max n)
-  (pow (- 1) (primes-count-total n)))
+  (p/check-int-pos-max n)
+  (b/pow (- 1) (primes-count-total n)))
 
 (defn mangoldt
   "Mangoldt function - Λ"
   [n]
-  (v/check-int-pos-max n)
+  (p/check-int-pos-max n)
   (let [[[p & _] & r] (p/int->factors-partitions n)]
     (if (and p (nil? r))
       (math/log p)
@@ -83,10 +83,10 @@
   (if (= a 0)
     divisors-count
     (reduce-on-prime-count *' (fn [p k] (/
-                                         (dec (pow p
+                                         (dec (b/pow p
                                                    (* (inc k)
                                                       a)))
-                                         (dec (pow p a)))))))
+                                         (dec (b/pow p a)))))))
 
 (def divisors-sum
   "Divisors sum - σ₁."
@@ -99,19 +99,19 @@
 (defn mobius
   "Mobius function - μ."
   [n]
-  (v/check-int-pos-max n)
+  (p/check-int-pos-max n)
   (->> n
        p/int->factors-count
        (reduce (fn [a [_ k]] (if (= k 1) (* a -1) (reduced 0))) 1)))
 
 (def totient
   "Euler's totient function - ϕ."
-  (reduce-on-prime-count * (fn [p k] (- (pow p k) (pow p (dec k))))))
+  (reduce-on-prime-count * (fn [p k] (- (b/pow p k) (b/pow p (dec k))))))
 
 (defn unit
   "Unit function - ϵ."
   [n]
-  (v/check-int-pos-max n)
+  (p/check-int-pos-max n)
   (if (= n 1)
     1
     0))
@@ -119,13 +119,13 @@
 (defn one
   "Constant function returns 1."
   [n]
-  (v/check-int-pos-max n)
+  (p/check-int-pos-max n)
   1)
 
 (defn chebyshev-first
   "The first Chebyshev function - θ."
   [n]
-  (v/check-int-pos-max n)
+  (p/check-int-pos-max n)
   (->> n
        p/primes
        (map math/log)
@@ -134,7 +134,7 @@
 (defn chebyshev-second
   "The second Chebyshev function - ψ."
   [n]
-  (v/check-int-pos-max n)
+  (p/check-int-pos-max n)
   (->> n
        p/primes
        (map #(* (math/log %)

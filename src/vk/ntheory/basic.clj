@@ -1,5 +1,41 @@
 (ns vk.ntheory.basic
-  (:require [vk.ntheory.validation :as v]))
+  )
+
+
+(defn check
+  [pred x msg]
+  (if (pred x)
+    x
+    (throw (IllegalArgumentException. msg))))
+
+(defn check-not
+  [pred x msg]
+  (check (complement pred) x msg))
+
+
+(defn check-int
+  [n]
+  "Check is given `n` integer."
+  (check int? n (format "%s is not an integer." n)))
+
+(defn check-int-pos
+  "Check is given `n` positive integer."
+  [n]
+  (let [n (check-int n)]
+    (check pos? n (format "%s is not positive." n))))
+
+(defn check-int-non-neg
+  "Check is given `n` non negative integer."
+  [n]
+  (let [n (check-int n)]
+    (check-not neg? n (format "%s is negative" n))))
+
+(defn check-int-non-zero
+  "Check is given integer `n` is not zero."
+  [n]
+  (let [n (check-int n)]
+    (check-not zero? n (format "%s is zero" n)))
+)
 
 
 (defn m*
@@ -9,16 +45,14 @@
   ([m] 1)
   ([m a] (mod a m))
   ([m a b] (mod (* a b) m))
-  ([m a b & more] (reduce (partial m* m) (m* m a b) more))
-  )
+  ([m a b & more] (reduce (partial m* m) (m* m a b) more)))
 
 (defn m+
   "Addition modulo `m`."
   ([m] 0)
   ([m a] (mod a m))
   ([m a b] (mod (+ a b) m))
-  ([m a b & more] (reduce (partial m+ m) (m+ m a b) more))
-  )
+  ([m a b & more] (reduce (partial m+ m) (m+ m a b) more)))
 
 (defn bit-count
   [n]
@@ -28,9 +62,9 @@
   "Raise `a` to the power of `n` modulo `m`.
   See D.Knuth, The Art of Computer Programming, Volume II."
   [m a n]
-  (v/check-int-non-neg m)
-  (v/check-int a)
-  (v/check-int-non-neg n)
+  (check-int-non-neg m)
+  (check-int a)
+  (check-int-non-neg n)
   (let [c (bit-count n)
         m*' (partial m* m)]
     (reduce
@@ -44,26 +78,25 @@
                  bit (bit-test n b0)]]
        bit))))
 
-
 (defn divides?
   "Return true if `a != 0` divides `b`, otherwise false."
   [a b]
-  (v/check-int-non-zero a)
-  (v/check-int b)
+  (check-int-non-zero a)
+  (check-int b)
   (zero? (mod b a)))
 
 (defn pow
   "Return `a` raised to the power of `n >= 0`."
   [a n]
-  (v/check-int a)
-  (v/check-int-non-neg n)
+  (check-int a)
+  (check-int-non-neg n)
   (apply * (repeat n a)))
 
 (defn order
   "Greatest power of `p > 0` divides `n > 0`."
   [p n]
-  (v/check-int-pos p)
-  (v/check-int-pos n)
+  (check-int-pos p)
+  (check-int-pos n)
   (loop [n  n
          k  0]
     (let [q (quot n p)
@@ -75,7 +108,7 @@
 (defn sign
   "Sign for given `n`"
   [n]
-  (v/check-int n)
+  (check-int n)
   (cond
     (pos? n) 1
     (neg? n) -1
@@ -85,8 +118,8 @@
   "Createst common divisor of `a` and `b`.
   If both `a` and `b` are equlas to zero returns zero."
   [a b]
-  (v/check-int a)
-  (v/check-int b)
+  (check-int a)
+  (check-int b)
   (loop [a (abs a) b (abs b)]
     (if (zero? b) a
         (recur b (mod a b)))))
@@ -95,8 +128,8 @@
   "Least common multiple of `a` and `b`.
   If both `a` and `b` equals to zero returns zero."
   [a b]
-  (v/check-int a)
-  (v/check-int b)
+  (check-int a)
+  (check-int b)
   (let [d (gcd a b)]
     (if (= d 0)
       0
@@ -110,8 +143,8 @@
   `a * s + b * t = d`.
   "
   ([a b]
-   (v/check-int a)
-   (v/check-int b)
+   (check-int a)
+   (check-int b)
    (let [[d s t] (gcd-extended [(abs a) (abs b)] [1 0] [0 1])
          s' (* (sign a) s)
          t' (* (sign b) t)]

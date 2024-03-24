@@ -3,6 +3,40 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.primes :as p]))
 
+(deftest check-int-pos-max-test
+  (testing "Fail"
+    (is (thrown? Exception (p/check-int-pos-max 1.1)))
+    (is (thrown? Exception (p/check-int-pos-max (inc p/max-int))))
+    (is (thrown? Exception (p/check-int-pos-max -1)))
+    (is (thrown? Exception (p/check-int-pos-max 0))))
+  (testing "Success"
+    (is (= 1 (p/check-int-pos-max 1)))
+    (is (= 2 (p/check-int-pos-max 2)))
+    (is (= p/max-int (p/check-int-pos-max p/max-int)))))
+
+(deftest check-int-non-neg-max-test
+  (testing "Fail"
+    (is (thrown? Exception (p/check-int-non-neg-max 1.1)))
+    (is (thrown? Exception (p/check-int-non-neg-max (inc p/max-int))))
+    (is (thrown? Exception (p/check-int-non-neg-max -1)))
+    (is (thrown? Exception (p/check-int-non-neg-max -2))))
+  (testing "Success"
+    (is (= 0 (p/check-int-non-neg-max 0)))
+    (is (= 1 (p/check-int-non-neg-max 1)))
+    (is (= p/max-int (p/check-int-non-neg-max p/max-int)))))
+
+(deftest check-int-non-zero-max-test
+  (testing "Fail"
+    (is (thrown? Exception (p/check-int-non-zero-max 1.1)))
+    (is (thrown? Exception (p/check-int-non-zero-max (inc p/max-int))))
+    (is (thrown? Exception (p/check-int-non-zero-max 0)))
+    (testing "Success"
+      (is (= -1 (p/check-int-non-zero-max -1)))
+      (is (= 1 (p/check-int-non-zero-max 1))))
+    (is (= p/max-int (p/check-int-non-zero-max p/max-int)))))
+
+
+
 (deftest primes-test
   (testing "cache"
     (p/cache-reset!)

@@ -1,7 +1,33 @@
 (ns vk.ntheory.primes
-  (:require [vk.ntheory.basic :refer [pow]]
-            [vk.ntheory.validation :as v]
+  (:require [vk.ntheory.basic :as b]
             [clojure.math :as math]))
+
+(def max-int
+  "Max integer which can be factorized."
+  1000000)
+
+(defn- less-equal-max-int?
+  "Less or equal to `max-int`"
+  [n]
+  (<= n max-int))
+
+(defn check-int-pos-max
+  "Check `0 < n <= max-int`."
+  [n]
+  (let [n (b/check-int-pos n)]
+    (b/check less-equal-max-int? n (format "%s is more than %s" n max-int))))
+
+(defn check-int-non-neg-max
+  "Check `0 <= n <= max-int`"
+  [n]
+  (let [n (b/check-int-non-neg n)]
+    (b/check less-equal-max-int? n (format "%s is more than %s" n max-int))))
+
+(defn check-int-non-zero-max
+  "Check is given integer `n` is not zero and less or equal to max-int "
+  [n]
+  (let [n (b/check-int-non-zero n)]
+    (b/check less-equal-max-int? n (format "%s is more than %s" n max-int))))
 
 (defn- table-find-prime
   "Find next prime in least divisor table.
@@ -60,7 +86,7 @@
 
 (defn- table-auto-extend
   [n]
-  (v/check-int-pos-max n)
+  (check-int-pos-max n)
   (let [{:keys [_ _ upper] :as all} @cache]
     (if (<= n upper)
       all
@@ -80,19 +106,19 @@
 
 (defn primes
   [n]
-  (v/check-int-pos-max n)
+  (check-int-pos-max n)
   (take-while #(<= % n) (:primes (table-auto-extend n))))
 
 (defn unit?
   "Is given `n` a unit?"
   [n]
-  (v/check-int-pos-max n)
+  (check-int-pos-max n)
   (= n 1))
 
 (defn prime?
   "Is given `0 < n <= max-int` a prime number?"
   [n]
-  (v/check-int-pos-max n)
+  (check-int-pos-max n)
   (if (unit? n)
     false
     (let [table (least-divisor-table n)
@@ -102,19 +128,17 @@
 (defn composite?
   "Is given `0 < n <= max-int` a composite number?"
   [n]
-  (v/check-int-pos-max n)
+  (check-int-pos-max n)
   (if (unit? n)
     false
     ((complement prime?) n)))
 
-
-
 (defn int->factors
   ([^Integer n]
-   (v/check-int-pos-max n)
+   (check-int-pos-max n)
    (int->factors (least-divisor-table n) n))
   ([^ints xs ^Integer n]
-   (v/check-int-pos-max n)
+   (check-int-pos-max n)
    (lazy-seq
     (when (> n 1)
       (let [d (aget xs n)]
@@ -122,24 +146,24 @@
 
 (defn int->factors-distinct
   [n]
-  (v/check-int-pos-max n)
+  (check-int-pos-max n)
   (->> n int->factors dedupe))
 
 (defn int->factors-partitions
   [n]
-  (v/check-int-pos-max n)
+  (check-int-pos-max n)
   (->> n int->factors (partition-by identity)))
 
 (defn int->factors-count
   [n]
-  (v/check-int-pos-max n)
+  (check-int-pos-max n)
   (->> n
        int->factors-partitions
        (map (fn [xs] [(first xs) (count xs)]))))
 
 (defn int->factors-map
   [n]
-  (v/check-int-pos-max n)
+  (check-int-pos-max n)
   (into {} (int->factors-count n)))
 
 (defn factors->int
@@ -149,7 +173,7 @@
 (defn factors-count->int
   "Convert factors map or factors counts back to integer."
   [cn]
-  (apply * (for [[x y] cn] (pow x y))))
+  (apply * (for [[x y] cn] (b/pow x y))))
 
 (defn factors-partitions->int
   [xss]
