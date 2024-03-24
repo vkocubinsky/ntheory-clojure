@@ -19,7 +19,7 @@
   - linear congruence
   - system of remainders
   - chinese remainder theorem
-- 
+- Remove validation.clj
 
 * Version 0.3.0 <2024-03-11 Mon>
 
