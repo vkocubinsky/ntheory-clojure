@@ -14,10 +14,11 @@ I wrote this document =readme.org= with Emacs Org Mode. Then I
 generate markdown file =readme.md= with Org Mode export to markdown
 =C-c C-e m m=, and generate pdf file =readme.odf= with Org Mode export
 to pdf =C-c C-e l p=.  Github by default show =readme.md= if a project
-has such file.  It looks enough good, even math equation is
-supported. But I see some issue with greek characters in table of
-content and links. If it is a problem =readme.pdf= looks better. I use
-Emacs babel for clojure to produce real output inside the document. 
+has such file.  Githib markdown looks enough good, even math equation
+is supported. But I see some issues with greek characters in table of
+content and in link text. If it is a problem =readme.pdf= looks
+better. I use Emacs babel for clojure to produce real output inside
+the document.
 
 In this document I load number theory packages as: 
 
@@ -38,7 +39,9 @@ So below I will use above aliases.
 - $\mathbf C$ - Complex numbers
 - $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
 - $\mathbf Z/m\mathbf Z$ - Ring of integers modulo $m$
-
+- $(a,b)$ - the greatest common divisor of $a$ and $b$
+- $[a,b]$ - the least common multiple of $a$ and $b$
+  
 * Namespace ~vk.ntheory.basic~
 
 Namespace ~vk.ntheory.basic~ contains some common functions, which
@@ -47,6 +50,10 @@ can be used directly or by other namespaces.
 #+begin_src clojure
   (require '[vk.ntheory.basic :as b])
 #+end_src
+
+#+RESULTS:
+: 
+: 
 
 ** Check functions
 
@@ -79,8 +86,8 @@ Function ~divides?~ determine does one number divides another.
 ** Operations in $\mathbf{Z}/m\mathboldf{Z}$
 
 Similar to addition function ~+~ and multiplication function ~*~ there
-defined addition modulo m ~m+~ and multiplication modulo m ~m*~. First
-argument of these functions is a modulo.
+defined addition modulo m ~m+~ and multiplication modulo m ~m*~
+functions. First argument of these functions is a modulo.
 
 For instance $2 + 4 \equiv 1 \pmod{5}$ in $\mathbf{Z}/m\mathbf{Z}$
 
@@ -110,11 +117,11 @@ specify a modulo.
   (let [m5* (partial b/m* 5)
         m5+ (partial b/m+ 5)]
     ;; ...
-    (m5* 2 4))
+    (m5+ 1 (m5* 2 4)))
 #+end_src
 
 #+RESULTS:
-: 3
+: 4
 : 
 
 There is another helpful function modulo m - exponentiation. It is a
@@ -134,7 +141,7 @@ For instance, $101^{900} \equiv 701 \pmod{997}$
 ** Power function
 
 Clojure has built-in ~clojure.math/pow~ function, but it return
-~java.lang.Double~. The library provide integer analog
+~java.lang.Double~. The library provide integer analog.
 
 #+begin_src clojure
    (b/pow 2 3)
@@ -146,7 +153,8 @@ Clojure has built-in ~clojure.math/pow~ function, but it return
 
 ** Order function
 
-Order function $ord_p(n)$ is a greatest power of $p$ divides $n$
+Order function $ord_p(n)$ is a greatest power of $p$ divides $n$. For instance,
+$2^3 | 24$, but $2^4 \nmid 24$, so $ord_2(24) = 3$
 
 #+begin_src clojure
    (b/order 2 24)
@@ -157,6 +165,15 @@ Order function $ord_p(n)$ is a greatest power of $p$ divides $n$
 : 
 
 ** Sign function
+
+The ~sign~ function
+
+$$sign(n) = \begin{cases}
+-1 & \quad \text{if } x < 0 \\
+0  & \quad \text{if } x = 0 \\
+1  & \quad \text{if } x > 0
+\end{cases}
+$$
 
 #+begin_src clojure
   (mapv b/sign [(- 5) 10 0])
@@ -169,7 +186,7 @@ Order function $ord_p(n)$ is a greatest power of $p$ divides $n$
 ** The greatest common divisor
 
 The greatest common divisor of two integer $a$ and $b$ is an positive
-integer $d$ which divide $a$ and $b$ and any other common divisor $a$
+integer $d$ which divides $a$ and $b$ , and any other common divisor $a$
 and $b$ divides $d$.
 
 #+begin_src clojure
@@ -180,10 +197,11 @@ and $b$ divides $d$.
 : 6
 : 
 
-For convenience ~(gcd 0 0)~ is ~0~.
+The greatest common divisors of $a$ and $b$ is denoted by $(a,b)$.
+For convenience $(0, 0) = 0$.
 
-Furthermore, if for any two integers $a$ and $b$ exists integers ~s~
-and $t$ such that $a s + b t = d$ , where d is the greatest common
+Furthermore, if for any two integers $a$ and $b$ exists integers $s$
+and $t$ such that $a s + b t = d$ , where $d$ is the greatest common
 divisor. For example, $6 = 12 (-1) + 18 (1)$
 
 #+begin_src clojure
@@ -192,7 +210,19 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
 
 #+RESULTS[0c74f2cc07ec9ef25a86e65ce4219160c744cdde]:
 : [6 -1 1]
-: 
+:
+
+** The least common multiple
+
+The least common multiple of two integers $a$ and $b$ is denoted by
+$[a, b]$, is an smallest integer which is multiple of $a$ and $b$. 
+It defined in code as follows:
+
+$$[a,b] = \begin{cases}
+\frac{|ab|}{(a,b)} & \quad \text{if } a \ne 0 \text{ and } b \ne 0 \\
+0                  & \quad \text{if } a = 0 \text{ or } b = 0 
+\end{cases}
+$$
 
 * Namespace ~vk.ntheory.primes~
 

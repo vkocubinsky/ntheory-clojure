@@ -1,47 +1,48 @@
 
 # Table of Contents
 
-1.  [About](#orgb91b6d5)
-2.  [Notation](#org8c696dd)
-3.  [Namespace `vk.ntheory.basic`](#org74d08e1)
-    1.  [Check functions](#org8881899)
-    2.  [Some predicates](#org3299f3a)
-    3.  [Operations in $\mathbf{Z}/m\mathboldf{Z}$](#org58b2661)
-    4.  [Power function](#orgb0135b1)
-    5.  [Order function](#org64ccec3)
-    6.  [Sign function](#org09a66a5)
-    7.  [The greatest common divisor](#org5202fc8)
-4.  [Namespace `vk.ntheory.primes`](#orga393653)
-    1.  [Performance and cache](#org5bb1166)
-5.  [Primes](#org4c87174)
-6.  [Integer factorization](#orgbd49098)
-7.  [Divisors](#org3aefcd4)
-8.  [Arithmetical functions](#org3751181)
-    1.  [Function equality](#org66bae74)
-    2.  [Additive functions](#orgacba7b5)
-    3.  [Multiplicative functions](#orgb2509ad)
-    4.  [Higher order function for define multiplicative and additive functions](#orga96c70b)
-    5.  [Some additive functions](#org6373501)
-        1.  [Count of distinct primes - $\omega$](#org8e3a5a5)
-        2.  [Total count of primes - $\Omega$](#orgf97b80c)
-    6.  [Some multiplicative functions](#orga9de90f)
-        1.  [Mobius function - $\mu$.](#orgb9dc070)
-        2.  [Euler totient function - $\phi$](#org26ce038)
-        3.  [Unit function - $\epsilon$](#orgf5a17d7)
-        4.  [Constant one function - $1$](#org49a33a6)
-        5.  [Divisors count - $\sigma_0$](#org0f1474e)
-        6.  [Divisors sum - $\sigma_1$](#org3d9dde0)
-        7.  [Divisors square sum](#org1d1a010)
-        8.  [Divisors higher order function - $\sigma_{x}$](#org457286f)
-        9.  [Liouville - $\lambda$](#org1b0873b)
-    7.  [Some other arithmetic functions](#org5d7d34f)
-        1.  [Mangoldt - $\Lambda$](#org3c75d8a)
-        2.  [Chebyshev functions $\theta$ and $\psi$](#org374c279)
-    8.  [Dirichlet convolution](#org0bcda65)
+1.  [About](#orgb855e8b)
+2.  [Notation](#org0705157)
+3.  [Namespace `vk.ntheory.basic`](#orgbc16ebd)
+    1.  [Check functions](#org9a0a261)
+    2.  [Some predicates](#org5ec1444)
+    3.  [Operations in $\mathbf{Z}/m\mathboldf{Z}$](#orgf120eaf)
+    4.  [Power function](#orgffd2adb)
+    5.  [Order function](#orge275fdc)
+    6.  [Sign function](#orgb5dd96d)
+    7.  [The greatest common divisor](#org89bf205)
+    8.  [The least common multiple](#org1c44fb9)
+4.  [Namespace `vk.ntheory.primes`](#orge9beff7)
+    1.  [Performance and cache](#org1e5dedc)
+5.  [Primes](#orga9555b6)
+6.  [Integer factorization](#orge2a09c6)
+7.  [Divisors](#orga7fce77)
+8.  [Arithmetical functions](#orgd79b94b)
+    1.  [Function equality](#org63c6735)
+    2.  [Additive functions](#org9fc8d04)
+    3.  [Multiplicative functions](#org854e7e1)
+    4.  [Higher order function for define multiplicative and additive functions](#org0cb4603)
+    5.  [Some additive functions](#orga9359a1)
+        1.  [Count of distinct primes - $\omega$](#org5be3445)
+        2.  [Total count of primes - $\Omega$](#org19114b7)
+    6.  [Some multiplicative functions](#orgea27efb)
+        1.  [Mobius function - $\mu$.](#orge36531a)
+        2.  [Euler totient function - $\phi$](#orgf1d9a21)
+        3.  [Unit function - $\epsilon$](#org2b60e97)
+        4.  [Constant one function - $1$](#orgc85a3d7)
+        5.  [Divisors count - $\sigma_0$](#org7daa370)
+        6.  [Divisors sum - $\sigma_1$](#orgfdbd093)
+        7.  [Divisors square sum](#orga82b94a)
+        8.  [Divisors higher order function - $\sigma_{x}$](#org4605d6e)
+        9.  [Liouville - $\lambda$](#orgda871a2)
+    7.  [Some other arithmetic functions](#org85801c6)
+        1.  [Mangoldt - $\Lambda$](#org7286165)
+        2.  [Chebyshev functions $\theta$ and $\psi$](#org7c539f6)
+    8.  [Dirichlet convolution](#orga3d0492)
 
 
 
-<a id="orgb91b6d5"></a>
+<a id="orgb855e8b"></a>
 
 # About
 
@@ -55,10 +56,11 @@ I wrote this document `readme.org` with Emacs Org Mode. Then I
 generate markdown file `readme.md` with Org Mode export to markdown
 `C-c C-e m m`, and generate pdf file `readme.odf` with Org Mode export
 to pdf `C-c C-e l p`.  Github by default show `readme.md` if a project
-has such file.  It looks enough good, even math equation is
-supported. But I see some issue with greek characters in table of
-content and links. If it is a problem `readme.pdf` looks better. I use
-Emacs babel for clojure to produce real output inside the document. 
+has such file.  Githib markdown looks enough good, even math equation
+is supported. But I see some issues with greek characters in table of
+content and in link text. If it is a problem `readme.pdf` looks
+better. I use Emacs babel for clojure to produce real output inside
+the document.
 
 In this document I load number theory packages as: 
 
@@ -72,7 +74,7 @@ In this document I load number theory packages as:
 So below I will use above aliases.
 
 
-<a id="org8c696dd"></a>
+<a id="org0705157"></a>
 
 # Notation
 
@@ -80,9 +82,11 @@ So below I will use above aliases.
 -   $\mathbf C$ - Complex numbers
 -   $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
 -   $\mathbf Z/m\mathbf Z$ - Ring of integers modulo $m$
+-   $(a,b)$ - the greatest common divisor of $a$ and $b$
+-   $[a,b]$ - the least common multiple of $a$ and $b$
 
 
-<a id="org74d08e1"></a>
+<a id="orgbc16ebd"></a>
 
 # Namespace `vk.ntheory.basic`
 
@@ -92,7 +96,7 @@ can be used directly or by other namespaces.
     (require '[vk.ntheory.basic :as b])
 
 
-<a id="org8881899"></a>
+<a id="org9a0a261"></a>
 
 ## Check functions
 
@@ -111,7 +115,7 @@ There are also two helper function `check` and `check-not` which helps
 to implement another `check-*` function for a predicate. 
 
 
-<a id="org3299f3a"></a>
+<a id="org5ec1444"></a>
 
 ## Some predicates
 
@@ -122,13 +126,13 @@ Function `divides?` determine does one number divides another.
     true
 
 
-<a id="org58b2661"></a>
+<a id="orgf120eaf"></a>
 
 ## Operations in $\mathbf{Z}/m\mathboldf{Z}$
 
 Similar to addition function `+` and multiplication function `*` there
-defined addition modulo m `m+` and multiplication modulo m `m*`. First
-argument of these functions is a modulo.
+defined addition modulo m `m+` and multiplication modulo m `m*`
+functions. First argument of these functions is a modulo.
 
 For instance $2 + 4 \equiv 1 \pmod{5}$ in $\mathbf{Z}/m\mathbf{Z}$
 
@@ -149,9 +153,9 @@ specify a modulo.
     (let [m5* (partial b/m* 5)
           m5+ (partial b/m+ 5)]
       ;; ...
-      (m5* 2 4))
+      (m5+ 1 (m5* 2 4)))
 
-    3
+    4
 
 There is another helpful function modulo m - exponentiation. It is a
 fast binary exponentiation algorithm described in D.Knuth, The Art of
@@ -164,54 +168,65 @@ For instance, $101^{900} \equiv 701 \pmod{997}$
     701
 
 
-<a id="orgb0135b1"></a>
+<a id="orgffd2adb"></a>
 
 ## Power function
 
 Clojure has built-in `clojure.math/pow` function, but it return
-`java.lang.Double`. The library provide integer analog
+`java.lang.Double`. The library provide integer analog.
 
     (b/pow 2 3)
 
     8
 
 
-<a id="org64ccec3"></a>
+<a id="orge275fdc"></a>
 
 ## Order function
 
-Order function $ord_p(n)$ is a greatest power of $p$ divides $n$
+Order function $ord_p(n)$ is a greatest power of $p$ divides $n$. For instance,
+$2^3 | 24$, but $2^4 \nmid 24$, so $ord_2(24) = 3$
 
     (b/order 2 24)
 
     3
 
 
-<a id="org09a66a5"></a>
+<a id="orgb5dd96d"></a>
 
 ## Sign function
+
+The `sign` function
+
+$$sign(n) = \begin{cases}
+-1 & \quad \text{if } x < 0 \\
+0  & \quad \text{if } x = 0 \\
+1  & \quad \text{if } x > 0
+\end{cases}
+$$
 
     (mapv b/sign [(- 5) 10 0])
 
     [-1 1 0]
 
 
-<a id="org5202fc8"></a>
+<a id="org89bf205"></a>
 
 ## The greatest common divisor
 
 The greatest common divisor of two integer $a$ and $b$ is an positive
-integer $d$ which divide $a$ and $b$ and any other common divisor $a$
+integer $d$ which divides $a$ and $b$ , and any other common divisor $a$
 and $b$ divides $d$.
 
     (b/gcd 12 18)
 
     6
 
-For convenience `(gcd 0 0)` is `0`.
+The greatest common divisors of $a$ and $b$ is denoted by $(a,b)$.
+For convenience $(0, 0) = 0$.
 
-Furthermore, if for any two integers $a$ and $b$ exists integers `s`
-and $t$ such that $a s + b t = d$ , where d is the greatest common
+Furthermore, if for any two integers $a$ and $b$ exists integers $s$
+and $t$ such that $a s + b t = d$ , where $d$ is the greatest common
 divisor. For example, $6 = 12 (-1) + 18 (1)$
 
     (b/gcd-extended 12 18)
@@ -219,12 +234,31 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
     [6 -1 1]
 
 
-<a id="orga393653"></a>
+<a id="org1c44fb9"></a>
+
+## The least common multiple
+
+The least common multiple of two integers $a$ and $b$ is denoted by
+$[a, b]$, is an smallest integer which is multiple of $a$ and $b$. 
+It defined in code as follows:
+
+$$[a,b] = \begin{cases}
+\frac{|ab|}{(a,b)} & \quad \text{if } a \ne 0 \text{ and } b \ne 0 \\
+0                  & \quad \text{if } a = 0 \text{ or } b = 0 
+\end{cases}
+$$
+
+    (b/lcm 12 18) 
+
+    36
+
+
+<a id="orge9beff7"></a>
 
 # Namespace `vk.ntheory.primes`
 
 
-<a id="org5bb1166"></a>
+<a id="org1e5dedc"></a>
 
 ## Performance and cache
 
@@ -265,7 +299,7 @@ element with index 6, which is 2. Index zero is not used, value for
 index 1 is 1.
 
 
-<a id="org4c87174"></a>
+<a id="orga9555b6"></a>
 
 # Primes
 
@@ -276,7 +310,7 @@ index 1 is 1.
     (2 3 5 7 11 13 17 19 23 29)
 
 
-<a id="orgbd49098"></a>
+<a id="orge2a09c6"></a>
 
 # Integer factorization
 
@@ -355,7 +389,7 @@ factorize number `n` it is enough to calculate least divisor table
 with size less or equals to $\sqrt n$. 
 
 
-<a id="org3aefcd4"></a>
+<a id="orga7fce77"></a>
 
 # Divisors
 
@@ -367,7 +401,7 @@ function. List of divisors is unordered.
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="org3751181"></a>
+<a id="orgd79b94b"></a>
 
 # Arithmetical functions
 
@@ -376,7 +410,7 @@ and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
 with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
 
-<a id="org66bae74"></a>
+<a id="org63c6735"></a>
 
 ## Function equality
 
@@ -399,7 +433,7 @@ sequence of natural number we can for example do next:
     (f/f= f g (filter even? (range 1 100)))
 
 
-<a id="orgacba7b5"></a>
+<a id="org9fc8d04"></a>
 
 ## Additive functions
 
@@ -417,7 +451,7 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="orgb2509ad"></a>
+<a id="org854e7e1"></a>
 
 ## Multiplicative functions
 
@@ -436,7 +470,7 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 $$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="orga96c70b"></a>
+<a id="org0cb4603"></a>
 
 ## Higher order function for define multiplicative and additive functions
 
@@ -466,12 +500,12 @@ Of course there is predefined function `divisors-count`, but it
 is an example how to define custom function.
 
 
-<a id="org6373501"></a>
+<a id="orga9359a1"></a>
 
 ## Some additive functions
 
 
-<a id="org8e3a5a5"></a>
+<a id="org5be3445"></a>
 
 ### Count of distinct primes - $\omega$
 
@@ -483,7 +517,7 @@ divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="orgf97b80c"></a>
+<a id="org19114b7"></a>
 
 ### Total count of primes - $\Omega$
 
@@ -497,12 +531,12 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="orga9de90f"></a>
+<a id="orgea27efb"></a>
 
 ## Some multiplicative functions
 
 
-<a id="orgb9dc070"></a>
+<a id="orge36531a"></a>
 
 ### Mobius function - $\mu$.
 
@@ -521,7 +555,7 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="org26ce038"></a>
+<a id="orgf1d9a21"></a>
 
 ### Euler totient function - $\phi$
 
@@ -537,7 +571,7 @@ For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6)
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="orgf5a17d7"></a>
+<a id="org2b60e97"></a>
 
 ### Unit function - $\epsilon$
 
@@ -553,7 +587,7 @@ $$ \epsilon(n) = \begin{cases}
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="org49a33a6"></a>
+<a id="orgc85a3d7"></a>
 
 ### Constant one function - $1$
 
@@ -564,7 +598,7 @@ $$ 1(n) = 1 $$
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="org0f1474e"></a>
+<a id="org7daa370"></a>
 
 ### Divisors count - $\sigma_0$
 
@@ -579,7 +613,7 @@ For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="org3d9dde0"></a>
+<a id="orgfdbd093"></a>
 
 ### Divisors sum - $\sigma_1$
 
@@ -592,7 +626,7 @@ For number 6 it is $12 = 1 + 2 + 3 + 6$
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="org1d1a010"></a>
+<a id="orga82b94a"></a>
 
 ### Divisors square sum
 
@@ -605,7 +639,7 @@ For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="org457286f"></a>
+<a id="org4605d6e"></a>
 
 ### Divisors higher order function - $\sigma_{x}$
 
@@ -627,7 +661,7 @@ accept `x` and return appropriate function.
     (def my-divisors-square-sum (f/divisors-sum-x 2))
 
 
-<a id="org1b0873b"></a>
+<a id="orgda871a2"></a>
 
 ### Liouville - $\lambda$
 
@@ -635,19 +669,19 @@ Liouville function can be defind by formula:
 
 $$\lambda(n) = (-1)^{\Omega(n)}$$
 
-where [$\Omega$](#orgf97b80c) have been descibed above.
+where [$\Omega$](#org19114b7) have been descibed above.
 
     (f/liouville (* 2 3)) 
 
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="org5d7d34f"></a>
+<a id="org85801c6"></a>
 
 ## Some other arithmetic functions
 
 
-<a id="org3c75d8a"></a>
+<a id="org7286165"></a>
 
 ### Mangoldt - $\Lambda$
 
@@ -667,7 +701,7 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="org374c279"></a>
+<a id="org7c539f6"></a>
 
 ### Chebyshev functions $\theta$ and $\psi$
 
@@ -679,7 +713,7 @@ second $\psi$ defined as
 
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
-where [$\Lambda$](#org3c75d8a) have been described above
+where [$\Lambda$](#org7286165) have been described above
 
     (f/chebyshev-first 2)
 
@@ -690,7 +724,7 @@ where [$\Lambda$](#org3c75d8a) have been described above
     class clojure.lang.Compiler$CompilerException
 
 
-<a id="org0bcda65"></a>
+<a id="orga3d0492"></a>
 
 ## Dirichlet convolution
 
