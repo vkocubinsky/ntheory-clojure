@@ -1,48 +1,48 @@
 
 # Table of Contents
 
-1.  [About](#org4709208)
-2.  [Notation](#org604f036)
-3.  [Namespace `vk.ntheory.basic`](#orga1be1b1)
-    1.  [Check functions](#orga4722e1)
-    2.  [Some predicates](#org8cab09e)
-    3.  [Operations in $\mathbf{Z}/m\mathboldf{Z}$](#org493b9b1)
-    4.  [Power function](#orgf6c818a)
-    5.  [Order function](#org70ce234)
-    6.  [Sign function](#orgcbedbb3)
-    7.  [The greatest common divisor](#org723ac0a)
-    8.  [The least common multiple](#org3c0ae41)
-4.  [Namespace `vk.ntheory.primes`](#orgf70b1a2)
-    1.  [Performance and cache](#org414f59a)
-5.  [Primes](#orgae04c46)
-6.  [Integer factorization](#org7598035)
-7.  [Divisors](#org29c689e)
-8.  [Arithmetical functions](#org015362a)
-    1.  [Function equality](#orga735da9)
-    2.  [Additive functions](#orgf43acd5)
-    3.  [Multiplicative functions](#org428eb67)
-    4.  [Higher order function for define multiplicative and additive functions](#orgdaae7ca)
-    5.  [Some additive functions](#org59cadad)
-        1.  [Count of distinct primes - $\omega$](#orgbc937d8)
-        2.  [Total count of primes - $\Omega$](#org72c6361)
-    6.  [Some multiplicative functions](#org3a4784e)
-        1.  [Mobius function - $\mu$.](#org157c97c)
-        2.  [Euler totient function - $\phi$](#org8b38df9)
-        3.  [Unit function - $\epsilon$](#org5119d9d)
-        4.  [Constant one function - $1$](#orgdb64120)
-        5.  [Divisors count - $\sigma_0$](#org3da95c3)
-        6.  [Divisors sum - $\sigma_1$](#orga524a88)
-        7.  [Divisors square sum](#org8b0388d)
-        8.  [Divisors higher order function - $\sigma_{x}$](#orgfec7ca0)
-        9.  [Liouville - $\lambda$](#org4fbe94f)
-    7.  [Some other arithmetic functions](#org1e7e504)
-        1.  [Mangoldt - $\Lambda$](#org80d5c93)
-        2.  [Chebyshev functions $\theta$ and $\psi$](#org090b1a3)
-    8.  [Dirichlet convolution](#org86982a0)
+1.  [About](#org517027b)
+2.  [Notation](#orge4a2e58)
+3.  [Namespace `vk.ntheory.basic`](#orgcd96abb)
+    1.  [Check functions](#org2b388f0)
+    2.  [Some predicates](#orgf6eea42)
+    3.  [Operations in $\mathbf{Z}/m\mathbf{Z}$](#org741962c)
+    4.  [Power function](#org8a53dd0)
+    5.  [Order function](#org140dbe0)
+    6.  [Sign function](#org3546be9)
+    7.  [The greatest common divisor](#orgdec1d71)
+    8.  [The least common multiple](#org593a8ad)
+4.  [Namespace `vk.ntheory.primes`](#org1526d2c)
+    1.  [Performance and cache](#orgf8af41b)
+5.  [Primes](#org647ef0d)
+6.  [Integer factorization](#orgedd0ee3)
+7.  [Divisors](#orgaee280b)
+8.  [Arithmetical functions](#org008566a)
+    1.  [Function equality](#orgc0b830f)
+    2.  [Additive functions](#org63bd661)
+    3.  [Multiplicative functions](#org208d7ed)
+    4.  [Higher order function for define multiplicative and additive functions](#orgeaf94c8)
+    5.  [Some additive functions](#orgb0613c2)
+        1.  [Count of distinct primes - $\omega$](#orgaa8a593)
+        2.  [Total count of primes - $\Omega$](#orgca7d300)
+    6.  [Some multiplicative functions](#org4138cdd)
+        1.  [Mobius function - $\mu$.](#orga67451e)
+        2.  [Euler totient function - $\phi$](#orgdecc0a0)
+        3.  [Unit function - $\epsilon$](#org054bf4e)
+        4.  [Constant one function - $1$](#org1d1575b)
+        5.  [Divisors count - $\sigma_0$](#org403fcc6)
+        6.  [Divisors sum - $\sigma_1$](#org9b76d92)
+        7.  [Divisors square sum](#org2fcb299)
+        8.  [Divisors higher order function - $\sigma_{x}$](#org8fb4fc0)
+        9.  [Liouville - $\lambda$](#org973d22f)
+    7.  [Some other arithmetic functions](#org743b693)
+        1.  [Mangoldt - $\Lambda$](#org199f105)
+        2.  [Chebyshev functions $\theta$ and $\psi$](#org47b4060)
+    8.  [Dirichlet convolution](#org4c3e53d)
 
 
 
-<a id="org4709208"></a>
+<a id="org517027b"></a>
 
 # About
 
@@ -74,7 +74,7 @@ In this document I load number theory packages as:
 So below I will use above aliases.
 
 
-<a id="org604f036"></a>
+<a id="orge4a2e58"></a>
 
 # Notation
 
@@ -86,7 +86,7 @@ So below I will use above aliases.
 -   $[a,b]$ - the least common multiple of $a$ and $b$
 
 
-<a id="orga1be1b1"></a>
+<a id="orgcd96abb"></a>
 
 # Namespace `vk.ntheory.basic`
 
@@ -96,7 +96,7 @@ can be used directly or by other namespaces.
     (require '[vk.ntheory.basic :as b])
 
 
-<a id="orga4722e1"></a>
+<a id="org2b388f0"></a>
 
 ## Check functions
 
@@ -115,7 +115,7 @@ There are also two helper function `check` and `check-not` which helps
 to implement another `check-*` function for a predicate. 
 
 
-<a id="org8cab09e"></a>
+<a id="orgf6eea42"></a>
 
 ## Some predicates
 
@@ -126,9 +126,9 @@ Function `divides?` determine does one number divides another.
     true
 
 
-<a id="org493b9b1"></a>
+<a id="org741962c"></a>
 
-## Operations in $\mathbf{Z}/m\mathboldf{Z}$
+## Operations in $\mathbf{Z}/m\mathbf{Z}$
 
 Similar to addition function `+` and multiplication function `*` there
 defined addition modulo m `m+` and multiplication modulo m `m*`
@@ -168,7 +168,7 @@ For instance, $101^{900} \equiv 701 \pmod{997}$
     701
 
 
-<a id="orgf6c818a"></a>
+<a id="org8a53dd0"></a>
 
 ## Power function
 
@@ -180,7 +180,7 @@ Clojure has built-in `clojure.math/pow` function, but it return
     8
 
 
-<a id="org70ce234"></a>
+<a id="org140dbe0"></a>
 
 ## Order function
 
@@ -192,7 +192,7 @@ $2^3 | 24$, but $2^4 \nmid 24$, so $ord_2(24) = 3$
     3
 
 
-<a id="orgcbedbb3"></a>
+<a id="org3546be9"></a>
 
 ## Sign function
 
@@ -210,7 +210,7 @@ $$
     [-1 1 0]
 
 
-<a id="org723ac0a"></a>
+<a id="orgdec1d71"></a>
 
 ## The greatest common divisor
 
@@ -234,7 +234,7 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
     [6 -1 1]
 
 
-<a id="org3c0ae41"></a>
+<a id="org593a8ad"></a>
 
 ## The least common multiple
 
@@ -253,12 +253,12 @@ $$
     36
 
 
-<a id="orgf70b1a2"></a>
+<a id="org1526d2c"></a>
 
 # Namespace `vk.ntheory.primes`
 
 
-<a id="org414f59a"></a>
+<a id="orgf8af41b"></a>
 
 ## Performance and cache
 
@@ -299,7 +299,7 @@ element with index 6, which is 2. Index zero is not used, value for
 index 1 is 1.
 
 
-<a id="orgae04c46"></a>
+<a id="org647ef0d"></a>
 
 # Primes
 
@@ -310,7 +310,7 @@ index 1 is 1.
     (2 3 5 7 11 13 17 19 23 29)
 
 
-<a id="org7598035"></a>
+<a id="orgedd0ee3"></a>
 
 # Integer factorization
 
@@ -389,7 +389,7 @@ factorize number `n` it is enough to calculate least divisor table
 with size less or equals to $\sqrt n$. 
 
 
-<a id="org29c689e"></a>
+<a id="orgaee280b"></a>
 
 # Divisors
 
@@ -401,7 +401,7 @@ function. List of divisors is unordered.
     (1 2 3 6 5 10 15 30)
 
 
-<a id="org015362a"></a>
+<a id="org008566a"></a>
 
 # Arithmetical functions
 
@@ -410,7 +410,7 @@ and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
 with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
 
-<a id="orga735da9"></a>
+<a id="orgc0b830f"></a>
 
 ## Function equality
 
@@ -433,7 +433,7 @@ sequence of natural number we can for example do next:
     (f/f= f g (filter even? (range 1 100)))
 
 
-<a id="orgf43acd5"></a>
+<a id="org63bd661"></a>
 
 ## Additive functions
 
@@ -451,7 +451,7 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="org428eb67"></a>
+<a id="org208d7ed"></a>
 
 ## Multiplicative functions
 
@@ -470,7 +470,7 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 $$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="orgdaae7ca"></a>
+<a id="orgeaf94c8"></a>
 
 ## Higher order function for define multiplicative and additive functions
 
@@ -500,12 +500,12 @@ Of course there is predefined function `divisors-count`, but it
 is an example how to define custom function.
 
 
-<a id="org59cadad"></a>
+<a id="orgb0613c2"></a>
 
 ## Some additive functions
 
 
-<a id="orgbc937d8"></a>
+<a id="orgaa8a593"></a>
 
 ### Count of distinct primes - $\omega$
 
@@ -517,7 +517,7 @@ divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k
     2
 
 
-<a id="org72c6361"></a>
+<a id="orgca7d300"></a>
 
 ### Total count of primes - $\Omega$
 
@@ -531,12 +531,12 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
     3
 
 
-<a id="org3a4784e"></a>
+<a id="org4138cdd"></a>
 
 ## Some multiplicative functions
 
 
-<a id="org157c97c"></a>
+<a id="orga67451e"></a>
 
 ### Mobius function - $\mu$.
 
@@ -555,7 +555,7 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
     1
 
 
-<a id="org8b38df9"></a>
+<a id="orgdecc0a0"></a>
 
 ### Euler totient function - $\phi$
 
@@ -571,7 +571,7 @@ For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6)
     2
 
 
-<a id="org5119d9d"></a>
+<a id="org054bf4e"></a>
 
 ### Unit function - $\epsilon$
 
@@ -587,7 +587,7 @@ $$ \epsilon(n) = \begin{cases}
     0
 
 
-<a id="orgdb64120"></a>
+<a id="org1d1575b"></a>
 
 ### Constant one function - $1$
 
@@ -598,7 +598,7 @@ $$ 1(n) = 1 $$
     1
 
 
-<a id="org3da95c3"></a>
+<a id="org403fcc6"></a>
 
 ### Divisors count - $\sigma_0$
 
@@ -613,7 +613,7 @@ For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
     4
 
 
-<a id="orga524a88"></a>
+<a id="org9b76d92"></a>
 
 ### Divisors sum - $\sigma_1$
 
@@ -626,7 +626,7 @@ For number 6 it is $12 = 1 + 2 + 3 + 6$
     12
 
 
-<a id="org8b0388d"></a>
+<a id="org2fcb299"></a>
 
 ### Divisors square sum
 
@@ -639,7 +639,7 @@ For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
     50
 
 
-<a id="orgfec7ca0"></a>
+<a id="org8fb4fc0"></a>
 
 ### Divisors higher order function - $\sigma_{x}$
 
@@ -661,7 +661,7 @@ accept `x` and return appropriate function.
     (def my-divisors-square-sum (f/divisors-sum-x 2))
 
 
-<a id="org4fbe94f"></a>
+<a id="org973d22f"></a>
 
 ### Liouville - $\lambda$
 
@@ -669,19 +669,19 @@ Liouville function can be defind by formula:
 
 $$\lambda(n) = (-1)^{\Omega(n)}$$
 
-where [$\Omega$](#org72c6361) have been descibed above.
+where [$\Omega$](#orgca7d300) have been descibed above.
 
     (f/liouville (* 2 3)) 
 
     1
 
 
-<a id="org1e7e504"></a>
+<a id="org743b693"></a>
 
 ## Some other arithmetic functions
 
 
-<a id="org80d5c93"></a>
+<a id="org199f105"></a>
 
 ### Mangoldt - $\Lambda$
 
@@ -701,7 +701,7 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
     0
 
 
-<a id="org090b1a3"></a>
+<a id="org47b4060"></a>
 
 ### Chebyshev functions $\theta$ and $\psi$
 
@@ -713,7 +713,7 @@ second $\psi$ defined as
 
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
-where [$\Lambda$](#org80d5c93) have been described above
+where [$\Lambda$](#org199f105) have been described above
 
     (f/chebyshev-first 2)
 
@@ -724,7 +724,7 @@ where [$\Lambda$](#org80d5c93) have been described above
     0.6931471805599453
 
 
-<a id="org86982a0"></a>
+<a id="org4c3e53d"></a>
 
 ## Dirichlet convolution
 
