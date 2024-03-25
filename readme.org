@@ -1,4 +1,5 @@
 #+title: Number Theory with Clojure
+#+author: Valery Kocubinsky
 #+startup: nolatexpreview content
 #+PROPERTY: header-args:clojure :session *clojure-1* :exports both :results pp
 
@@ -78,7 +79,7 @@ Function ~divides?~ determine does one number divides another.
 #+RESULTS:
 : true
 
-** Operations in $\mathbf{Z}/m\mathboldf{Z}$
+** Operations in $\mathbf{Z}/m\mathbf{Z}$
 
 Similar to addition function ~+~ and multiplication function ~*~ there
 defined addition modulo m ~m+~ and multiplication modulo m ~m*~
