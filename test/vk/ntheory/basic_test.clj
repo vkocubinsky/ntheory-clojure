@@ -31,10 +31,9 @@
   (testing "Fail"
     (is (thrown? Exception (b/check-int-non-zero 1.1)))
     (is (thrown? Exception (b/check-int-non-zero 0)))
-      (is (= -1 (b/check-int-non-zero -1)))
+    (is (= -1 (b/check-int-non-zero -1)))
     (testing "Success"
       (is (= 1 (b/check-int-non-zero 1))))))
-
 
 (deftest m*-test
   (testing "Arity"
@@ -72,10 +71,7 @@
     7 (b/m** 11 2 7)
     3 (b/m** 11 2 8)
     6 (b/m** 11 2 9)
-    1 (b/m** 11 2 10)
-    )
-  )
-
+    1 (b/m** 11 2 10)))
 
 (deftest divides?-test
   (testing "Divide by zero"
@@ -144,7 +140,7 @@
     6 (b/gcd 12 -18)
     6 (b/gcd -12 -18)))
 
-(deftest gcd-lcm
+(deftest lcm-test
   (are [x y] (= x y)
     0 (b/lcm 0 0)
     0 (b/lcm 6 0)

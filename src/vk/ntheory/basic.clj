@@ -1,7 +1,5 @@
 (ns vk.ntheory.basic
-  "Some basic function of number theory"
-  )
-
+  "Some basic function of number theory")
 
 (defn check
   [pred x msg]
@@ -12,7 +10,6 @@
 (defn check-not
   [pred x msg]
   (check (complement pred) x msg))
-
 
 (defn check-int
   [n]
@@ -35,8 +32,7 @@
   "Check is given integer `n` is not zero."
   [n]
   (let [n (check-int n)]
-    (check-not zero? n (format "%s is zero" n)))
-)
+    (check-not zero? n (format "%s is zero" n))))
 
 (defn divides?
   "Return true if `a != 0` divides `b`, otherwise false."
@@ -61,7 +57,7 @@
   ([m a b] (mod (+ a b) m))
   ([m a b & more] (reduce (partial m+ m) (m+ m a b) more)))
 
-(defn bit-count
+(defn- bit-count
   [n]
   (count (Integer/toBinaryString n)))
 
@@ -84,8 +80,6 @@
            :let [b0 (dec b1)
                  bit (bit-test n b0)]]
        bit))))
-
-
 
 (defn pow
   "Return `a` raised to the power of `n >= 0`."
