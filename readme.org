@@ -47,13 +47,9 @@ So below I will use above aliases.
 Namespace ~vk.ntheory.basic~ contains some common functions, which
 can be used directly or by other namespaces.
 
-#+begin_src clojure
+#+begin_src clojure :results silent
   (require '[vk.ntheory.basic :as b])
 #+end_src
-
-#+RESULTS:
-: 
-: 
 
 ** Check functions
 
@@ -81,7 +77,6 @@ Function ~divides?~ determine does one number divides another.
 
 #+RESULTS:
 : true
-: 
 
 ** Operations in $\mathbf{Z}/m\mathboldf{Z}$
 
@@ -97,7 +92,6 @@ For instance $2 + 4 \equiv 1 \pmod{5}$ in $\mathbf{Z}/m\mathbf{Z}$
 
 #+RESULTS:
 : 1
-: 
 
 and $2 \cdot 4 \equiv 3 \pmod 5$ in $\mathbf{Z}/m\mathbf{Z}$
 
@@ -107,7 +101,6 @@ and $2 \cdot 4 \equiv 3 \pmod 5$ in $\mathbf{Z}/m\mathbf{Z}$
 
 #+RESULTS:
 : 3
-: 
 
 The fact that a modulo is a first argument allow bind modulo in let
 expression and then use addition and multiplication modulo m without
@@ -122,7 +115,6 @@ specify a modulo.
 
 #+RESULTS:
 : 4
-: 
 
 There is another helpful function modulo m - exponentiation. It is a
 fast binary exponentiation algorithm described in D.Knuth, The Art of
@@ -136,7 +128,6 @@ For instance, $101^{900} \equiv 701 \pmod{997}$
 
 #+RESULTS:
 : 701
-: 
 
 ** Power function
 
@@ -149,7 +140,6 @@ Clojure has built-in ~clojure.math/pow~ function, but it return
 
 #+RESULTS[8221a5c2608622294a90d9c99515dad20e5cf26b]:
 : 8
-: 
 
 ** Order function
 
@@ -162,7 +152,6 @@ $2^3 | 24$, but $2^4 \nmid 24$, so $ord_2(24) = 3$
 
 #+RESULTS[6688ec475e07b26cbe22365a0f8b042237d3472e]:
 : 3
-: 
 
 ** Sign function
 
@@ -210,7 +199,7 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
 
 #+RESULTS[0c74f2cc07ec9ef25a86e65ce4219160c744cdde]:
 : [6 -1 1]
-:
+: 
 
 ** The least common multiple
 
@@ -223,6 +212,14 @@ $$[a,b] = \begin{cases}
 0                  & \quad \text{if } a = 0 \text{ or } b = 0 
 \end{cases}
 $$
+
+#+begin_src clojure
+  (b/lcm 12 18) 
+#+end_src
+
+#+RESULTS:
+: 36
+: 
 
 * Namespace ~vk.ntheory.primes~
 
