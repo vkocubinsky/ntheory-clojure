@@ -1,13 +1,14 @@
-#+title: Number theory with Clojure
+#+title: Number Theory with Clojure
 #+startup: nolatexpreview content
 #+PROPERTY: header-args:clojure :session *clojure-1* :exports both :results pp
 
 * About
 
-This project cover some topics in number theory, especially arithmetic
-functions, further more multiplicative functions. There are set of
-well known arithmetic functions and one can define custom arithmetic
-functions.
+This project cover some topics in number theory such as integer
+factorization, arithmetic functions, congruences, primitive roots.
+Here defined set of well known arithmetic functions and one can define
+custom arithmetic function. One can solve linear congruence or system
+of linear congruences including case when moduli relatively prime.
 
 I wrote this document =readme.org= with Emacs Org Mode. Then I
 generate markdown file =readme.md= with Org Mode export to markdown
@@ -15,17 +16,17 @@ generate markdown file =readme.md= with Org Mode export to markdown
 to pdf =C-c C-e l p=.  Github by default show =readme.md= if a project
 has such file.  It looks enough good, even math equation is
 supported. But I see some issue with greek characters in table of
-content. If it is a problem =readme.pdf= looks better. Emacs file
-"make.el" can be used to export markdown and pdf with one call. I use
-Emacs babel for clojure to produce real output inside the document.
+content and links. If it is a problem =readme.pdf= looks better. I use
+Emacs babel for clojure to produce real output inside the document. 
 
 In this document I load number theory packages as: 
 
 #+begin_src clojure :results silent
   (require '[vk.ntheory.basic :as b])
   (require '[vk.ntheory.primes :as p])
-  (require '[vk.ntheory.ar-func :as f])
+  (require '[vk.ntheory.ar-func :as af])
   (require '[vk.ntheory.congruence :as c])
+  (require '[vk.ntheory.primitive-roots :as pr])
   (require '[clojure.math :as math])
 #+end_src
 
@@ -36,8 +37,99 @@ So below I will use above aliases.
 - $\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
 - $\mathbf C$ - Complex numbers
 - $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
+- $\mathbf Z/m\mathbf Z$ - Ring of integers modulo $m$
 
-* Some basic functions
+* Namespace ~vk.ntheory.basic~
+
+Namespace ~vk.ntheory.basic~ contains some common functions, which
+can be used directly or by other namespaces.
+
+#+begin_src clojure
+  (require '[vk.ntheory.basic :as b])
+#+end_src
+
+** Check functions
+
+There are set of ~check-*~ functions which can be helpful to validate
+user input:
+
+- ~check-int~
+- ~check-int-pos~
+- ~check-int-non-neg~
+- ~check-int-non-zero~
+
+All of above accept one argument, check does argument satisfy to
+expectation, if does return argument, otherwise throw an exception.
+
+There are also two helper function ~check~ and ~check-not~ which helps
+to implement another ~check-*~ function for a predicate. 
+
+** Some predicates
+
+Function ~divides?~ determine does one number divides another.
+
+#+begin_src clojure
+  (b/divides? 2 8)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+** Operations in $\mathbf{Z}/m\mathboldf{Z}$
+
+Similar to addition function ~+~ and multiplication function ~*~ there
+defined addition modulo m ~m+~ and multiplication modulo m ~m*~. First
+argument of these functions is a modulo.
+
+For instance $2 + 4 \equiv 1 \pmod{5}$ in $\mathbf{Z}/m\mathbf{Z}$
+
+#+begin_src clojure
+  (b/m+ 5 2 4)
+#+end_src
+
+#+RESULTS:
+: 1
+: 
+
+and $2 \cdot 4 \equiv 3 \pmod 5$ in $\mathbf{Z}/m\mathbf{Z}$
+
+#+begin_src clojure
+  (b/m* 5 2 4)
+#+end_src
+
+#+RESULTS:
+: 3
+: 
+
+The fact that a modulo is a first argument allow bind modulo in let
+expression and then use addition and multiplication modulo m without
+specify a modulo.
+
+#+begin_src clojure
+  (let [m5* (partial b/m* 5)
+        m5+ (partial b/m+ 5)]
+    ;; ...
+    (m5* 2 4))
+#+end_src
+
+#+RESULTS:
+: 3
+: 
+
+There is another helpful function modulo m - exponentiation. It is a
+fast binary exponentiation algorithm described in D.Knuth, The Art of
+Computer Programming, Volume II.
+
+For instance, $101^{900} \equiv 701 \pmod{997}$
+
+#+begin_src clojure
+  (b/m** 997 101 900)
+#+end_src
+
+#+RESULTS:
+: 701
+: 
 
 ** Power function
 
@@ -52,16 +144,6 @@ Clojure has built-in ~clojure.math/pow~ function, but it return
 : 8
 : 
 
-** Sign function
-
-#+begin_src clojure
-  (mapv b/sign [(- 5) 10 0])
-#+end_src
-
-#+RESULTS[2f80258ff0e8c2f23b61515ab8276aa60c9f3b0e]:
-: [-1 1 0]
-: 
-
 ** Order function
 
 Order function $ord_p(n)$ is a greatest power of $p$ divides $n$
@@ -74,10 +156,20 @@ Order function $ord_p(n)$ is a greatest power of $p$ divides $n$
 : 3
 : 
 
+** Sign function
+
+#+begin_src clojure
+  (mapv b/sign [(- 5) 10 0])
+#+end_src
+
+#+RESULTS[2f80258ff0e8c2f23b61515ab8276aa60c9f3b0e]:
+: [-1 1 0]
+: 
+
 ** The greatest common divisor
 
 The greatest common divisor of two integer $a$ and $b$ is an positive
-integer $d$ which divide $a$ and $b$ and any other common divisor ~a~
+integer $d$ which divide $a$ and $b$ and any other common divisor $a$
 and $b$ divides $d$.
 
 #+begin_src clojure
@@ -102,7 +194,9 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
 : [6 -1 1]
 : 
 
-* Performance and cache
+* Namespace ~vk.ntheory.primes~
+
+** Performance and cache
 
 This library is designed to work with realtive small integers. Library
 keep in cache least prime divisor table for fast integer

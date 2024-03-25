@@ -1,4 +1,5 @@
 (ns vk.ntheory.basic
+  "Some basic function of number theory"
   )
 
 
@@ -37,6 +38,12 @@
     (check-not zero? n (format "%s is zero" n)))
 )
 
+(defn divides?
+  "Return true if `a != 0` divides `b`, otherwise false."
+  [a b]
+  (check-int-non-zero a)
+  (check-int b)
+  (zero? (mod b a)))
 
 (defn m*
   "Multiplication modulo `m`.
@@ -78,12 +85,7 @@
                  bit (bit-test n b0)]]
        bit))))
 
-(defn divides?
-  "Return true if `a != 0` divides `b`, otherwise false."
-  [a b]
-  (check-int-non-zero a)
-  (check-int b)
-  (zero? (mod b a)))
+
 
 (defn pow
   "Return `a` raised to the power of `n >= 0`."
