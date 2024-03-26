@@ -1,5 +1,5 @@
 (ns vk.ntheory.basic
-  "Some basic function of number theory")
+  "Some basic function of number theory.")
 
 (defn check
   [pred x msg]

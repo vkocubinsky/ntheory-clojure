@@ -17,7 +17,7 @@
 
 (defn order'
   [a m]
-  (sort (af/divisors a))
+  (filter #(= 1 (b/m** m a %))(sort (af/divisors (- m 1))))
   )
 
 

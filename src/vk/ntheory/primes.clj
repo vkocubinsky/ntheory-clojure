@@ -30,7 +30,6 @@
   (let [n (b/check-int-non-zero n)]
     (b/check less-equal-max-int? n (format "%s is more than %s" n max-int))))
 
-
 (defn- table-find-prime
   "Find next prime in least divisor table.
   Parameters: 
@@ -183,22 +182,13 @@
        (map #(apply * %))
        (apply *)))
 
-
-
-
-
-
 (defn check-prime
   [n]
   (let [n (check-int-pos-max n)]
-    (b/check prime? n (format "%s is not a prime" n))
-    )
-  )
+    (b/check prime? n (format "%s is not a prime" n))))
 
 (defn check-odd-prime
   [n]
   (let [n (check-prime n)]
-    (b/check odd? n (format "%s is not odd" n))
-    )
-  )
+    (b/check odd? n (format "%s is not odd" n))))
 

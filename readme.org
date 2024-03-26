@@ -487,6 +487,11 @@ This section cover namespace ~vk.ntheory.primes~. It contains some
 well known arithmetical functions and also functions which allow build
 new arithmetical functions.
 
+#+begin_src clojure :results silent
+  (require '[vk.ntheory.ar-func :as af])
+#+end_src
+
+
 ** Divisors
 
 For get list of all divisors of number ~n~ there is ~divisor~
@@ -927,4 +932,29 @@ of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
 
 
 
+* Conguences ~vk.ntheory.congruence~
 
+This section cover namespaces ~vk.ntheory.congruence~. It contains functions
+for solve linear congruence and system of linear congruences.
+
+#+begin_src clojure :results silent
+  (require '[vk.ntheory.congruence :as c])
+#+end_src
+
+* Primitive Roots ~vk.ntheory.primitive-roots~
+
+#+begin_src clojure :results silent
+  (require '[vk.ntheory.primitive-root :as pr])
+#+end_src
+
+
+In progress...
+
+* Quadratic residies ~vk.ntheory.quadratic-residue
+
+#+begin_src clojure :results silent
+  (require '[vk.ntheory.quadratic-residue :as qr])
+#+end_src
+
+
+In progress...

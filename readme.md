@@ -1,37 +1,52 @@
 
 # Table of Contents
 
-1.  [About](#org93aacfc)
-2.  [Notation](#org213b924)
-3.  [Namespace `vk.ntheory.basic`](#orgc1531a1)
-    1.  [Check functions](#org803ef2c)
-    2.  [Some predicates](#org31a4c00)
-    3.  [Operations in $\mathbf{Z}/m\mathbf{Z}$](#org355d5cc)
-    4.  [Power function](#org5df1461)
-    5.  [Order function](#org92c3524)
-    6.  [Sign function](#orge441b3b)
-    7.  [The greatest common divisor](#orgb48cbbd)
-    8.  [The least common multiple](#orgff86223)
-4.  [Namespace `vk.ntheory.primes`](#org161fe8e)
-    1.  [Performance and cache](#orgdca2c6d)
-    2.  [Primes](#orgba347c9)
-    3.  [Integer factorization](#orgd8ca946)
-    4.  [Check functions](#org9dd2a29)
-5.  [Namespace `vk.ntheory.ar-func`](#orga090bd1)
-    1.  [Divisors](#org79954ef)
-    2.  [Arithmetical functions](#org456c2f7)
-        1.  [Function equality](#org34128b3)
-        2.  [Additive functions](#orgc602bd4)
-        3.  [Multiplicative functions](#orgb78bb38)
-        4.  [Higher order function for define multiplicative and additive functions](#org6d03c97)
-        5.  [Some additive functions](#org6f9e49e)
-        6.  [Some multiplicative functions](#orgf529208)
-        7.  [Some other arithmetic functions](#org95acbc1)
-        8.  [Dirichlet convolution](#org797f388)
+1.  [About](#orgdc8e78d)
+2.  [Notation](#org68769c6)
+3.  [Some basic functions `vk.ntheory.basic`](#orgd2d533c)
+    1.  [Check functions](#org9848b69)
+    2.  [Some predicates](#org7a4acd8)
+    3.  [Operations in $\mathbf{Z}/m\mathbf{Z}$](#org8d4267e)
+    4.  [Power function](#orgec1a7bc)
+    5.  [Order function](#org686bbde)
+    6.  [Sign function](#orgb80ea39)
+    7.  [The greatest common divisor](#org54cf972)
+    8.  [The least common multiple](#orgb0e13a9)
+4.  [Primes and Integer Factorization `vk.ntheory.primes`](#orgf1298ba)
+    1.  [Performance and cache](#org3c2368d)
+    2.  [Primes](#org763d026)
+    3.  [Integer factorization](#orgcf551bc)
+    4.  [Check functions](#org88fc405)
+5.  [Arithmetical functions `vk.ntheory.ar-func`](#orgfefc802)
+    1.  [Divisors](#orgeb1115c)
+    2.  [Arithmetical function](#org4d50d27)
+    3.  [Function equality](#orgeec3bbb)
+    4.  [Additive functions](#orgcbf169e)
+    5.  [Multiplicative functions](#org77d6749)
+    6.  [Higher order function for define multiplicative and additive functions](#org2a21a79)
+    7.  [Some additive functions](#orgef43c56)
+        1.  [Count of distinct primes - $\omega$](#org4e1e73b)
+        2.  [Total count of primes - $\Omega$](#org45e6eab)
+    8.  [Some multiplicative functions](#org7b131a2)
+        1.  [Mobius function - $\mu$.](#org8a52e93)
+        2.  [Euler totient function - $\phi$](#orgd88dab5)
+        3.  [Unit function - $\epsilon$](#orge46dbb6)
+        4.  [Constant one function - $1$](#orgeae2008)
+        5.  [Divisors count - $\sigma_0$](#org031ab92)
+        6.  [Divisors sum - $\sigma_1$](#org7f31782)
+        7.  [Divisors square sum](#org188cab9)
+        8.  [Divisors higher order function - $\sigma_{x}$](#orgf8b37e5)
+        9.  [Liouville - $\lambda$](#org37396e6)
+    9.  [Some other arithmetic functions](#org1840ded)
+        1.  [Mangoldt - $\Lambda$](#org9b5e6ff)
+    10. [Dirichlet convolution](#orgf371aa4)
+6.  [Conguences `vk.ntheory.congruence`](#orgd8694f6)
+7.  [Primitive Roots `vk.ntheory.primitive-roots`](#orgba56105)
+8.  [Quadratic residies ~vk.ntheory.quadratic-residue](#orgf99f7a0)
 
 
 
-<a id="org93aacfc"></a>
+<a id="orgdc8e78d"></a>
 
 # About
 
@@ -63,7 +78,7 @@ In this document I load number theory packages as:
 So below I will use above aliases.
 
 
-<a id="org213b924"></a>
+<a id="org68769c6"></a>
 
 # Notation
 
@@ -75,17 +90,17 @@ So below I will use above aliases.
 -   $[a,b]$ - the least common multiple of $a$ and $b$
 
 
-<a id="orgc1531a1"></a>
+<a id="orgd2d533c"></a>
 
-# Namespace `vk.ntheory.basic`
+# Some basic functions `vk.ntheory.basic`
 
-Namespace `vk.ntheory.basic` contains some common functions, which
-can be used directly or by other namespaces.
+This section cover namespace `vk.ntheory.basic`. It contains some
+common functions, which can be used directly or by other namespaces.
 
     (require '[vk.ntheory.basic :as b])
 
 
-<a id="org803ef2c"></a>
+<a id="org9848b69"></a>
 
 ## Check functions
 
@@ -104,7 +119,7 @@ There are also two helper function `check` and `check-not` which helps
 to implement another `check-*` function for a predicate. 
 
 
-<a id="org31a4c00"></a>
+<a id="org7a4acd8"></a>
 
 ## Some predicates
 
@@ -115,7 +130,7 @@ Function `divides?` determine does one number divides another.
     true
 
 
-<a id="org355d5cc"></a>
+<a id="org8d4267e"></a>
 
 ## Operations in $\mathbf{Z}/m\mathbf{Z}$
 
@@ -157,7 +172,7 @@ For instance, $101^{900} \equiv 701 \pmod{997}$
     701
 
 
-<a id="org5df1461"></a>
+<a id="orgec1a7bc"></a>
 
 ## Power function
 
@@ -169,7 +184,7 @@ Clojure has built-in `clojure.math/pow` function, but it return
     8
 
 
-<a id="org92c3524"></a>
+<a id="org686bbde"></a>
 
 ## Order function
 
@@ -181,7 +196,7 @@ $2^3 | 24$, but $2^4 \nmid 24$, so $ord_2(24) = 3$
     3
 
 
-<a id="orge441b3b"></a>
+<a id="orgb80ea39"></a>
 
 ## Sign function
 
@@ -199,7 +214,7 @@ $$
     [-1 1 0]
 
 
-<a id="orgb48cbbd"></a>
+<a id="org54cf972"></a>
 
 ## The greatest common divisor
 
@@ -223,7 +238,7 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
     [6 -1 1]
 
 
-<a id="orgff86223"></a>
+<a id="orgb0e13a9"></a>
 
 ## The least common multiple
 
@@ -242,39 +257,42 @@ $$
     36
 
 
-<a id="org161fe8e"></a>
+<a id="orgf1298ba"></a>
 
-# Namespace `vk.ntheory.primes`
+# Primes and Integer Factorization `vk.ntheory.primes`
 
-Namespace `vk.ntheory.primes` primary designed for integer factorization
-and get list of primes. One can use `primes` namespace as:
+This section cover namespace `vk.ntheory.primes`. It primary designed
+for integer factorization and get list of primes. One can use `primes`
+namespace as:
 
     (require '[vk.ntheory.primes :as p])
 
 
-<a id="orgdca2c6d"></a>
+<a id="org3c2368d"></a>
 
 ## Performance and cache
 
 This library is designed to work with realtive small integers. Library
-keep in cache least divisor table for fast integer factorization.
-Cache grows automatically. The strategy of growing is extends cache to
-the least power of `10` more than required number. For instance, if
-client asked to factorize number `18`, cache grows to `100`, if client
-asked to factorize number `343`, cache grows to `1000`. List of primes
-also cached and recalculated together with least divisor
-table. Recalculation is not incremental, but every recalculation of
-least divisor table make a table which is in `10` times more than
-previous, and time for previous calculation is `10` times less than
-for new one. So we can say that recalculation spent almost all time
-for recalculate latest least divisor table.
+keep in cache least prime divisor table for fast integer
+factorization.  Least prime divisor of an positive integer is least
+divisor, but not `1`.  Cache grows automatically. The strategy of
+growing is extends cache to the least power of `10` more than required
+number. For instance, if client asked to factorize number `18`, cache
+grows to `100`, if client asked to factorize number `343`, cache grows
+to `1000`. List of primes also cached and recalculated together with
+least prime divisor table. Recalculation is not incremental, but every
+recalculation of least prime divisor table make a table which is in
+`10` times more than previous, and time for previous calculation is
+`10` times less than for new one. So we can say that recalculation
+spent almost all time for recalculate latest least prime divisor
+table.
 
-Internally, least  divisor table is java array of int, so to store
-least divisor table for first `1 000 000` number approximately `4M`
+Internally, least prime divisor table is java array of `int`, so to store
+least prime divisor table for first `1 000 000` number approximately `4M`
 memory is required, `4` bytes per number.
 
-There is a limit for max size of least divisor table. It is value of
-`max-int`
+There is a limit for max size of least prime divisor table. It is value of
+`max-int`:
 
     p/max-int
 
@@ -286,7 +304,7 @@ Cache can be reset:
 
     {:least-divisor-table , :primes , :upper 0}
 
-Least  divisor table is implementation details, but one can see
+Least prime divisor table is implementation details, but one can see
 it:
 
     ;; load first 10 numbers into cache
@@ -297,15 +315,15 @@ it:
      :primes (2 3 5 7),
      :upper 10}
 
-For number `n` least divisor table contains least divisor of number
-`n` more than `1` at index `n`. Actually least divisor(but not `1`) is
-a prime.  For instance, least divisor of number `6` is `2`. If number
-`n > 1` is a prime, least divisor is `n` and conversely. So at index
-`7` least divisor table contains `7`. Index zero is not used, index
-`1` is a special case and value for index `1` is `1`.
+For number `n` least prime divisor table contains least prime divisor
+of number `n` at index `n`.  For instance, least prime divisor of
+number `6` is `2`. If number `n > 1` is a prime, least prime divisor
+is `n` and conversely. So at index `7` least prime divisor table
+contains `7`. Index zero is not used, index `1` is a special case and
+value for index `1` is `1`.
 
 
-<a id="orgba347c9"></a>
+<a id="org763d026"></a>
 
 ## Primes
 
@@ -316,7 +334,7 @@ a prime.  For instance, least divisor of number `6` is `2`. If number
     (2 3 5 7 11 13 17 19 23 29)
 
 
-<a id="orgd8ca946"></a>
+<a id="orgcf551bc"></a>
 
 ## Integer factorization
 
@@ -343,6 +361,9 @@ Integer $1$ is not a prime and is not a composite
     (p/unit? 1)
 
     true
+
+So all natural numbers can be divided into 3 categories: prime,
+composite, one.
 
 Every integer more than $1$ can be represented uniquely as a product
 of primes.
@@ -422,12 +443,14 @@ Conversion function is the same as for 3-rd representation:
 
     360
 
-Implementation of factorization use least  divisor table. To
-factorize number `n` it is enough to calculate least divisor table
-with size less or equals to $\sqrt n$. 
+Implementation of factorization use least prime divisor
+table. Actually least prime divisor table is a kind of linked list, to
+get next least prime divisor of an integer `n` need just divide `n` on
+least prime divisor `p`, and quotient `n/p` is an index of next least
+prime divisor of integer `n/p` and therefore divisor `n`.
 
 
-<a id="org9dd2a29"></a>
+<a id="org88fc405"></a>
 
 ## Check functions
 
@@ -446,12 +469,18 @@ more check functions:
 -   `check-odd-prime`
 
 
-<a id="orga090bd1"></a>
+<a id="orgfefc802"></a>
 
-# Namespace `vk.ntheory.ar-func`
+# Arithmetical functions `vk.ntheory.ar-func`
+
+This section cover namespace `vk.ntheory.primes`. It contains some
+well known arithmetical functions and also functions which allow build
+new arithmetical functions.
+
+    (require '[vk.ntheory.ar-func :as af])
 
 
-<a id="org79954ef"></a>
+<a id="orgeb1115c"></a>
 
 ## Divisors
 
@@ -463,18 +492,18 @@ function. List of divisors is unordered.
     (1 2 3 6 5 10 15 30)
 
 
-<a id="org456c2f7"></a>
+<a id="org4d50d27"></a>
 
-## Arithmetical functions
+## Arithmetical function
 
 Arithmetical function is an any function which accept natural number
 and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
 with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
 
-<a id="org34128b3"></a>
+<a id="orgeec3bbb"></a>
 
-### Function equality
+## Function equality
 
 Two arithmetical function $f$ and $g$ are equal if $f(n)=g(n)$ for all
 natual $n$. There is helper function `f-equlas` which compare two
@@ -495,9 +524,9 @@ sequence of natural number we can for example do next:
     (f/f= f g (filter even? (range 1 100)))
 
 
-<a id="orgc602bd4"></a>
+<a id="orgcbf169e"></a>
 
-### Additive functions
+## Additive functions
 
 Additive function is a function for which
 
@@ -513,9 +542,9 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="orgb78bb38"></a>
+<a id="org77d6749"></a>
 
-### Multiplicative functions
+## Multiplicative functions
 
 Multiplicative function is a function not equal to zero for all n
 for which 
@@ -532,9 +561,9 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 $$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
 
 
-<a id="org6d03c97"></a>
+<a id="org2a21a79"></a>
 
-### Higher order function for define multiplicative and additive functions
+## Higher order function for define multiplicative and additive functions
 
 As we have seen, to define either multiplicative or additive function
 it is enough define function on power of a prime.  There is helper
@@ -562,171 +591,207 @@ Of course there is predefined function `divisors-count`, but it
 is an example how to define custom function.
 
 
-<a id="org6f9e49e"></a>
+<a id="orgef43c56"></a>
 
-### Some additive functions
-
-1.  Count of distinct primes - $\omega$
-
-    Count of distinct primes is a number of distinct primes which
-    divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k$.
-    
-        (f/primes-count-distinct (* 2 2 3))
-    
-        2
-
-2.  Total count of primes - $\Omega$
-
-    Total count of primes is a number of primes and power of primes
-    which divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
-    
-    $$\Omega = a_1 + a_2 + \dots + a_k$$
-    
-        (f/primes-count-total (* 2 2 3))
-    
-        3
+## Some additive functions
 
 
-<a id="orgf529208"></a>
+<a id="org4e1e73b"></a>
 
-### Some multiplicative functions
+### Count of distinct primes - $\omega$
 
-1.  Mobius function - $\mu$.
+Count of distinct primes is a number of distinct primes which
+divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k$.
 
-    Mobius function defined as:
-    
-    $$ \mu(n) = \begin{cases}
-    1        &  \quad \text{if } n = 1 \\
-    (-1)^k   &  \quad \text{if } n \text{ product of distinct primes} \\
-    0        &  \quad \text{otherwise}
-    \end{cases} $$
-    
-    For example, $\mu(6)=\mu(2 \cdot 3)=1$
-    
-        (f/mobius 6)
-    
-        1
+    (f/primes-count-distinct (* 2 2 3))
 
-2.  Euler totient function - $\phi$
-
-    Euler totient function  is a count of numbers relative  prime to given
-    number `n`.  Totient function can be calculated by formula:
-    
-    $$ \phi(n) = \prod_{p|n} (p^a - p^{a-1}) $$
-    
-    For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6) = 2$
-    
-        (f/totient 6)
-    
-        2
-
-3.  Unit function - $\epsilon$
-
-    Unit function defined as
-    
-    $$ \epsilon(n) = \begin{cases}
-    1,&  \text{if } n = 1 \\
-    0,&  \text{if } n > 1
-    \end{cases} $$
-    
-        (f/unit 6)
-    
-        0
-
-4.  Constant one function - $1$
-
-    $$ 1(n) = 1 $$
-    
-        (f/one 6)
-    
-        1
-
-5.  Divisors count - $\sigma_0$
-
-    Divisors count is number of divisors which divides given number $n$.
-    
-    $$ \sigma_0(n) = \sum_{d|n} 1 $$
-    
-    For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
-    
-        (f/divisors-count 6)
-    
-        4
-
-6.  Divisors sum - $\sigma_1$
-
-    $$ \sigma_1(n) = \sum_{d | n} d $$
-    
-    For number 6 it is $12 = 1 + 2 + 3 + 6$
-    
-        (f/divisors-sum 6)
-    
-        12
-
-7.  Divisors square sum
-
-    $$ \sigma_2(n) = \sum_{d | n} d^2 $$
-    
-    For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
-    
-        (f/divisors-square-sum 6)
-    
-        50
-
-8.  Divisors higher order function - $\sigma_{x}$
-
-    In general $\sigma_x$ function is a sum of x-th powers divisors of given n
-    
-    $$ \sigma_x(n) = \sum_{ d | n} d^x $$
-    
-    If $x \ne 0$ $\sigma_x$ can be calculated by formula:
-    
-    $$ \sigma_{x}(n) = \prod_{i=1}^{k} \frac {p_i^{(a_i+1)x}} {p_i^x - 1} $$
-    
-    and if $x = 0$ by formula:
-    
-    $$ \sigma_{0}(n) = \prod_{i=1}^{k} (a_i + 1) $$
-    
-    There is higher order function `divisors-sum-x` which
-    accept `x` and return appropriate function.
-    
-        (def my-divisors-square-sum (f/divisors-sum-x 2))
-
-9.  Liouville - $\lambda$
-
-    Liouville function can be defind by formula:
-    
-    $$\lambda(n) = (-1)^{\Omega(n)}$$
-    
-    where [$\Omega$](#org09f9993) have been descibed above.
-    
-        (f/liouville (* 2 3)) 
-    
-        1
+    2
 
 
-<a id="org95acbc1"></a>
+<a id="org45e6eab"></a>
 
-### Some other arithmetic functions
+### Total count of primes - $\Omega$
 
-1.  Mangoldt - $\Lambda$
+Total count of primes is a number of primes and power of primes
+which divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 
-    $$\Lambda(n) = \begin{cases}
-       \log p,& \text{if $n$ is power of prime i.e. $n = p^k$} \\
-       0,& \text{otherwise} 
-    \end{cases}$$
-    
-    For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$  
-    
-        (f/mangoldt 2)
-    
-        0.6931471805599453
-    
-        (f/mangoldt 6)
-    
-        0
+$$\Omega = a_1 + a_2 + \dots + a_k$$
 
-2.  Chebyshev functions $\theta$ and $\psi$
+    (f/primes-count-total (* 2 2 3))
+
+    3
+
+
+<a id="org7b131a2"></a>
+
+## Some multiplicative functions
+
+
+<a id="org8a52e93"></a>
+
+### Mobius function - $\mu$.
+
+Mobius function defined as:
+
+$$ \mu(n) = \begin{cases}
+1        &  \quad \text{if } n = 1 \\
+(-1)^k   &  \quad \text{if } n \text{ product of distinct primes} \\
+0        &  \quad \text{otherwise}
+\end{cases} $$
+
+For example, $\mu(6)=\mu(2 \cdot 3)=1$
+
+    (f/mobius 6)
+
+    1
+
+
+<a id="orgd88dab5"></a>
+
+### Euler totient function - $\phi$
+
+Euler totient function  is a count of numbers relative  prime to given
+number `n`.  Totient function can be calculated by formula:
+
+$$ \phi(n) = \prod_{p|n} (p^a - p^{a-1}) $$
+
+For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6) = 2$
+
+    (f/totient 6)
+
+    2
+
+
+<a id="orge46dbb6"></a>
+
+### Unit function - $\epsilon$
+
+Unit function defined as
+
+$$ \epsilon(n) = \begin{cases}
+1,&  \text{if } n = 1 \\
+0,&  \text{if } n > 1
+\end{cases} $$
+
+    (f/unit 6)
+
+    0
+
+
+<a id="orgeae2008"></a>
+
+### Constant one function - $1$
+
+$$ 1(n) = 1 $$
+
+    (f/one 6)
+
+    1
+
+
+<a id="org031ab92"></a>
+
+### Divisors count - $\sigma_0$
+
+Divisors count is number of divisors which divides given number $n$.
+
+$$ \sigma_0(n) = \sum_{d|n} 1 $$
+
+For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
+
+    (f/divisors-count 6)
+
+    4
+
+
+<a id="org7f31782"></a>
+
+### Divisors sum - $\sigma_1$
+
+$$ \sigma_1(n) = \sum_{d | n} d $$
+
+For number 6 it is $12 = 1 + 2 + 3 + 6$
+
+    (f/divisors-sum 6)
+
+    12
+
+
+<a id="org188cab9"></a>
+
+### Divisors square sum
+
+$$ \sigma_2(n) = \sum_{d | n} d^2 $$
+
+For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
+
+    (f/divisors-square-sum 6)
+
+    50
+
+
+<a id="orgf8b37e5"></a>
+
+### Divisors higher order function - $\sigma_{x}$
+
+In general $\sigma_x$ function is a sum of x-th powers divisors of given n
+
+$$ \sigma_x(n) = \sum_{ d | n} d^x $$
+
+If $x \ne 0$ $\sigma_x$ can be calculated by formula:
+
+$$ \sigma_{x}(n) = \prod_{i=1}^{k} \frac {p_i^{(a_i+1)x}} {p_i^x - 1} $$
+
+and if $x = 0$ by formula:
+
+$$ \sigma_{0}(n) = \prod_{i=1}^{k} (a_i + 1) $$
+
+There is higher order function `divisors-sum-x` which
+accept `x` and return appropriate function.
+
+    (def my-divisors-square-sum (f/divisors-sum-x 2))
+
+
+<a id="org37396e6"></a>
+
+### Liouville - $\lambda$
+
+Liouville function can be defind by formula:
+
+$$\lambda(n) = (-1)^{\Omega(n)}$$
+
+where [$\Omega$](#org45e6eab) have been descibed above.
+
+    (f/liouville (* 2 3)) 
+
+    1
+
+
+<a id="org1840ded"></a>
+
+## Some other arithmetic functions
+
+
+<a id="org9b5e6ff"></a>
+
+### Mangoldt - $\Lambda$
+
+$$\Lambda(n) = \begin{cases}
+   \log p,& \text{if $n$ is power of prime i.e. $n = p^k$} \\
+   0,& \text{otherwise} 
+\end{cases}$$
+
+For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$  
+
+    (f/mangoldt 2)
+
+    0.6931471805599453
+
+    (f/mangoldt 6)
+
+    0
+
+1.  Chebyshev functions $\theta$ and $\psi$
 
     There are two Chebyshev functions, one $\theta$ is defined as
     
@@ -736,7 +801,7 @@ is an example how to define custom function.
     
     $$\psi = \sum_{n \le x} {\Lambda(n)} $$
     
-    where [$\Lambda$](#org2d4592b) have been described above
+    where [$\Lambda$](#org9b5e6ff) have been described above
     
         (f/chebyshev-first 2)
     
@@ -747,9 +812,9 @@ is an example how to define custom function.
         0.6931471805599453
 
 
-<a id="org797f388"></a>
+<a id="orgf371aa4"></a>
 
-### Dirichlet convolution
+## Dirichlet convolution
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
 new arithmetic function defined as
@@ -821,4 +886,32 @@ of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
      f/unit)
 
     true
+
+
+<a id="orgd8694f6"></a>
+
+# Conguences `vk.ntheory.congruence`
+
+This section cover namespaces `vk.ntheory.congruence`. It contains functions
+for solve linear congruence and system of linear congruences.
+
+    (require '[vk.ntheory.congruence :as c])
+
+
+<a id="orgba56105"></a>
+
+# Primitive Roots `vk.ntheory.primitive-roots`
+
+    (require '[vk.ntheory.primitive-root :as pr])
+
+In progress&#x2026;
+
+
+<a id="orgf99f7a0"></a>
+
+# Quadratic residies ~vk.ntheory.quadratic-residue
+
+    (require '[vk.ntheory.quadratic-residue :as qr])
+
+In progress&#x2026;
 
