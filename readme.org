@@ -314,6 +314,7 @@ Integer $p$ is a prime if
 - $p > 1$
 - has only divisors $1$ and $p$.  
 
+  
 #+begin_src clojure
 (p/prime? 7)
 #+end_src
@@ -326,6 +327,7 @@ Integer $n$ is a composite number if
 - $n > 1$
 - has at least one proper divisor, i.e. divisor except $1$ and $p$ 
 
+  
 #+begin_src clojure
   (p/composite? 12)
 #+end_src
@@ -335,6 +337,7 @@ Integer $n$ is a composite number if
 : 
 
 Integer $1$ is not a prime and is not a composite
+
 
 #+begin_src clojure
   (p/unit? 1)
@@ -498,7 +501,7 @@ For get list of all divisors of number ~n~ there is ~divisor~
 function. List of divisors is unordered.
 
 #+begin_src clojure
-  (f/divisors 30)
+  (af/divisors 30)
 #+end_src
 
 #+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
@@ -584,7 +587,7 @@ With helper function it can be defined as
 
 #+begin_src clojure
   (def my-divisors-count
-  (f/reduce-on-prime-count * (fn [p k] (inc k))))
+  (af/reduce-on-prime-count * (fn [p k] (inc k))))
   (my-divisors-count 6)
 #+end_src
 
@@ -602,7 +605,7 @@ Count of distinct primes is a number of distinct primes which
 divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k$.
 
 #+begin_src clojure
-   (f/primes-count-distinct (* 2 2 3))
+   (af/primes-count-distinct (* 2 2 3))
 #+end_src
 
 #+RESULTS[3552f94a82caf8b47add374a87b582087b94f377]:
@@ -617,7 +620,7 @@ which divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 $$\Omega = a_1 + a_2 + \dots + a_k$$
 
 #+begin_src clojure
-  (f/primes-count-total (* 2 2 3))
+  (af/primes-count-total (* 2 2 3))
 #+end_src
 
 #+RESULTS[51c9f0f12a6224d26735728783dec13755a0633e]:
@@ -640,7 +643,7 @@ $$ \mu(n) = \begin{cases}
 For example, $\mu(6)=\mu(2 \cdot 3)=1$
 
 #+begin_src clojure
-  (f/mobius 6)
+  (af/mobius 6)
 #+end_src
 
 #+RESULTS[cf4859295d68505bb9cd0db612b385de1ebf5376]:
@@ -658,7 +661,7 @@ $$ \phi(n) = \prod_{p|n} (p^a - p^{a-1}) $$
 For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6) = 2$
 
 #+begin_src clojure
-  (f/totient 6)
+  (af/totient 6)
 #+end_src
 
 #+RESULTS[c7763e09447503d128331d4f95f7799db7bd4679]:
@@ -675,7 +678,7 @@ $$ \epsilon(n) = \begin{cases}
 \end{cases} $$
 
 #+begin_src clojure
-  (f/unit 6)
+  (af/unit 6)
 #+end_src
 
 #+RESULTS[fe946ead0f672382244e7788ffc0800baecdad98]:
@@ -687,7 +690,7 @@ $$ \epsilon(n) = \begin{cases}
 $$ 1(n) = 1 $$
 
 #+begin_src clojure
-  (f/one 6)
+  (af/one 6)
 #+end_src
 
 #+RESULTS[a9b4f951368a936801ef98b7badd4dc39dea886f]:
@@ -703,7 +706,7 @@ $$ \sigma_0(n) = \sum_{d|n} 1 $$
 For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
 
 #+begin_src clojure
-  (f/divisors-count 6)
+  (af/divisors-count 6)
 #+end_src
 
 #+RESULTS[decfebfc920e6b3c30105d4e96db3a33f2f50e35]:
@@ -718,7 +721,7 @@ $$ \sigma_1(n) = \sum_{d | n} d $$
 For number 6 it is $12 = 1 + 2 + 3 + 6$
 
 #+begin_src clojure
-  (f/divisors-sum 6)
+  (af/divisors-sum 6)
 #+end_src
 
 #+RESULTS[937569fa024eae6602b07f07b2c3b364ac62cf0c]:
@@ -732,7 +735,7 @@ $$ \sigma_2(n) = \sum_{d | n} d^2 $$
 For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
 
 #+begin_src clojure
-  (f/divisors-square-sum 6)
+  (af/divisors-square-sum 6)
 #+end_src
 
 #+RESULTS[e37fb8014bf18bca9cc23b39e26bb461bc7ce6d6]:
@@ -757,7 +760,7 @@ There is higher order function ~divisors-sum-x~ which
 accept ~x~ and return appropriate function.
 
 #+begin_src clojure :results silent
-  (def my-divisors-square-sum (f/divisors-sum-x 2))
+  (def my-divisors-square-sum (af/divisors-sum-x 2))
 #+end_src
 
 *** Liouville - $\lambda$
@@ -769,7 +772,7 @@ $$\lambda(n) = (-1)^{\Omega(n)}$$
 where [[*Total count of primes - $\Omega$][$\Omega$]] have been descibed above.
 
 #+begin_src clojure
-  (f/liouville (* 2 3)) 
+  (af/liouville (* 2 3)) 
 #+end_src
 
 #+RESULTS[869850b293d2a60abef6a5639489018149613db4]:
@@ -788,7 +791,7 @@ $$\Lambda(n) = \begin{cases}
 For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$  
 
 #+begin_src clojure
-  (f/mangoldt 2)
+  (af/mangoldt 2)
 #+end_src
 
 #+RESULTS[542691e004afaeca227b31c85287fa1086ef1c7a]:
@@ -796,7 +799,7 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
 : 
   
 #+begin_src clojure
-  (f/mangoldt 6)
+  (af/mangoldt 6)
 #+end_src
 
 #+RESULTS[c45312e6447f258aca43ab10d232e6e8c943b095]:
@@ -817,7 +820,7 @@ where [[*Mangoldt - $\Lambda$][$\Lambda$]] have been described above
 
 
 #+begin_src clojure
-  (f/chebyshev-first 2)
+  (af/chebyshev-first 2)
 #+end_src
 
 #+RESULTS[cebd13d9e26c3ad5f4dffa6d9b3318e352ecaf8b]:
@@ -825,7 +828,7 @@ where [[*Mangoldt - $\Lambda$][$\Lambda$]] have been described above
 : 
   
 #+begin_src clojure
-  (f/chebyshev-second 2)
+  (af/chebyshev-second 2)
 #+end_src
 
 #+RESULTS[2a19f1e0aa91c0b965be5aee1939f687592600b2]:
@@ -866,9 +869,9 @@ $$ f^{-1}(n) = \begin{cases}
 For example, $1(n) * 1(n) = \sigma_0$
 
 #+begin_src clojure
-  (f/f=
-     (f/d-* f/one f/one)
-     f/divisors-count
+  (af/f=
+     (af/d* af/one af/one)
+     af/divisors-count
   )
 #+end_src
 
@@ -880,9 +883,9 @@ Dirichlet convolution is associative so clojure method support more than two
 function as parameter of ~f*~
 
 #+begin_src clojure
-  (f/f=
-    (f/d-* f/mobius f/one f/mobius f/one)
-    f/unit
+  (af/f=
+    (af/d* af/mobius af/one af/mobius af/one)
+    af/unit
   )
 #+end_src
 
@@ -901,7 +904,7 @@ Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 : 
   
 #+begin_src clojure
-  (f/f= (f/d-inv f/mobius) f/one)
+  (af/f= (af/d-inv af/mobius) af/one)
 #+end_src
 
 #+RESULTS[e17afcfeaabbc9d50d6f000814f6e2e43b7f447e]:
@@ -915,12 +918,12 @@ is $f(n) \mu(n)$(usual multiplication), for instance inverse
 of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
 
 #+begin_src clojure
-  (f/f=
-   (f/d-* 
-      #(* (identity %) (f/mobius %))
+  (af/f=
+   (af/d-* 
+      #(* (identity %) (af/mobius %))
       identity
    )
-   f/unit)
+   af/unit)
 #+end_src
 
 #+RESULTS:
