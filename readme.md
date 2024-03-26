@@ -1,94 +1,372 @@
+
+# Table of Contents
+
+1.  [About](#orgf4c2ea7)
+2.  [Notation](#org9d5434a)
+3.  [Some basic functions `vk.ntheory.basic`](#org46b2691)
+    1.  [Check functions](#org828f4c3)
+    2.  [Some predicates](#org140da91)
+    3.  [Operations in $\mathbf{Z}/m\mathbf{Z}$](#org90f8996)
+    4.  [Power function](#orgcd80a87)
+    5.  [Order function](#org0ce805d)
+    6.  [Sign function](#org88cee93)
+    7.  [The greatest common divisor](#orga52c2ce)
+    8.  [The least common multiple](#orgb719e97)
+4.  [Primes and Integer Factorization `vk.ntheory.primes`](#orga41cf29)
+    1.  [Performance and cache](#orga2beb13)
+    2.  [Primes](#org34b0f5a)
+    3.  [Integer factorization](#org55d9124)
+    4.  [Check functions](#org1213611)
+5.  [Arithmetical functions `vk.ntheory.ar-func`](#orgb31a331)
+    1.  [Divisors](#org1f8e7c3)
+    2.  [Arithmetical function](#orga2a2429)
+    3.  [Function equality](#orgbf91578)
+    4.  [Additive functions](#org9e644d3)
+    5.  [Multiplicative functions](#orga4a9921)
+    6.  [Higher order function for define multiplicative and additive functions](#org9cec2b9)
+    7.  [Some additive functions](#orgc617dc7)
+        1.  [Count of distinct primes - $\omega$](#org20378f9)
+        2.  [Total count of primes - $\Omega$](#org009f6b8)
+    8.  [Some multiplicative functions](#org7065a42)
+        1.  [Mobius function - $\mu$.](#org689213e)
+        2.  [Euler totient function - $\phi$](#orgfd7683e)
+        3.  [Unit function - $\epsilon$](#orga53c641)
+        4.  [Constant one function - $1$](#org12c87fe)
+        5.  [Divisors count - $\sigma_0$](#orga43c96e)
+        6.  [Divisors sum - $\sigma_1$](#orgbb57315)
+        7.  [Divisors square sum](#orge9ec725)
+        8.  [Divisors higher order function - $\sigma_{x}$](#org6928b55)
+        9.  [Liouville - $\lambda$](#orgfd7484f)
+    9.  [Some other arithmetic functions](#orgec26dbd)
+        1.  [Mangoldt - $\Lambda$](#org6003a5f)
+    10. [Dirichlet convolution](#org2d8244f)
+6.  [Conguences `vk.ntheory.congruence`](#orgdf2791f)
+7.  [Primitive Roots `vk.ntheory.primitive-roots`](#org978ccc4)
+8.  [Quadratic residies ~vk.ntheory.quadratic-residue](#org5361e57)
+
+
+
+<a id="orgf4c2ea7"></a>
+
 # About
 
-This project cover some topics in number theory, especially arithmetic
-functions, further more multiplicative functions. There are set of well
-known arithmetic functions and one can define custom arithmetic
-functions.
+This project cover some topics in number theory such as integer
+factorization, arithmetic functions, congruences, primitive roots.
+Here defined set of well known arithmetic functions and one can define
+custom arithmetic function. One can solve linear congruence or system
+of linear congruences including case when moduli relatively prime.
 
-I wrote this document with Emacs Org Mode. Then I generated markdown
-file with `pandoc` to show it nicely on github. I use Emacs babel to
-produce real output inside the document.
+I wrote this document `readme.org` with Emacs Org Mode. Then I
+generate markdown file `readme.md` with Org Mode export to markdown
+`C-c C-e m m`, and generate pdf file `readme.odf` with Org Mode export
+to pdf `C-c C-e l p`.  Github by default show `readme.md` if a project
+has such file.  Githib markdown looks enough good, even math equation
+is supported. But I see some issues with greek characters in table of
+content and in link text. If it is a problem `readme.pdf` looks
+better. I use Emacs babel for clojure to produce real output inside
+the document.
 
-In this document I load number theory package as:
+In this document I load number theory packages as: 
 
-``` clojure
-(require '[vk.ntheory :as nt])
-(require '[clojure.math :as math])
-```
+    (require '[vk.ntheory.basic :as b])
+    (require '[vk.ntheory.primes :as p])
+    (require '[vk.ntheory.ar-func :as af])
+    (require '[vk.ntheory.congruence :as c])
+    (require '[vk.ntheory.primitive-roots :as pr])
+    (require '[clojure.math :as math])
 
-So below I will use `nt` alias.
+So below I will use above aliases.
+
+
+<a id="org9d5434a"></a>
 
 # Notation
 
-$\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
-$\mathbf C$ - Complex numbers $\mathbf Z$ - Integers
-$\dots -3, -2, -1, 0, 1, 2, 3, \dots$
+-   $\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
+-   $\mathbf C$ - Complex numbers
+-   $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
+-   $\mathbf Z/m\mathbf Z$ - Ring of integers modulo $m$
+-   $(a,b)$ - the greatest common divisor of $a$ and $b$
+-   $[a,b]$ - the least common multiple of $a$ and $b$
 
-# Performance and cache
+
+<a id="org46b2691"></a>
+
+# Some basic functions `vk.ntheory.basic`
+
+This section cover namespace `vk.ntheory.basic`. It contains some
+common functions, which can be used directly or by other namespaces.
+
+    (require '[vk.ntheory.basic :as b])
+
+
+<a id="org828f4c3"></a>
+
+## Check functions
+
+There are set of `check-*` functions which can be helpful to validate
+user input:
+
+-   `check-int`
+-   `check-int-pos`
+-   `check-int-non-neg`
+-   `check-int-non-zero`
+
+All of above accept one argument, check does argument satisfy to
+expectation, if does return argument, otherwise throw an exception.
+
+There are also two helper function `check` and `check-not` which helps
+to implement another `check-*` function for a predicate. 
+
+
+<a id="org140da91"></a>
+
+## Some predicates
+
+Function `divides?` determine does one number divides another.
+
+    (b/divides? 2 8)
+
+    true
+
+
+<a id="org90f8996"></a>
+
+## Operations in $\mathbf{Z}/m\mathbf{Z}$
+
+Similar to addition function `+` and multiplication function `*` there
+defined addition modulo m `m+` and multiplication modulo m `m*`
+functions. First argument of these functions is a modulo.
+
+For instance $2 + 4 \equiv 1 \pmod{5}$ in $\mathbf{Z}/m\mathbf{Z}$
+
+    (b/m+ 5 2 4)
+
+    1
+
+and $2 \cdot 4 \equiv 3 \pmod 5$ in $\mathbf{Z}/m\mathbf{Z}$
+
+    (b/m* 5 2 4)
+
+    3
+
+The fact that a modulo is a first argument allow bind modulo in let
+expression and then use addition and multiplication modulo m without
+specify a modulo.
+
+    (let [m5* (partial b/m* 5)
+          m5+ (partial b/m+ 5)]
+      ;; ...
+      (m5+ 1 (m5* 2 4)))
+
+    4
+
+There is another helpful function modulo m - exponentiation. It is a
+fast binary exponentiation algorithm described in D.Knuth, The Art of
+Computer Programming, Volume II.
+
+For instance, $101^{900} \equiv 701 \pmod{997}$
+
+    (b/m** 997 101 900)
+
+    701
+
+
+<a id="orgcd80a87"></a>
+
+## Power function
+
+Clojure has built-in `clojure.math/pow` function, but it return
+`java.lang.Double`. The library provide integer analog.
+
+    (b/pow 2 3)
+
+    8
+
+
+<a id="org0ce805d"></a>
+
+## Order function
+
+Order function $ord_p(n)$ is a greatest power of $p$ divides $n$. For instance,
+$2^3 | 24$, but $2^4 \nmid 24$, so $ord_2(24) = 3$
+
+    (b/order 2 24)
+
+    3
+
+
+<a id="org88cee93"></a>
+
+## Sign function
+
+The `sign` function
+
+$$sign(n) = \begin{cases}
+-1 & \quad \text{if } x < 0 \\
+0  & \quad \text{if } x = 0 \\
+1  & \quad \text{if } x > 0
+\end{cases}
+$$
+
+    (mapv b/sign [(- 5) 10 0])
+
+    [-1 1 0]
+
+
+<a id="orga52c2ce"></a>
+
+## The greatest common divisor
+
+The greatest common divisor of two integer $a$ and $b$ is an positive
+integer $d$ which divides $a$ and $b$ , and any other common divisor $a$
+and $b$ divides $d$.
+
+    (b/gcd 12 18)
+
+    6
+
+The greatest common divisors of $a$ and $b$ is denoted by $(a,b)$.
+For convenience $(0, 0) = 0$.
+
+Furthermore, if for any two integers $a$ and $b$ exists integers $s$
+and $t$ such that $a s + b t = d$ , where $d$ is the greatest common
+divisor. For example, $6 = 12 (-1) + 18 (1)$
+
+    (b/gcd-extended 12 18)
+
+    [6 -1 1]
+
+
+<a id="orgb719e97"></a>
+
+## The least common multiple
+
+The least common multiple of two integers $a$ and $b$ is denoted by
+$[a, b]$, is an smallest integer which is multiple of $a$ and $b$. 
+It defined in code as follows:
+
+$$[a,b] = \begin{cases}
+\frac{|ab|}{(a,b)} & \quad \text{if } a \ne 0 \text{ and } b \ne 0 \\
+0                  & \quad \text{if } a = 0 \text{ or } b = 0 
+\end{cases}
+$$
+
+    (b/lcm 12 18) 
+
+    36
+
+
+<a id="orga41cf29"></a>
+
+# Primes and Integer Factorization `vk.ntheory.primes`
+
+This section cover namespace `vk.ntheory.primes`. It primary designed
+for integer factorization and get list of primes. One can use `primes`
+namespace as:
+
+    (require '[vk.ntheory.primes :as p])
+
+
+<a id="orga2beb13"></a>
+
+## Performance and cache
 
 This library is designed to work with realtive small integers. Library
-keep in cache least prime divisor table for fast integer factorization.
-Cache grows automatically. The strategy of growing is extends cache to
-the least power of `10` more than required number. For instance, if
-client asked to factorize number `18`, cache grows to `100`, if client
-asked to factorize number `343`, cache grows to `1000`. List of primes
-also cached and recalculated together with least prime divisor table.
-Recalculation is not incremental, but every recalculation of least prime
-divisor table make a table which is in `10` times more than previous,
-and time for previous calculation is `10` times less than for new one.
-So we can say that recalculation spent almost all time for recalculate
-latest least prime divisor table.
+keep in cache least prime divisor table for fast integer
+factorization.  Least prime divisor of an positive integer is least
+divisor, but not `1`.  Cache grows automatically. The strategy of
+growing is extends cache to the least power of `10` more than required
+number. For instance, if client asked to factorize number `18`, cache
+grows to `100`, if client asked to factorize number `343`, cache grows
+to `1000`. List of primes also cached and recalculated together with
+least prime divisor table. Recalculation is not incremental, but every
+recalculation of least prime divisor table make a table which is in
+`10` times more than previous, and time for previous calculation is
+`10` times less than for new one. So we can say that recalculation
+spent almost all time for recalculate latest least prime divisor
+table.
 
-Internally, least prime divisor table is java array of int, so to store
-least divisor table for first `1 000 000` number approximately `4M`
+Internally, least prime divisor table is java array of `int`, so to store
+least prime divisor table for first `1 000 000` number approximately `4M`
 memory is required, `4` bytes per number.
+
+There is a limit for max size of least prime divisor table. It is value of
+`max-int`:
+
+    p/max-int
+
+    1000000
 
 Cache can be reset:
 
-``` clojure
-(nt/ldt-reset!)
-```
+    (p/cache-reset!)
 
-``` example
-{:least-divisor-table , :primes , :upper 0}
+    {:least-divisor-table , :primes , :upper 0}
 
-```
+Least prime divisor table is implementation details, but one can see
+it:
 
-Least prime divisor table is implementation details, but one can see it:
+    ;; load first 10 numbers into cache
+    (p/int->factors-map 5)
+    (deref p/cache)
 
-``` clojure
-(nt/integer->factors-map 5); load first 10 natural numbers
-@ldt
-```
+    {:least-divisor-table [0, 1, 2, 3, 2, 5, 2, 7, 2, 3, 2],
+     :primes (2 3 5 7),
+     :upper 10}
 
-``` example
-{:least-divisor-table [0, 1, 2, 3, 2, 5, 2, 7, 2, 3, 2],
- :primes (2 3 5 7),
- :upper 10}
+For number `n` least prime divisor table contains least prime divisor
+of number `n` at index `n`.  For instance, least prime divisor of
+number `6` is `2`. If number `n > 1` is a prime, least prime divisor
+is `n` and conversely. So at index `7` least prime divisor table
+contains `7`. Index zero is not used, index `1` is a special case and
+value for index `1` is `1`.
 
-```
 
-For instance, for get least prime divisor of number 6 we need to get
-element with index 6, which is 2. Index zero is not used, value for
-index 1 is 1.
+<a id="org34b0f5a"></a>
 
-# Prime numbers
+## Primes
 
 `primes` function returns prime numbers which not exceeds given `n`.
 
-``` clojure
-(nt/primes 30)
-```
+    (p/primes 30)
 
-``` example
-(2 3 5 7 11 13 17 19 23 29)
+    (2 3 5 7 11 13 17 19 23 29)
 
-```
 
-# Integer factorization
+<a id="org55d9124"></a>
 
-Every integer more than $1$ can be represented uniquely as a product of
-primes.
+## Integer factorization
+
+Integer $p$ is a prime if
+
+-   $p > 1$
+-   has only divisors $1$ and $p$.
+
+    (p/prime? 7)
+
+    true
+
+Integer $n$ is a composite number if
+
+-   $n > 1$
+-   has at least one proper divisor, i.e. divisor except $1$ and $p$
+
+    (p/composite? 12)
+
+    true
+
+Integer $1$ is not a prime and is not a composite
+
+    (p/unit? 1)
+
+    true
+
+So all natural numbers can be divided into 3 categories: prime,
+composite, one.
+
+Every integer more than $1$ can be represented uniquely as a product
+of primes.
 
 $$
 n = {p_1}^{a_1} {p_2}^{a_2} \dots {p_k}^{a_k}
@@ -116,126 +394,165 @@ which accept factorized value and convert it back to integer.
 
 1-st factorization representation is ordered sequence of primes:
 
-``` clojure
-(nt/integer->factors 360)
-(nt/factors->integer [2 2 2 3 3 5])
-```
+    (p/int->factors 360)
 
-|               |
-|---------------|
-| (2 2 2 3 3 5) |
-| 360           |
+    (2 2 2 3 3 5)
 
-2-nd factorization representation is ordered sequence of primes splited
-by partitions by a prime:
+And converse function is:
 
-``` clojure
-(nt/integer->factors-partitions 360)
-(nt/factors-partitions->integer [[2 2 2] [3 3] [5]])
-```
+    (p/factors->int [2 2 2 3 3 5])
 
-|                     |
-|---------------------|
-| ((2 2 2) (3 3) (5)) |
-| 360                 |
+    360
+
+2-nd factorization representation is ordered sequence of primes
+splited by partitions by a prime:
+
+    (p/int->factors-partitions 360)
+
+    ((2 2 2) (3 3) (5))
+
+And converse function is:
+
+    (p/factors-partitions->int [[2 2 2] [3 3] [5]])
+
+    360
 
 3-rd factorization representation is ordered sequence of pairs `[p
-k]`, where `p` is a prime and `k` is a power of prime
+k]`, where `p` is a prime and `k` is a power of prime:
 
-``` clojure
-(nt/integer->factors-count 360)
-(nt/factors-count->integer [[2 3] [3 2] [5 1]])
-```
+    (p/int->factors-count 360)
 
-|                           |
-|---------------------------|
-| (\[2 3\] \[3 2\] \[5 1\]) |
-| 360                       |
+    ([2 3] [3 2] [5 1])
 
-4-th factorization representation is very similar to 3-rd, but it is a
-map. And it has the same inverse function as 3-rd.
+And converse function is:
 
-``` clojure
-(nt/integer->factors-map 360)
-(nt/factors-count->integer {2 3, 3 2, 5 1})
-```
+    (p/factors-count->int [[2 3] [3 2] [5 1]])
 
-|                 |
-|-----------------|
-| {2 3, 3 2, 5 1} |
-| 360             |
+    360
 
-Implementation of factorization use least prime divisor table. To
-factorize number `n` it is enough to calculate least divisor table with
-size less or equals to $\sqrt n$.
+4-th factorization representation is very similar to 3-rd, but it
+is a map instead of sequence of pairs. 
 
-# Divisors
+    (p/int->factors-map 360)
 
-For get list of all divisors of number `n` there is `divisor` function.
-List of divisors is unordered.
+    {2 3, 3 2, 5 1}
 
-``` clojure
-(nt/divisors 30)
-```
+Conversion function is the same as for 3-rd representation:
 
-``` example
-(1 2 3 6 5 10 15 30)
+    (p/factors-count->int {2 3, 3 2, 5 1})
 
-```
+    360
 
-# Arithmetical functions
+Implementation of factorization use least prime divisor
+table. Actually least prime divisor table is a kind of linked list, to
+get next least prime divisor of an integer `n` need just divide `n` on
+least prime divisor `p`, and quotient `n/p` is an index of next least
+prime divisor of integer `n/p` and therefore divisor `n`.
 
-Arithmetical function is an any function which accept natural number and
-return complex number $f: \mathbf N \to \mathbf C$. The library mostly
-works with functions which also returns integer
-$f: \mathbf N \to \mathbf Z$.
 
-# Function equality
+<a id="org1213611"></a>
+
+## Check functions
+
+Addition to `vk.nthery.basic` namespace, namespace `vk.ntheory.primes`
+provides additional set of `check-*` functions:
+
+-   `check-int-pos-max`
+-   `check-int-non-neg-max`
+-   `check-int-non-zero-max`
+
+It is similar to `vk.ntheory.basic` check functions, but additionally check
+that given number does not exceeds `max-int` constant. And there are some
+more check functions:
+
+-   `check-prime`
+-   `check-odd-prime`
+
+
+<a id="orgb31a331"></a>
+
+# Arithmetical functions `vk.ntheory.ar-func`
+
+This section cover namespace `vk.ntheory.primes`. It contains some
+well known arithmetical functions and also functions which allow build
+new arithmetical functions.
+
+    (require '[vk.ntheory.ar-func :as af])
+
+
+<a id="org1f8e7c3"></a>
+
+## Divisors
+
+For get list of all divisors of number `n` there is `divisor`
+function. List of divisors is unordered.
+
+    (af/divisors 30)
+
+    (1 2 3 6 5 10 15 30)
+
+
+<a id="orga2a2429"></a>
+
+## Arithmetical function
+
+Arithmetical function is an any function which accept natural number
+and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
+with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
+
+
+<a id="orgbf91578"></a>
+
+## Function equality
 
 Two arithmetical function $f$ and $g$ are equal if $f(n)=g(n)$ for all
 natual $n$. There is helper function `f-equlas` which compare two
-functions on some sequence of natual numbers. Function `f-equals` accept
-two functions and optionally sequence of natural numbers. There is a
-default for sequence of natural numbers, it is a variable
+functions on some sequence of natual numbers. Function `f=`
+accept two functions and optionally sequence of natural numbers. There
+is a default for sequence of natural numbers, it is a variable
 `default-natural-sample`, which is currently `range(1,100)`.
 
 If we like identify does two function `f` and `g` equals on some
 sequence of natural number we can for example do next:
 
-``` clojure
-;; Let we have some f and g
-(def f identity)
-(def g (constantly 1))
-;; Then we able to check does those functions are equals
-(nt/f-equals f g)
-(nt/f-equals f g (range 1 1000))
-(nt/f-equals f g (filter even? (range 1 100)))
-```
+    ;; Let we have some f and g
+    (def f identity)
+    (def g (constantly 1))
+    ;; Then we able to check does those functions are equals
+    (f/f= f g)
+    (f/f= f g (range 1 1000))
+    (f/f= f g (filter even? (range 1 100)))
 
-# Additive functions
+
+<a id="org9e644d3"></a>
+
+## Additive functions
 
 Additive function is a function for which
 
 $$ f(mn) = f(m) + f(n)$$
 
-if $m$ relatively prime to $n$. If above equality holds for all natural
-$m$ and $n$ function called completely additive.
+if $m$ relatively prime to $n$. If above equality holds for all
+natural $m$ and $n$ function called completely additive.
 
-To define an additive function it is enough to define how to calculate a
-function on power of primes. If
-$n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
+To define an additive function it is enough to define how to
+calculate a function on power of primes.
+If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then: 
 
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
-# Multiplicative functions
 
-Multiplicative function is a function not equal to zero for all n for
-which
+<a id="orga4a9921"></a>
+
+## Multiplicative functions
+
+Multiplicative function is a function not equal to zero for all n
+for which 
 
 $$ f(mn) = f(m)f(n) $$
 
-if $m$ relatively prime to $n$. If above equality holds for all natural
-$m$ and $n$ function called completely multiplicative.
+if $m$ relatively prime to $n$. If above equality holds for all
+natural $m$ and $n$ function called completely multiplicative.
 
 To define multiplicative function it is enough to define how to
 calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
@@ -243,77 +560,76 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 
 $$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
 
-# Higher order function for define multiplicative and additive functions
 
-As we have seen, to define either multiplicative or additive function it
-is enough define function on power of a prime. There is helper function
-`reduce-on-prime-count` which provide a way to define a function on
-power of a prime. The first parameter of `reduce-on-prime-count` is
-reduce function which usually `*` for multiplicative function and
-usually `+` for additive function, but custom reduce function also
-acceptable.
+<a id="org9cec2b9"></a>
 
-For instance, we can define function which calculate number of divisors
-of integer `n`. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ count of
-divisors of number `n` can be calculated by formula:
+## Higher order function for define multiplicative and additive functions
+
+As we have seen, to define either multiplicative or additive function
+it is enough define function on power of a prime.  There is helper
+function `reduce-on-prime-count` which provide a way to define a
+function on power of a prime. The first parameter of
+`reduce-on-prime-count` is reduce function which usually `*` for
+multiplicative function and usually `+` for additive function, but
+custom reduce function also acceptable.
+
+For instance, we can define function which calculate number of
+divisors of integer `n`. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ count of divisors of
+number `n` can be calculated by formula:
 
 $$ \sigma_0(n) = \prod_{i=1}^{k} (a_i + 1) $$
 
 With helper function it can be defined as
 
-``` clojure
-(def my-divisors-count
-(nt/reduce-on-prime-count * (fn [p k] (inc k))))
-```
+    (def my-divisors-count
+    (af/reduce-on-prime-count * (fn [p k] (inc k))))
+    (my-divisors-count 6)
 
-``` clojure
-(my-divisors-count 6)
-```
+    4
 
-``` example
-4
+Of course there is predefined function `divisors-count`, but it
+is an example how to define custom function.
 
-```
 
-Of course there is predefined function `divisors-count`, but it is an
-example how to define custom function.
+<a id="orgc617dc7"></a>
 
-# Some additive functions
+## Some additive functions
 
-## Count of distinct primes - $\omega$
 
-Count of distinct primes is a number of distinct primes which divides
-given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then
-$\omega = k$.
+<a id="org20378f9"></a>
 
-``` clojure
-(nt/primes-count-distinct (* 2 2 3))
-```
+### Count of distinct primes - $\omega$
 
-``` example
-2
+Count of distinct primes is a number of distinct primes which
+divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k$.
 
-```
+    (af/primes-count-distinct (* 2 2 3))
 
-## Total count of primes - $\Omega$
+    2
 
-Total count of primes is a number of primes and power of primes which
-divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
+
+<a id="org009f6b8"></a>
+
+### Total count of primes - $\Omega$
+
+Total count of primes is a number of primes and power of primes
+which divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 
 $$\Omega = a_1 + a_2 + \dots + a_k$$
 
-``` clojure
-(nt/primes-count-total (* 2 2 3))
-```
+    (af/primes-count-total (* 2 2 3))
 
-``` example
-3
+    3
 
-```
 
-# Some multiplicative functions
+<a id="org7065a42"></a>
 
-## Mobius function - $\mu$.
+## Some multiplicative functions
+
+
+<a id="org689213e"></a>
+
+### Mobius function - $\mu$.
 
 Mobius function defined as:
 
@@ -325,33 +641,30 @@ $$ \mu(n) = \begin{cases}
 
 For example, $\mu(6)=\mu(2 \cdot 3)=1$
 
-``` clojure
-(nt/mobius 6)
-```
+    (af/mobius 6)
 
-``` example
-1
-```
+    1
 
-## Euler totient function - $\phi$
 
-Euler totient function is a count of numbers relative prime to given
-number `n`. Totient function can be calculated by formula:
+<a id="orgfd7683e"></a>
+
+### Euler totient function - $\phi$
+
+Euler totient function  is a count of numbers relative  prime to given
+number `n`.  Totient function can be calculated by formula:
 
 $$ \phi(n) = \prod_{p|n} (p^a - p^{a-1}) $$
 
-For example, count of numbers relative prime to $6$ are $1$ and $5$, so
-$\phi(6) = 2$
+For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6) = 2$
 
-``` clojure
-(nt/totient 6)
-```
+    (af/totient 6)
 
-``` example
-2
-```
+    2
 
-## Unit function - $\epsilon$
+
+<a id="orga53c641"></a>
+
+### Unit function - $\epsilon$
 
 Unit function defined as
 
@@ -360,80 +673,68 @@ $$ \epsilon(n) = \begin{cases}
 0,&  \text{if } n > 1
 \end{cases} $$
 
-``` clojure
-(nt/unit 6)
-```
+    (af/unit 6)
 
-``` example
-0
+    0
 
-```
 
-## Constant one function - $1$
+<a id="org12c87fe"></a>
+
+### Constant one function - $1$
 
 $$ 1(n) = 1 $$
 
-``` clojure
-(nt/one 6)
-```
+    (af/one 6)
 
-``` example
-1
+    1
 
-```
 
-## Divisors count - $\sigma_0$
+<a id="orga43c96e"></a>
+
+### Divisors count - $\sigma_0$
 
 Divisors count is number of divisors which divides given number $n$.
 
 $$ \sigma_0(n) = \sum_{d|n} 1 $$
 
-For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so
-$\sigma_0(6)=4$
+For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
 
-``` clojure
-(nt/divisors-count 6)
-```
+    (af/divisors-count 6)
 
-``` example
-4
+    4
 
-```
 
-## Divisors sum - $\sigma_1$
+<a id="orgbb57315"></a>
+
+### Divisors sum - $\sigma_1$
 
 $$ \sigma_1(n) = \sum_{d | n} d $$
 
 For number 6 it is $12 = 1 + 2 + 3 + 6$
 
-``` clojure
-(nt/divisors-sum 6)
-```
+    (af/divisors-sum 6)
 
-``` example
-12
+    12
 
-```
 
-## Divisors square sum
+<a id="orge9ec725"></a>
+
+### Divisors square sum
 
 $$ \sigma_2(n) = \sum_{d | n} d^2 $$
 
 For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
 
-``` clojure
-(nt/divisors-square-sum 6)
-```
+    (af/divisors-square-sum 6)
 
-``` example
-50
+    50
 
-```
 
-## Divisors higher order function - $\sigma_{x}$
+<a id="org6928b55"></a>
 
-In general $\sigma_x$ function is a sum of x-th powers divisors of given
-n
+### Divisors higher order function - $\sigma_{x}$
+
+In general $\sigma_x$ function is a sum of x-th powers divisors of given n
 
 $$ \sigma_x(n) = \sum_{ d | n} d^x $$
 
@@ -445,81 +746,78 @@ and if $x = 0$ by formula:
 
 $$ \sigma_{0}(n) = \prod_{i=1}^{k} (a_i + 1) $$
 
-There is higher order function `divisors-sum-x` which accept `x` and
-return appropriate function.
+There is higher order function `divisors-sum-x` which
+accept `x` and return appropriate function.
 
-``` clojure
-(def my-divisors-square-sum (nt/divisors-sum-x 2))
-```
+    (def my-divisors-square-sum (af/divisors-sum-x 2))
 
-## Liouville - $\lambda$
+
+<a id="orgfd7484f"></a>
+
+### Liouville - $\lambda$
 
 Liouville function can be defind by formula:
 
 $$\lambda(n) = (-1)^{\Omega(n)}$$
 
-where <span class="spurious-link"
-target="*Total count of primes - $\Omega$">*$\Omega$*</span> have been
-descibed above.
+where [$\Omega$](#org009f6b8) have been descibed above.
 
-``` clojure
-(nt/liouville (* 2 3)) 
-```
+    (af/liouville (* 2 3)) 
 
-``` example
-1
+    1
 
-```
 
-# Some other arithmetic functions
+<a id="orgec26dbd"></a>
 
-## Mangoldt - $\Lambda$
+## Some other arithmetic functions
+
+
+<a id="org6003a5f"></a>
+
+### Mangoldt - $\Lambda$
 
 $$\Lambda(n) = \begin{cases}
    \log p,& \text{if $n$ is power of prime i.e. $n = p^k$} \\
    0,& \text{otherwise} 
 \end{cases}$$
 
-For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
+For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$  
 
-``` clojure
-(nt/mangoldt 2)
-(nt/mangoldt 6)
-```
+    (af/mangoldt 2)
 
-|                    |
-|--------------------|
-| 0.6931471805599453 |
-| 0                  |
+    0.6931471805599453
 
-## Chebyshev functions $\theta$ and $\psi$
+    (af/mangoldt 6)
 
-There are two Chebyshev functions, one $\theta$ is defined as
+    0
 
-$$\theta(x) = \sum_{p \le x} \log p$$
+1.  Chebyshev functions $\theta$ and $\psi$
 
-second $\psi$ defined as
+    There are two Chebyshev functions, one $\theta$ is defined as
+    
+    $$\theta(x) = \sum_{p \le x} \log p$$
+    
+    second $\psi$ defined as
+    
+    $$\psi = \sum_{n \le x} {\Lambda(n)} $$
+    
+    where [$\Lambda$](#org6003a5f) have been described above
+    
+        (af/chebyshev-first 2)
+    
+        0.6931471805599453
+    
+        (af/chebyshev-second 2)
+    
+        0.6931471805599453
 
-$$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
-where <span class="spurious-link"
-target="*Mangoldt - $\Lambda$">*$\Lambda$*</span> have been described
-above
+<a id="org2d8244f"></a>
 
-``` clojure
-(nt/chebyshev-first 2)
-(nt/chebyshev-second 2)
-```
+## Dirichlet convolution
 
-|                    |
-|--------------------|
-| 0.6931471805599453 |
-| 0.6931471805599453 |
-
-# Dirichlet convolution
-
-For two arithmetic functions $f$ and $g$ Dirichlet convolution is a new
-arithmetic function defined as
+For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
+new arithmetic function defined as
 
 $$ (f*g)(n) = \sum_{d | n} f(d)g(\frac{n}{d}) $$
 
@@ -535,9 +833,9 @@ Has identify
 
 $$ f * \epsilon = \epsilon * f = f $$
 
-For every $f$, which $f(1) \ne 0$ exists inverse function $f^{-1}$ such
-that $f * f^{-1} = \epsilon$. This inverse function called Dirichlet
-inverse and can by calculated recursively by formula:
+For every $f$, which $f(1) \ne 0$ exists inverse function $f^{-1}$
+such that $f * f^{-1} = \epsilon$. This inverse function called
+Dirichlet inverse and can by calculated recursively by formula:
 
 $$ f^{-1}(n) = \begin{cases}
 \frac{1}{f(1)} & \quad \text{if } n = 1  \\
@@ -548,41 +846,74 @@ $$ f^{-1}(n) = \begin{cases}
 
 For example, $1(n) * 1(n) = \sigma_0$
 
-``` clojure
-(nt/f-equals
-   (nt/dirichlet-convolution nt/one nt/one)
-   nt/divisors-count
-)
-```
+    (af/f=
+       (af/d* af/one af/one)
+       af/divisors-count
+    )
 
-``` example
-true
+    true
 
-```
+Dirichlet convolution is associative so clojure method support more than two
+function as parameter of `f*`
 
-Dirichlet convolution is associative so clojure method support more than
-two function as parameter of `f*`
+    (af/f=
+      (af/d* af/mobius af/one af/mobius af/one)
+      af/unit
+    )
 
-``` clojure
-(nt/f-equals
-  (nt/dirichlet-convolution nt/mobius nt/one nt/mobius nt/one)
-  nt/unit
-)
-```
-
-``` example
-true
-
-```
+    true
 
 Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 
-``` clojure
-(nt/f-equals (nt/dirichlet-inverse nt/one) nt/mobius)
-(nt/f-equals (nt/dirichlet-inverse nt/mobius) nt/one)
-```
+    (f/f= (f/d-inv f/one) f/mobius)
 
-|      |
-|------|
-| true |
-| true |
+    true
+
+    (af/f= (af/d-inv af/mobius) af/one)
+
+    true
+
+Function `d-inv` defined as recursive function, it may
+execute slow. But inverse of completely multiplicative function $f(n)$
+is $f(n) \mu(n)$(usual multiplication), for instance inverse
+of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
+
+    (af/f=
+     (af/d-* 
+        #(* (identity %) (af/mobius %))
+        identity
+     )
+     af/unit)
+
+    true
+
+
+<a id="orgdf2791f"></a>
+
+# Conguences `vk.ntheory.congruence`
+
+This section cover namespaces `vk.ntheory.congruence`. It contains functions
+for solve linear congruence and system of linear congruences.
+
+    (require '[vk.ntheory.congruence :as c])
+
+In progress &#x2026;
+
+
+<a id="org978ccc4"></a>
+
+# Primitive Roots `vk.ntheory.primitive-roots`
+
+    (require '[vk.ntheory.primitive-root :as pr])
+
+In progress&#x2026;
+
+
+<a id="org5361e57"></a>
+
+# Quadratic residies ~vk.ntheory.quadratic-residue
+
+    (require '[vk.ntheory.quadratic-residue :as qr])
+
+In progress&#x2026;
+

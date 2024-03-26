@@ -1,68 +1,286 @@
-#+title: Number theory with Clojure
-#+startup: nolatexpreview
+#+title: Number Theory with Clojure
+#+author: Valery Kocubinsky
+#+startup: nolatexpreview content
+#+PROPERTY: header-args:clojure :session *clojure-1* :exports both :results pp
 
 * About
 
-This project cover some topics in number theory, especially arithmetic
-functions, further more multiplicative functions. There are set of
-well known arithmetic functions and one can define custom arithmetic
-functions.
+This project cover some topics in number theory such as integer
+factorization, arithmetic functions, congruences, primitive roots.
+Here defined set of well known arithmetic functions and one can define
+custom arithmetic function. One can solve linear congruence or system
+of linear congruences including case when moduli relatively prime.
 
-I wrote this document with Emacs Org Mode. Then I generated markdown
-file with =pandoc= to show it nicely on github. I use Emacs babel to
-produce real output inside the document.
+I wrote this document =readme.org= with Emacs Org Mode. Then I
+generate markdown file =readme.md= with Org Mode export to markdown
+=C-c C-e m m=, and generate pdf file =readme.odf= with Org Mode export
+to pdf =C-c C-e l p=.  Github by default show =readme.md= if a project
+has such file.  Githib markdown looks enough good, even math equation
+is supported. But I see some issues with greek characters in table of
+content and in link text. If it is a problem =readme.pdf= looks
+better. I use Emacs babel for clojure to produce real output inside
+the document.
 
-In this document I load number theory package as: 
+In this document I load number theory packages as: 
 
 #+begin_src clojure :results silent
-  (require '[vk.ntheory :as nt])
+  (require '[vk.ntheory.basic :as b])
+  (require '[vk.ntheory.primes :as p])
+  (require '[vk.ntheory.ar-func :as af])
+  (require '[vk.ntheory.congruence :as c])
+  (require '[vk.ntheory.primitive-roots :as pr])
   (require '[clojure.math :as math])
 #+end_src
 
-So below I will use ~nt~ alias.
+So below I will use above aliases.
 
 * Notation
 
-$\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
-$\mathbf C$ - Complex numbers
-$\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
+- $\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
+- $\mathbf C$ - Complex numbers
+- $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
+- $\mathbf Z/m\mathbf Z$ - Ring of integers modulo $m$
+- $(a,b)$ - the greatest common divisor of $a$ and $b$
+- $[a,b]$ - the least common multiple of $a$ and $b$
+  
+* Some basic functions ~vk.ntheory.basic~
 
-* Performance and cache
+This section cover namespace ~vk.ntheory.basic~. It contains some
+common functions, which can be used directly or by other namespaces.
+
+#+begin_src clojure :results silent
+  (require '[vk.ntheory.basic :as b])
+#+end_src
+
+** Check functions
+
+There are set of ~check-*~ functions which can be helpful to validate
+user input:
+
+- ~check-int~
+- ~check-int-pos~
+- ~check-int-non-neg~
+- ~check-int-non-zero~
+
+All of above accept one argument, check does argument satisfy to
+expectation, if does return argument, otherwise throw an exception.
+
+There are also two helper function ~check~ and ~check-not~ which helps
+to implement another ~check-*~ function for a predicate. 
+
+** Some predicates
+
+Function ~divides?~ determine does one number divides another.
+
+#+begin_src clojure
+  (b/divides? 2 8)
+#+end_src
+
+#+RESULTS:
+: true
+
+** Operations in $\mathbf{Z}/m\mathbf{Z}$
+
+Similar to addition function ~+~ and multiplication function ~*~ there
+defined addition modulo m ~m+~ and multiplication modulo m ~m*~
+functions. First argument of these functions is a modulo.
+
+For instance $2 + 4 \equiv 1 \pmod{5}$ in $\mathbf{Z}/m\mathbf{Z}$
+
+#+begin_src clojure
+  (b/m+ 5 2 4)
+#+end_src
+
+#+RESULTS:
+: 1
+
+and $2 \cdot 4 \equiv 3 \pmod 5$ in $\mathbf{Z}/m\mathbf{Z}$
+
+#+begin_src clojure
+  (b/m* 5 2 4)
+#+end_src
+
+#+RESULTS:
+: 3
+
+The fact that a modulo is a first argument allow bind modulo in let
+expression and then use addition and multiplication modulo m without
+specify a modulo.
+
+#+begin_src clojure
+  (let [m5* (partial b/m* 5)
+        m5+ (partial b/m+ 5)]
+    ;; ...
+    (m5+ 1 (m5* 2 4)))
+#+end_src
+
+#+RESULTS:
+: 4
+
+There is another helpful function modulo m - exponentiation. It is a
+fast binary exponentiation algorithm described in D.Knuth, The Art of
+Computer Programming, Volume II.
+
+For instance, $101^{900} \equiv 701 \pmod{997}$
+
+#+begin_src clojure
+  (b/m** 997 101 900)
+#+end_src
+
+#+RESULTS:
+: 701
+
+** Power function
+
+Clojure has built-in ~clojure.math/pow~ function, but it return
+~java.lang.Double~. The library provide integer analog.
+
+#+begin_src clojure
+   (b/pow 2 3)
+#+end_src
+
+#+RESULTS[8221a5c2608622294a90d9c99515dad20e5cf26b]:
+: 8
+
+** Order function
+
+Order function $ord_p(n)$ is a greatest power of $p$ divides $n$. For instance,
+$2^3 | 24$, but $2^4 \nmid 24$, so $ord_2(24) = 3$
+
+#+begin_src clojure
+   (b/order 2 24)
+#+end_src
+
+#+RESULTS[6688ec475e07b26cbe22365a0f8b042237d3472e]:
+: 3
+
+** Sign function
+
+The ~sign~ function
+
+$$sign(n) = \begin{cases}
+-1 & \quad \text{if } x < 0 \\
+0  & \quad \text{if } x = 0 \\
+1  & \quad \text{if } x > 0
+\end{cases}
+$$
+
+#+begin_src clojure
+  (mapv b/sign [(- 5) 10 0])
+#+end_src
+
+#+RESULTS[2f80258ff0e8c2f23b61515ab8276aa60c9f3b0e]:
+: [-1 1 0]
+: 
+
+** The greatest common divisor
+
+The greatest common divisor of two integer $a$ and $b$ is an positive
+integer $d$ which divides $a$ and $b$ , and any other common divisor $a$
+and $b$ divides $d$.
+
+#+begin_src clojure
+  (b/gcd 12 18)
+#+end_src 
+
+#+RESULTS[84ee5c2e59cde440a9e03cef1ebd152230e253ca]:
+: 6
+: 
+
+The greatest common divisors of $a$ and $b$ is denoted by $(a,b)$.
+For convenience $(0, 0) = 0$.
+
+Furthermore, if for any two integers $a$ and $b$ exists integers $s$
+and $t$ such that $a s + b t = d$ , where $d$ is the greatest common
+divisor. For example, $6 = 12 (-1) + 18 (1)$
+
+#+begin_src clojure
+   (b/gcd-extended 12 18)
+#+end_src
+
+#+RESULTS[0c74f2cc07ec9ef25a86e65ce4219160c744cdde]:
+: [6 -1 1]
+: 
+
+** The least common multiple
+
+The least common multiple of two integers $a$ and $b$ is denoted by
+$[a, b]$, is an smallest integer which is multiple of $a$ and $b$. 
+It defined in code as follows:
+
+$$[a,b] = \begin{cases}
+\frac{|ab|}{(a,b)} & \quad \text{if } a \ne 0 \text{ and } b \ne 0 \\
+0                  & \quad \text{if } a = 0 \text{ or } b = 0 
+\end{cases}
+$$
+
+#+begin_src clojure
+  (b/lcm 12 18) 
+#+end_src
+
+#+RESULTS:
+: 36
+: 
+
+* Primes and Integer Factorization ~vk.ntheory.primes~
+
+This section cover namespace ~vk.ntheory.primes~. It primary designed
+for integer factorization and get list of primes. One can use ~primes~
+namespace as:
+
+#+begin_src clojure :results silent
+  (require '[vk.ntheory.primes :as p])
+#+end_src
+
+** Performance and cache
 
 This library is designed to work with realtive small integers. Library
 keep in cache least prime divisor table for fast integer
-factorization.  Cache grows automatically. The strategy of growing is
-extends cache to the least power of ~10~ more than required
+factorization.  Least prime divisor of an positive integer is least
+divisor, but not ~1~.  Cache grows automatically. The strategy of
+growing is extends cache to the least power of ~10~ more than required
 number. For instance, if client asked to factorize number ~18~, cache
 grows to ~100~, if client asked to factorize number ~343~, cache grows
-to ~1000~. List of primes also cached and recalculated together
-with least prime divisor table. Recalculation is not incremental, but
-every recalculation of least prime divisor table make a table which is
-in ~10~ times more than previous, and time for previous calculation is
+to ~1000~. List of primes also cached and recalculated together with
+least prime divisor table. Recalculation is not incremental, but every
+recalculation of least prime divisor table make a table which is in
+~10~ times more than previous, and time for previous calculation is
 ~10~ times less than for new one. So we can say that recalculation
 spent almost all time for recalculate latest least prime divisor
 table.
 
-Internally, least prime divisor table is java array of int, so to store
-least divisor table for first ~1 000 000~ number approximately ~4M~
+Internally, least prime divisor table is java array of ~int~, so to store
+least prime divisor table for first ~1 000 000~ number approximately ~4M~
 memory is required, ~4~ bytes per number.
 
-Cache can be reset:
+There is a limit for max size of least prime divisor table. It is value of
+~max-int~:
 
-#+begin_src clojure :results pp :exports both
-  (nt/ldt-reset!)
+#+begin_src clojure
+  p/max-int
 #+end_src
 
 #+RESULTS:
+: 1000000
+: 
+
+Cache can be reset:
+
+#+begin_src clojure
+  (p/cache-reset!)
+#+end_src
+
+#+RESULTS[0a033508655190ba819ff8d2a12b2e877d31d6fe]:
 : {:least-divisor-table , :primes , :upper 0}
 : 
 
 Least prime divisor table is implementation details, but one can see
 it:
 
-#+begin_src clojure :results pp :exports both
-  (nt/integer->factors-map 5); load first 10 natural numbers
-  @ldt
+#+begin_src clojure
+  ;; load first 10 numbers into cache
+  (p/int->factors-map 5)
+  (deref p/cache)
 #+end_src
 
 #+RESULTS:
@@ -71,23 +289,66 @@ it:
 :  :upper 10}
 : 
 
-For instance, for get least prime divisor of number 6 we need to get
-element with index 6, which is 2. Index zero is not used, value for
-index 1 is 1.
+For number ~n~ least prime divisor table contains least prime divisor
+of number ~n~ at index ~n~.  For instance, least prime divisor of
+number ~6~ is ~2~. If number ~n > 1~ is a prime, least prime divisor
+is ~n~ and conversely. So at index ~7~ least prime divisor table
+contains ~7~. Index zero is not used, index ~1~ is a special case and
+value for index ~1~ is ~1~.
 
-* Prime numbers
+** Primes
 
 ~primes~ function returns prime numbers which not exceeds given ~n~.
 
-#+begin_src clojure :results pp :exports both
-(nt/primes 30)
+#+begin_src clojure
+(p/primes 30)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[763796e7ffa04546417c55a7b12dc1b756c02534]:
 : (2 3 5 7 11 13 17 19 23 29)
 : 
 
-* Integer factorization
+** Integer factorization
+
+Integer $p$ is a prime if
+- $p > 1$
+- has only divisors $1$ and $p$.  
+
+  
+#+begin_src clojure
+(p/prime? 7)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+Integer $n$ is a composite number if
+- $n > 1$
+- has at least one proper divisor, i.e. divisor except $1$ and $p$ 
+
+  
+#+begin_src clojure
+  (p/composite? 12)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+Integer $1$ is not a prime and is not a composite
+
+
+#+begin_src clojure
+  (p/unit? 1)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+So all natural numbers can be divided into 3 categories: prime,
+composite, one.
 
 Every integer more than $1$ can be represented uniquely as a product
 of primes.
@@ -120,79 +381,144 @@ which accept factorized value and convert it back to integer.
 
 1-st factorization representation is ordered sequence of primes:
 
-#+begin_src clojure :results value :exports both
-  (nt/integer->factors 360)
-  (nt/factors->integer [2 2 2 3 3 5])
+#+begin_src clojure
+  (p/int->factors 360)
 #+end_src
 
-#+RESULTS:
-| (2 2 2 3 3 5) |
-|           360 |
+#+RESULTS[9c25c3f8eb84068aa435602e9f7a7f8ab139c556]:
+: (2 2 2 3 3 5)
+: 
+
+And converse function is:
+
+#+begin_src clojure
+  (p/factors->int [2 2 2 3 3 5])
+#+end_src
+
+#+RESULTS[be5dc481f46fd3b607346dd9644742d71b4f7556]:
+: 360
+: 
 
 2-nd factorization representation is ordered sequence of primes
 splited by partitions by a prime:
 
-#+begin_src clojure :results value :exports both
-  (nt/integer->factors-partitions 360)
-  (nt/factors-partitions->integer [[2 2 2] [3 3] [5]])
+#+begin_src clojure
+  (p/int->factors-partitions 360)
 #+end_src
 
-#+RESULTS:
-| ((2 2 2) (3 3) (5)) |
-|                 360 |
+#+RESULTS[d0d83022dd7e56c435f86f912ed0520410830802]:
+: ((2 2 2) (3 3) (5))
+: 
+
+And converse function is:
+
+#+begin_src clojure
+  (p/factors-partitions->int [[2 2 2] [3 3] [5]])
+#+end_src
+
+#+RESULTS[4f3000a8f01bb3bffb6f1c145bbbc4cfd9e42c16]:
+: 360
+: 
 
 3-rd factorization representation is ordered sequence of pairs ~[p
-k]~, where ~p~ is a prime and ~k~ is a power of prime
+k]~, where ~p~ is a prime and ~k~ is a power of prime:
 
-#+begin_src clojure :results value :exports both
-  (nt/integer->factors-count 360)
-  (nt/factors-count->integer [[2 3] [3 2] [5 1]])
+#+begin_src clojure
+  (p/int->factors-count 360)
 #+end_src
 
-#+RESULTS:
-| ([2 3] [3 2] [5 1]) |
-|                 360 |
+#+RESULTS[deb84c857b6e7c95f8cf1bed52b147f3757c98ea]:
+: ([2 3] [3 2] [5 1])
+: 
+
+And converse function is:
+
+#+begin_src clojure
+  (p/factors-count->int [[2 3] [3 2] [5 1]])
+#+end_src
+
+#+RESULTS[337833a77e534d69e5bd1a2655a79412e0a99bd3]:
+: 360
+: 
 
 4-th factorization representation is very similar to 3-rd, but it
-is a map. And it has the same inverse function as 3-rd.
+is a map instead of sequence of pairs. 
 
-#+begin_src clojure :results value :exports both
-  (nt/integer->factors-map 360)
-  (nt/factors-count->integer {2 3, 3 2, 5 1})
+#+begin_src clojure
+  (p/int->factors-map 360)
 #+end_src
 
-#+RESULTS:
-| {2 3, 3 2, 5 1} |
-|             360 |
+#+RESULTS[6f56766d178fd644b1e6dd9d5c530dc3c936abc7]:
+: {2 3, 3 2, 5 1}
+: 
 
-Implementation of factorization use least prime divisor table. To
-factorize number ~n~ it is enough to calculate least divisor table
-with size less or equals to $\sqrt n$. 
+Conversion function is the same as for 3-rd representation:
 
-* Divisors
+#+begin_src clojure
+  (p/factors-count->int {2 3, 3 2, 5 1})
+#+end_src
+
+#+RESULTS[85c61af8e9717c094e6d06e3abbbbbc1303673e6]:
+: 360
+: 
+
+Implementation of factorization use least prime divisor
+table. Actually least prime divisor table is a kind of linked list, to
+get next least prime divisor of an integer ~n~ need just divide ~n~ on
+least prime divisor ~p~, and quotient ~n/p~ is an index of next least
+prime divisor of integer ~n/p~ and therefore divisor ~n~.
+
+** Check functions
+
+Addition to ~vk.nthery.basic~ namespace, namespace ~vk.ntheory.primes~
+provides additional set of ~check-*~ functions:
+
+- ~check-int-pos-max~
+- ~check-int-non-neg-max~
+- ~check-int-non-zero-max~
+
+It is similar to ~vk.ntheory.basic~ check functions, but additionally check
+that given number does not exceeds ~max-int~ constant. And there are some
+more check functions:
+  
+- ~check-prime~
+- ~check-odd-prime~      
+
+* Arithmetical functions ~vk.ntheory.ar-func~
+
+This section cover namespace ~vk.ntheory.primes~. It contains some
+well known arithmetical functions and also functions which allow build
+new arithmetical functions.
+
+#+begin_src clojure :results silent
+  (require '[vk.ntheory.ar-func :as af])
+#+end_src
+
+
+** Divisors
 
 For get list of all divisors of number ~n~ there is ~divisor~
 function. List of divisors is unordered.
 
-#+begin_src clojure :results pp :exports both
-  (nt/divisors 30)
+#+begin_src clojure
+  (af/divisors 30)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
 : (1 2 3 6 5 10 15 30)
 : 
 
-* Arithmetical functions
+** Arithmetical function
 
 Arithmetical function is an any function which accept natural number
 and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
 with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
-* Function equality
+** Function equality
 
 Two arithmetical function $f$ and $g$ are equal if $f(n)=g(n)$ for all
 natual $n$. There is helper function ~f-equlas~ which compare two
-functions on some sequence of natual numbers. Function ~f-equals~
+functions on some sequence of natual numbers. Function ~f=~
 accept two functions and optionally sequence of natural numbers. There
 is a default for sequence of natural numbers, it is a variable
 ~default-natural-sample~, which is currently ~range(1,100)~.
@@ -205,12 +531,12 @@ sequence of natural number we can for example do next:
   (def f identity)
   (def g (constantly 1))
   ;; Then we able to check does those functions are equals
-  (nt/f-equals f g)
-  (nt/f-equals f g (range 1 1000))
-  (nt/f-equals f g (filter even? (range 1 100)))
+  (f/f= f g)
+  (f/f= f g (range 1 1000))
+  (f/f= f g (filter even? (range 1 100)))
 #+end_src
 
-* Additive functions
+** Additive functions
 
 Additive function is a function for which
 
@@ -225,8 +551,7 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
-
-* Multiplicative functions
+** Multiplicative functions
 
 Multiplicative function is a function not equal to zero for all n
 for which 
@@ -242,7 +567,7 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 
 $$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
 
-* Higher order function for define multiplicative and additive functions
+** Higher order function for define multiplicative and additive functions
 
 As we have seen, to define either multiplicative or additive function
 it is enough define function on power of a prime.  There is helper
@@ -260,55 +585,51 @@ $$ \sigma_0(n) = \prod_{i=1}^{k} (a_i + 1) $$
 
 With helper function it can be defined as
 
-#+begin_src clojure :results silent 
+#+begin_src clojure
   (def my-divisors-count
-  (nt/reduce-on-prime-count * (fn [p k] (inc k))))
-#+end_src
-
-#+begin_src clojure :results pp :exports both
+  (af/reduce-on-prime-count * (fn [p k] (inc k))))
   (my-divisors-count 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[70b9288870478d799579fafdb999ad04378c2803]:
 : 4
 : 
 
 Of course there is predefined function ~divisors-count~, but it
 is an example how to define custom function.
+** Some additive functions
 
-* Some additive functions
-
-** Count of distinct primes - $\omega$
+*** Count of distinct primes - $\omega$
 
 Count of distinct primes is a number of distinct primes which
 divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k$.
 
-#+begin_src clojure :results pp :exports both
-   (nt/primes-count-distinct (* 2 2 3))
+#+begin_src clojure
+   (af/primes-count-distinct (* 2 2 3))
 #+end_src
 
-#+RESULTS:
+#+RESULTS[3552f94a82caf8b47add374a87b582087b94f377]:
 : 2
 : 
 
-** Total count of primes - $\Omega$
+*** Total count of primes - $\Omega$
 
 Total count of primes is a number of primes and power of primes
 which divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 
 $$\Omega = a_1 + a_2 + \dots + a_k$$
 
-#+begin_src clojure :results pp :exports both
-  (nt/primes-count-total (* 2 2 3))
+#+begin_src clojure
+  (af/primes-count-total (* 2 2 3))
 #+end_src
 
-#+RESULTS:
+#+RESULTS[51c9f0f12a6224d26735728783dec13755a0633e]:
 : 3
 : 
 
-* Some multiplicative functions
+** Some multiplicative functions
 
-** Mobius function - $\mu$.
+*** Mobius function - $\mu$.
 
 Mobius function defined as:
 
@@ -321,15 +642,15 @@ $$ \mu(n) = \begin{cases}
 
 For example, $\mu(6)=\mu(2 \cdot 3)=1$
 
-#+begin_src clojure :exports both
-  (nt/mobius 6)
+#+begin_src clojure
+  (af/mobius 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[cf4859295d68505bb9cd0db612b385de1ebf5376]:
 : 1
+: 
 
-
-** Euler totient function - $\phi$
+*** Euler totient function - $\phi$
 
 Euler totient function  is a count of numbers relative  prime to given
 number ~n~.  Totient function can be calculated by formula:
@@ -339,14 +660,15 @@ $$ \phi(n) = \prod_{p|n} (p^a - p^{a-1}) $$
 
 For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6) = 2$
 
-#+begin_src clojure :exports both
-  (nt/totient 6)
+#+begin_src clojure
+  (af/totient 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[c7763e09447503d128331d4f95f7799db7bd4679]:
 : 2
+: 
 
-** Unit function - $\epsilon$
+*** Unit function - $\epsilon$
 
 Unit function defined as
 
@@ -355,28 +677,27 @@ $$ \epsilon(n) = \begin{cases}
 0,&  \text{if } n > 1
 \end{cases} $$
 
-#+begin_src clojure :results pp :exports both
-  (nt/unit 6)
+#+begin_src clojure
+  (af/unit 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[fe946ead0f672382244e7788ffc0800baecdad98]:
 : 0
 : 
 
-** Constant one function - $1$
+*** Constant one function - $1$
 
 $$ 1(n) = 1 $$
 
-#+begin_src clojure :results pp :exports both
-  (nt/one 6)
+#+begin_src clojure
+  (af/one 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[a9b4f951368a936801ef98b7badd4dc39dea886f]:
 : 1
 : 
 
-
-** Divisors count - $\sigma_0$
+*** Divisors count - $\sigma_0$
 
 Divisors count is number of divisors which divides given number $n$.
 
@@ -384,44 +705,44 @@ $$ \sigma_0(n) = \sum_{d|n} 1 $$
 
 For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
 
-#+begin_src clojure :results pp :exports both
-  (nt/divisors-count 6)
+#+begin_src clojure
+  (af/divisors-count 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[decfebfc920e6b3c30105d4e96db3a33f2f50e35]:
 : 4
 : 
 
-** Divisors sum - $\sigma_1$
+*** Divisors sum - $\sigma_1$
 
 
 $$ \sigma_1(n) = \sum_{d | n} d $$
 
 For number 6 it is $12 = 1 + 2 + 3 + 6$
 
-#+begin_src clojure :results pp :exports both
-  (nt/divisors-sum 6)
+#+begin_src clojure
+  (af/divisors-sum 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[937569fa024eae6602b07f07b2c3b364ac62cf0c]:
 : 12
 : 
 
-** Divisors square sum
+*** Divisors square sum
 
 $$ \sigma_2(n) = \sum_{d | n} d^2 $$
 
 For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
 
-#+begin_src clojure :results pp :exports both
-  (nt/divisors-square-sum 6)
+#+begin_src clojure
+  (af/divisors-square-sum 6)
 #+end_src
 
-#+RESULTS:
+#+RESULTS[e37fb8014bf18bca9cc23b39e26bb461bc7ce6d6]:
 : 50
 : 
 
-** Divisors higher order function - $\sigma_{x}$
+*** Divisors higher order function - $\sigma_{x}$
 
 In general $\sigma_x$ function is a sum of x-th powers divisors of given n
 
@@ -439,10 +760,10 @@ There is higher order function ~divisors-sum-x~ which
 accept ~x~ and return appropriate function.
 
 #+begin_src clojure :results silent
-  (def my-divisors-square-sum (nt/divisors-sum-x 2))
+  (def my-divisors-square-sum (af/divisors-sum-x 2))
 #+end_src
 
-** Liouville - $\lambda$
+*** Liouville - $\lambda$
 
 Liouville function can be defind by formula:
 
@@ -450,17 +771,17 @@ $$\lambda(n) = (-1)^{\Omega(n)}$$
 
 where [[*Total count of primes - $\Omega$][$\Omega$]] have been descibed above.
 
-#+begin_src clojure :results pp :exports both
-  (nt/liouville (* 2 3)) 
+#+begin_src clojure
+  (af/liouville (* 2 3)) 
 #+end_src
 
-#+RESULTS:
+#+RESULTS[869850b293d2a60abef6a5639489018149613db4]:
 : 1
 : 
 
-* Some other arithmetic functions
+** Some other arithmetic functions
 
-** Mangoldt - $\Lambda$
+*** Mangoldt - $\Lambda$
 
 $$\Lambda(n) = \begin{cases}
    \log p,& \text{if $n$ is power of prime i.e. $n = p^k$} \\
@@ -469,17 +790,23 @@ $$\Lambda(n) = \begin{cases}
 
 For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$  
 
-#+begin_src clojure :results value :exports both
-  (nt/mangoldt 2)
-  (nt/mangoldt 6)
+#+begin_src clojure
+  (af/mangoldt 2)
 #+end_src
 
-#+RESULTS:
-| 0.6931471805599453 |
-|                  0 |
+#+RESULTS[542691e004afaeca227b31c85287fa1086ef1c7a]:
+: 0.6931471805599453
+: 
+  
+#+begin_src clojure
+  (af/mangoldt 6)
+#+end_src
 
+#+RESULTS[c45312e6447f258aca43ab10d232e6e8c943b095]:
+: 0
+: 
 
-** Chebyshev functions $\theta$ and $\psi$
+**** Chebyshev functions $\theta$ and $\psi$
 
 There are two Chebyshev functions, one $\theta$ is defined as
 
@@ -492,17 +819,23 @@ $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 where [[*Mangoldt - $\Lambda$][$\Lambda$]] have been described above
 
 
-#+begin_src clojure :exports both
-  (nt/chebyshev-first 2)
-  (nt/chebyshev-second 2)
+#+begin_src clojure
+  (af/chebyshev-first 2)
 #+end_src
 
-#+RESULTS:
-| 0.6931471805599453 |
-| 0.6931471805599453 |
+#+RESULTS[cebd13d9e26c3ad5f4dffa6d9b3318e352ecaf8b]:
+: 0.6931471805599453
+: 
+  
+#+begin_src clojure
+  (af/chebyshev-second 2)
+#+end_src
 
+#+RESULTS[2a19f1e0aa91c0b965be5aee1939f687592600b2]:
+: 0.6931471805599453
+: 
 
-* Dirichlet convolution
+** Dirichlet convolution
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
 new arithmetic function defined as
@@ -535,41 +868,94 @@ $$ f^{-1}(n) = \begin{cases}
 
 For example, $1(n) * 1(n) = \sigma_0$
 
-#+begin_src clojure :exports both :results pp
-  (nt/f-equals
-     (nt/dirichlet-convolution nt/one nt/one)
-     nt/divisors-count
+#+begin_src clojure
+  (af/f=
+     (af/d* af/one af/one)
+     af/divisors-count
   )
 #+end_src
 
-#+RESULTS:
+#+RESULTS[57087c9ba65232b20217853c2e785c62527b3666]:
 : true
 : 
 
 Dirichlet convolution is associative so clojure method support more than two
 function as parameter of ~f*~
 
-#+begin_src clojure :exports both :results pp
-  (nt/f-equals
-    (nt/dirichlet-convolution nt/mobius nt/one nt/mobius nt/one)
-    nt/unit
+#+begin_src clojure
+  (af/f=
+    (af/d* af/mobius af/one af/mobius af/one)
+    af/unit
   )
+#+end_src
+
+#+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
+: true
+: 
+
+Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
+
+#+begin_src clojure
+  (f/f= (f/d-inv f/one) f/mobius)
+#+end_src
+
+#+RESULTS[33bbf9139c179db71af6a5d185b937afad79f0f6]:
+: true
+: 
+  
+#+begin_src clojure
+  (af/f= (af/d-inv af/mobius) af/one)
+#+end_src
+
+#+RESULTS[e17afcfeaabbc9d50d6f000814f6e2e43b7f447e]:
+: true
+: 
+
+
+Function ~d-inv~ defined as recursive function, it may
+execute slow. But inverse of completely multiplicative function $f(n)$
+is $f(n) \mu(n)$(usual multiplication), for instance inverse
+of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
+
+#+begin_src clojure
+  (af/f=
+   (af/d-* 
+      #(* (identity %) (af/mobius %))
+      identity
+   )
+   af/unit)
 #+end_src
 
 #+RESULTS:
 : true
 : 
 
-Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 
-#+begin_src clojure :exports both :results value
-    (nt/f-equals (nt/dirichlet-inverse nt/one) nt/mobius)
-    (nt/f-equals (nt/dirichlet-inverse nt/mobius) nt/one)
+* Conguences ~vk.ntheory.congruence~
+
+This section cover namespaces ~vk.ntheory.congruence~. It contains functions
+for solve linear congruence and system of linear congruences.
+
+#+begin_src clojure :results silent
+  (require '[vk.ntheory.congruence :as c])
 #+end_src
 
-#+RESULTS:
-| true |
-| true |
+In progress ...
+
+* Primitive Roots ~vk.ntheory.primitive-roots~
+
+#+begin_src clojure :results silent
+  (require '[vk.ntheory.primitive-root :as pr])
+#+end_src
 
 
+In progress...
 
+* Quadratic residies ~vk.ntheory.quadratic-residue
+
+#+begin_src clojure :results silent
+  (require '[vk.ntheory.quadratic-residue :as qr])
+#+end_src
+
+
+In progress...
