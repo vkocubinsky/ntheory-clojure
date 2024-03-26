@@ -311,10 +311,12 @@ value for index ~1~ is ~1~.
 ** Integer factorization
 
 Integer $p$ is a prime if
+
 - $p > 1$
 - has only divisors $1$ and $p$.  
 
-  
+There is ~prime?~ function:
+
 #+begin_src clojure
 (p/prime? 7)
 #+end_src
@@ -327,7 +329,8 @@ Integer $n$ is a composite number if
 - $n > 1$
 - has at least one proper divisor, i.e. divisor except $1$ and $p$ 
 
-  
+There is ~composite?~ function:
+
 #+begin_src clojure
   (p/composite? 12)
 #+end_src
