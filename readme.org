@@ -931,10 +931,6 @@ of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
 : 
 
 
-
-
-
-
 * Conguences ~vk.ntheory.congruence~
 
 This section cover namespaces ~vk.ntheory.congruence~. It contains functions
@@ -943,6 +939,8 @@ for solve linear congruence and system of linear congruences.
 #+begin_src clojure :results silent
   (require '[vk.ntheory.congruence :as c])
 #+end_src
+
+In progress ...
 
 * Primitive Roots ~vk.ntheory.primitive-roots~
 
