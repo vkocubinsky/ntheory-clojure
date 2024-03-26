@@ -224,25 +224,43 @@ $$
 
 * Namespace ~vk.ntheory.primes~
 
+Namespace ~vk.ntheory.primes~ primary designed for integer factorization
+and get list of primes. One can use ~primes~ namespace as:
+
+#+begin_src clojure :results silent
+  (require '[vk.ntheory.primes :as p])
+#+end_src
+
+
 ** Performance and cache
 
 This library is designed to work with realtive small integers. Library
-keep in cache least prime divisor table for fast integer
-factorization.  Cache grows automatically. The strategy of growing is
-extends cache to the least power of ~10~ more than required
-number. For instance, if client asked to factorize number ~18~, cache
-grows to ~100~, if client asked to factorize number ~343~, cache grows
-to ~1000~. List of primes also cached and recalculated together
-with least prime divisor table. Recalculation is not incremental, but
-every recalculation of least prime divisor table make a table which is
-in ~10~ times more than previous, and time for previous calculation is
-~10~ times less than for new one. So we can say that recalculation
-spent almost all time for recalculate latest least prime divisor
-table.
+keep in cache least divisor table for fast integer factorization.
+Cache grows automatically. The strategy of growing is extends cache to
+the least power of ~10~ more than required number. For instance, if
+client asked to factorize number ~18~, cache grows to ~100~, if client
+asked to factorize number ~343~, cache grows to ~1000~. List of primes
+also cached and recalculated together with least divisor
+table. Recalculation is not incremental, but every recalculation of
+least divisor table make a table which is in ~10~ times more than
+previous, and time for previous calculation is ~10~ times less than
+for new one. So we can say that recalculation spent almost all time
+for recalculate latest least divisor table.
 
-Internally, least prime divisor table is java array of int, so to store
+Internally, least  divisor table is java array of int, so to store
 least divisor table for first ~1 000 000~ number approximately ~4M~
 memory is required, ~4~ bytes per number.
+
+There is a limit for max size of least divisor table. It is value of
+~max-int~
+
+#+begin_src clojure
+  p/max-int
+#+end_src
+
+#+RESULTS:
+: 1000000
+: 
 
 Cache can be reset:
 
@@ -254,25 +272,29 @@ Cache can be reset:
 : {:least-divisor-table , :primes , :upper 0}
 : 
 
-Least prime divisor table is implementation details, but one can see
+Least  divisor table is implementation details, but one can see
 it:
 
 #+begin_src clojure
   ;; load first 10 numbers into cache
   (p/int->factors-map 5)
+  (deref p/cache)
 #+end_src
 
 #+RESULTS:
-: {5 1}
+: {:least-divisor-table [0, 1, 2, 3, 2, 5, 2, 7, 2, 3, 2],
+:  :primes (2 3 5 7),
+:  :upper 10}
 : 
 
+For number ~n~ least divisor table contains least divisor of number
+~n~ more than ~1~ at index ~n~. Actually least divisor(but not ~1~) is
+a prime.  For instance, least divisor of number ~6~ is ~2~. If number
+~n > 1~ is a prime, least divisor is ~n~ and conversely. So at index
+~7~ least divisor table contains ~7~. Index zero is not used, index
+~1~ is a special case and value for index ~1~ is ~1~.
 
-
-For instance, for get least prime divisor of number 6 we need to get
-element with index 6, which is 2. Index zero is not used, value for
-index 1 is 1.
-
-* Primes
+** Primes
 
 ~primes~ function returns prime numbers which not exceeds given ~n~.
 
@@ -284,7 +306,41 @@ index 1 is 1.
 : (2 3 5 7 11 13 17 19 23 29)
 : 
 
-* Integer factorization
+** Integer factorization
+
+Integer $p$ is a prime if
+- $p > 1$
+- has only divisors $1$ and $p$.  
+
+#+begin_src clojure
+(p/prime? 7)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+Integer $n$ is a composite number if
+- $n > 1$
+- has at least one proper divisor, i.e. divisor except $1$ and $p$ 
+
+#+begin_src clojure
+  (p/composite? 12)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+Integer $1$ is not a prime and is not a composite
+
+#+begin_src clojure
+  (p/unit? 1)
+#+end_src
+
+#+RESULTS:
+: true
+: 
 
 Every integer more than $1$ can be represented uniquely as a product
 of primes.
@@ -324,7 +380,9 @@ which accept factorized value and convert it back to integer.
 #+RESULTS[9c25c3f8eb84068aa435602e9f7a7f8ab139c556]:
 : (2 2 2 3 3 5)
 : 
-  
+
+And converse function is:
+
 #+begin_src clojure
   (p/factors->int [2 2 2 3 3 5])
 #+end_src
@@ -343,7 +401,9 @@ splited by partitions by a prime:
 #+RESULTS[d0d83022dd7e56c435f86f912ed0520410830802]:
 : ((2 2 2) (3 3) (5))
 : 
-  
+
+And converse function is:
+
 #+begin_src clojure
   (p/factors-partitions->int [[2 2 2] [3 3] [5]])
 #+end_src
@@ -353,7 +413,7 @@ splited by partitions by a prime:
 : 
 
 3-rd factorization representation is ordered sequence of pairs ~[p
-k]~, where ~p~ is a prime and ~k~ is a power of prime
+k]~, where ~p~ is a prime and ~k~ is a power of prime:
 
 #+begin_src clojure
   (p/int->factors-count 360)
@@ -362,7 +422,9 @@ k]~, where ~p~ is a prime and ~k~ is a power of prime
 #+RESULTS[deb84c857b6e7c95f8cf1bed52b147f3757c98ea]:
 : ([2 3] [3 2] [5 1])
 : 
-  
+
+And converse function is:
+
 #+begin_src clojure
   (p/factors-count->int [[2 3] [3 2] [5 1]])
 #+end_src
@@ -372,7 +434,7 @@ k]~, where ~p~ is a prime and ~k~ is a power of prime
 : 
 
 4-th factorization representation is very similar to 3-rd, but it
-is a map. And it has the same inverse function as 3-rd.
+is a map instead of sequence of pairs. 
 
 #+begin_src clojure
   (p/int->factors-map 360)
@@ -382,6 +444,8 @@ is a map. And it has the same inverse function as 3-rd.
 : {2 3, 3 2, 5 1}
 : 
 
+Conversion function is the same as for 3-rd representation:
+
 #+begin_src clojure
   (p/factors-count->int {2 3, 3 2, 5 1})
 #+end_src
@@ -390,11 +454,29 @@ is a map. And it has the same inverse function as 3-rd.
 : 360
 : 
 
-Implementation of factorization use least prime divisor table. To
+Implementation of factorization use least  divisor table. To
 factorize number ~n~ it is enough to calculate least divisor table
 with size less or equals to $\sqrt n$. 
 
-* Divisors
+** Check functions
+
+Addition to ~vk.nthery.basic~ namespace, namespace ~vk.ntheory.primes~
+provides additional set of ~check-*~ functions:
+
+- ~check-int-pos-max~
+- ~check-int-non-neg-max~
+- ~check-int-non-zero-max~
+
+It is similar to ~vk.ntheory.basic~ check functions, but additionally check
+that given number does not exceeds ~max-int~ constant. And there are some
+more check functions:
+  
+- ~check-prime~
+- ~check-odd-prime~      
+
+* Namespace ~vk.ntheory.ar-func~
+
+** Divisors
 
 For get list of all divisors of number ~n~ there is ~divisor~
 function. List of divisors is unordered.
@@ -407,13 +489,13 @@ function. List of divisors is unordered.
 : (1 2 3 6 5 10 15 30)
 : 
 
-* Arithmetical functions
+** Arithmetical functions
 
 Arithmetical function is an any function which accept natural number
 and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
 with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
 
-** Function equality
+*** Function equality
 
 Two arithmetical function $f$ and $g$ are equal if $f(n)=g(n)$ for all
 natual $n$. There is helper function ~f-equlas~ which compare two
@@ -435,7 +517,7 @@ sequence of natural number we can for example do next:
   (f/f= f g (filter even? (range 1 100)))
 #+end_src
 
-** Additive functions
+*** Additive functions
 
 Additive function is a function for which
 
@@ -450,7 +532,7 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 
 $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
-** Multiplicative functions
+*** Multiplicative functions
 
 Multiplicative function is a function not equal to zero for all n
 for which 
@@ -466,7 +548,7 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 
 $$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
 
-** Higher order function for define multiplicative and additive functions
+*** Higher order function for define multiplicative and additive functions
 
 As we have seen, to define either multiplicative or additive function
 it is enough define function on power of a prime.  There is helper
@@ -497,9 +579,9 @@ With helper function it can be defined as
 Of course there is predefined function ~divisors-count~, but it
 is an example how to define custom function.
 
-** Some additive functions
+*** Some additive functions
 
-*** Count of distinct primes - $\omega$
+**** Count of distinct primes - $\omega$
 
 Count of distinct primes is a number of distinct primes which
 divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k$.
@@ -512,7 +594,7 @@ divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k
 : 2
 : 
 
-*** Total count of primes - $\Omega$
+**** Total count of primes - $\Omega$
 
 Total count of primes is a number of primes and power of primes
 which divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
@@ -527,9 +609,9 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
 : 3
 : 
 
-** Some multiplicative functions
+*** Some multiplicative functions
 
-*** Mobius function - $\mu$.
+**** Mobius function - $\mu$.
 
 Mobius function defined as:
 
@@ -550,7 +632,7 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
 : 1
 : 
 
-*** Euler totient function - $\phi$
+**** Euler totient function - $\phi$
 
 Euler totient function  is a count of numbers relative  prime to given
 number ~n~.  Totient function can be calculated by formula:
@@ -568,7 +650,7 @@ For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6)
 : 2
 : 
 
-*** Unit function - $\epsilon$
+**** Unit function - $\epsilon$
 
 Unit function defined as
 
@@ -585,7 +667,7 @@ $$ \epsilon(n) = \begin{cases}
 : 0
 : 
 
-*** Constant one function - $1$
+**** Constant one function - $1$
 
 $$ 1(n) = 1 $$
 
@@ -597,7 +679,7 @@ $$ 1(n) = 1 $$
 : 1
 : 
 
-*** Divisors count - $\sigma_0$
+**** Divisors count - $\sigma_0$
 
 Divisors count is number of divisors which divides given number $n$.
 
@@ -613,7 +695,7 @@ For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
 : 4
 : 
 
-*** Divisors sum - $\sigma_1$
+**** Divisors sum - $\sigma_1$
 
 
 $$ \sigma_1(n) = \sum_{d | n} d $$
@@ -628,7 +710,7 @@ For number 6 it is $12 = 1 + 2 + 3 + 6$
 : 12
 : 
 
-*** Divisors square sum
+**** Divisors square sum
 
 $$ \sigma_2(n) = \sum_{d | n} d^2 $$
 
@@ -642,7 +724,7 @@ For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
 : 50
 : 
 
-*** Divisors higher order function - $\sigma_{x}$
+**** Divisors higher order function - $\sigma_{x}$
 
 In general $\sigma_x$ function is a sum of x-th powers divisors of given n
 
@@ -663,7 +745,7 @@ accept ~x~ and return appropriate function.
   (def my-divisors-square-sum (f/divisors-sum-x 2))
 #+end_src
 
-*** Liouville - $\lambda$
+**** Liouville - $\lambda$
 
 Liouville function can be defind by formula:
 
@@ -679,9 +761,9 @@ where [[*Total count of primes - $\Omega$][$\Omega$]] have been descibed above.
 : 1
 : 
 
-** Some other arithmetic functions
+*** Some other arithmetic functions
 
-*** Mangoldt - $\Lambda$
+**** Mangoldt - $\Lambda$
 
 $$\Lambda(n) = \begin{cases}
    \log p,& \text{if $n$ is power of prime i.e. $n = p^k$} \\
@@ -706,7 +788,7 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
 : 0
 : 
 
-*** Chebyshev functions $\theta$ and $\psi$
+**** Chebyshev functions $\theta$ and $\psi$
 
 There are two Chebyshev functions, one $\theta$ is defined as
 
@@ -735,7 +817,7 @@ where [[*Mangoldt - $\Lambda$][$\Lambda$]] have been described above
 : 0.6931471805599453
 : 
 
-** Dirichlet convolution
+*** Dirichlet convolution
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
 new arithmetic function defined as
