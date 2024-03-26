@@ -17,7 +17,14 @@
 
 (defn order'
   [a m]
-  (filter #(= 1 (b/m** m a %))(sort (af/divisors (- m 1))))
+  (first (filter #(= 1 (b/m** m a %))(sort (af/divisors (- m 1)))))
+  )
+
+
+;;
+(defn cartesian-product
+  ([x] x)
+  
   )
 
 

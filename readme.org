@@ -21,6 +21,37 @@ content and in link text. If it is a problem =readme.pdf= looks
 better. I use Emacs babel for clojure to produce real output inside
 the document.
 
+Many application require integer factorization. Integer factorization
+is relatively expensive procedure. Most straightforward way to
+factorize integer $n$ is try to divide $n$ to numbers $2,3,4, \dots
+\sqrt{n}$. There is some optimization of this procedure. For instance
+exclude from candidates multiple of $2$, or multiple of $2$ and
+multiple of $3$. It is enough good strategy to factorize one
+number. But if need factorize many numbers more fast way to factorize
+number is precalculate table of first $N$ primes and try to divide
+number $n$ to primes $p_1,p_2, \dots, p_n \le \sqrt{n}$.  Table of
+first $N$ primes can be caclulated with Sieve of Eratosthenes. There
+is a way to improve performance of factorization. With slightly
+modified Sieve of Eratosthenes procedure we can precalculate least
+prime divisor table. This table keep least prime divisor for every
+integer up to $N$. This table works as linked list, in fact we know
+all divisors of any number up to $N$ and to factorize integer we need
+just iterate over "linked list" to build output data structure. But
+least prime divisor table require more memory compare to Sieve of
+Eratosthenes.  There is a way to improve performance, it is another
+modification of Sieve of Eratosthenes procedure to build full
+factorization for all numberS $1,2,\dots,N$.  It require much more
+memory for keep table of full factorization and it require more time
+for calculate full factorization table, compare to build least prime
+divisor table. 
+
+The purpose of this library/tool is provide fast way to play with
+relatively small numbers(millions) and I made a decision to use least
+prime divisor table as a best compromise between build table time,
+required memory for table, integer factorization time. So now
+factorization is cheap, but it require 4 bytes per number or 4MB
+for 1000000.
+
 In this document I load number theory packages as: 
 
 #+begin_src clojure :results silent
@@ -948,7 +979,7 @@ In progress ...
 * Primitive Roots ~vk.ntheory.primitive-roots~
 
 #+begin_src clojure :results silent
-  (require '[vk.ntheory.primitive-root :as pr])
+  (require '[vk.ntheory.primitive-roots :as pr])
 #+end_src
 
 
