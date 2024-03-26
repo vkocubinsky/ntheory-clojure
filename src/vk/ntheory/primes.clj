@@ -1,4 +1,5 @@
 (ns vk.ntheory.primes
+  "Primes and Integer Factorization."
   (:require [vk.ntheory.basic :as b]
             [clojure.math :as math]))
 
