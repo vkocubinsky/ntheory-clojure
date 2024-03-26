@@ -2,7 +2,7 @@
 #+author: Valery Kocubinsky
 #+language: en
 
-* Version 0.4.0
+* Version 0.4.0 <2024-03-26 Tue>
 
 - Switch from pandoc to Org Mode export
 - Split ntheory.clj into namespaces
