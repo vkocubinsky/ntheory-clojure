@@ -165,7 +165,7 @@
     (partial inv f)))
 
 (defn f*
-  "Pointwise function multiplication"
+  "Pointwise multiplication of two functions `f` and `g`."
   [f g]
   (fn [n]
     (* (f n) (g n))
@@ -173,7 +173,7 @@
   )
 
 (defn f+
-  "Pointwise function addition"
+  "Pointwise addition of two functions `f` and `g`."
   [f g]
   (fn [n]
     (+ (f n) (g n))

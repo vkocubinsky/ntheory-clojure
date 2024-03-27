@@ -11,19 +11,24 @@ Here defined set of well known arithmetic functions and one can define
 custom arithmetic function. One can solve linear congruence or system
 of linear congruences including case when moduli relatively prime.
 
-I wrote this document [[./readme.org][readme.org]] with Emacs Org Mode. Then I generate
-markdown file [[./readme.md][readme.md]] with Org Mode export to markdown =C-c C-e m
-m=, and generate pdf file [[./readme.pdf][readme.pdf]] with Org Mode export to pdf =C-c
-C-e l p=.  Github by default show [[./readme.md][readme.md]] if a project has such
-file.  Github markdown looks enough good, even math equation is
-supported. However for now math equation doesn't render in link
-text. If it is a problem [[./readme.pdf][readme.pdf]] looks better. I use Emacs babel
-for clojure to produce real output inside the document.
+I wrote this document with Emacs Org Mode. Then I generate markdown
+file [[./readme.md][readme.md]] with Org Mode export to markdown =C-c C-e m m=, and
+generate pdf file [[./readme.pdf][readme.pdf]] with Org Mode export to pdf =C-c C-e l
+p=.  Github by default show [[./readme.md][readme.md]] if a project has such file.
+Github markdown looks enough good, even math equation is
+supported. However for now math equation doesn't rendered for link
+text. From other hand I also generates [[./readme.pdf][readme.pdf]] , but it also has an
+issue, code block has the same background as text and it is hard to
+distinguish code block in text. I use Emacs babel for clojure to
+produce real output inside the document, so it is live documentation
+and one can open org file in Emacs. I use =org-latex-preview= "C-u C-u
+C-c C-x C-l" for preview all math equations inside Emacs.
 
 Many application require integer factorization. Integer factorization
 is relatively expensive procedure. Most straightforward way to
 factorize integer $n$ is try to divide $n$ to numbers $2,3,4, \dots
-\sqrt{n}$. There is some optimization of this procedure. For instance
+\sqrt{n}$.
+There is some optimization of this procedure. For instance
 exclude from candidates multiple of $2$, or multiple of $2$ and
 multiple of $3$. It is enough good strategy to factorize one
 number. But if need factorize many numbers more fast way to factorize
@@ -42,7 +47,7 @@ modification of Sieve of Eratosthenes procedure to build full
 factorization for all numberS $1,2,\dots,N$.  It require much more
 memory for keep table of full factorization and it require more time
 for calculate full factorization table, compare to build least prime
-divisor table. 
+divisor table.
 
 The purpose of this library/tool is provide fast way to play with
 relatively small numbers(millions) and I made a decision to use least
