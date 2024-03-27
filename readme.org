@@ -21,8 +21,10 @@ text. From other hand I also generates [[./readme.pdf][readme.pdf]] , but it als
 issue, code block has the same background as text and it is hard to
 distinguish code block in text. I use Emacs babel for clojure to
 produce real output inside the document, so it is live documentation
-and one can open org file in Emacs. I use =org-latex-preview= "C-u C-u
-C-c C-x C-l" for preview all math equations inside Emacs.
+and one can open org file in Emacs. I use =org-latex-preview=, to
+preview math equation inside Emacs, to display all image for all
+fragments need to use prefix argument =C-u C-u C-c C-x C-l= for
+preview all math equations inside Emacs.
 
 Many application require integer factorization. Integer factorization
 is relatively expensive procedure. Most straightforward way to
