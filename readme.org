@@ -848,35 +848,32 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
   
 *** Chebyshev functions $\theta$ and $\psi$
 
-Chebyshev $\theta$ function is defined as follows:
+If $x > 0$ Chebyshev $\theta$ function is defined as follows:
 
 $$\theta(x) = \sum_{p \le x} \log p$$
 
 
-Chebyshev $\psi$ function is defined as follows:
-
-$$\psi = \sum_{n \le x} {\Lambda(n)} $$
-
-where [[*Mangoldt - $\Lambda$][$\Lambda$]] have been described above
-
-
 #+begin_src clojure
-  (af/chebyshev-first 2)
+  (af/chebyshev-theta 2)
 #+end_src
 
 #+RESULTS[cebd13d9e26c3ad5f4dffa6d9b3318e352ecaf8b]:
 : 0.6931471805599453
 : 
+
+If $x > 0$ Chebyshev $\psi$ function is defined as follows:
+
+$$\psi = \sum_{n \le x} {\Lambda(n)} $$
+
+
   
 #+begin_src clojure
-  (af/chebyshev-second 2)
+  (af/chebyshev-psi 2)
 #+end_src
 
 #+RESULTS[2a19f1e0aa91c0b965be5aee1939f687592600b2]:
 : 0.6931471805599453
 : 
-
-
 
 
 ** Dirichlet convolution
