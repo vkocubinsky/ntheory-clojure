@@ -718,11 +718,11 @@ $$ \varepsilon(n) = \begin{cases}
 The name ~unit~ was chosen to make it different from
 ~clojure.core/identity~ function. 
 
-*** Constant one function - $1$
+*** Constant one function - $\mathbf{1}$
 
-Constant one function $1(n)$ defiened as follows:
+Constant one function $\mathbf{1}(n)$ defiened as follows:
 
-$$ 1(n) = 1 $$
+$$\mathbf{1}(n) = 1 $$
 
 #+begin_src clojure
   (af/one 6)
@@ -734,7 +734,8 @@ $$ 1(n) = 1 $$
 
 *** Divisors count - $\sigma_0$
 
-Function divisors count is a number of divisors which divides given number $n$.
+Function divisors count is a number of positive divisors which divides
+given number $n$.
 
 $$ \sigma_0(n) = \sum_{d|n} 1 $$
 
@@ -752,12 +753,13 @@ number $6$ has $4$ divisors, namely $1,2,3,6$, so $d(6)=4$.
 
 *** Divisors sum - $\sigma_1$
 
-Function divisors sum is sum of divsors which divides given number $n$
+Function divisors sum is sum of positive divisors which divides given
+number $n$
 
 $$ \sigma_1(n) = \sum_{d | n} d $$
 
-
-For number 6 it is $12 = 1 + 2 + 3 + 6$
+Function $\sigma_1$ is often denoted as $\sigma$.
+For instance, $\sigma(6)= 1 + 2 + 3 + 6 = 12$
 
 #+begin_src clojure
   (af/divisors-sum 6)
@@ -769,9 +771,11 @@ For number 6 it is $12 = 1 + 2 + 3 + 6$
 
 *** Divisors square sum
 
+Function divisors square sum defined as follows:
+
 $$ \sigma_2(n) = \sum_{d | n} d^2 $$
 
-For number 6 it is $50 = 1^2 + 2^2 + 3^2 + 6^2$
+For instance, $\sigma_2(6) = 1^2 + 2^2 + 3^2 + 6^2 = 50$
 
 #+begin_src clojure
   (af/divisors-square-sum 6)
@@ -787,28 +791,30 @@ In general $\sigma_x$ function is a sum of x-th powers divisors of given n
 
 $$ \sigma_x(n) = \sum_{ d | n} d^x $$
 
-If $x \ne 0$ $\sigma_x$ can be calculated by formula:
+If $x \ne 0$, $\sigma_x$ can be calculated as follows:
 
-$$ \sigma_{x}(n) = \prod_{i=1}^{k} \frac {p_i^{(a_i+1)x}} {p_i^x - 1} $$
+$$ \sigma_{x}(n) = \prod_{i=1}^{k} \frac {p_i^{x(a_i+1)}} {p_i^x - 1} $$
 
-and if $x = 0$ by formula:
+and if $x = 0$ as follows:
 
 $$ \sigma_{0}(n) = \prod_{i=1}^{k} (a_i + 1) $$
 
 There is higher order function ~divisors-sum-x~ which
 accept ~x~ and return appropriate function.
 
+For example we can define divisors cube sum as follows:
+
 #+begin_src clojure :results silent
-  (def my-divisors-square-sum (af/divisors-sum-x 2))
+  (def my-divisors-cube-sum (af/divisors-sum-x 3))
 #+end_src
 
-*** Liouville - $\lambda$
+*** Liouville function - $\lambda$
 
-Liouville function can be defind by formula:
+Liouville function $\lambda$ defined as $\lambda(1) = 1$ and if $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$
+$\lambda(n) = (-1)^{a_1 + a_2 + \dots + a_k}$ or with early defined $\Omega$ function
+we can write definition of $\lambda$ as follows:
 
-$$\lambda(n) = (-1)^{\Omega(n)}$$
-
-where [[*Total count of primes - $\Omega$][$\Omega$]] have been descibed above.
+$$\lambda(n) = (-1)^{\Omega}$$
 
 #+begin_src clojure
   (af/liouville (* 2 3)) 
@@ -818,12 +824,29 @@ where [[*Total count of primes - $\Omega$][$\Omega$]] have been descibed above.
 : 1
 : 
 
+Liouville function is completely multiplicative.
+
+** Divisors
+
+For get list of all divisors of number ~n~ there is ~divisor~
+function. List of divisors is unordered.
+
+#+begin_src clojure
+  (af/divisors 30)
+#+end_src
+
+#+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
+: (1 2 3 6 5 10 15 30)
+: 
+
 ** Some other arithmetic functions
 
-*** Mangoldt - $\Lambda$
+*** Mangoldt function - $\Lambda$
+
+Mangoldt function $\Lambda$ defined as follows:
 
 $$\Lambda(n) = \begin{cases}
-   \log p,& \text{if $n$ is power of prime i.e. $n = p^k$} \\
+   \log p,& \text{if $n = p ^k$ for some prime $p$ and some $k \ge 1$} \\
    0,& \text{otherwise} 
 \end{cases}$$
 
@@ -837,14 +860,6 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
 : 0.6931471805599453
 : 
   
-#+begin_src clojure
-  (af/mangoldt 6)
-#+end_src
-
-#+RESULTS[c45312e6447f258aca43ab10d232e6e8c943b095]:
-: 0
-: 
-
 **** Chebyshev functions $\theta$ and $\psi$
 
 There are two Chebyshev functions, one $\theta$ is defined as
@@ -872,19 +887,6 @@ where [[*Mangoldt - $\Lambda$][$\Lambda$]] have been described above
 
 #+RESULTS[2a19f1e0aa91c0b965be5aee1939f687592600b2]:
 : 0.6931471805599453
-: 
-
-** Divisors
-
-For get list of all divisors of number ~n~ there is ~divisor~
-function. List of divisors is unordered.
-
-#+begin_src clojure
-  (af/divisors 30)
-#+end_src
-
-#+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
-: (1 2 3 6 5 10 15 30)
 : 
 
 ** Dirichlet convolution
