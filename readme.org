@@ -2,6 +2,10 @@
 #+author: Valery Kocubinsky
 #+startup: nolatexpreview content
 #+PROPERTY: header-args:clojure :session *clojure-1* :exports both :results pp
+#+LATEX_HEADER: \RequirePackage{fancyvrb}
+#+LATEX_HEADER: \DefineVerbatimEnvironment{verbatim}{Verbatim}{frame=single}
+
+
 
 * About
 
@@ -17,14 +21,15 @@ generate pdf file [[./readme.pdf][readme.pdf]] with Org Mode export to pdf =C-c 
 p=.  Github by default show [[./readme.md][readme.md]] if a project has such file.
 Github markdown looks enough good, even math equation is
 supported. However for now math equation doesn't rendered for link
-text. From other hand I also generates [[./readme.pdf][readme.pdf]] , but it also has an
-issue, code block has the same background as text and it is hard to
-distinguish code block in text. I use Emacs babel for clojure to
-produce real output inside the document, so it is live documentation
-and one can open org file in Emacs. I use =org-latex-preview=, to
-preview math equation inside Emacs, to display all image for all
-fragments need to use prefix argument =C-u C-u C-c C-x C-l= for
-preview all math equations inside Emacs.
+text. I also generate [[./readme.pdf][readme.pdf]] , pdf file doesn't have any issues
+with math equations.
+
+I use Emacs babel for clojure to produce real output inside the
+document, so it is live documentation and one can open org file in
+Emacs. I use =org-latex-preview=, to preview math equation inside
+Emacs, to display all image for all fragments need to use prefix
+argument =C-u C-u C-c C-x C-l= for preview all math equations inside
+Emacs.
 
 Many application require integer factorization. Integer factorization
 is relatively expensive procedure. Most straightforward way to
@@ -51,7 +56,7 @@ memory for keep table of full factorization and it require more time
 for calculate full factorization table, compare to build least prime
 divisor table.
 
-The purpose of this library/tool is provide fast way to play with
+The purpose of this library/tool is to provide fast way to play with
 relatively small numbers(millions) and I made a decision to use least
 prime divisor table as a best compromise between build table time,
 required memory for table, integer factorization time. So now
