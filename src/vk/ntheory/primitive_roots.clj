@@ -21,10 +21,17 @@
   )
 
 
-;;
-(defn cartesian-product
-  ([x] x)
-  
+;; [p1; p2; ...]
+(defn generate
+  [x]
+  (let [y (map cycle x)
+        n (count x)]
+    (loop []
+      )
+    )
   )
+
+(nth [1 2 3] 2)
+(generate [(range 1 5) (range 1 7)])
 
 

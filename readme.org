@@ -528,34 +528,29 @@ new arithmetical functions.
   (require '[vk.ntheory.ar-func :as af])
 #+end_src
 
-
-** Divisors
-
-For get list of all divisors of number ~n~ there is ~divisor~
-function. List of divisors is unordered.
-
-#+begin_src clojure
-  (af/divisors 30)
-#+end_src
-
-#+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
-: (1 2 3 6 5 10 15 30)
-: 
-
 ** Arithmetical function
 
 Arithmetical function is an any function which accept natural number
-and return complex number $f: \mathbf N \to \mathbf C$. The library mostly works
-with functions which also returns integer $f: \mathbf N \to \mathbf Z$.
+and return complex number $f: \mathbf N \to \mathbf C$. The library
+mostly works with functions which also returns integer $f: \mathbf N
+\to \mathbf Z$.
 
 ** Function equality
 
 Two arithmetical function $f$ and $g$ are equal if $f(n)=g(n)$ for all
-natual $n$. There is helper function ~f-equlas~ which compare two
-functions on some sequence of natual numbers. Function ~f=~
-accept two functions and optionally sequence of natural numbers. There
-is a default for sequence of natural numbers, it is a variable
+natual $n$. There is helper function ~f=~ which compare two functions
+on some sequence(sample) of natual numbers. Function ~f=~ accept two
+functions and optionally sequence of natural numbers. There is a
+default for sequence of natural numbers, it is a variable
 ~default-natural-sample~, which is currently ~range(1,100)~.
+
+#+begin_src clojure
+   (take 10 af/default-natural-sample)
+#+end_src
+
+#+RESULTS:
+: (1 2 3 4 5 6 7 8 9 10)
+: 
 
 If we like identify does two function ~f~ and ~g~ equals on some
 sequence of natural number we can for example do next:
@@ -565,9 +560,9 @@ sequence of natural number we can for example do next:
   (def f identity)
   (def g (constantly 1))
   ;; Then we able to check does those functions are equals
-  (f/f= f g)
-  (f/f= f g (range 1 1000))
-  (f/f= f g (filter even? (range 1 100)))
+  (af/f= f g) ;; true
+  (af/f= f g (range 1 1000)) ;; true
+  (af/f= f g (filter even? (range 1 100))) ;; true
 #+end_src
 
 ** Additive functions
@@ -615,7 +610,7 @@ For instance, we can define function which calculate number of
 divisors of integer ~n~. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ count of divisors of
 number ~n~ can be calculated by formula:
 
-$$ \sigma_0(n) = \prod_{i=1}^{k} (a_i + 1) $$
+$$ d(n) = \prod_{i=1}^{k} (a_i + 1) $$
 
 With helper function it can be defined as
 
@@ -631,6 +626,7 @@ With helper function it can be defined as
 
 Of course there is predefined function ~divisors-count~, but it
 is an example how to define custom function.
+
 ** Some additive functions
 
 *** Count of distinct primes - $\omega$
@@ -665,7 +661,7 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
 
 *** Mobius function - $\mu$.
 
-Mobius function defined as:
+Mobius function $\mu$ is defined as follows:
 
 
 $$ \mu(n) = \begin{cases}
@@ -684,15 +680,15 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
 : 1
 : 
 
-*** Euler totient function - $\phi$
+*** Euler totient function - $\varphi$
 
-Euler totient function  is a count of numbers relative  prime to given
-number ~n~.  Totient function can be calculated by formula:
+Euler totient function $\varphi(n)$ is a number of positive integers not exceeding
+$n$ which are relatively prime to $n$. It can be calculated as follows:
 
+$$ \varphi(n) = \prod_{p|n} (p^a - p^{a-1}) $$
 
-$$ \phi(n) = \prod_{p|n} (p^a - p^{a-1}) $$
-
-For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6) = 2$
+For example, count of numbers relative prime to $6$ are $1$ and $5$,
+so $\varphi(6) = 2$
 
 #+begin_src clojure
   (af/totient 6)
@@ -702,11 +698,11 @@ For example, count of numbers relative prime to $6$ are $1$ and $5$, so $\phi(6)
 : 2
 : 
 
-*** Unit function - $\epsilon$
+*** Unit function - $\varepsilon$
 
-Unit function defined as
+Unit or identity function defined as follows:
 
-$$ \epsilon(n) = \begin{cases}
+$$ \varepsilon(n) = \begin{cases}
 1,&  \text{if } n = 1 \\
 0,&  \text{if } n > 1
 \end{cases} $$
@@ -719,7 +715,12 @@ $$ \epsilon(n) = \begin{cases}
 : 0
 : 
 
+The name ~unit~ was chosen to make it different from
+~clojure.core/identity~ function. 
+
 *** Constant one function - $1$
+
+Constant one function $1(n)$ defiened as follows:
 
 $$ 1(n) = 1 $$
 
@@ -733,11 +734,13 @@ $$ 1(n) = 1 $$
 
 *** Divisors count - $\sigma_0$
 
-Divisors count is number of divisors which divides given number $n$.
+Function divisors count is a number of divisors which divides given number $n$.
 
 $$ \sigma_0(n) = \sum_{d|n} 1 $$
 
-For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
+Function $\sigma_0(n)$ is often denoted as $d(n)$.  For example,
+number $6$ has $4$ divisors, namely $1,2,3,6$, so $d(6)=4$.
+
 
 #+begin_src clojure
   (af/divisors-count 6)
@@ -749,8 +752,10 @@ For example, number $64$ has $4$ divisors, namely $1,2,3,6$, so $\sigma_0(6)=4$
 
 *** Divisors sum - $\sigma_1$
 
+Function divisors sum is sum of divsors which divides given number $n$
 
 $$ \sigma_1(n) = \sum_{d | n} d $$
+
 
 For number 6 it is $12 = 1 + 2 + 3 + 6$
 
@@ -869,7 +874,22 @@ where [[*Mangoldt - $\Lambda$][$\Lambda$]] have been described above
 : 0.6931471805599453
 : 
 
+** Divisors
+
+For get list of all divisors of number ~n~ there is ~divisor~
+function. List of divisors is unordered.
+
+#+begin_src clojure
+  (af/divisors 30)
+#+end_src
+
+#+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
+: (1 2 3 6 5 10 15 30)
+: 
+
 ** Dirichlet convolution
+
+
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
 new arithmetic function defined as
@@ -886,10 +906,10 @@ $$ f * g = g * f $$
 
 Has identify
 
-$$ f * \epsilon = \epsilon * f = f $$
+$$ f * \varepsilon = \varepsilon * f = f $$
 
 For every $f$, which $f(1) \ne 0$ exists inverse function $f^{-1}$
-such that $f * f^{-1} = \epsilon$. This inverse function called
+such that $f * f^{-1} = \varepsilon$. This inverse function called
 Dirichlet inverse and can by calculated recursively by formula:
 
 $$ f^{-1}(n) = \begin{cases}
