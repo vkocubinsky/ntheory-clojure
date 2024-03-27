@@ -7,6 +7,8 @@
 - Update arithmetical functions documentation
 - Pointwise addition and multiplication
 - Add congruence documentation
+- use \varphi instead of \phi
+- user \varepsilon instead of \epsilon     
   
 
 * Version 0.4.0 <2024-03-26 Tue>

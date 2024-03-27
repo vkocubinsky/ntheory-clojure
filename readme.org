@@ -602,6 +602,21 @@ In clojure function ~f*~ returns pointwise multiplication:
 : 54
 : 
 
+** Divisors
+
+Some arithmetic functions and Dirichlet convolutions need to iterate
+over positive divisors on an integer.  For get list of all positive
+divisors of number ~n~ there is ~divisor~ function. List of divisors
+is unordered.
+
+#+begin_src clojure
+  (af/divisors 30)
+#+end_src
+
+#+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
+: (1 2 3 6 5 10 15 30)
+: 
+
 
 ** Additive functions
 
@@ -913,19 +928,6 @@ $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 : 0.6931471805599453
 : 
 
-** Divisors
-
-For get list of all divisors of number ~n~ there is ~divisor~
-function. List of divisors is unordered.
-
-#+begin_src clojure
-  (af/divisors 30)
-#+end_src
-
-#+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
-: (1 2 3 6 5 10 15 30)
-: 
-
 ** Dirichlet convolution
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
@@ -1003,15 +1005,15 @@ and conversely
 : 
 
 
-Function ~inverse~ defined as recursive function, it may
-execute slow. But inverse of completely multiplicative function $f(n)$
-is $f(n) \mu(n)$(usual multiplication), for instance inverse
-of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
+Function ~inverse~ defined as recursive function, it may execute
+slow. But inverse of completely multiplicative function $f(n)$ is
+$f(n) \cdot \mu(n)$(usual multiplication), for instance inverse of
+identity function, let's denote it as $N(n)$, is $N(n) \cdot \mu(n)$
 
 #+begin_src clojure
   (af/f=
    (af/d* 
-      #(* (identity %) (af/mobius %))
+      (af/f* identity af/mobius)
       identity
    )
    af/unit)
