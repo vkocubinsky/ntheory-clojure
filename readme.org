@@ -565,6 +565,44 @@ sequence of natural number we can for example do next:
   (af/f= f g (filter even? (range 1 100))) ;; true
 #+end_src
 
+** Pointwise addition
+
+For two functions $f$ an $g$ pointwise addition defined as follows:
+
+$$(f + g)(n) = f(n) + f(n)$$
+
+In clojure function ~f+~ returns pointwise addition:
+
+#+begin_src clojure
+      (let [f #(* % %)  
+            g #(* 2 %)] 
+       ((af/f+ f g) 3)) 
+#+end_src
+
+#+RESULTS:
+: 15
+: 
+
+** Pointwise multiplication
+
+For two functions $f$ an $g$ pointwise multiplication defined as
+follows:
+
+$$(f \cdot g)(n) = f(n) \cdot f(n)$$
+
+In clojure function ~f*~ returns pointwise multiplication:
+
+#+begin_src clojure
+      (let [f #(* % %)  
+            g #(* 2 %)] 
+       ((af/f* f g) 3)) 
+#+end_src
+
+#+RESULTS:
+: 54
+: 
+
+
 ** Additive functions
 
 Additive function is a function for which

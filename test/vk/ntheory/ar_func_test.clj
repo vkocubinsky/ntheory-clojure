@@ -4,6 +4,23 @@
    [clojure.math :as math]
    [vk.ntheory.ar-func :as af]))
 
+(deftest f+-test
+  (testing "Pointwise addition 2 + x"
+    (doseq [x (range 1 10)]
+      (let [f (constantly 2)
+            g identity
+            f+g (af/f+ f g)]
+        (is (= (+ 2 x) (f+g x)))))))
+
+(deftest f*-test
+  (testing "Pointwise addition 2x"
+    (doseq [x (range 1 10)]
+      (let [f (constantly 2)
+            g identity
+            f*g (af/f* f g)]
+        (is (= (* 2 x) (f*g x)))))))
+
+
 (deftest divisors-test
   (testing "Non postive numbers"
     (is (thrown? Exception (af/divisors 0)))

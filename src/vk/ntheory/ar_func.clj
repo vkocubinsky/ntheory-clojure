@@ -172,6 +172,12 @@
     )
   )
 
-
+(defn f+
+  "Pointwise function addition"
+  [f g]
+  (fn [n]
+    (+ (f n) (g n))
+    )
+  )
 
 
