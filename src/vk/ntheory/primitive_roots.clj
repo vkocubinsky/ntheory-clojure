@@ -26,7 +26,7 @@
   [x]
   (let [y (map cycle x)
         n (count x)]
-    (loop []
+    (loop [k (dec n)]
       )
     )
   )

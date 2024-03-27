@@ -658,7 +658,6 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
 : 
 
 ** Some multiplicative functions
-
 *** Mobius function - $\mu$.
 
 Mobius function $\mu$ is defined as follows:
@@ -826,19 +825,6 @@ $$\lambda(n) = (-1)^{\Omega}$$
 
 Liouville function is completely multiplicative.
 
-** Divisors
-
-For get list of all divisors of number ~n~ there is ~divisor~
-function. List of divisors is unordered.
-
-#+begin_src clojure
-  (af/divisors 30)
-#+end_src
-
-#+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
-: (1 2 3 6 5 10 15 30)
-: 
-
 ** Some other arithmetic functions
 
 *** Mangoldt function - $\Lambda$
@@ -860,13 +846,14 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
 : 0.6931471805599453
 : 
   
-**** Chebyshev functions $\theta$ and $\psi$
+*** Chebyshev functions $\theta$ and $\psi$
 
-There are two Chebyshev functions, one $\theta$ is defined as
+Chebyshev $\theta$ function is defined as follows:
 
 $$\theta(x) = \sum_{p \le x} \log p$$
 
-second $\psi$ defined as
+
+Chebyshev $\psi$ function is defined as follows:
 
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
@@ -889,7 +876,23 @@ where [[*Mangoldt - $\Lambda$][$\Lambda$]] have been described above
 : 0.6931471805599453
 : 
 
+
+
+
 ** Dirichlet convolution
+
+** Divisors
+
+For get list of all divisors of number ~n~ there is ~divisor~
+function. List of divisors is unordered.
+
+#+begin_src clojure
+  (af/divisors 30)
+#+end_src
+
+#+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
+: (1 2 3 6 5 10 15 30)
+: 
 
 
 

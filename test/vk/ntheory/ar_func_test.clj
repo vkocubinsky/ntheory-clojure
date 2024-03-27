@@ -60,16 +60,16 @@
            9 2
            10 2}))
 
-(deftest chebyshev-first-test
-  (f-test af/chebyshev-first
+(deftest chebyshev-theta-test
+  (f-test af/chebyshev-theta
           {1 0
            2 (math/log 2)
            3 (+ (math/log 2) (math/log 3))
            4 (+ (math/log 2) (math/log 3))
            5 (+ (math/log 2) (math/log 3) (math/log 5))}))
 
-(deftest chebyshev-second-test
-  (f-test af/chebyshev-second
+(deftest chebyshev-psi-test
+  (f-test af/chebyshev-psi
           {1 0
            2 (+ (af/mangoldt 2))
            3 (+ (af/mangoldt 2) (af/mangoldt 3))

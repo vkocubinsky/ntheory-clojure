@@ -122,8 +122,8 @@
   (p/check-int-pos-max n)
   1)
 
-(defn chebyshev-first
-  "The first Chebyshev function - θ."
+(defn chebyshev-theta
+  "Chebyshev θ function."
   [n]
   (p/check-int-pos-max n)
   (->> n
@@ -131,8 +131,8 @@
        (map math/log)
        (apply +)))
 
-(defn chebyshev-second
-  "The second Chebyshev function - ψ."
+(defn chebyshev-psi
+  "Chebyshev ψ function"
   [n]
   (p/check-int-pos-max n)
   (->> n
