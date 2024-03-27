@@ -165,8 +165,13 @@
     (partial inv f)))
 
 (defn f*
-  "Inverse of completely multiplicative function"
+  "Pointwise function multiplication"
   [f g]
+  (fn [n]
+    (* (f n) (g n))
+    )
   )
+
+
 
 
