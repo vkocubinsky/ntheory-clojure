@@ -11,15 +11,14 @@ Here defined set of well known arithmetic functions and one can define
 custom arithmetic function. One can solve linear congruence or system
 of linear congruences including case when moduli relatively prime.
 
-I wrote this document =readme.org= with Emacs Org Mode. Then I
-generate markdown file =readme.md= with Org Mode export to markdown
-=C-c C-e m m=, and generate pdf file =readme.odf= with Org Mode export
-to pdf =C-c C-e l p=.  Github by default show =readme.md= if a project
-has such file.  Githib markdown looks enough good, even math equation
-is supported. But I see some issues with greek characters in table of
-content and in link text. If it is a problem =readme.pdf= looks
-better. I use Emacs babel for clojure to produce real output inside
-the document.
+I wrote this document [[./readme.org][readme.org]] with Emacs Org Mode. Then I generate
+markdown file [[./readme.md][readme.md]] with Org Mode export to markdown =C-c C-e m
+m=, and generate pdf file [[./readme.pdf][readme.pdf]] with Org Mode export to pdf =C-c
+C-e l p=.  Github by default show [[./readme.md][readme.md]] if a project has such
+file.  Github markdown looks enough good, even math equation is
+supported. However for now math equation doesn't render in link
+text. If it is a problem [[./readme.pdf][readme.pdf]] looks better. I use Emacs babel
+for clojure to produce real output inside the document.
 
 Many application require integer factorization. Integer factorization
 is relatively expensive procedure. Most straightforward way to
