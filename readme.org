@@ -919,35 +919,32 @@ $$ f^{-1}(n) = \begin{cases}
 \end{cases} $$
 
 
-In clojure, function ~d*~ calculate dirichlet convolution.  For
-instance, $\mathbf{1}(n) * \mathbf{1}(n) = \sigma_0$
+In clojure, function ~d*~ calculate Dirichlet convolution:
 
-#+begin_src clojure
-  (af/f=
-     (af/d* af/one af/one)
-     af/divisors-count
-  )
+#+begin_src clojure :results silent
+  (af/d* af/one af/one)
 #+end_src
 
-#+RESULTS[57087c9ba65232b20217853c2e785c62527b3666]:
-: true
-: 
+Function ~inverse~ calculate Dirichlet inverse:
+
+#+begin_src clojure :results silent
+  (af/inverse af/one)
+#+end_src
 
 Dirichlet convolution is associative so clojure function ~d*~ support
 more than two function as an argument.
 
 #+begin_src clojure
-  (af/f=
-    (af/d* af/mobius af/one af/mobius af/one)
-    af/unit
-  )
+  (af/d* af/mobius af/one af/mobius af/one)
 #+end_src
 
 #+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
-: true
+: #function[vk.ntheory.ar-func/d*/fn--10570]
 : 
 
-Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
+
+Functions $\mu(n)$ and $1(n)$ are inverse of each other, we can easy check
+this
 
 #+begin_src clojure
   (af/f= (af/inverse af/one) af/mobius)
@@ -956,7 +953,9 @@ Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 #+RESULTS[33bbf9139c179db71af6a5d185b937afad79f0f6]:
 : true
 : 
-  
+
+and conversely
+
 #+begin_src clojure
   (af/f= (af/inverse af/mobius) af/one)
 #+end_src

@@ -164,6 +164,9 @@
                (reduce + (for [d (divisors n) :when (< d n)] (* (f (/ n d)) (inv f d)))))))]
     (partial inv f)))
 
-
+(defn f*
+  "Inverse of completely multiplicative function"
+  [f g]
+  )
 
 
