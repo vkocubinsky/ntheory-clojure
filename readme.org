@@ -875,9 +875,6 @@ $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 : 0.6931471805599453
 : 
 
-
-** Dirichlet convolution
-
 ** Divisors
 
 For get list of all divisors of number ~n~ there is ~divisor~
@@ -891,7 +888,7 @@ function. List of divisors is unordered.
 : (1 2 3 6 5 10 15 30)
 : 
 
-
+** Dirichlet convolution
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
 new arithmetic function defined as
@@ -918,11 +915,12 @@ $$ f^{-1}(n) = \begin{cases}
 \frac{1}{f(1)} & \quad \text{if } n = 1  \\
 \frac{-1}{f(1)}\sum_{ \substack{d | n\\
                                 d < n}} f(\frac{n}{d}) f^{-1}(d)
-               & \quad n \ge 1
+               & \quad \text{if } n > 1
 \end{cases} $$
 
 
-For example, $1(n) * 1(n) = \sigma_0$
+In clojure, function ~d*~ calculate dirichlet convolution.  For
+instance, $\mathbf{1}(n) * \mathbf{1}(n) = \sigma_0$
 
 #+begin_src clojure
   (af/f=
@@ -935,8 +933,8 @@ For example, $1(n) * 1(n) = \sigma_0$
 : true
 : 
 
-Dirichlet convolution is associative so clojure method support more than two
-function as parameter of ~f*~
+Dirichlet convolution is associative so clojure function ~d*~ support
+more than two function as an argument.
 
 #+begin_src clojure
   (af/f=
@@ -952,7 +950,7 @@ function as parameter of ~f*~
 Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 
 #+begin_src clojure
-  (f/f= (f/d-inv f/one) f/mobius)
+  (af/f= (af/inverse af/one) af/mobius)
 #+end_src
 
 #+RESULTS[33bbf9139c179db71af6a5d185b937afad79f0f6]:
@@ -960,7 +958,7 @@ Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 : 
   
 #+begin_src clojure
-  (af/f= (af/d-inv af/mobius) af/one)
+  (af/f= (af/inverse af/mobius) af/one)
 #+end_src
 
 #+RESULTS[e17afcfeaabbc9d50d6f000814f6e2e43b7f447e]:
@@ -968,14 +966,14 @@ Another example, functions $\mu(n)$ and $1(n)$ are inverse of each other
 : 
 
 
-Function ~d-inv~ defined as recursive function, it may
+Function ~inverse~ defined as recursive function, it may
 execute slow. But inverse of completely multiplicative function $f(n)$
 is $f(n) \mu(n)$(usual multiplication), for instance inverse
 of identity function, let's denote it $N(n)$ is $N(n) \mu(n)$
 
 #+begin_src clojure
   (af/f=
-   (af/d-* 
+   (af/d* 
       #(* (identity %) (af/mobius %))
       identity
    )
