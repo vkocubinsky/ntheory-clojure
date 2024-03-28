@@ -1108,8 +1108,8 @@ x & \equiv c_n \pmod{m_n} \\
 $$
 
 There is a function ~solve-remaindes~ for solve such system. It accepts
-a sequence of pairs $([c_1,m_1],[c_2,m_2],\dots,[c_n,m_n ])$ and returns pair
-$[r M]$, where $M$ is the least common multiple of $m_1,m_2,\dots,m_n$, and
+a sequence of pairs $([c_1, m_1],[c_2, m_2],\dots,[c_n, m_n ])$ and returns pair
+$[r,M]$, where $M$ is the least common multiple of $m_1,m_2,\dots,m_n$, and
 $r$ is residue to modulo $M$. 
 
 Let's solve system
