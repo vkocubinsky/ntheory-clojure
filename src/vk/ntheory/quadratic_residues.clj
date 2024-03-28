@@ -5,9 +5,6 @@
             [vk.ntheory.primes :as p]
             [clojure.test :as t]))
 
-
-
-
 (defn R
   "Returns set of quadratic residue to prime modulo `p`."
   [p] (->> (range 1 (/ p 2))

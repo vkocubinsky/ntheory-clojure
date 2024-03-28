@@ -1,8 +1,7 @@
 (ns vk.ntheory.arithmetic-functions
   (:require [clojure.math :as math]
             [vk.ntheory.primes :as p]
-            [vk.ntheory.basic :as b]
-            ))
+            [vk.ntheory.basic :as b]))
 
 (def default-natural-sample (range 1 100))
 
@@ -84,8 +83,8 @@
     divisors-count
     (reduce-on-prime-count *' (fn [p k] (/
                                          (dec (b/pow p
-                                                   (* (inc k)
-                                                      a)))
+                                                     (* (inc k)
+                                                        a)))
                                          (dec (b/pow p a)))))))
 
 (def divisors-sum
@@ -168,16 +167,12 @@
   "Pointwise multiplication of two functions `f` and `g`."
   [f g]
   (fn [n]
-    (* (f n) (g n))
-    )
-  )
+    (* (f n) (g n))))
 
 (defn f+
   "Pointwise addition of two functions `f` and `g`."
   [f g]
   (fn [n]
-    (+ (f n) (g n))
-    )
-  )
+    (+ (f n) (g n))))
 
 
