@@ -1,12 +1,9 @@
-(ns vk.ntheory.quadratic-residue
+(ns vk.ntheory.quadratic-residues
   "Quadratic Residue."
   (:require [clojure.set :as set]
             [vk.ntheory.basic :as b]
             [vk.ntheory.primes :as p]
             [clojure.test :as t]))
-
-
-
 
 (defn R
   "Returns set of quadratic residue to prime modulo `p`."

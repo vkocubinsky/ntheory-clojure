@@ -1,6 +1,6 @@
-(ns vk.ntheory.congruence-test
+(ns vk.ntheory.congruences-test
   (:require
-   [vk.ntheory.congruence :as c]
+   [vk.ntheory.congruences :as c]
    [clojure.test :refer [deftest is testing]]))
 
 (deftest solve-test

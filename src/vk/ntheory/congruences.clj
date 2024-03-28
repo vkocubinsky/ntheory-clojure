@@ -1,7 +1,7 @@
-(ns vk.ntheory.congruence
+(ns vk.ntheory.congruences
+  "Congruences."
   (:require
-   [vk.ntheory.basic :as b]
-   ))
+   [vk.ntheory.basic :as b]))
 
 (defn solve
   "Solve congruence f(x) ≡ 0 (mod m).
@@ -50,7 +50,7 @@
   x ≡ c₂ (mod m₂)
   ...
   Parameter `xs` is a sequence of pairs ([c₁ m₁] [c₂ m₂] ...)
-  Returns pair [M r], where M is least common mulitple of m₁, m₂, ..., and r is residue to modulus M."
+  Returns pair [r M], where M is the least common mulitple of m₁, m₂, ..., and r is residue to modulo M."
   [xs]
   (condp = (count xs)
     0 nil
@@ -67,21 +67,17 @@
   ...
   It is Chinese Remainder Theorem. 
   Parameter `xs` is a sequence of pairs ([c₁ m₁] [c₂ m₂] ...)
-  Returns pair [M r], where M is m₁ * m₂ ... and r is residue to modulus M."
+  Returns pair [r M], where M is m₁ * m₂ ... and r is residue to modulus M."
   [xs]
-  (let [
-      M (->> xs (map second) (apply *))
-      x0 (->> xs
-              (map
-               (fn [[c m]] (let [M' (/ M m)
-                                 [d s _] (b/gcd-extended M' m)]
-                             (when-not (= d 1) (throw (Exception. "Expected taht all modulus are coprime.")))
-                             (* M' s c))))
-              (apply +)
-              (#(mod % M))
-          )
-      ] [x0 M])
-  )
+  (let [M (->> xs (map second) (apply *))
+        x0 (->> xs
+                (map
+                 (fn [[c m]] (let [M' (/ M m)
+                                   [d s _] (b/gcd-extended M' m)]
+                               (when-not (= d 1) (throw (Exception. "Expected taht all modulus are coprime.")))
+                               (* M' s c))))
+                (apply +)
+                (#(mod % M)))] [x0 M]))
 
 
 

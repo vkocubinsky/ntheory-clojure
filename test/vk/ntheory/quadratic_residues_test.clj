@@ -1,6 +1,6 @@
-(ns vk.ntheory.quadratic-residue-test
+(ns vk.ntheory.quadratic-residues-test
   (:require [clojure.test :refer [deftest is are testing]]
-            [vk.ntheory.quadratic-residue :as qr]))
+            [vk.ntheory.quadratic-residues :as qr]))
 
 
 

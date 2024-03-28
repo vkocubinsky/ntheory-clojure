@@ -1,8 +1,25 @@
-(ns vk.ntheory.ar-func-test
+(ns vk.ntheory.arithmetic-functions-test
   (:require
    [clojure.test :refer [deftest is are testing]]
    [clojure.math :as math]
-   [vk.ntheory.ar-func :as af]))
+   [vk.ntheory.arithmetic-functions :as af]))
+
+(deftest f+-test
+  (testing "Pointwise addition 2 + x"
+    (doseq [x (range 1 10)]
+      (let [f (constantly 2)
+            g identity
+            f+g (af/f+ f g)]
+        (is (= (+ 2 x) (f+g x)))))))
+
+(deftest f*-test
+  (testing "Pointwise addition 2x"
+    (doseq [x (range 1 10)]
+      (let [f (constantly 2)
+            g identity
+            f*g (af/f* f g)]
+        (is (= (* 2 x) (f*g x)))))))
+
 
 (deftest divisors-test
   (testing "Non postive numbers"
@@ -60,16 +77,16 @@
            9 2
            10 2}))
 
-(deftest chebyshev-first-test
-  (f-test af/chebyshev-first
+(deftest chebyshev-theta-test
+  (f-test af/chebyshev-theta
           {1 0
            2 (math/log 2)
            3 (+ (math/log 2) (math/log 3))
            4 (+ (math/log 2) (math/log 3))
            5 (+ (math/log 2) (math/log 3) (math/log 5))}))
 
-(deftest chebyshev-second-test
-  (f-test af/chebyshev-second
+(deftest chebyshev-psi-test
+  (f-test af/chebyshev-psi
           {1 0
            2 (+ (af/mangoldt 2))
            3 (+ (af/mangoldt 2) (af/mangoldt 3))

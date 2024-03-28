@@ -1,8 +1,7 @@
-(ns vk.ntheory.ar-func
+(ns vk.ntheory.arithmetic-functions
   (:require [clojure.math :as math]
             [vk.ntheory.primes :as p]
-            [vk.ntheory.basic :as b]
-            ))
+            [vk.ntheory.basic :as b]))
 
 (def default-natural-sample (range 1 100))
 
@@ -84,8 +83,8 @@
     divisors-count
     (reduce-on-prime-count *' (fn [p k] (/
                                          (dec (b/pow p
-                                                   (* (inc k)
-                                                      a)))
+                                                     (* (inc k)
+                                                        a)))
                                          (dec (b/pow p a)))))))
 
 (def divisors-sum
@@ -122,8 +121,8 @@
   (p/check-int-pos-max n)
   1)
 
-(defn chebyshev-first
-  "The first Chebyshev function - θ."
+(defn chebyshev-theta
+  "Chebyshev θ function."
   [n]
   (p/check-int-pos-max n)
   (->> n
@@ -131,8 +130,8 @@
        (map math/log)
        (apply +)))
 
-(defn chebyshev-second
-  "The second Chebyshev function - ψ."
+(defn chebyshev-psi
+  "Chebyshev ψ function"
   [n]
   (p/check-int-pos-max n)
   (->> n
@@ -164,6 +163,16 @@
                (reduce + (for [d (divisors n) :when (< d n)] (* (f (/ n d)) (inv f d)))))))]
     (partial inv f)))
 
+(defn f*
+  "Pointwise multiplication of two functions `f` and `g`."
+  [f g]
+  (fn [n]
+    (* (f n) (g n))))
 
+(defn f+
+  "Pointwise addition of two functions `f` and `g`."
+  [f g]
+  (fn [n]
+    (+ (f n) (g n))))
 
 
