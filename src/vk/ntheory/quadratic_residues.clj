@@ -1,4 +1,4 @@
-(ns vk.ntheory.quadratic-residue
+(ns vk.ntheory.quadratic-residues
   "Quadratic Residue."
   (:require [clojure.set :as set]
             [vk.ntheory.basic :as b]

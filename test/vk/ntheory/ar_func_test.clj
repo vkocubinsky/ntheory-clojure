@@ -1,8 +1,8 @@
-(ns vk.ntheory.ar-func-test
+(ns vk.ntheory.arithmetic-functions-test
   (:require
    [clojure.test :refer [deftest is are testing]]
    [clojure.math :as math]
-   [vk.ntheory.ar-func :as af]))
+   [vk.ntheory.arithmetic-functions :as af]))
 
 (deftest f+-test
   (testing "Pointwise addition 2 + x"

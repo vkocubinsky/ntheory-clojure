@@ -1,6 +1,6 @@
 (ns vk.ntheory.primitive-roots
   (:require [vk.ntheory.basic :as b]
-            [vk.ntheory.ar-func :as af]
+            [vk.ntheory.arithmetic-functions :as af]
             ))
 
 (defn order
@@ -23,10 +23,16 @@
 
 ;; [p1; p2; ...]
 (defn generate
-  [x]
-  (let [y (map cycle x)
-        n (count x)]
-    (loop [k (dec n)]
+  [xss]
+  (let [yss (map cycle xss)
+        n (count xss)]
+    (loop [k (dec n)
+           yss yss
+           overflow false]
+      (let [ks (nth yss k)
+            e (first ks)]
+        
+        )
       )
     )
   )

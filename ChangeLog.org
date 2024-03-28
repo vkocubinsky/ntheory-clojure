@@ -10,7 +10,9 @@
 - use \varphi instead of \phi
 - user \varepsilon instead of \epsilon
 - use fancyvrb latex package for source block        
-  
+- rename ar-func -> arithmetical-functions
+- rename congruence -> congruences
+- rename quadratic-residue -> quadratic-residues  
 
 * Version 0.4.0 <2024-03-26 Tue>
 
