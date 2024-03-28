@@ -1180,7 +1180,7 @@ So the answer is $125\pmod{1496}$
 
 In progress...
 
-* Quadratic residies ~vk.ntheory.quadratic-residues
+* Quadratic residies ~vk.ntheory.quadratic-residues~
 
 #+begin_src clojure :results silent
   (require '[vk.ntheory.quadratic-residues :as qr])
