@@ -1112,7 +1112,7 @@ a sequence of pairs $([c_1, m_1],[c_2, m_2],\dots,[c_n, m_n ])$ and returns pair
 $[r,M]$, where $M$ is the least common multiple of $m_1,m_2,\dots,m_n$, and
 $r$ is residue to modulo $M$. 
 
-Let's solve system
+Let's solve system:
 
 $$\begin{align*}
 x &\equiv 2  \pmod{7} \\
@@ -1143,11 +1143,14 @@ x & \equiv c_n \pmod{m_n} \\
 \end{align*}
 $$
 
-and any pair of moduli relatively prime, i.e. $(m_i, m_j) = 1$ if $i
+, and any pair of moduli relatively prime, i.e. $(m_i, m_j) = 1$ if $i
 \ne j$, the the system has one solution modulo the product $m_1 m_2
 \dots m_n$. This statement called Chinese Remainder Theorem. We can
 solve such system with ~solve-remainder~ function, but there is
-another function ~solve-coprime-remainders~.
+another function ~solve-coprime-remainders~. It accepts a sequence of
+pairs $([c_1, m_1],[c_2, m_2],\dots,[c_n, m_n ])$ and returns pair
+$[r,M]$, where $M$ is the product $m_1 m_2 \dots m_n$, and $r$ is
+residue to modulo $M$.
 
 Let's solve system:
 
