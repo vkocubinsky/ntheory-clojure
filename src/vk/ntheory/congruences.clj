@@ -50,7 +50,7 @@
   x ≡ c₂ (mod m₂)
   ...
   Parameter `xs` is a sequence of pairs ([c₁ m₁] [c₂ m₂] ...)
-  Returns pair [M r], where M is least common mulitple of m₁, m₂, ..., and r is residue to modulus M."
+  Returns pair [r M], where M is the least common mulitple of m₁, m₂, ..., and r is residue to modulo M."
   [xs]
   (condp = (count xs)
     0 nil
@@ -67,7 +67,7 @@
   ...
   It is Chinese Remainder Theorem. 
   Parameter `xs` is a sequence of pairs ([c₁ m₁] [c₂ m₂] ...)
-  Returns pair [M r], where M is m₁ * m₂ ... and r is residue to modulus M."
+  Returns pair [r M], where M is m₁ * m₂ ... and r is residue to modulus M."
   [xs]
   (let [M (->> xs (map second) (apply *))
         x0 (->> xs
