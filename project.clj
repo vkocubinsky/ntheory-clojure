@@ -1,4 +1,4 @@
-(defproject ntheory "0.5.0"
+(defproject ntheory "0.6.0"
   :description "Number Theory with Clojure"
   :url "https://github.com/vkocubinsky/ntheory-clojure"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
