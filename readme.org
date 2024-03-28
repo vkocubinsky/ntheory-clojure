@@ -1097,7 +1097,7 @@ There is function ~solve-linear~ for solve linear congruence. It accepts
 
 ** System of linear congruences
 
-Let consider system of linear congruences
+Let consider system of linear congruences:
 
 $$\begin{align*}
 x & \equiv c_1 \pmod{m_1} \\
@@ -1133,7 +1133,7 @@ So the answer is $86\pmod{315}$
 
 ** Coprime moduli case
 
-When we have system of linear conguence
+When we have system of linear conguences:
 
 $$\begin{align*}
 x & \equiv c_1 \pmod{m_1} \\
@@ -1143,7 +1143,7 @@ x & \equiv c_n \pmod{m_n} \\
 \end{align*}
 $$
 
-, and any pair of moduli relatively prime, i.e. $(m_i, m_j) = 1$ if $i
+and any pair of moduli relatively prime, i.e. $(m_i, m_j) = 1$ if $i
 \ne j$, the the system has one solution modulo the product $m_1 m_2
 \dots m_n$. This statement called Chinese Remainder Theorem. We can
 solve such system with ~solve-remainder~ function, but there is
@@ -1170,7 +1170,6 @@ $$
 : 
 
 So the answer is $125\pmod{1496}$
-
 
 * Primitive Roots ~vk.ntheory.primitive-roots~
 
