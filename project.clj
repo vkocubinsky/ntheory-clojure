@@ -8,7 +8,7 @@
                  :init (require '[vk.ntheory.basic :as b]
                                 '[vk.ntheory.primes :as p]
                                 '[vk.ntheory.arithmetic-functions :as af]
-                                '[vk.ntheory.congruence :as c]
+                                '[vk.ntheory.congruences :as c]
                                 '[vk.ntheory.quadratic-residues :as qr]
                                 '[vk.ntheory.primitive-roots :as pr]
                                 )})
