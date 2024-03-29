@@ -4,11 +4,9 @@
             [vk.ntheory.primes :as p]
             [vk.ntheory.arithmetic-functions :as af]))
 
-
 (defn classify-primitive-roots
   [n]
-  (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count n)
-       ]
+  (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count n)]
     (cond
       (= n 1) :1
       (= n 2) :2
@@ -17,7 +15,7 @@
       (and (nil? p2) (= a1 1)) :odd-prime
       (and (nil? p2) (= a1 2)) :odd-prime-square
       (and (nil? p2) (> a1 2)) :odd-prime-power
-      (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3) ) :2-prime-power)))
+      (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) :2-prime-power)))
 
 (defmulti primitive-roots classify-primitive-roots)
 
@@ -43,33 +41,40 @@
 
 (defmethod primitive-roots :odd-prime-power
   [n]
-  (println "Prititve root :odd-prime-power mod " n)
-  )
+  (println "Prititve root :odd-prime-power mod " n))
 
 (defmethod primitive-roots :2-prime-power
   [n]
-  (println "Prititve root :2-prime-power mod " n)
-  )
+  (println "Prititve root :2-prime-power mod " n))
 
 (defmethod primitive-roots :default
   [n]
   (println "No primitive root"))
 
 (defn order'
+  "Brute force version of find multiplicative order."
+  [a m]
+  (b/check-int-non-neg a)
+  (b/check-int-pos m)
+  (b/check-relatively-prime a m)
+  (loop [k 1
+         an (mod a m)]
+    (if (= 1 an)
+      k
+      (recur (inc k) (b/m* m an a)))))
+
+(defn order
   "Find multiplicative order of given integer `a`."
   [a m]
   (b/check-int-non-neg a)
   (b/check-int-pos m)
-  (loop [k 1
-         an (mod a m)]
-    (condp = an
-      0 (throw (Exception. "Expected a and m relatively prime."))
-      1 k
-      (recur (inc k) (b/m* m an a)))))
-
-(defn order
-  [a m]
-  (first (filter #(= 1 (b/m** m a %)) (sort (af/divisors (af/totient m))))))
+  (b/check-relatively-prime a m)
+  (->> m
+       af/totient
+       af/divisors
+       sort
+       (filter #(= 1 (b/m** m a %)))
+       first))
 
 (defn primitive-root?
   [a m]
@@ -79,29 +84,10 @@
   [a p]
   (p/check-odd-prime p)
   (->> (dec p)
-      (p/int->factors-distinct)
-      (map #(/ (dec p) %))
-      (map #(b/m** p a %))
-      (every? #(not(= 1 %)))
-      )
-  )
-
-(primitive-root-prime? 2 997)
-
-
-;; [p1; p2; ...]
-(defn generate
-  [xss]
-  (let [yss (map cycle xss)
-        n (count xss)]
-    (loop [k (dec n)
-           yss yss
-           overflow false]
-      (let [ks (nth yss k)
-            e (first ks)]))))
-
-(nth [1 2 3] 2)
-(generate [(range 1 5) (range 1 7)])
+       (p/int->factors-distinct)
+       (map #(/ (dec p) %))
+       (map #(b/m** p a %))
+       (every? #(not (= 1 %)))))
 
 ;; 997, 9973
 
