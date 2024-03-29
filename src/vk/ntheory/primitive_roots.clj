@@ -35,7 +35,7 @@
   [a m]
   (= (order a m) (af/totient m)))
 
-;; Does it works for non prime p?
+;; Does it works for non prime p if we replace (p-1) to phi(p)? 
 (defmethod primitive-root? true
   [a p]
   (p/check-odd-prime p)
@@ -98,8 +98,11 @@
 
 (defmethod find-primitive-root :2-odd-prime-power
   [m]
-  (let [[[p1 a1] [p2 a2]] (p/int->factors-count)]
-    [p2 a2]
+  (let [[[_ _] [p a]] (p/int->factors-count m)
+        g (find-primitive-root (b/pow p a))
+        ]
+    (if (odd? g) g
+        (+ g (b/pow p a)))
     ))
 
 (defmethod find-primitive-root :default
