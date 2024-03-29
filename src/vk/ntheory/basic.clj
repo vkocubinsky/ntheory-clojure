@@ -155,6 +155,10 @@
        (recur [b (mod a b)] [s' t'] [s t])))))
 
 
-
+(defn check-relatively-prime
+  [a b]
+  (let [d (gcd a b)]
+    (check #(= 1 %) d (format "Numbers %s and %s are not relatively prime.")))
+  )
 
 

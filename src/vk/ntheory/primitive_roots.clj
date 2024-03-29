@@ -55,8 +55,8 @@
   [n]
   (println "No primitive root"))
 
-(defn order-brute-force
-  "Find multiplicative order of given integer `a` in Z/Zn - {0}"
+(defn order'
+  "Find multiplicative order of given integer `a`."
   [a m]
   (b/check-int-non-neg a)
   (b/check-int-pos m)
