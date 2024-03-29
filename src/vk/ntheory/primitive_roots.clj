@@ -29,6 +29,41 @@
        (filter #(= 1 (b/m** m a %)))
        first))
 
+(defn classify-residues
+  [m]
+  (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
+    (cond
+      (= m 1) :1
+      (and (nil? p2) (= a1 1)) :prime ;; p
+      (and (nil? p2) (> a1 1)) :prime-power ;; p^a
+      )))
+
+(defmulti reduced-residues classify-residues :default :composite)
+
+(defmethod reduced-residues :1
+  [m]
+  '(1))
+
+(defmethod reduced-residues :prime
+  [m]
+  (range 1 m))
+
+;; For now brute force implementation
+(defmethod reduced-residues :prime-power
+  [m]
+  (let [[[p a]] (p/int->factors-count m)]
+    (-> (range 1 m)
+        (remove #(b/divides? p %)))))
+
+;; For now brute force implementation
+(defmethod reduced-residues :composite
+  [m]
+  (-> (range 1 m)
+      (filter #(= 1 (b/gcd m %)))
+      )
+  )
+
+
 (defmulti primitive-root? (fn [a m] (p/prime? m)))
 
 (defmethod primitive-root? false
@@ -60,10 +95,8 @@
   "Brute force version of search primitive roots."
   [m]
   (b/check-int-pos m)
-  (->> (range 1 m)
-       (filter #(= 1 (b/gcd m %)))
-       (filter #(primitive-root? % m))
-       ))
+  (->> (reduced-residues m)
+       (filter #(primitive-root? % m))))
 
 (defmulti find-primitive-root classify-modulo)
 
@@ -92,18 +125,14 @@
         c (b/m** (* p p) g (dec p))]
     (if (= 1 c)
       (+ g p)
-      g))
-  )
-
+      g)))
 
 (defmethod find-primitive-root :2-odd-prime-power
   [m]
   (let [[[_ _] [p a]] (p/int->factors-count m)
-        g (find-primitive-root (b/pow p a))
-        ]
+        g (find-primitive-root (b/pow p a))]
     (if (odd? g) g
-        (+ g (b/pow p a)))
-    ))
+        (+ g (b/pow p a)))))
 
 (defmethod find-primitive-root :default
   [m]

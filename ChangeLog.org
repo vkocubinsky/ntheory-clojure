@@ -4,6 +4,9 @@
 
 * Version 0.6.0
 
+- basic namespace
+  - check-relatively-prime
+
 * Version 0.5.0
 
 - Update arithmetical functions documentation
