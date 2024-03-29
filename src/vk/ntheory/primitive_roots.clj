@@ -52,13 +52,13 @@
 (defmethod reduced-residues :prime-power
   [m]
   (let [[[p a]] (p/int->factors-count m)]
-    (-> (range 1 m)
+    (->> (range 1 m)
         (remove #(b/divides? p %)))))
 
 ;; For now brute force implementation
 (defmethod reduced-residues :composite
   [m]
-  (-> (range 1 m)
+  (->> (range 1 m)
       (filter #(= 1 (b/gcd m %)))
       )
   )

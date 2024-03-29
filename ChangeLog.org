@@ -6,6 +6,10 @@
 
 - basic namespace
   - check-relatively-prime
+- primitve roots
+  - reduced residues
+  - find primitive root
+  - primitve root?    
 
 * Version 0.5.0
 
