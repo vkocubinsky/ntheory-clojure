@@ -135,34 +135,6 @@
 
 ;; 997, 9973
 
-(defn combinations'
-  "Generates combinations of sequences.
-  Parameters:
-    start - start nubmer common for all sequences from second argument.
-    xss - sequence of sequences, for instance
-  (combination 0 [(range 10) (range 10)]) generates all pairs [i,j]
-  where 0 <= i < 10 , 0<= j < 10. All sequences must start from the same
-  element which is the first parameter. 
-     "
-  ([start xss]
-   (lazy-seq
-    (cons (map first xss)
-          (combinations start (mapv cycle xss) (dec (count xss))))))
-
-  ([start css k]
-   (when-not (neg? k)
-     (let [cs (get css k) ;; get sequence
-           cs (rest cs)   ;; shift sequence
-           e (first cs)   ;; to detect overflow
-           css (assoc css k cs) ;; assoc shifted sequence 
-           ]
-       (if (= e start)
-         (lazy-seq (combinations start css (dec k))) ;; overflow
-         (lazy-seq (cons
-                    (map first css)
-                    (combinations start css (dec (count css))))))))))
-
-
 (defn combinations
   ([xss] (combinations (mapv first xss) (mapv cycle xss)))
   ([starts css]
@@ -180,5 +152,5 @@
                     (recur css (dec k)))
                   (combinations starts css)))))))))
 
-(combinations [(range 4) (range 5)])
+(combinations [(range 2 4) (range 3 5)])
 
