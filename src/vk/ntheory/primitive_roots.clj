@@ -53,16 +53,13 @@
   [m]
   (let [[[p a]] (p/int->factors-count m)]
     (->> (range 1 m)
-        (remove #(b/divides? p %)))))
+         (remove #(b/divides? p %)))))
 
 ;; For now brute force implementation
 (defmethod reduced-residues :composite
   [m]
   (->> (range 1 m)
-      (filter #(= 1 (b/gcd m %)))
-      )
-  )
-
+       (filter #(= 1 (b/gcd m %)))))
 
 (defmulti primitive-root? (fn [a m] (p/prime? m)))
 
@@ -140,5 +137,23 @@
 
 ;; 997, 9973
 
+(defn combinations
+  [xs]
+  (let [n (count xs)
+        yss (mapv #(cycle (range %)) xs)]
+    (println "out: " (map first yss))
+    (loop [k (dec n)
+           yss yss]
+      (when-not (neg? k)
+        (let [ys (get yss k) ;; get sequence
+              ys (rest ys)   ;; shift sequence
+              e (first ys)   ;; to detect overflow
+              yss (assoc yss k ys) ;; assoc shifted sequence 
+              ]
+          (if (= e 0)
+            (recur (dec k) yss) ;; overflow
+            (do
+              (println "out: " (map first yss))
+              (recur (dec n) yss))))))))
 
-
+(combinations [5 3 7])
