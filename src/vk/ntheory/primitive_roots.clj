@@ -61,21 +61,22 @@
   (->> (range 1 m)
        (filter #(= 1 (b/gcd m %)))))
 
-(defmulti primitive-root? (fn [a m] (p/prime? m)))
 
-(defmethod primitive-root? false
+(defn primitive-root'? 
+  "Brute force version of primitive-root?"
   [a m]
   (= (order a m) (af/totient m)))
 
 ;; Does it works for non prime p if we replace (p-1) to phi(p)? 
-(defmethod primitive-root? true
+(defn primitive-root? 
   [a p]
-  (p/check-odd-prime p)
-  (->> (dec p)
+  (b/check-relatively-prime a p)
+  (let [phi-p (af/totient p)]
+  (->> phi-p
        (p/int->factors-distinct)
-       (map #(/ (dec p) %))
+       (map #(/ phi-p %))
        (map #(b/m** p a %))
-       (every? #(not (= 1 %)))))
+       (every? #(not (= 1 %))))))
 
 (defn classify-modulo
   [n]
@@ -137,42 +138,31 @@
 
 ;; 997, 9973
 
-(defn combinations''
-  [xs]
-  (let [n (count xs)
-        yss (mapv cycle xs)]
-    (println "out: " (map first yss))
-    (loop [k (dec n)
-           yss yss]
-      (when-not (neg? k)
-        (let [ys (get yss k) ;; get sequence
-              ys (rest ys)   ;; shift sequence
-              e (first ys)   ;; to detect overflow
-              yss (assoc yss k ys) ;; assoc shifted sequence 
-              ]
-          (if (= e 0)
-            (recur (dec k) yss) ;; overflow
-            (do
-              (println "out: " (map first yss))
-              (recur (dec n) yss))))))))
-
 (defn combinations
-  ([xss]
-   (println "out: " (map first xss))
-   (combinations (mapv cycle xss) (dec (count xss))))
-  ([css k]
-   (loop [k (dec (count css))
-          css css]
-     (when-not (neg? k)
-       (let [cs (get css k) ;; get sequence
-             cs (rest cs)   ;; shift sequence
-             e (first cs)   ;; to detect overflow
-             css (assoc css k cs) ;; assoc shifted sequence 
-             ]
-         (if (= e 0)
-           (recur (dec k) css) ;; overflow
-           (do
-             (println "out: " (map first css))
-             (recur (dec (count css)) css))))))))
+  "Generates combinations of sequences.
+  Parameters:
+    start - start nubmer common for all sequences from second argument.
+    xss - sequence of sequences, for instance
+  (combination 0 [(range 10) (range 10)]) generates all pairs [i,j]
+  where 0 <= i < 10 , 0<= j < 10. All sequences must start from the same
+  element which is the first parameter. 
+     "
+  ([start xss]
+   (lazy-seq
+    (cons (map first xss)
+          (combinations start (mapv cycle xss) (dec (count xss))))))
 
-(combinations [(range 2) (range 3) (range 4)])
+  ([start css k]
+   (when-not (neg? k)
+     (let [cs (get css k) ;; get sequence
+           cs (rest cs)   ;; shift sequence
+           e (first cs)   ;; to detect overflow
+           css (assoc css k cs) ;; assoc shifted sequence 
+           ]
+       (if (= e start)
+         (lazy-seq (combinations start css (dec k))) ;; overflow
+         (lazy-seq (cons
+                    (map first css)
+                    (combinations start css (dec (count css))))))))))
+
+(combinations 0 [(range 1)(range 2) (range 3) (range 4)])
