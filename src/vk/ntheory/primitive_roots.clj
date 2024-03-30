@@ -48,7 +48,6 @@
   [m]
   (range 1 m))
 
-;; For now brute force implementation
 (defmethod reduced-residues :prime-power
   [m]
   (let [[[p a]] (p/int->factors-count m)]
@@ -67,15 +66,14 @@
   [a m]
   (= (order a m) (af/totient m)))
 
-;; Does it works for non prime p if we replace (p-1) to phi(p)? 
 (defn primitive-root? 
-  [a p]
-  (b/check-relatively-prime a p)
-  (let [phi-p (af/totient p)]
+  [a m]
+  (b/check-relatively-prime a m)
+  (let [phi-p (af/totient m)]
   (->> phi-p
        (p/int->factors-distinct)
        (map #(/ phi-p %))
-       (map #(b/m** p a %))
+       (map #(b/m** m a %))
        (every? #(not (= 1 %))))))
 
 (defn classify-modulo
@@ -165,4 +163,4 @@
                     (map first css)
                     (combinations start css (dec (count css))))))))))
 
-(combinations 0 [(range 1)(range 2) (range 3) (range 4)])
+
