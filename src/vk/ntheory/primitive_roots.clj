@@ -136,7 +136,7 @@
 
 ;; 997, 9973
 
-(defn combinations
+(defn combinations'
   "Generates combinations of sequences.
   Parameters:
     start - start nubmer common for all sequences from second argument.
@@ -150,7 +150,7 @@
     (cons (map first xss)
           (combinations start (mapv cycle xss) (dec (count xss))))))
 
-  ([start css k]
+  ([start css k]    
    (when-not (neg? k)
      (let [cs (get css k) ;; get sequence
            cs (rest cs)   ;; shift sequence
@@ -162,5 +162,27 @@
          (lazy-seq (cons
                     (map first css)
                     (combinations start css (dec (count css))))))))))
+
+
+(defn combinations
+  (combinations-cycle start (mapv cycle xss))
+  )
+
+(defn combinations-cycle
+  ([start css]
+   (lazy-seq 
+   (cons (map first css)
+         (loop [css css
+                k (dec (count css))]
+           (let [cs (get css k)
+                 cs (rest cs)
+                 e (first cs)
+                 css (assoc css k cs)]
+             (if (= e start)
+               (recur css (dec k))
+               (combinations-cycle start css)))
+           )
+           ))))
+
 
 
