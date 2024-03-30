@@ -137,10 +137,10 @@
 
 ;; 997, 9973
 
-(defn combinations
+(defn combinations''
   [xs]
   (let [n (count xs)
-        yss (mapv #(cycle (range %)) xs)]
+        yss (mapv cycle xs)]
     (println "out: " (map first yss))
     (loop [k (dec n)
            yss yss]
@@ -156,4 +156,23 @@
               (println "out: " (map first yss))
               (recur (dec n) yss))))))))
 
-(combinations [5 3 7])
+(defn combinations
+  ([xss]
+   (println "out: " (map first xss))
+   (combinations (mapv cycle xss) (dec (count xss))))
+  ([css k]
+   (loop [k (dec (count css))
+          css css]
+     (when-not (neg? k)
+       (let [cs (get css k) ;; get sequence
+             cs (rest cs)   ;; shift sequence
+             e (first cs)   ;; to detect overflow
+             css (assoc css k cs) ;; assoc shifted sequence 
+             ]
+         (if (= e 0)
+           (recur (dec k) css) ;; overflow
+           (do
+             (println "out: " (map first css))
+             (recur (dec (count css)) css))))))))
+
+(combinations [(range 2) (range 3) (range 4)])
