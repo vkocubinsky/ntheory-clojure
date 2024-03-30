@@ -162,11 +162,9 @@
                     (map first css)
                     (combinations start css (dec (count css))))))))))
 
-(defn combinations
-  (combinations-cycle start (mapv cycle xss)))
 
 (defn combinations
-  ([xss] (combinations (map first xss) (mapv cycle xss)))
+  ([xss] (combinations (mapv first xss) (mapv cycle xss)))
   ([starts css]
    (lazy-seq
     (cons (map first css)
@@ -175,12 +173,12 @@
             (when-not (neg? k)
               (let [start (get starts k)
                     cs (get css k)
-                    cs (rest cs)
                     e (first cs)
+                    cs (rest cs)
                     css (assoc css k cs)]
                 (if (= e start)
                   (recur css (dec k))
                   (combinations-cycle starts css)))))))))
 
-
+(combinations [(range 4) (range 5)])
 
