@@ -60,21 +60,20 @@
   (->> (range 1 m)
        (filter #(= 1 (b/gcd m %)))))
 
-
-(defn primitive-root'? 
+(defn primitive-root'?
   "Brute force version of primitive-root?"
   [a m]
   (= (order a m) (af/totient m)))
 
-(defn primitive-root? 
+(defn primitive-root?
   [a m]
   (b/check-relatively-prime a m)
   (let [phi-p (af/totient m)]
-  (->> phi-p
-       (p/int->factors-distinct)
-       (map #(/ phi-p %))
-       (map #(b/m** m a %))
-       (every? #(not (= 1 %))))))
+    (->> phi-p
+         (p/int->factors-distinct)
+         (map #(/ phi-p %))
+         (map #(b/m** m a %))
+         (every? #(not (= 1 %))))))
 
 (defn classify-modulo
   [n]
@@ -150,7 +149,7 @@
     (cons (map first xss)
           (combinations start (mapv cycle xss) (dec (count xss))))))
 
-  ([start css k]    
+  ([start css k]
    (when-not (neg? k)
      (let [cs (get css k) ;; get sequence
            cs (rest cs)   ;; shift sequence
@@ -163,26 +162,25 @@
                     (map first css)
                     (combinations start css (dec (count css))))))))))
 
+(defn combinations
+  (combinations-cycle start (mapv cycle xss)))
 
 (defn combinations
-  (combinations-cycle start (mapv cycle xss))
-  )
-
-(defn combinations-cycle
-  ([start css]
-   (lazy-seq 
-   (cons (map first css)
-         (loop [css css
-                k (dec (count css))]
-           (let [cs (get css k)
-                 cs (rest cs)
-                 e (first cs)
-                 css (assoc css k cs)]
-             (if (= e start)
-               (recur css (dec k))
-               (combinations-cycle start css)))
-           )
-           ))))
+  ([xss] (combinations (map first xss) (mapv cycle xss)))
+  ([starts css]
+   (lazy-seq
+    (cons (map first css)
+          (loop [css css
+                 k (dec (count css))]
+            (when-not (neg? k)
+              (let [start (get starts k)
+                    cs (get css k)
+                    cs (rest cs)
+                    e (first cs)
+                    css (assoc css k cs)]
+                (if (= e start)
+                  (recur css (dec k))
+                  (combinations-cycle starts css)))))))))
 
 
 
