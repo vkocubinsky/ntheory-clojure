@@ -12,8 +12,8 @@
   (check (complement pred) x msg))
 
 (defn check-int
-  [n]
   "Check is given `n` integer."
+  [n]
   (check int? n (format "%s is not an integer." n)))
 
 (defn check-int-pos
