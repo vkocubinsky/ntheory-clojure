@@ -167,17 +167,19 @@
   ([xss] (combinations (mapv first xss) (mapv cycle xss)))
   ([starts css]
    (lazy-seq
+    (println "out " (map first css))
     (cons (map first css)
           (loop [css css
                  k (dec (count css))]
             (when-not (neg? k)
               (let [start (get starts k)
-                    cs (get css k)
+                    cs (rest (get css k))
                     e (first cs)
-                    cs (rest cs)
                     css (assoc css k cs)]
                 (if (= e start)
-                  (recur css (dec k))
+                  (do
+                    (println "e = " e " start = " start )
+                    (recur css (dec k)))
                   (combinations-cycle starts css)))))))))
 
 (combinations [(range 4) (range 5)])
