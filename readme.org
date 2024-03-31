@@ -69,7 +69,7 @@ In this document I load number theory packages as:
   (require '[vk.ntheory.basic :as b])
   (require '[vk.ntheory.primes :as p])
   (require '[vk.ntheory.arithmetic-functions :as af])
-  (require '[vk.ntheory.congruence :as c])
+  (require '[vk.ntheory.congruences :as c])
   (require '[vk.ntheory.primitive-roots :as pr])
   (require '[clojure.math :as math])
 #+end_src
