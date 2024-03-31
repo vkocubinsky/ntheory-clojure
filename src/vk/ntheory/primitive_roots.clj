@@ -4,6 +4,23 @@
             [vk.ntheory.primes :as p]
             [vk.ntheory.arithmetic-functions :as af]))
 
+(defn product
+  ([xss] (product (mapv first xss) (mapv cycle xss)))
+  ([starts css]
+   (lazy-seq
+    (cons (map first css)
+          (loop [css css
+                 k (dec (count css))]
+            (when-not (neg? k)
+              (let [start (get starts k)
+                    cs (rest (get css k))
+                    e (first cs)
+                    css (assoc css k cs)]
+                (if (= e start)
+                  (do
+                    (recur css (dec k)))
+                  (product starts css)))))))))
+
 (defn order'
   "Brute force version of find multiplicative order."
   [a m]
@@ -48,22 +65,27 @@
   [m]
   (range 1 m))
 
+;; Optimized version with concat and lazy-seq doesn't have performance imporivement
 (defmethod reduced-residues :prime-power
   [m]
   (let [[[p a]] (p/int->factors-count m)]
     (->> (range 1 m)
          (remove #(b/divides? p %)))))
 
-;; For now brute force implementation
-(defmethod reduced-residues :composite
+;; Brute force implementation
+(defn reduced-residues'
   [m]
   (->> (range 1 m)
        (filter #(= 1 (b/gcd m %)))))
 
-(defn primitive-root'?
-  "Brute force version of primitive-root?"
-  [a m]
-  (= (order a m) (af/totient m)))
+(defmethod reduced-residues :composite
+  [m]
+  (let [cn (p/int->factors-count m)
+        xss (mapv (fn [[p k]] (reduced-residues (b/pow p k))) cn)
+        A (mapv (fn [[p k]] (/ m (b/pow p k))) cn)]
+    (for [x (product xss)]
+      (apply (partial b/m+ m) (map #(b/m* m %1 %2) x A)))))
+
 
 (defn primitive-root?
   [a m]
@@ -86,12 +108,7 @@
       (and (nil? p2) (> a1 1)) :odd-prime-power ;; p^a
       (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) :2-odd-prime-power)))
 
-(defn primitive-roots'
-  "Brute force version of search primitive roots."
-  [m]
-  (b/check-int-pos m)
-  (->> (reduced-residues m)
-       (filter #(primitive-root? % m))))
+
 
 (defmulti find-primitive-root classify-modulo)
 
@@ -133,24 +150,26 @@
   [m]
   nil)
 
+
+(defn primitive-roots
+  [m]
+  (when-let [g (find-primitive-root m)]
+    (map #(b/m** m g %) (reduced-residues (af/totient m)))
+    )
+  )
+
+(defn primitive-roots'
+  "Brute force version of search primitive roots."
+  [m]
+  (b/check-int-pos m)
+  (->> (reduced-residues m)
+       (filter #(primitive-root? % m))))
+
+
 ;; 997, 9973
 
-(defn product
-  ([xss] (product (mapv first xss) (mapv cycle xss)))
-  ([starts css]
-   (lazy-seq
-    (cons (map first css)
-          (loop [css css
-                 k (dec (count css))]
-            (when-not (neg? k)
-              (let [start (get starts k)
-                    cs (rest (get css k))
-                    e (first cs)
-                    css (assoc css k cs)]
-                (if (= e start)
-                  (do
-                    (recur css (dec k)))
-                  (product starts css)))))))))
 
-(product [(range 2 4) (range 1 2)])
+
+
+
 
