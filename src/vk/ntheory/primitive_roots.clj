@@ -21,7 +21,6 @@
                     (recur css (dec k)))
                   (product starts css)))))))))
 
-
 (defn order
   "Find multiplicative order of given integer `a`."
   [a m]
@@ -61,8 +60,6 @@
     (->> (range 1 m)
          (remove #(b/divides? p %)))))
 
-
-
 (defmethod reduced-residues :composite
   [m]
   (let [cn (p/int->factors-count m)
@@ -70,7 +67,6 @@
         A (mapv (fn [[p k]] (/ m (b/pow p k))) cn)]
     (for [x (product xss)]
       (apply (partial b/m+ m) (map #(b/m* m %1 %2) x A)))))
-
 
 (defn primitive-root?
   [a m]
@@ -92,8 +88,6 @@
       (and (nil? p2) (= a1 1)) :odd-prime ;; p
       (and (nil? p2) (> a1 1)) :odd-prime-power ;; p^a
       (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) :2-odd-prime-power)))
-
-
 
 (defmulti find-primitive-root classify-modulo)
 
@@ -135,13 +129,10 @@
   [m]
   nil)
 
-
 (defn primitive-roots
   [m]
   (when-let [g (find-primitive-root m)]
-    (map #(b/m** m g %) (reduced-residues (af/totient m)))
-    )
-  )
+    (map #(b/m** m g %) (reduced-residues (af/totient m)))))
 
 ;; Brute force implementation
 (defn reduced-residues'
@@ -155,7 +146,6 @@
   (b/check-int-pos m)
   (->> (reduced-residues' m)
        (filter #(primitive-root? % m))))
-
 
 ;; 997, 9973
 
