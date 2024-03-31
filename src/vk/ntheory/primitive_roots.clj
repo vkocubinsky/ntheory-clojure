@@ -135,8 +135,8 @@
 
 ;; 997, 9973
 
-(defn combinations
-  ([xss] (combinations (mapv first xss) (mapv cycle xss)))
+(defn product
+  ([xss] (product (mapv first xss) (mapv cycle xss)))
   ([starts css]
    (lazy-seq
     (cons (map first css)
@@ -150,7 +150,7 @@
                 (if (= e start)
                   (do
                     (recur css (dec k)))
-                  (combinations starts css)))))))))
+                  (product starts css)))))))))
 
-(combinations [(range 2 4) (range 3 5)])
+(product [(range 2 4) (range 1 2)])
 
