@@ -376,7 +376,7 @@ There is ~prime?~ function:
 
 Integer $n$ is a composite number if
 - $n > 1$
-- has at least one proper divisor, i.e. divisor except $1$ and $p$ 
+- has at least one proper divisor, i.e. divisor except $1$ and $n$ 
 
 There is ~composite?~ function:
 
