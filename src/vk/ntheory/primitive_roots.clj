@@ -21,17 +21,6 @@
                     (recur css (dec k)))
                   (product starts css)))))))))
 
-(defn order'
-  "Brute force version of find multiplicative order."
-  [a m]
-  (b/check-int-non-neg a)
-  (b/check-int-pos m)
-  (b/check-relatively-prime a m)
-  (loop [k 1
-         an (mod a m)]
-    (if (= 1 an)
-      k
-      (recur (inc k) (b/m* m an a)))))
 
 (defn order
   "Find multiplicative order of given integer `a`."
@@ -72,11 +61,7 @@
     (->> (range 1 m)
          (remove #(b/divides? p %)))))
 
-;; Brute force implementation
-(defn reduced-residues'
-  [m]
-  (->> (range 1 m)
-       (filter #(= 1 (b/gcd m %)))))
+
 
 (defmethod reduced-residues :composite
   [m]
@@ -158,11 +143,17 @@
     )
   )
 
+;; Brute force implementation
+(defn reduced-residues'
+  [m]
+  (->> (range 1 m)
+       (filter #(= 1 (b/gcd m %)))))
+
 (defn primitive-roots'
   "Brute force version of search primitive roots."
   [m]
   (b/check-int-pos m)
-  (->> (reduced-residues m)
+  (->> (reduced-residues' m)
        (filter #(primitive-root? % m))))
 
 
