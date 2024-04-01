@@ -3,7 +3,12 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.basic :as b]))
 
-(deftest check-int
+(deftest product-test
+  (testing "dd"
+    (is (= [[0 0] [0 1] [0 2] [1 0] [1 1] [1 2]]) (b/product [(range 2) (range 3)]))
+    ))
+
+(deftest check-int-test
   (testing "Fail"
     (is (thrown? Exception (b/check-int 1.1))))
   (testing "Success"

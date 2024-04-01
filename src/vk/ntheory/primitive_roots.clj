@@ -4,22 +4,7 @@
             [vk.ntheory.primes :as p]
             [vk.ntheory.arithmetic-functions :as af]))
 
-(defn product
-  ([xss] (product (mapv first xss) (mapv cycle xss)))
-  ([starts css]
-   (lazy-seq
-    (cons (map first css)
-          (loop [css css
-                 k (dec (count css))]
-            (when-not (neg? k)
-              (let [start (get starts k)
-                    cs (rest (get css k))
-                    e (first cs)
-                    css (assoc css k cs)]
-                (if (= e start)
-                  (do
-                    (recur css (dec k)))
-                  (product starts css)))))))))
+
 
 (defn order
   "Find multiplicative order of given integer `a`."
@@ -66,7 +51,7 @@
   (let [cn (p/int->factors-count m)
         xss (mapv (fn [[p k]] (reduced-residues (b/pow p k))) cn)
         A (mapv (fn [[p k]] (/ m (b/pow p k))) cn)]
-    (for [x (product xss)]
+    (for [x (b/product xss)]
       (apply (partial b/m+ m) (map #(b/m* m %1 %2) x A)))))
 
 (defn primitive-root?
