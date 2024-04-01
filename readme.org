@@ -5,8 +5,6 @@
 #+LATEX_HEADER: \RequirePackage{fancyvrb}
 #+LATEX_HEADER: \DefineVerbatimEnvironment{verbatim}{Verbatim}{frame=single}
 
-
-
 * About
 
 This project cover some topics in number theory such as integer
@@ -51,7 +49,7 @@ just iterate over "linked list" to build output data structure. But
 least prime divisor table require more memory compare to Sieve of
 Eratosthenes.  There is a way to improve performance, it is another
 modification of Sieve of Eratosthenes procedure to build full
-factorization for all numberS $1,2,\dots,N$.  It require much more
+factorization for all numbers $1,2,\dots,N$.  It require much more
 memory for keep table of full factorization and it require more time
 for calculate full factorization table, compare to build least prime
 divisor table.
