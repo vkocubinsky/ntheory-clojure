@@ -4,7 +4,6 @@
             [vk.ntheory.primes :as p]
             [vk.ntheory.arithmetic-functions :as af]))
 
-;; Move to basic
 (defn product
   ([xss] (product (mapv first xss) (mapv cycle xss)))
   ([starts css]
