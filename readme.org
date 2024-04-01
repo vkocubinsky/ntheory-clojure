@@ -18,9 +18,9 @@ of linear congruences including case when moduli relatively prime.
 I wrote this document with Emacs Org Mode. Then I generate markdown
 file [[./readme.md][readme.md]] with Org Mode export to markdown =C-c C-e m m=, and
 generate pdf file [[./readme.pdf][readme.pdf]] with Org Mode export to pdf =C-c C-e l
-p=.  Github by default show [[./readme.md][readme.md]] if a project has such file.
-Github markdown looks enough good, even math equation is
-supported. However for now math equation doesn't rendered for link
+p=.  Github by default render [[./readme.md][readme.md]] in project root if a project
+has such file.  Github markdown looks enough good, even math equation
+is supported. However for now math equation doesn't rendered for link
 text. I also generate [[./readme.pdf][readme.pdf]] , pdf file doesn't have any issues
 with math equations.
 
@@ -31,9 +31,9 @@ Emacs, to display all image for all fragments need to use prefix
 argument =C-u C-u C-c C-x C-l= for preview all math equations inside
 Emacs.
 
-Many application require integer factorization. Integer factorization
+Many applications require integer factorization. Integer factorization
 is relatively expensive procedure. Most straightforward way to
-factorize integer $n$ is try to divide $n$ to numbers $2,3,4, \dots
+factorize integer $n$ is try to divide $n$ to numbers $2,3,4, \dots,
 \sqrt{n}$.
 There is some optimization of this procedure. For instance
 exclude from candidates multiple of $2$, or multiple of $2$ and
@@ -61,7 +61,7 @@ relatively small numbers(millions) and I made a decision to use least
 prime divisor table as a best compromise between build table time,
 required memory for table, integer factorization time. So now
 factorization is cheap, but it require 4 bytes per number or 4MB
-for 1000000.
+for 1000000 numbers.
 
 In this document I load number theory packages as: 
 
@@ -69,7 +69,7 @@ In this document I load number theory packages as:
   (require '[vk.ntheory.basic :as b])
   (require '[vk.ntheory.primes :as p])
   (require '[vk.ntheory.arithmetic-functions :as af])
-  (require '[vk.ntheory.congruence :as c])
+  (require '[vk.ntheory.congruences :as c])
   (require '[vk.ntheory.primitive-roots :as pr])
   (require '[clojure.math :as math])
 #+end_src
@@ -85,7 +85,7 @@ So below I will use above aliases.
 - $(a,b)$ - the greatest common divisor of $a$ and $b$
 - $[a,b]$ - the least common multiple of $a$ and $b$
   
-* Some basic functions ~vk.ntheory.basic~
+* Some basic functions
 
 This section cover namespace ~vk.ntheory.basic~. It contains some
 common functions, which can be used directly or by other namespaces.
@@ -107,8 +107,11 @@ user input:
 All of above accept one argument, check does argument satisfy to
 expectation, if does return argument, otherwise throw an exception.
 
+Some check functions accept more than one argument. For instance
+function ~check-relatively-prime~ accepts 2 arguments.
+
 There are also two helper function ~check~ and ~check-not~ which helps
-to implement another ~check-*~ function for a predicate. 
+to implement another ~check-*~ function for some predicate. 
 
 ** Some predicates
 
@@ -122,10 +125,22 @@ Function ~divides?~ determine does one number divides another.
 : true
 : 
 
+** Combinatorics
+
+~product~ functions returns cartesian product of n sequences:
+
+#+begin_src clojure
+  (b/product [(range 1 3) (range 1 5)]) 
+#+end_src
+
+#+RESULTS:
+: ((1 1) (1 2) (1 3) (1 4) (2 1) (2 2) (2 3) (2 4))
+: 
+
 ** Operations in $\mathbf{Z}/m\mathbf{Z}$
 
 Similar to addition function ~+~ and multiplication function ~*~ there
-defined addition modulo m ~m+~ and multiplication modulo m ~m*~
+are defined addition modulo m ~m+~ and multiplication modulo m ~m*~
 functions. First argument of these functions is a modulo.
 
 For instance $2 + 4 \equiv 1 \pmod{5}$ in $\mathbf{Z}/m\mathbf{Z}$
@@ -205,7 +220,7 @@ $2^3 | 24$, but $2^4 \nmid 24$, so $ord_2(24) = 3$
 
 ** Sign function
 
-The ~sign~ function
+The ~sign~ function defined as follows:
 
 $$sign(n) = \begin{cases}
 -1 & \quad \text{if } x < 0 \\
@@ -239,7 +254,7 @@ and $b$ divides $d$.
 The greatest common divisors of $a$ and $b$ is denoted by $(a,b)$.
 For convenience $(0, 0) = 0$.
 
-Furthermore, if for any two integers $a$ and $b$ exists integers $s$
+Furthermore, for any two integers $a$ and $b$ exists integers $s$
 and $t$ such that $a s + b t = d$ , where $d$ is the greatest common
 divisor. For example, $6 = 12 (-1) + 18 (1)$
 
@@ -271,7 +286,7 @@ $$
 : 36
 : 
 
-* Primes and Integer Factorization ~vk.ntheory.primes~
+* Primes and Integer Factorization 
 
 This section cover namespace ~vk.ntheory.primes~. It primary designed
 for integer factorization and get list of primes. One can use ~primes~
@@ -310,7 +325,7 @@ There is a limit for max size of least prime divisor table. It is value of
 #+end_src
 
 #+RESULTS:
-: 1000000
+: 10000000
 : 
 
 Cache can be reset:
@@ -364,7 +379,7 @@ Integer $p$ is a prime if
 - $p > 1$
 - has only divisors $1$ and $p$.  
 
-There is ~prime?~ function:
+There is ~prime?~ predicate:
 
 #+begin_src clojure
 (p/prime? 7)
@@ -376,9 +391,9 @@ There is ~prime?~ function:
 
 Integer $n$ is a composite number if
 - $n > 1$
-- has at least one proper divisor, i.e. divisor except $1$ and $p$ 
+- has at least one divisor except $1$ and $n$ 
 
-There is ~composite?~ function:
+There is ~composite?~ predicate:
 
 #+begin_src clojure
   (p/composite? 12)
@@ -400,7 +415,7 @@ Integer $1$ is not a prime and is not a composite
 : 
 
 So all natural numbers can be divided into 3 categories: prime,
-composite, one.
+composite and unit.
 
 Every integer more than $1$ can be represented uniquely as a product
 of primes.
@@ -598,7 +613,8 @@ In clojure function ~f+~ returns pointwise addition:
 #+end_src
 
 #+RESULTS:
-: class clojure.lang.Compiler$CompilerException
+: 15
+: 
 
 ** Pointwise multiplication
 
@@ -948,19 +964,19 @@ $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 ** Dirichlet convolution
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
-new arithmetic function defined as
+new arithmetic function defined as follows:
 
 $$ (f*g)(n) = \sum_{d | n} f(d)g(\frac{n}{d}) $$
 
-Dirichlet convolution is associative
+Dirichlet convolution is associative:
 
 $$ (f * g) * h = f * (g * h) $$
 
-Commutative
+Commutative:
 
 $$ f * g = g * f $$
 
-Has identify
+Has identify:
 
 $$ f * \varepsilon = \varepsilon * f = f $$
 
@@ -996,7 +1012,7 @@ more than two function as an argument.
 #+end_src
 
 #+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
-: #function[vk.ntheory.ar-func/d*/fn--10570]
+: #function[vk.ntheory.arithmetic-functions/d*/fn--14563]
 : 
 
 
@@ -1024,7 +1040,7 @@ and conversely
 
 Function ~inverse~ defined as recursive function, it may execute
 slow. But inverse of completely multiplicative function $f(n)$ is
-$f(n) \cdot \mu(n)$(usual multiplication), for instance inverse of
+$f(n) \cdot \mu(n)$(usual,pointwise multiplication), for instance inverse of
 identity function, let's denote it as $N(n)$, is $N(n) \cdot \mu(n)$
 
 #+begin_src clojure
@@ -1040,7 +1056,7 @@ identity function, let's denote it as $N(n)$, is $N(n) \cdot \mu(n)$
 : true
 : 
 
-* Conguences ~vk.ntheory.congruence~
+* Conguences
 
 This section cover namespaces ~vk.ntheory.congruence~. It contains
 functions for solve any congruence with brute force approach and also
@@ -1050,8 +1066,6 @@ and system of linear congruences.
 #+begin_src clojure :results silent
   (require '[vk.ntheory.congruence :as c])
 #+end_src
-
-In progress ...
 
 ** Brute force solution
 
@@ -1144,8 +1158,10 @@ x & \equiv c_n \pmod{m_n} \\
 $$
 
 and any pair of moduli relatively prime, i.e. $(m_i, m_j) = 1$ if $i
-\ne j$, the the system has one solution modulo the product $m_1 m_2
-\dots m_n$. This statement called Chinese Remainder Theorem. We can
+\ne j$,
+the the system has one solution modulo the product $m_1 m_2
+\dots m_n$.
+This statement called Chinese Remainder Theorem. We can
 solve such system with ~solve-remainder~ function, but there is
 another function ~solve-coprime-remainders~. It accepts a sequence of
 pairs $([c_1, m_1],[c_2, m_2],\dots,[c_n, m_n ])$ and returns pair
@@ -1171,20 +1187,77 @@ $$
 
 So the answer is $125\pmod{1496}$
 
-* Primitive Roots ~vk.ntheory.primitive-roots~
+* Primitive Roots 
+
+This section cover namespace ~vk.ntheory.primitive-roots~. It
+contains functions for find primitive roots and also contains
+fast implementation of sequence reduced residiues.
 
 #+begin_src clojure :results silent
   (require '[vk.ntheory.primitive-roots :as pr])
 #+end_src
 
 
-In progress...
+** Reduced residues
 
-* Quadratic residies ~vk.ntheory.quadratic-residues
+Function ~reduced-residues return reduced resiues modulo m.
 
-#+begin_src clojure :results silent
-  (require '[vk.ntheory.quadratic-residues :as qr])
+#+begin_src clojure
+  (pr/reduced-residues 12)
 #+end_src
 
+#+RESULTS:
+: (7 11 1 5)
+: 
 
-In progress...
+
+** Order
+
+Order $n$ of integer $a$ coprime to $m$ modulo m is least positive integer for which
+$a^n \equiv 1 \pmod{m}$.
+
+#+begin_src clojure
+  (pr/order 2 11)
+#+end_src
+
+#+RESULTS:
+: 10
+: 
+
+** Primitive root
+
+If order $a$ modulo $m$ is equal to $\phi(m)$, $a$ called
+primitive root. Primitive roots exists only for moduli
+$1$,$2$,$4$, $p^a$, $2p^a$. To find any primitive root
+
+#+begin_src clojure
+  (pr/find-primitive-root 11)
+#+end_src
+
+#+RESULTS:
+: odd-prime
+: 2
+: 
+
+There is a predicate to check does given number $a$ is a primitive
+root modulo $m$
+
+#+begin_src clojure
+  (pr/primitive-root? 2 11)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+
+To find all primitive roots
+
+#+begin_src clojure
+  (pr/primitive-roots 11)
+#+end_src
+
+#+RESULTS:
+: odd-prime
+: (7 6 2 8)
+: 

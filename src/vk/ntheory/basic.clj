@@ -12,8 +12,8 @@
   (check (complement pred) x msg))
 
 (defn check-int
-  [n]
   "Check is given `n` integer."
+  [n]
   (check int? n (format "%s is not an integer." n)))
 
 (defn check-int-pos
@@ -154,7 +154,29 @@
            t (- t'' (* t' q))]
        (recur [b (mod a b)] [s' t'] [s t])))))
 
+(defn check-relatively-prime
+  [a b]
+  (let [d (gcd a b)]
+    (check #(= 1 %) d (format "Numbers %s and %s are not relatively prime." a b))))
 
-
-
+(defn- product'
+  [starts css]
+  (lazy-seq
+   (cons (map first css)
+         (loop [css css
+                k (dec (count css))]
+           (when-not (neg? k)
+             (let [start (get starts k)
+                   cs (rest (get css k))
+                   e (first cs)
+                   css (assoc css k cs)]
+               (if (= e start)
+                 (do
+                   (recur css (dec k)))
+                 (product' starts css))))))))
+(defn product
+  "Return all n-sequences combined from given n tuples.
+  Parameters:
+     xss - sequence of n input sequences."
+  [xss] (product' (mapv first xss) (mapv cycle xss)))
 

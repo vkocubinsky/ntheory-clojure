@@ -3,7 +3,18 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.basic :as b]))
 
-(deftest check-int
+(deftest product-test
+  (testing "Success"
+    (is (= [[0 0] [0 1] [0 2] [1 0] [1 1] [1 2]] (b/product [(range 2) (range 3)]))
+        ))
+  (testing "One sequence"
+    (is (= [[0] [1]] (b/product [(range 2)])))
+    )
+  (testing "Zero sequence"
+    (is (= [[]] (b/product [])))
+    ))
+
+(deftest check-int-test
   (testing "Fail"
     (is (thrown? Exception (b/check-int 1.1))))
   (testing "Success"

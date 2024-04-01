@@ -1,0 +1,20 @@
+#+title: Todo list
+
+* TODO Move Legandre symbol to arithmetic function
+* TODO Consider to delete quadratic residues
+* TODO Rewrite divisors with product
+* TODO Hide unpublic methods(move arities to help function)
+* TODO Update arithmetic function tests , use values up to 20
+* TODO Review code and review tests for namespaces: 
+** TODO basic
+** TODO primes
+** TODO arithmetic functions
+** TODO congruences
+** TODO primitive roots
+* TODO Review/Update documentations
+** TODO basic
+** TODO primes
+** TODO arithmetic functions
+** TODO congruences
+** TODO primitive roots
+

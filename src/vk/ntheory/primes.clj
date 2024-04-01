@@ -5,7 +5,7 @@
 
 (def max-int
   "Max integer which can be factorized."
-  1000000)
+  10000000)
 
 (defn- less-equal-max-int?
   "Less or equal to `max-int`"
