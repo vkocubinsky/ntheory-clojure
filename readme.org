@@ -1051,8 +1051,6 @@ and system of linear congruences.
   (require '[vk.ntheory.congruence :as c])
 #+end_src
 
-In progress ...
-
 ** Brute force solution
 
 If we have a congruence
@@ -1178,13 +1176,3 @@ So the answer is $125\pmod{1496}$
 #+end_src
 
 
-In progress...
-
-* Quadratic residies ~vk.ntheory.quadratic-residues~
-
-#+begin_src clojure :results silent
-  (require '[vk.ntheory.quadratic-residues :as qr])
-#+end_src
-
-
-In progress...
