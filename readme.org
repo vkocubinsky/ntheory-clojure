@@ -1189,8 +1189,73 @@ So the answer is $125\pmod{1496}$
 
 * Primitive Roots 
 
+This section cover namespace ~vk.ntheory.primitive-roots~. It
+contains functions for find primitive roots and also contains
+fast implementation of sequence reduced residiues.
+
 #+begin_src clojure :results silent
   (require '[vk.ntheory.primitive-roots :as pr])
 #+end_src
 
 
+** Reduced residues
+
+Function ~reduced-residues return reduced resiues modulo m.
+
+#+begin_src clojure
+  (pr/reduced-residues 12)
+#+end_src
+
+#+RESULTS:
+: (7 11 1 5)
+: 
+
+
+** Order
+
+Order $n$ of integer $a$ coprime to $m$ modulo m is least positive integer for which
+$a^n \equiv 1 \pmod{m}$.
+
+#+begin_src clojure
+  (pr/order 2 11)
+#+end_src
+
+#+RESULTS:
+: 10
+: 
+
+** Primitive root
+
+If order $a$ modulo $m$ is equal to $\phi(m)$, $a$ called
+primitive root. Primitive roots exists only for moduli
+$1$,$2$,$4$, $p^a$, $2p^a$. To find any primitive root
+
+#+begin_src clojure
+  (pr/find-primitive-root 11)
+#+end_src
+
+#+RESULTS:
+: 2
+: 
+
+There is a predicate to check does given number $a$ is a primitive
+root modulo $m$
+
+#+begin_src clojure
+  (pr/primitive-root? 2 11)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+
+To find all primitive roots
+
+#+begin_src clojure
+  (pr/primitive-roots 11)
+#+end_src
+
+#+RESULTS:
+: (7 6 2 8)
+: 
