@@ -1226,10 +1226,10 @@ $a^n \equiv 1 \pmod{m}$.
 
 If order $a$ modulo $m$ is equal to $\phi(m)$, $a$ called
 primitive root. Primitive roots exists only for moduli
-$1$,$2$,$4$, $p^a$, $2p^a$. To find any primitive root
+$1,2,4,p^a,2p^a$. To find any primitive root
 
-$1$,$2$,$4$, $p^a$, $2p^a$. To find any primitive root
-\(1),\(2),\(4), \(p^a), \(2p^a). To find any primitive root
+
+
 
 
 
