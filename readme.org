@@ -1198,7 +1198,7 @@ fast implementation of sequence reduced residiues.
 
 ** Reduced residues
 
-Function ~reduced-residues return reduced resiues modulo m.
+Function ~reduced-residues~ return reduced resiues modulo m.
 
 #+begin_src clojure
   (pr/reduced-residues 12)
