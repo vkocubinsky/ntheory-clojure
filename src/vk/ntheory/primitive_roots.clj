@@ -33,7 +33,7 @@
 
 (defmethod reduced-residues :1
   [m]
-  '(1))
+  '(0))
 
 (defmethod reduced-residues :prime
   [m]
@@ -65,14 +65,14 @@
          (every? #(not (= 1 %))))))
 
 (defn classify-modulo
-  [n]
-  (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count n)]
+  [m]
+  (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
     (cond
-      (= n 1) :1
-      (= n 2) :2
-      (= n 4) :4
-      (and (nil? p2) (= a1 1)) :odd-prime ;; p
-      (and (nil? p2) (> a1 1)) :odd-prime-power ;; p^a
+      (= m 1) :1
+      (= m 2) :2
+      (= m 4) :4
+      (and (nil? p2) (> p1 2) (= a1 1)) :odd-prime ;; p
+      (and (nil? p2) (> p1 2) (> a1 1)) :odd-prime-power ;; p^a
       (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) :2-odd-prime-power)))
 
 (defmulti find-primitive-root classify-modulo)
@@ -117,8 +117,9 @@
 
 (defn primitive-roots
   [m]
-  (when-let [g (find-primitive-root m)]
-    (map #(b/m** m g %) (reduced-residues (af/totient m)))))
+  (if-let [g (find-primitive-root m)]
+    (map #(b/m** m g %) (reduced-residues (af/totient m)))
+    []))
 
 ;; Brute force implementation
 (defn reduced-residues'

@@ -1012,7 +1012,7 @@ more than two function as an argument.
 #+end_src
 
 #+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
-: #function[vk.ntheory.arithmetic-functions/d*/fn--5880]
+: #function[vk.ntheory.arithmetic-functions/d*/fn--14563]
 : 
 
 
@@ -1235,6 +1235,7 @@ $1$,$2$,$4$, $p^a$, $2p^a$. To find any primitive root
 #+end_src
 
 #+RESULTS:
+: odd-prime
 : 2
 : 
 
@@ -1257,5 +1258,6 @@ To find all primitive roots
 #+end_src
 
 #+RESULTS:
+: odd-prime
 : (7 6 2 8)
 : 
