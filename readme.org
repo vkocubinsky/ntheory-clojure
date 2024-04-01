@@ -551,7 +551,7 @@ more check functions:
 - ~check-prime~
 - ~check-odd-prime~      
 
-* Arithmetical functions ~vk.ntheory.arithmetic-functions~
+* Arithmetical functions 
 
 This section cover namespace ~vk.ntheory.primes~. It contains some
 well known arithmetical functions and also functions which allow build
