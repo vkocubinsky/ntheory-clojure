@@ -2,34 +2,41 @@
   "Some basic function of number theory.")
 
 (defn check
+  "Returns `x` if value of predicat `(pred x)` is true,
+  otherwise throws an exception."
   [pred x msg]
   (if (pred x)
     x
     (throw (IllegalArgumentException. msg))))
 
 (defn check-not
+  "Returns `x` if value of predicat `(pred x)` is false,
+  otherwise throws an exception."
   [pred x msg]
   (check (complement pred) x msg))
 
 (defn check-int
-  "Check is given `n` integer."
+  "Returns `n` if `n` is an integer, otherwise throws an exception."
   [n]
   (check int? n (format "%s is not an integer." n)))
 
 (defn check-int-pos
-  "Check is given `n` positive integer."
+  "Returns `n` if `n` is a positive integer,
+  otherwise throw an exception."
   [n]
   (let [n (check-int n)]
-    (check pos? n (format "%s is not positive." n))))
+    (check pos? n (format "%s is not positive integer." n))))
 
 (defn check-int-non-neg
-  "Check is given `n` non negative integer."
+  "Returns `n` if `n` is non negative integer(positive or zero),
+  otherwise throw an exception."
   [n]
   (let [n (check-int n)]
-    (check-not neg? n (format "%s is negative" n))))
+    (check-not neg? n (format "%s is not positive integer or is not zero." n))))
 
 (defn check-int-non-zero
-  "Check is given integer `n` is not zero."
+  "Return `n` if `n` is non zero integer,
+  otherwise throw an exception."
   [n]
   (let [n (check-int n)]
     (check-not zero? n (format "%s is zero" n))))
@@ -42,16 +49,14 @@
   (zero? (mod b a)))
 
 (defn m*
-  "Multiplication modulo `m`.
-  From performance reason, there is no checks that numbers `a` and `b`
-  are relatively prime. "
+  "Multiplication modulo `m`, `(m*)` returns 1, `(m* a)` returns `a`."
   ([m] 1)
   ([m a] (mod a m))
   ([m a b] (mod (* a b) m))
   ([m a b & more] (reduce (partial m* m) (m* m a b) more)))
 
 (defn m+
-  "Addition modulo `m`."
+  "Addition modulo `m`. `(m+) returns 0, `(m+ a)` returns `a`."
   ([m] 0)
   ([m a] (mod a m))
   ([m a b] (mod (+ a b) m))
@@ -62,7 +67,7 @@
   (count (Integer/toBinaryString n)))
 
 (defn m**
-  "Raise `a` to the power of `n` modulo `m`.
+  "Raise integer `a` to the power of `n >= 0` modulo `m`.
   See D.Knuth, The Art of Computer Programming, Volume II."
   [m a n]
   (check-int-non-neg m)
@@ -82,7 +87,7 @@
        bit))))
 
 (defn pow
-  "Return `a` raised to the power of `n >= 0`."
+  "Raise `a` to the power of `n >= 0`."
   [a n]
   (check-int a)
   (check-int-non-neg n)
@@ -102,7 +107,7 @@
         k))))
 
 (defn sign
-  "Sign for given `n`"
+  "Sign for given `n`."
   [n]
   (check-int n)
   (cond
@@ -111,8 +116,8 @@
     :else 0))
 
 (defn gcd
-  "Createst common divisor of `a` and `b`.
-  If both `a` and `b` are equlas to zero returns zero."
+  "Createst common divisor of integers `a` and `b`.
+  (gcd 0 0) returns 0."
   [a b]
   (check-int a)
   (check-int b)
@@ -122,7 +127,7 @@
 
 (defn lcm
   "Least common multiple of `a` and `b`.
-  If both `a` and `b` equals to zero returns zero."
+  (lcm 0 0) returns 0."
   [a b]
   (check-int a)
   (check-int b)
@@ -133,10 +138,9 @@
 
 (defn gcd-extended
   "Extended Euclid algorithm.
-  For two given number `a` and `b` returns vector `[d s t]`,
-  where d is the greatest common divisor `a` and `b` and
-  values `s` and `d` satisfied condition
-  `a * s + b * t = d`.
+  For two integers `a` and `b` returns vector `[d s t]`, where `d` is
+  the greatest common divisor of integers `a` and `b` and values
+  `s`,`t` and `d` satisfied condition `a * s + b * t = d`.
   "
   ([a b]
    (check-int a)
@@ -155,11 +159,16 @@
        (recur [b (mod a b)] [s' t'] [s t])))))
 
 (defn check-relatively-prime
+  "Throw an exception if integers `a` and `b` are not relatively prime."
   [a b]
   (let [d (gcd a b)]
-    (check #(= 1 %) d (format "Numbers %s and %s are not relatively prime." a b))))
+    (check #(= 1 %) d (format "Integers %s and %s are not relatively prime." a b))))
 
 (defn- product'
+  "Helper function for function `product`.
+   Parameters:
+  `starts` - vector of first values of original input sequences
+  `css` - vector of cycled sequences."
   [starts css]
   (lazy-seq
    (cons (map first css)
@@ -171,12 +180,10 @@
                    e (first cs)
                    css (assoc css k cs)]
                (if (= e start)
-                 (do
-                   (recur css (dec k)))
+                 (recur css (dec k))
                  (product' starts css))))))))
+
 (defn product
-  "Return all n-sequences combined from given n tuples.
-  Parameters:
-     xss - sequence of n input sequences."
+  "Return all n-sequences combined from given n sequences."
   [xss] (product' (mapv first xss) (mapv cycle xss)))
 

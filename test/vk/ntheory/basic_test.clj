@@ -5,14 +5,11 @@
 
 (deftest product-test
   (testing "Success"
-    (is (= [[0 0] [0 1] [0 2] [1 0] [1 1] [1 2]] (b/product [(range 2) (range 3)]))
-        ))
+    (is (= [[0 0] [0 1] [0 2] [1 0] [1 1] [1 2]] (b/product [(range 2) (range 3)]))))
   (testing "One sequence"
-    (is (= [[0] [1]] (b/product [(range 2)])))
-    )
+    (is (= [[0] [1]] (b/product [(range 2)]))))
   (testing "Zero sequence"
-    (is (= [[]] (b/product [])))
-    ))
+    (is (= [[]] (b/product [])))))
 
 (deftest check-int-test
   (testing "Fail"
@@ -42,8 +39,8 @@
   (testing "Fail"
     (is (thrown? Exception (b/check-int-non-zero 1.1)))
     (is (thrown? Exception (b/check-int-non-zero 0)))
-    (is (= -1 (b/check-int-non-zero -1)))
     (testing "Success"
+      (is (= -1 (b/check-int-non-zero -1)))
       (is (= 1 (b/check-int-non-zero 1))))))
 
 (deftest m*-test
@@ -53,7 +50,7 @@
     (is (= 1 (b/m* 6 7)))
     (is (= 5 (b/m* 6 7 5)))
     (is (= 5 (b/m* 6 5 5 5))))
-  (testing "Relatively prime to modulo 6"
+  (testing "Multiplication to modulo 6"
     (are [x y] (= x y)
       1 (b/m* 6 1 1)
       5 (b/m* 6 1 5)
@@ -61,7 +58,13 @@
       1 (b/m* 6 5 5))))
 
 (deftest m+-test
-  (testing "Addition to modulo 6"
+  (testing "Arity"
+    (is (= 0 (b/m+ 6)))
+    (is (= 5 (b/m+ 6 5)))
+    (is (= 1 (b/m+ 6 7)))
+    (is (= 0 (b/m+ 6 7 5)))
+    (is (= 3 (b/m+ 6 5 5 5))))
+  (testing "Addition to modulo 3"
     (are [x y] (= x y)
       1 (b/m+ 3 1 0)
       2 (b/m+ 3 1 1)
@@ -87,11 +90,12 @@
 (deftest divides?-test
   (testing "Divide by zero"
     (is (thrown? Exception (b/divides? 0 8)))
-    (is (thrown? Exception (b/divides? 0 -8)))
-    (testing "Everything divides 0, but 0"
-      (is (b/divides? 2 0))
-      (is (thrown? Exception (b/divides? 0 0)))))
-  (testing "simple cases"
+    (is (thrown? Exception (b/divides? 0 -8))))
+  (testing "Everything divides 0, but 0"
+    (is (b/divides? 1 0))
+    (is (b/divides? 2 0))
+    (is (thrown? Exception (b/divides? 0 0))))
+  (testing "Simple cases"
     (are [x y] (= x y)
       true (b/divides? 1 1)
       true (b/divides? 1 1)
@@ -105,9 +109,22 @@
       false (b/divides? -2 -9))))
 
 (deftest pow-test
-  (testing "negative numbers"
+  (testing "Negative powers."
     (is (thrown? Exception (b/pow 2 -1))))
-  (testing "power of 2"
+  (testing "Power of -2"
+    (are [x y] (= x y)
+      1 (b/pow -2 0)
+      -2 (b/pow -2 1)
+      4 (b/pow -2 2)
+      -8 (b/pow -2 3)
+      16 (b/pow -2 4)
+      -32 (b/pow -2 5)
+      64 (b/pow -2 6)
+      -128 (b/pow -2 7)
+      256 (b/pow -2 8)
+      -512 (b/pow -2 9)
+      1024 (b/pow -2 10)))
+  (testing "Power of 2"
     (are [x y] (= x y)
       1 (b/pow 2 0)
       2 (b/pow 2 1)
