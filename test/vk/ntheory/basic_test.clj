@@ -4,7 +4,7 @@
    [vk.ntheory.basic :as b]))
 
 (deftest product-test
-  (testing "Success"
+  (testing "Two sequences"
     (is (= [[0 0] [0 1] [0 2] [1 0] [1 1] [1 2]] (b/product [(range 2) (range 3)]))))
   (testing "One sequence"
     (is (= [[0] [1]] (b/product [(range 2)]))))
