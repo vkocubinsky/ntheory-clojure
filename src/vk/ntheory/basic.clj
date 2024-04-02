@@ -169,7 +169,7 @@
   "Throw an exception if integers `a` and `b` are not relatively prime."
   [a b]
   (let [d (gcd a b)]
-    (check-predicate #(= 1 %) d (format "Integers %s and %s are not relatively prime." a b))))
+    (check-true (= 1 d) (format "Integers %s and %s are not relatively prime." a b))))
 
 (defn- product'
   "Helper function for function `product`.
