@@ -11,6 +11,23 @@
   (testing "Zero sequence"
     (is (= [[]] (b/product [])))))
 
+(deftest check-relatively-prime-test
+  (testing "Fail"
+    (is (thrown? Exception (b/check-relatively-prime 2 6)))
+    (is (thrown? Exception (b/check-relatively-prime 3 6))))
+  (testing "Success"
+    (is (nil? (b/check-relatively-prime 1 6)))
+    (is (nil? (b/check-relatively-prime 5 6)))))
+
+(deftest check-not-divides
+  (testing "Fail"
+    (is (thrown? Exception (b/check-not-divides 2 6)))
+    (is (thrown? Exception (b/check-not-divides 3 6))))
+  (testing "Success"
+    (is (nil? (b/check-not-divides 5 6)))
+    (is (nil? (b/check-not-divides 11 6))))
+  )
+
 (deftest check-int-test
   (testing "Fail"
     (is (thrown? Exception (b/check-int 1.1))))

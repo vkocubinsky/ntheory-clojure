@@ -4,7 +4,11 @@
 
 * Version 0.7.0
 
-
+- basic namespace
+  - add check-not-divides function
+  - rename check -> check-predicate
+  - remove check-not
+  - add check-true function  
 
 * Version 0.6.0
 

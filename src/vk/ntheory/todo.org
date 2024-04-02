@@ -6,7 +6,7 @@
 * TODO Hide unpublic methods(move arities to help function)
 * TODO Update arithmetic function tests , use values up to 20
 * TODO Review code and review tests for namespaces: 
-** TODO basic
+** DONE basic
 ** TODO primes
 ** TODO arithmetic functions
 ** TODO congruences

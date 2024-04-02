@@ -105,8 +105,12 @@ user input:
 All of above accept one argument, check does argument satisfy to
 expectation, if does return argument, otherwise throw an exception.
 
-Some check functions accept more than one argument. For instance
-function ~check-relatively-prime~ accepts 2 arguments.
+Some check functions accept more than one argument. Those function just
+throw an exception if expectation failed and return ~nil~ otherwise.
+
+- ~check-relatively-prime~
+- ~check-not-divides~
+
 
 There are also two helper function ~check-true~ and ~check-predicate~ which helps
 to implement another ~check-*~ function for some predicate. 
