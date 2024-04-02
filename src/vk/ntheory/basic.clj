@@ -1,45 +1,45 @@
 (ns vk.ntheory.basic
   "Some basic function of number theory.")
 
-(defn check
+(defn check-true
+  "Throws an exception if x is not true."
+  [x msg]
+  (when-not x (throw (IllegalArgumentException. msg))))
+
+
+(defn check-predicate
   "Returns `x` if value of predicat `(pred x)` is true,
   otherwise throws an exception."
   [pred x msg]
-  (if (pred x)
-    x
-    (throw (IllegalArgumentException. msg))))
-
-(defn check-not
-  "Returns `x` if value of predicat `(pred x)` is false,
-  otherwise throws an exception."
-  [pred x msg]
-  (check (complement pred) x msg))
+  (check-true (pred x ) msg)
+  x
+  )
 
 (defn check-int
   "Returns `n` if `n` is an integer, otherwise throws an exception."
   [n]
-  (check int? n (format "%s is not an integer." n)))
+  (check-predicate int? n (format "%s is not an integer." n)))
 
 (defn check-int-pos
   "Returns `n` if `n` is a positive integer,
   otherwise throw an exception."
   [n]
   (let [n (check-int n)]
-    (check pos? n (format "%s is not positive integer." n))))
+    (check-predicate pos? n (format "%s is not positive integer." n))))
 
 (defn check-int-non-neg
   "Returns `n` if `n` is non negative integer(positive or zero),
   otherwise throw an exception."
   [n]
   (let [n (check-int n)]
-    (check-not neg? n (format "%s is not positive integer or is not zero." n))))
+    (check-predicate (complement neg?) n (format "%s is not positive integer or is not zero." n))))
 
 (defn check-int-non-zero
   "Return `n` if `n` is non zero integer,
   otherwise throw an exception."
   [n]
   (let [n (check-int n)]
-    (check-not zero? n (format "%s is zero" n))))
+    (check-predicate (complement zero?) n (format "%s is zero" n))))
 
 (defn divides?
   "Return true if `a != 0` divides `b`, otherwise false."
@@ -47,6 +47,13 @@
   (check-int-non-zero a)
   (check-int b)
   (zero? (mod b a)))
+
+(defn check-not-divides
+  "Throw an exception if `a` not divies `b`."
+  [a b]
+  (let [a (check-int a)
+        b (check-int b)]
+    (check-true (not (divides? a b)) (format "%s divides %s" a b))))
 
 (defn m*
   "Multiplication modulo `m`, `(m*)` returns 1, `(m* a)` returns `a`."
@@ -162,7 +169,7 @@
   "Throw an exception if integers `a` and `b` are not relatively prime."
   [a b]
   (let [d (gcd a b)]
-    (check #(= 1 %) d (format "Integers %s and %s are not relatively prime." a b))))
+    (check-predicate #(= 1 %) d (format "Integers %s and %s are not relatively prime." a b))))
 
 (defn- product'
   "Helper function for function `product`.

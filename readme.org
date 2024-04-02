@@ -108,7 +108,7 @@ expectation, if does return argument, otherwise throw an exception.
 Some check functions accept more than one argument. For instance
 function ~check-relatively-prime~ accepts 2 arguments.
 
-There are also two helper function ~check~ and ~check-not~ which helps
+There are also two helper function ~check-true~ and ~check-predicate~ which helps
 to implement another ~check-*~ function for some predicate. 
 
 ** Some predicates
