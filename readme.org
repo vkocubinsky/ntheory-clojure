@@ -424,13 +424,12 @@ composite and unit.
 Every integer more than $1$ can be represented uniquely as a product
 of primes.
 
-\[
-n = {p_1}^{a_1} {p_2}^{a_2} \dots {p_k}^{a_k}
-\]
+$$n = {p_1}^{a_1} {p_2}^{a_2} \dots {p_k}^{a_k}$$
+
 or we can write it in more compact form:
-\[
-n = \prod_{i=1}^{k} {p_i}^{a_i}
-\]
+
+$$n = \prod_{i=1}^{k} {p_i}^{a_i}$$
+
 or even write as:
 
 $$n = \prod_{p|n} p^a$$
@@ -639,7 +638,7 @@ is unordered.
 
 Additive function is a function for which
 
-$$ f(mn) = f(m) + f(n)$$
+$$f(mn) = f(m) + f(n)$$
 
 if $m$ relatively prime to $n$. If above equality holds for all
 natural $m$ and $n$ function called completely additive.
