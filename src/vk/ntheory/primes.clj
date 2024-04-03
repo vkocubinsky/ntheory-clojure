@@ -122,7 +122,7 @@
   (check-int-pos-max n)
   (if (unit? n)
     false
-    (let [table (least-divisor-table n)
+    (let [^ints table (least-divisor-table n)
           e (aget table n)]
       (= e n))))
 

@@ -3,7 +3,7 @@
 
 (defn check-true
   "Throws an exception if x is not true."
-  [x msg]
+  [x ^String msg]
   (when-not x (throw (IllegalArgumentException. msg))))
 
 (defn check-predicate
