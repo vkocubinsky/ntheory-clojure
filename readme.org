@@ -886,6 +886,7 @@ Liouville function is completely multiplicative.
 *** Mangoldt function - $\Lambda$
 
 Mangoldt function $\Lambda$ defined as follows:
+
 $$\Lambda(n) = \begin{cases}
    \log p,& \text{if $n = p ^k$ for some prime $p$ and some $k \ge 1$} \\
    0,& \text{otherwise} 
