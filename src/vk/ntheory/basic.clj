@@ -43,9 +43,7 @@
   "Throw exception if all arguments are zero, otherwise returns nil."
   [a b]
   (check-true (not-every? zero? [a b])
-              (format "Expected at least one non zero integer"))
-  )
-
+              (format "Expected at least one non zero integer")))
 
 (defn divides?
   "Return true if `a != 0` divides `b`, otherwise false."
@@ -139,6 +137,16 @@
     (if (zero? b) a
         (recur b (mod a b)))))
 
+(defn- gcd-extended'
+  "Helper function for gcd-extended."
+  ([[a b] [s'' t''] [s' t']]
+   (if (zero? b)
+     [a s'' t'']
+     (let [q (quot a b)
+           s (- s'' (* s' q))
+           t (- t'' (* t' q))]
+       (recur [b (mod a b)] [s' t'] [s t])))))
+
 (defn gcd-extended
   "Extended Euclid algorithm.
   For two integers `a` and `b`,not both zero, returns vector
@@ -150,18 +158,11 @@
    (check-int a)
    (check-int b)
    (check-at-least-one-non-zero a b)
-   (let [[d s t] (gcd-extended [(abs a) (abs b)] [1 0] [0 1])
+   (let [[d s t] (gcd-extended' [(abs a) (abs b)] [1 0] [0 1])
          s' (* (sign a) s)
          t' (* (sign b) t)]
      (assert (= d (+ (* a s') (* b t'))))
-     [d s' t']))
-  ([[a b] [s'' t''] [s' t']]
-   (if (zero? b)
-     [a s'' t'']
-     (let [q (quot a b)
-           s (- s'' (* s' q))
-           t (- t'' (* t' q))]
-       (recur [b (mod a b)] [s' t'] [s t])))))
+     [d s' t'])))
 
 (defn lcm
   "The least common multiple of two non zero integers `a` and `b`."
