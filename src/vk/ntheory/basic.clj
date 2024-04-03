@@ -138,7 +138,7 @@
         (recur b (mod a b)))))
 
 (defn- gcd-extended'
-  "Helper function for gcd-extended."
+  "Helper function for `gcd-extended`."
   [[a b] [s'' t''] [s' t']]
    (if (zero? b)
      [a s'' t'']

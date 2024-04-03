@@ -134,16 +134,20 @@
     false
     ((complement prime?) n)))
 
+
+(defn- int->factors'
+  [^ints xs ^Integer n]
+  (lazy-seq
+   (when (> n 1)
+     (let [d (aget xs n)]
+       (cons d (int->factors' xs (quot n d))))))
+  )
+
 (defn int->factors
-  ([^Integer n]
+  [^Integer n]
    (check-int-pos-max n)
-   (int->factors (least-divisor-table n) n))
-  ([^ints xs ^Integer n]
-   (check-int-pos-max n)
-   (lazy-seq
-    (when (> n 1)
-      (let [d (aget xs n)]
-        (cons d (int->factors xs (quot n d))))))))
+   (int->factors' (least-divisor-table n) n)
+  )
 
 (defn int->factors-distinct
   [n]

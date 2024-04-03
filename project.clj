@@ -5,8 +5,12 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.11.2"]]
   :repl-options {:init-ns user
-                 :init (require '[vk.ntheory.basic :as b]
+                 :init
+                 
+                 (do
+                   (require '[vk.ntheory.basic :as b]
                                 '[vk.ntheory.primes :as p]
                                 '[vk.ntheory.arithmetic-functions :as af]
                                 '[vk.ntheory.congruences :as c]
-                                )})
+                                )
+                   (set! *warn-on-reflection* true))})
