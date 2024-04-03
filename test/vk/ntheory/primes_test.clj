@@ -36,7 +36,7 @@
     (is (= p/max-int (p/check-int-non-zero-max p/max-int)))))
 
 
-(deftest check-prime
+(deftest check-prime-test
   (testing "Fail"
     (is (thrown? Exception (p/check-prime 0)))
     (is (thrown? Exception (p/check-prime 1)))
@@ -49,7 +49,7 @@
     (is (= 7 (p/check-odd-prime 7)))
     (is (= 11 (p/check-odd-prime 11)))))
 
-(deftest check-odd-primeest
+(deftest check-odd-prime-test
   (testing "Fail"
     (is (thrown? Exception (p/check-odd-prime 0)))
     (is (thrown? Exception (p/check-odd-prime 1)))
