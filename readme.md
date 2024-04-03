@@ -1,62 +1,62 @@
 
 # Table of Contents
 
-1.  [About](#orgb58cef9)
-2.  [Notation](#org65c3e6e)
-3.  [Some basic functions](#orga48b30a)
-    1.  [Check functions](#orgf99d98b)
-    2.  [Some predicates](#org02cde38)
-    3.  [Combinatorics](#org514950b)
-    4.  [Operations in $\mathbf{Z}/m\mathbf{Z}$](#org0c7af83)
-    5.  [Power function](#org7f346ad)
-    6.  [Order function](#org747f6f9)
-    7.  [Sign function](#org7b81a21)
-    8.  [The greatest common divisor](#org247c41c)
-    9.  [The least common multiple](#orgb195a5b)
-4.  [Primes and integer factorization](#org45fe17d)
-    1.  [Check functions](#org6996b87)
-    2.  [Performance and cache](#org43bc8b0)
-    3.  [Primes](#orgc0ef3cf)
-    4.  [Integer factorization](#orgb92370a)
-5.  [Arithmetical functions](#orgfe56331)
-    1.  [Arithmetical function](#org3423ba0)
-    2.  [Function equality](#orge817ed0)
-    3.  [Pointwise addition](#org4e7c88a)
-    4.  [Pointwise multiplication](#org8a201ec)
-    5.  [Divisors](#org75fcd34)
-    6.  [Additive functions](#org7ee3581)
-    7.  [Multiplicative functions](#org5384a12)
-    8.  [Higher order function for define multiplicative and additive functions](#orge1bd263)
-    9.  [Some additive functions](#org54c09f1)
-        1.  [Count of distinct primes - $\omega$](#org1d3b955)
-        2.  [Total count of primes - $\Omega$](#orgc5dc9b7)
-    10. [Some multiplicative functions](#org4de6ab1)
-        1.  [Mobius function - $\mu$.](#org1b75658)
-        2.  [Euler totient function - $\varphi$](#org6767db3)
-        3.  [Unit function - $\varepsilon$](#org76d664d)
-        4.  [Constant one function - $\mathbf{1}$](#org0787d88)
-        5.  [Divisors count - $\sigma_0$](#org72228df)
-        6.  [Divisors sum - $\sigma_1$](#org4a49d13)
-        7.  [Divisors square sum](#org66f2aa2)
-        8.  [Divisors higher order function - $\sigma_{x}$](#org574baee)
-        9.  [Liouville function - $\lambda$](#orgf7f938a)
-    11. [Some other arithmetic functions](#orgc8537f8)
-        1.  [Mangoldt function - $\Lambda$](#org36f1674)
-        2.  [Chebyshev functions $\theta$ and $\psi$](#org75ec467)
-    12. [Dirichlet convolution](#org847d893)
-6.  [Congruences](#org986efd9)
-    1.  [Brute force solution](#org28e4493)
-    2.  [Linear congruence](#org603323d)
-    3.  [System of linear congruences](#org704dce7)
-    4.  [Coprime moduli case](#org630f0da)
-7.  [Primitive roots](#org7667e33)
-    1.  [Reduced residues](#org817d79a)
-    2.  [Order](#org6ff260c)
-    3.  [Primitive root](#orgd69fd15)
+1.  [About](#org1546e01)
+2.  [Notation](#org505f07a)
+3.  [Some basic functions](#org2537f37)
+    1.  [Check functions](#orgb053d97)
+    2.  [Some predicates](#org5d7721b)
+    3.  [Combinatorics](#orgd44c12c)
+    4.  [Operations in $\mathbf{Z}/m\mathbf{Z}$](#org8725c59)
+    5.  [Power function](#orgc2dccbf)
+    6.  [Order function](#orgac7813b)
+    7.  [Sign function](#orgfc2ba0f)
+    8.  [The greatest common divisor](#org04ba475)
+    9.  [The least common multiple](#org74425b8)
+4.  [Primes and integer factorization](#org766d569)
+    1.  [Check functions](#org94b9d01)
+    2.  [Performance and cache](#orgf37c505)
+    3.  [Primes](#org54037d9)
+    4.  [Integer factorization](#orgf5bc949)
+5.  [Arithmetical functions](#org59b5877)
+    1.  [Arithmetical function](#org5867eb5)
+    2.  [Function equality](#org9f3da03)
+    3.  [Pointwise addition](#org3cae4a4)
+    4.  [Pointwise multiplication](#org2063995)
+    5.  [Divisors](#orgc2371ae)
+    6.  [Additive functions](#orgcc721b9)
+    7.  [Multiplicative functions](#org010786e)
+    8.  [Higher order function for define multiplicative and additive functions](#org650d95e)
+    9.  [Some additive functions](#org394255b)
+        1.  [Count of distinct primes - $\omega$](#orgcc67ff6)
+        2.  [Total count of primes - $\Omega$](#org6fc1dda)
+    10. [Some multiplicative functions](#org91bdd6f)
+        1.  [Mobius function - $\mu$.](#org40de4e9)
+        2.  [Euler totient function - $\varphi$](#orgf223bb2)
+        3.  [Unit function - $\varepsilon$](#org27d566a)
+        4.  [Constant one function - $\mathbf{1}$](#org242d9e8)
+        5.  [Divisors count - $\sigma_0$](#orgabb9658)
+        6.  [Divisors sum - $\sigma_1$](#org6f4bfae)
+        7.  [Divisors square sum](#orgb061a5b)
+        8.  [Divisors higher order function - $\sigma_{x}$](#org15a16da)
+        9.  [Liouville function - $\lambda$](#org61e9aa1)
+    11. [Some other arithmetic functions](#orgb7079c7)
+        1.  [Mangoldt function - $\Lambda$](#org224ff3f)
+        2.  [Chebyshev functions $\theta$ and $\psi$](#orgbef97b8)
+    12. [Dirichlet convolution](#orgb02f825)
+6.  [Congruences](#org73618b1)
+    1.  [Brute force solution](#org903a49b)
+    2.  [Linear congruence](#org9dd52ac)
+    3.  [System of linear congruences](#org855610b)
+    4.  [Coprime moduli case](#org9e40180)
+7.  [Primitive roots](#org54ef9c8)
+    1.  [Reduced residues](#org944c129)
+    2.  [Order](#org567a917)
+    3.  [Primitive root](#org544a233)
 
 
 
-<a id="orgb58cef9"></a>
+<a id="org1546e01"></a>
 
 # About
 
@@ -121,7 +121,7 @@ In this document I load number theory packages as:
 So below I will use above aliases.
 
 
-<a id="org65c3e6e"></a>
+<a id="org505f07a"></a>
 
 # Notation
 
@@ -135,7 +135,7 @@ So below I will use above aliases.
 -   $a \nmid b$ - $a$ does not divide $b$
 
 
-<a id="orga48b30a"></a>
+<a id="org2537f37"></a>
 
 # Some basic functions
 
@@ -146,7 +146,7 @@ One can use `vk.ntheory.basic` namespace as:
     (require '[vk.ntheory.basic :as b])
 
 
-<a id="orgf99d98b"></a>
+<a id="orgb053d97"></a>
 
 ## Check functions
 
@@ -173,7 +173,7 @@ which helps to implement another `check-*` function for some
 predicate.
 
 
-<a id="org02cde38"></a>
+<a id="org5d7721b"></a>
 
 ## Some predicates
 
@@ -184,7 +184,7 @@ Function `divides?` determine does one number divides another.
     true
 
 
-<a id="org514950b"></a>
+<a id="orgd44c12c"></a>
 
 ## Combinatorics
 
@@ -195,7 +195,7 @@ Function `divides?` determine does one number divides another.
     ((1 1) (1 2) (1 3) (1 4) (2 1) (2 2) (2 3) (2 4))
 
 
-<a id="org0c7af83"></a>
+<a id="org8725c59"></a>
 
 ## Operations in $\mathbf{Z}/m\mathbf{Z}$
 
@@ -235,7 +235,7 @@ Computer Programming, Volume II. For instance, $101^{900} \equiv 701
     701
 
 
-<a id="org7f346ad"></a>
+<a id="orgc2dccbf"></a>
 
 ## Power function
 
@@ -247,7 +247,7 @@ Clojure has built-in `clojure.math/pow` function, but it return
     8
 
 
-<a id="org747f6f9"></a>
+<a id="orgac7813b"></a>
 
 ## Order function
 
@@ -259,7 +259,7 @@ $2^3 | 24$, but $2^4 \nmid 24$, so $ord_2(24) = 3$
     3
 
 
-<a id="org7b81a21"></a>
+<a id="orgfc2ba0f"></a>
 
 ## Sign function
 
@@ -277,7 +277,7 @@ $$
     [-1 1 0]
 
 
-<a id="org247c41c"></a>
+<a id="org04ba475"></a>
 
 ## The greatest common divisor
 
@@ -299,7 +299,7 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
     [6 -1 1]
 
 
-<a id="orgb195a5b"></a>
+<a id="org74425b8"></a>
 
 ## The least common multiple
 
@@ -314,7 +314,7 @@ $$[a,b] = \frac{|ab|}{(a,b)}$$
     36
 
 
-<a id="org45fe17d"></a>
+<a id="org766d569"></a>
 
 # Primes and integer factorization
 
@@ -325,7 +325,7 @@ for integer factorization and get list of primes. One can use
     (require '[vk.ntheory.primes :as p])
 
 
-<a id="org6996b87"></a>
+<a id="org94b9d01"></a>
 
 ## Check functions
 
@@ -344,7 +344,7 @@ more check functions:
 -   `check-odd-prime`
 
 
-<a id="org43bc8b0"></a>
+<a id="orgf37c505"></a>
 
 ## Performance and cache
 
@@ -399,7 +399,7 @@ contains `7`. Index zero is not used, index `1` is a special case and
 value for index `1` is `1`.
 
 
-<a id="orgc0ef3cf"></a>
+<a id="org54037d9"></a>
 
 ## Primes
 
@@ -410,7 +410,7 @@ value for index `1` is `1`.
     (2 3 5 7 11 13 17 19 23 29)
 
 
-<a id="orgb92370a"></a>
+<a id="orgf5bc949"></a>
 
 ## Integer factorization
 
@@ -456,6 +456,7 @@ $$
 n = \prod_{i=1}^{k} {p_i}^{a_i}
 $$
 or even write as:
+
 $$n = \prod_{p|n} p^a$$
 
 For example, $360 = 2^3 3^2 5^1$.
@@ -528,7 +529,7 @@ the list, then divide `n` on `p`, the index of quotient `n/p` is next
 element of "linked list". 
 
 
-<a id="orgfe56331"></a>
+<a id="org59b5877"></a>
 
 # Arithmetical functions
 
@@ -539,7 +540,7 @@ new arithmetical functions.
     (require '[vk.ntheory.arithmetic-functions :as af])
 
 
-<a id="org3423ba0"></a>
+<a id="org5867eb5"></a>
 
 ## Arithmetical function
 
@@ -549,7 +550,7 @@ mostly works with functions which also returns integer $f: \mathbf N
 \to \mathbf Z$.
 
 
-<a id="orge817ed0"></a>
+<a id="org9f3da03"></a>
 
 ## Function equality
 
@@ -576,7 +577,7 @@ sequence of natural number we can for example do next:
     (af/f= f g (filter even? (range 1 100))) ;; true
 
 
-<a id="org4e7c88a"></a>
+<a id="org3cae4a4"></a>
 
 ## Pointwise addition
 
@@ -593,7 +594,7 @@ In Clojure function `f+` returns pointwise addition:
     15
 
 
-<a id="org8a201ec"></a>
+<a id="org2063995"></a>
 
 ## Pointwise multiplication
 
@@ -611,7 +612,7 @@ In clojure function `f*` returns pointwise multiplication:
     54
 
 
-<a id="org75fcd34"></a>
+<a id="orgc2371ae"></a>
 
 ## Divisors
 
@@ -625,12 +626,14 @@ is unordered.
     (1 2 3 6 5 10 15 30)
 
 
-<a id="org7ee3581"></a>
+<a id="orgcc721b9"></a>
 
 ## Additive functions
 
 Additive function is a function for which
+
 $$ f(mn) = f(m) + f(n)$$
+
 if $m$ relatively prime to $n$. If above equality holds for all
 natural $m$ and $n$ function called completely additive.
 
@@ -638,16 +641,18 @@ To define an additive function it is enough to define how to
 calculate a function on power of primes.
 If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then: 
 
-$$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
+$$f(n) = \sum_{i=1}^{k} f({p_i}^{a_i})$$
 
 
-<a id="org5384a12"></a>
+<a id="org010786e"></a>
 
 ## Multiplicative functions
 
 Multiplicative function is a function not equal to zero for all n
-for which 
-$$ f(mn) = f(m)f(n) $$
+for which
+
+$$f(mn) = f(m)f(n)$$
+
 if $m$ relatively prime to $n$. If above equality holds for all
 natural $m$ and $n$ function called completely multiplicative.
 
@@ -655,10 +660,10 @@ To define multiplicative function it is enough to define how to
 calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 \dots p_k^{a_k}$ then:
 
-$$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
+$$f(n) = \prod_{i=1}^{k} f({p_i}^{a_i})$$
 
 
-<a id="orge1bd263"></a>
+<a id="org650d95e"></a>
 
 ## Higher order function for define multiplicative and additive functions
 
@@ -688,12 +693,12 @@ Of course there is predefined function `divisors-count`, but it
 is an example how to define custom function.
 
 
-<a id="org54c09f1"></a>
+<a id="org394255b"></a>
 
 ## Some additive functions
 
 
-<a id="org1d3b955"></a>
+<a id="orgcc67ff6"></a>
 
 ### Count of distinct primes - $\omega$
 
@@ -705,7 +710,7 @@ divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k
     2
 
 
-<a id="orgc5dc9b7"></a>
+<a id="org6fc1dda"></a>
 
 ### Total count of primes - $\Omega$
 
@@ -719,22 +724,22 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
     3
 
 
-<a id="org4de6ab1"></a>
+<a id="org91bdd6f"></a>
 
 ## Some multiplicative functions
 
 
-<a id="org1b75658"></a>
+<a id="org40de4e9"></a>
 
 ### Mobius function - $\mu$.
 
 Mobius function $\mu$ is defined as follows:
 
-$$ \mu(n) = \begin{cases}
+$$\mu(n) = \begin{cases}
 1        &  \quad \text{if } n = 1 \\
 (-1)^k   &  \quad \text{if } n \text{ product of distinct primes} \\
 0        &  \quad \text{otherwise}
-\end{cases} $$
+\end{cases}$$
 
 For example, $\mu(6)=\mu(2 \cdot 3)=1$
 
@@ -743,14 +748,14 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
     1
 
 
-<a id="org6767db3"></a>
+<a id="orgf223bb2"></a>
 
 ### Euler totient function - $\varphi$
 
 Euler totient function $\varphi(n)$ is a number of positive integers not exceeding
 $n$ which are relatively prime to $n$. It can be calculated as follows:
 
-$$ \varphi(n) = \prod_{p|n} (p^a - p^{a-1}) $$
+$$\varphi(n) = \prod_{p|n} (p^a - p^{a-1})$$
 
 For example, count of numbers relative prime to $6$ are $1$ and $5$,
 so $\varphi(6) = 2$
@@ -760,7 +765,7 @@ so $\varphi(6) = 2$
     2
 
 
-<a id="org76d664d"></a>
+<a id="org27d566a"></a>
 
 ### Unit function - $\varepsilon$
 
@@ -779,26 +784,26 @@ The name `unit` was chosen to make it different from
 `clojure.core/identity` function. 
 
 
-<a id="org0787d88"></a>
+<a id="org242d9e8"></a>
 
 ### Constant one function - $\mathbf{1}$
 
 Constant one function $\mathbf{1}(n)$ defiened as follows:
-$$\mathbf{1}(n) = 1 $$
+$$\mathbf{1}(n) = 1$$
 
     (af/one 6)
 
     1
 
 
-<a id="org72228df"></a>
+<a id="orgabb9658"></a>
 
 ### Divisors count - $\sigma_0$
 
 Function divisors count is a number of positive divisors which divides
 given number $n$.
 
-$$ \sigma_0(n) = \sum_{d|n} 1 $$
+$$\sigma_0(n) = \sum_{d|n} 1$$
 
 Function $\sigma_0(n)$ is often denoted as $d(n)$.  For example,
 number $6$ has $4$ divisors, namely $1,2,3,6$, so $d(6)=4$.
@@ -808,14 +813,14 @@ number $6$ has $4$ divisors, namely $1,2,3,6$, so $d(6)=4$.
     4
 
 
-<a id="org4a49d13"></a>
+<a id="org6f4bfae"></a>
 
 ### Divisors sum - $\sigma_1$
 
 Function divisors sum is sum of positive divisors which divides given
 number $n$
 
-$$ \sigma_1(n) = \sum_{d | n} d $$
+$$\sigma_1(n) = \sum_{d | n} d$$
 
 Function $\sigma_1$ is often denoted as $\sigma$.
 For instance, $\sigma(6)= 1 + 2 + 3 + 6 = 12$
@@ -825,13 +830,14 @@ For instance, $\sigma(6)= 1 + 2 + 3 + 6 = 12$
     12
 
 
-<a id="org66f2aa2"></a>
+<a id="orgb061a5b"></a>
 
 ### Divisors square sum
 
 Function divisors square sum defined as follows:
 
-$$ \sigma_2(n) = \sum_{d | n} d^2 $$
+$$\sigma_2(n) = \sum_{d | n} d^2$$
+
 For instance, $\sigma_2(6) = 1^2 + 2^2 + 3^2 + 6^2 = 50$
 
     (af/divisors-square-sum 6)
@@ -839,17 +845,21 @@ For instance, $\sigma_2(6) = 1^2 + 2^2 + 3^2 + 6^2 = 50$
     50
 
 
-<a id="org574baee"></a>
+<a id="org15a16da"></a>
 
 ### Divisors higher order function - $\sigma_{x}$
 
 In general $\sigma_x$ function is a sum of x-th powers divisors of given n
 
-$$ \sigma_x(n) = \sum_{ d | n} d^x $$
+$$\sigma_x(n) = \sum_{ d | n} d^x$$
+
 If $x \ne 0$, $\sigma_x$ can be calculated as follows:
-$$ \sigma_{x}(n) = \prod_{i=1}^{k} \frac {p_i^{x(a_i+1)}} {p_i^x - 1} $$
+
+$$\sigma_{x}(n) = \prod_{i=1}^{k} \frac {p_i^{x(a_i+1)}} {p_i^x - 1}$$
+
 and if $x = 0$ as follows:
-$$ \sigma_{0}(n) = \prod_{i=1}^{k} (a_i + 1) $$
+
+$$\sigma_{0}(n) = \prod_{i=1}^{k} (a_i + 1)$$
 
 There is higher order function `divisors-sum-x` which
 accept `x` and return appropriate function.
@@ -859,13 +869,14 @@ For example we can define divisors cube sum as follows:
     (def my-divisors-cube-sum (af/divisors-sum-x 3))
 
 
-<a id="orgf7f938a"></a>
+<a id="org61e9aa1"></a>
 
 ### Liouville function - $\lambda$
 
 Liouville function $\lambda$ defined as $\lambda(1) = 1$ and if $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$
 $\lambda(n) = (-1)^{a_1 + a_2 + \dots + a_k}$ or with early defined $\Omega$ function
 we can write definition of $\lambda$ as follows:
+
 $$\lambda(n) = (-1)^{\Omega}$$
 
     (af/liouville (* 2 3)) 
@@ -875,12 +886,12 @@ $$\lambda(n) = (-1)^{\Omega}$$
 Liouville function is completely multiplicative.
 
 
-<a id="orgc8537f8"></a>
+<a id="orgb7079c7"></a>
 
 ## Some other arithmetic functions
 
 
-<a id="org36f1674"></a>
+<a id="org224ff3f"></a>
 
 ### Mangoldt function - $\Lambda$
 
@@ -898,7 +909,7 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
     0.6931471805599453
 
 
-<a id="org75ec467"></a>
+<a id="orgbef97b8"></a>
 
 ### Chebyshev functions $\theta$ and $\psi$
 
@@ -911,6 +922,7 @@ $$\theta(x) = \sum_{p \le x} \log p$$
     0.6931471805599453
 
 If $x > 0$ Chebyshev $\psi$ function is defined as follows:
+
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
     (af/chebyshev-psi 2)
@@ -918,22 +930,25 @@ $$\psi = \sum_{n \le x} {\Lambda(n)} $$
     0.6931471805599453
 
 
-<a id="org847d893"></a>
+<a id="orgb02f825"></a>
 
 ## Dirichlet convolution
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
 new arithmetic function defined as follows:
-$$ (f*g)(n) = \sum_{d | n} f(d)g(\frac{n}{d}) $$
+
+$$(f*g)(n) = \sum_{d | n} f(d)g(\frac{n}{d})$$
 
 Dirichlet convolution is associative:
-$$ (f * g) * h = f * (g * h) $$
+$$(f * g) * h = f * (g * h)$$
 
 Commutative:
-$$ f * g = g * f $$
+
+$$f * g = g * f$$
 
 Has identify:
-$$ f * \varepsilon = \varepsilon * f = f $$
+
+$$f * \varepsilon = \varepsilon * f = f$$
 
 For every $f$, which $f(1) \ne 0$ exists inverse function $f^{-1}$
 such that $f * f^{-1} = \varepsilon$. This inverse function called
@@ -989,7 +1004,7 @@ identity function, let's denote it as $N(n)$, is $N(n) \cdot \mu(n)$
     true
 
 
-<a id="org986efd9"></a>
+<a id="org73618b1"></a>
 
 # Congruences
 
@@ -1001,15 +1016,13 @@ and system of linear congruences.
     (require '[vk.ntheory.congruence :as c])
 
 
-<a id="org28e4493"></a>
+<a id="org903a49b"></a>
 
 ## Brute force solution
 
 If we have a congruence
 
-$$
-f(x) \equiv 0 \pmod{m}
-$$
+$$f(x) \equiv 0 \pmod{m}$$
 
 we can solve it by try all $m$ residue classes modulo $m$.There is
 `solve` function for this. It accept two aruments, first argument is a
@@ -1023,15 +1036,13 @@ for example solve congruence $x^2 \equiv 1 \pmod{8}$
     (1 3 5 7)
 
 
-<a id="org603323d"></a>
+<a id="org9dd52ac"></a>
 
 ## Linear congruence
 
 Let consider linear congruence
 
-$$
-ax \equiv b \pmod{m}
-$$
+$$ax \equiv b \pmod{m}$$
 
 There is function `solve-linear` for solve linear congruence. It accepts
 3 arguments `a`, `b` and `m`. Let's solve congruence $6x \equiv 3 \pmod{15}$
@@ -1041,7 +1052,7 @@ There is function `solve-linear` for solve linear congruence. It accepts
     #{3 8 13}
 
 
-<a id="org704dce7"></a>
+<a id="org855610b"></a>
 
 ## System of linear congruences
 
@@ -1052,8 +1063,7 @@ x & \equiv c_1 \pmod{m_1} \\
 x & \equiv c_2 \pmod{m_2} \\
   & \vdots \\
 x & \equiv c_n \pmod{m_n} \\
-\end{align*}
-$$
+\end{align*}$$
 
 There is a function `solve-remaindes` for solve such system. It accepts
 a sequence of pairs $([c_1, m_1],[c_2, m_2],\dots,[c_n, m_n ])$ and returns pair
@@ -1066,8 +1076,7 @@ $$\begin{align*}
 x &\equiv 2  \pmod{7} \\
 x &\equiv 5  \pmod{9} \\
 x &\equiv 11 \pmod{15} \\
-\end{align*}
-$$
+\end{align*}$$
 
     (c/solve-remainders [[2 7][5 9][11 15]])
 
@@ -1076,7 +1085,7 @@ $$
 So the answer is $86\pmod{315}$
 
 
-<a id="org630f0da"></a>
+<a id="org9e40180"></a>
 
 ## Coprime moduli case
 
@@ -1087,8 +1096,7 @@ x & \equiv c_1 \pmod{m_1} \\
 x & \equiv c_2 \pmod{m_2} \\
   & \vdots \\
 x & \equiv c_n \pmod{m_n} \\
-\end{align*}
-$$
+\end{align*}$$
 
 and any pair of moduli relatively prime, i.e. $(m_i, m_j) = 1$ if $i
 \ne j$,
@@ -1107,8 +1115,7 @@ $$\begin{align*}
 x &\equiv 6 \pmod{17} \\
 x &\equiv 4 \pmod{11} \\
 x &\equiv -3 \pmod{8} \\
-\end{align*}
-$$
+\end{align*}$$
 
     (c/solve-remainders [[6 17][4 11][-3 8]])
 
@@ -1117,7 +1124,7 @@ $$
 So the answer is $125\pmod{1496}$
 
 
-<a id="org7667e33"></a>
+<a id="org54ef9c8"></a>
 
 # Primitive roots
 
@@ -1128,7 +1135,7 @@ fast implementation of sequence reduced residiues.
     (require '[vk.ntheory.primitive-roots :as pr])
 
 
-<a id="org817d79a"></a>
+<a id="org944c129"></a>
 
 ## Reduced residues
 
@@ -1139,7 +1146,7 @@ Function `reduced-residues` return reduced residues modulo m.
     (7 11 1 5)
 
 
-<a id="org6ff260c"></a>
+<a id="org567a917"></a>
 
 ## Order
 
@@ -1151,7 +1158,7 @@ $a^n \equiv 1 \pmod{m}$.
     10
 
 
-<a id="orgd69fd15"></a>
+<a id="org544a233"></a>
 
 ## Primitive root
 

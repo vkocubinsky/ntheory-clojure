@@ -432,6 +432,7 @@ or we can write it in more compact form:
 n = \prod_{i=1}^{k} {p_i}^{a_i}
 \]
 or even write as:
+
 $$n = \prod_{p|n} p^a$$
 
 For example, $360 = 2^3 3^2 5^1$.
@@ -637,7 +638,9 @@ is unordered.
 ** Additive functions
 
 Additive function is a function for which
+
 $$ f(mn) = f(m) + f(n)$$
+
 if $m$ relatively prime to $n$. If above equality holds for all
 natural $m$ and $n$ function called completely additive.
 
@@ -645,13 +648,15 @@ To define an additive function it is enough to define how to
 calculate a function on power of primes.
 If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then: 
 
-$$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
+$$f(n) = \sum_{i=1}^{k} f({p_i}^{a_i})$$
 
 ** Multiplicative functions
 
 Multiplicative function is a function not equal to zero for all n
-for which 
-$$ f(mn) = f(m)f(n) $$
+for which
+
+$$f(mn) = f(m)f(n)$$
+
 if $m$ relatively prime to $n$. If above equality holds for all
 natural $m$ and $n$ function called completely multiplicative.
 
@@ -659,7 +664,7 @@ To define multiplicative function it is enough to define how to
 calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 \dots p_k^{a_k}$ then:
 
-$$ f(n) = \prod_{i=1}^{k} f({p_i}^{a_i}) $$
+$$f(n) = \prod_{i=1}^{k} f({p_i}^{a_i})$$
 
 ** Higher order function for define multiplicative and additive functions
 
@@ -727,11 +732,11 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
 
 Mobius function $\mu$ is defined as follows:
 
-$$ \mu(n) = \begin{cases}
+$$\mu(n) = \begin{cases}
 1        &  \quad \text{if } n = 1 \\
 (-1)^k   &  \quad \text{if } n \text{ product of distinct primes} \\
 0        &  \quad \text{otherwise}
-\end{cases} $$
+\end{cases}$$
 
 For example, $\mu(6)=\mu(2 \cdot 3)=1$
 
@@ -748,7 +753,7 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
 Euler totient function $\varphi(n)$ is a number of positive integers not exceeding
 $n$ which are relatively prime to $n$. It can be calculated as follows:
 
-$$ \varphi(n) = \prod_{p|n} (p^a - p^{a-1}) $$
+$$\varphi(n) = \prod_{p|n} (p^a - p^{a-1})$$
 
 For example, count of numbers relative prime to $6$ are $1$ and $5$,
 so $\varphi(6) = 2$
@@ -784,7 +789,7 @@ The name ~unit~ was chosen to make it different from
 *** Constant one function - $\mathbf{1}$
 
 Constant one function $\mathbf{1}(n)$ defiened as follows:
-$$\mathbf{1}(n) = 1 $$
+$$\mathbf{1}(n) = 1$$
 
 #+begin_src clojure
   (af/one 6)
@@ -799,7 +804,7 @@ $$\mathbf{1}(n) = 1 $$
 Function divisors count is a number of positive divisors which divides
 given number $n$.
 
-$$ \sigma_0(n) = \sum_{d|n} 1 $$
+$$\sigma_0(n) = \sum_{d|n} 1$$
 
 Function $\sigma_0(n)$ is often denoted as $d(n)$.  For example,
 number $6$ has $4$ divisors, namely $1,2,3,6$, so $d(6)=4$.
@@ -817,7 +822,7 @@ number $6$ has $4$ divisors, namely $1,2,3,6$, so $d(6)=4$.
 Function divisors sum is sum of positive divisors which divides given
 number $n$
 
-$$ \sigma_1(n) = \sum_{d | n} d $$
+$$\sigma_1(n) = \sum_{d | n} d$$
 
 Function $\sigma_1$ is often denoted as $\sigma$.
 For instance, $\sigma(6)= 1 + 2 + 3 + 6 = 12$
@@ -834,7 +839,8 @@ For instance, $\sigma(6)= 1 + 2 + 3 + 6 = 12$
 
 Function divisors square sum defined as follows:
 
-$$ \sigma_2(n) = \sum_{d | n} d^2 $$
+$$\sigma_2(n) = \sum_{d | n} d^2$$
+
 For instance, $\sigma_2(6) = 1^2 + 2^2 + 3^2 + 6^2 = 50$
 
 #+begin_src clojure
@@ -849,11 +855,15 @@ For instance, $\sigma_2(6) = 1^2 + 2^2 + 3^2 + 6^2 = 50$
 
 In general $\sigma_x$ function is a sum of x-th powers divisors of given n
 
-$$ \sigma_x(n) = \sum_{ d | n} d^x $$
+$$\sigma_x(n) = \sum_{ d | n} d^x$$
+
 If $x \ne 0$, $\sigma_x$ can be calculated as follows:
-$$ \sigma_{x}(n) = \prod_{i=1}^{k} \frac {p_i^{x(a_i+1)}} {p_i^x - 1} $$
+
+$$\sigma_{x}(n) = \prod_{i=1}^{k} \frac {p_i^{x(a_i+1)}} {p_i^x - 1}$$
+
 and if $x = 0$ as follows:
-$$ \sigma_{0}(n) = \prod_{i=1}^{k} (a_i + 1) $$
+
+$$\sigma_{0}(n) = \prod_{i=1}^{k} (a_i + 1)$$
 
 There is higher order function ~divisors-sum-x~ which
 accept ~x~ and return appropriate function.
@@ -869,6 +879,7 @@ For example we can define divisors cube sum as follows:
 Liouville function $\lambda$ defined as $\lambda(1) = 1$ and if $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$
 $\lambda(n) = (-1)^{a_1 + a_2 + \dots + a_k}$ or with early defined $\Omega$ function
 we can write definition of $\lambda$ as follows:
+
 $$\lambda(n) = (-1)^{\Omega}$$
 
 #+begin_src clojure
@@ -917,6 +928,7 @@ $$\theta(x) = \sum_{p \le x} \log p$$
 : 
 
 If $x > 0$ Chebyshev $\psi$ function is defined as follows:
+
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
   
 #+begin_src clojure
@@ -931,16 +943,19 @@ $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
 new arithmetic function defined as follows:
-$$ (f*g)(n) = \sum_{d | n} f(d)g(\frac{n}{d}) $$
+
+$$(f*g)(n) = \sum_{d | n} f(d)g(\frac{n}{d})$$
 
 Dirichlet convolution is associative:
-$$ (f * g) * h = f * (g * h) $$
+$$(f * g) * h = f * (g * h)$$
 
 Commutative:
-$$ f * g = g * f $$
+
+$$f * g = g * f$$
 
 Has identify:
-$$ f * \varepsilon = \varepsilon * f = f $$
+
+$$f * \varepsilon = \varepsilon * f = f$$
 
 For every $f$, which $f(1) \ne 0$ exists inverse function $f^{-1}$
 such that $f * f^{-1} = \varepsilon$. This inverse function called
@@ -1032,9 +1047,7 @@ and system of linear congruences.
 
 If we have a congruence
 
-$$
-f(x) \equiv 0 \pmod{m}
-$$
+$$f(x) \equiv 0 \pmod{m}$$
 
 we can solve it by try all $m$ residue classes modulo $m$.There is
 ~solve~ function for this. It accept two aruments, first argument is a
@@ -1055,9 +1068,7 @@ for example solve congruence $x^2 \equiv 1 \pmod{8}$
 
 Let consider linear congruence
 
-$$
-ax \equiv b \pmod{m}
-$$
+$$ax \equiv b \pmod{m}$$
 
 There is function ~solve-linear~ for solve linear congruence. It accepts
 3 arguments ~a~, ~b~ and ~m~. Let's solve congruence $6x \equiv 3 \pmod{15}$
@@ -1079,8 +1090,7 @@ x & \equiv c_1 \pmod{m_1} \\
 x & \equiv c_2 \pmod{m_2} \\
   & \vdots \\
 x & \equiv c_n \pmod{m_n} \\
-\end{align*}
-$$
+\end{align*}$$
 
 There is a function ~solve-remaindes~ for solve such system. It accepts
 a sequence of pairs $([c_1, m_1],[c_2, m_2],\dots,[c_n, m_n ])$ and returns pair
@@ -1093,8 +1103,7 @@ $$\begin{align*}
 x &\equiv 2  \pmod{7} \\
 x &\equiv 5  \pmod{9} \\
 x &\equiv 11 \pmod{15} \\
-\end{align*}
-$$
+\end{align*}$$
 
 #+begin_src clojure
   (c/solve-remainders [[2 7][5 9][11 15]])
@@ -1115,8 +1124,7 @@ x & \equiv c_1 \pmod{m_1} \\
 x & \equiv c_2 \pmod{m_2} \\
   & \vdots \\
 x & \equiv c_n \pmod{m_n} \\
-\end{align*}
-$$
+\end{align*}$$
 
 and any pair of moduli relatively prime, i.e. $(m_i, m_j) = 1$ if $i
 \ne j$,
@@ -1135,8 +1143,7 @@ $$\begin{align*}
 x &\equiv 6 \pmod{17} \\
 x &\equiv 4 \pmod{11} \\
 x &\equiv -3 \pmod{8} \\
-\end{align*}
-$$
+\end{align*}$$
 
 #+begin_src clojure
   (c/solve-remainders [[6 17][4 11][-3 8]])
