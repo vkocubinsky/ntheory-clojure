@@ -282,7 +282,7 @@ $$[a,b] = \frac{|ab|}{(a,b)}$$
 : 36
 : 
 
-* Primes and Integer Factorization 
+* Primes and integer factorization 
 
 This section cover namespace ~vk.ntheory.primes~. It primary designed
 for integer factorization and get list of primes. One can use
@@ -646,7 +646,6 @@ is unordered.
 #+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
 : (1 2 3 6 5 10 15 30)
 : 
-
 
 ** Additive functions
 
@@ -1184,7 +1183,7 @@ $$
 
 So the answer is $125\pmod{1496}$
 
-* Primitive Roots 
+* Primitive roots 
 
 This section cover namespace ~vk.ntheory.primitive-roots~. It
 contains functions for find primitive roots and also contains
