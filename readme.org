@@ -292,6 +292,22 @@ for integer factorization and get list of primes. One can use
   (require '[vk.ntheory.primes :as p])
 #+end_src
 
+** Check functions
+
+Addition to ~vk.nthery.basic~ namespace, namespace ~vk.ntheory.primes~
+provides additional set of ~check-*~ functions:
+
+- ~check-int-pos-max~
+- ~check-int-non-neg-max~
+- ~check-int-non-zero-max~
+
+It is similar to ~vk.ntheory.basic~ check functions, but additionally check
+that given number does not exceed ~max-int~ constant. And there are some
+more check functions:
+  
+- ~check-prime~
+- ~check-odd-prime~      
+
 ** Performance and cache
 
 This library is designed to work with relatively small integers. Library
@@ -531,22 +547,6 @@ get ordered list of all divisors of an integer ~n~, need to get least
 prime divisor at index ~n~, let it be ~p~, ~p~ is a first element of
 the list, then divide ~n~ on ~p~, the index of quotient ~n/p~ is next
 element of "linked list".
-
-** Check functions
-
-Addition to ~vk.nthery.basic~ namespace, namespace ~vk.ntheory.primes~
-provides additional set of ~check-*~ functions:
-
-- ~check-int-pos-max~
-- ~check-int-non-neg-max~
-- ~check-int-non-zero-max~
-
-It is similar to ~vk.ntheory.basic~ check functions, but additionally check
-that given number does not exceed ~max-int~ constant. And there are some
-more check functions:
-  
-- ~check-prime~
-- ~check-odd-prime~      
 
 * Arithmetical functions 
 
