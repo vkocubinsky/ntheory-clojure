@@ -12,9 +12,10 @@
 ** TODO congruences
 ** TODO primitive roots
 * TODO Review/Update documentations
-** TODO basic
+** DONE basic
 ** TODO primes
 ** TODO arithmetic functions
 ** TODO congruences
 ** TODO primitive roots
-
+* Review action items
+** Describe with details basic/m** 
