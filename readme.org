@@ -4,7 +4,6 @@
 #+PROPERTY: header-args:clojure :session *clojure-1* :exports both :results pp
 #+LATEX_HEADER: \RequirePackage{fancyvrb}
 #+LATEX_HEADER: \DefineVerbatimEnvironment{verbatim}{Verbatim}{frame=single}
-
 * About
 
 This project cover some topics in number theory such as integer
@@ -57,7 +56,6 @@ factorization time. So now factorization is relatively cheap, but it
 require 4 bytes per number or 4MB for 1000000 numbers.
 
 In this document I load number theory packages as: 
-
 #+begin_src clojure :results silent
   (require '[vk.ntheory.basic :as b])
   (require '[vk.ntheory.primes :as p])
@@ -66,7 +64,6 @@ In this document I load number theory packages as:
   (require '[vk.ntheory.primitive-roots :as pr])
   (require '[clojure.math :as math])
 #+end_src
-
 So below I will use above aliases.
 
 * Notation
@@ -128,7 +125,7 @@ Function ~divides?~ determine does one number divides another.
 
 ** Combinatorics
 
-~product~ functions returns cartesian product of n sequences. For instance,
+~product~ function returns cartesian product of n sequences. For instance,
 
 #+begin_src clojure
   (b/product [(range 1 3) (range 1 5)]) 
@@ -142,9 +139,8 @@ Function ~divides?~ determine does one number divides another.
 
 Similar to addition function ~+~ and multiplication function ~*~ there
 are defined addition modulo m ~m+~ and multiplication modulo m ~m*~
-functions. 
-
-For instance $2 + 4 \equiv 1 \pmod{5}$ in $\mathbf{Z}/m\mathbf{Z}$
+functions. For instance $2 + 4 \equiv 1 \pmod{5}$ in
+$\mathbf{Z}/m\mathbf{Z}$
 
 #+begin_src clojure
   (b/m+ 5 2 4)
@@ -153,9 +149,8 @@ For instance $2 + 4 \equiv 1 \pmod{5}$ in $\mathbf{Z}/m\mathbf{Z}$
 #+RESULTS:
 : 1
 : 
-
+#+LATEX:\noindent
 and $2 \cdot 4 \equiv 3 \pmod 5$ in $\mathbf{Z}/m\mathbf{Z}$
-
 #+begin_src clojure
   (b/m* 5 2 4)
 #+end_src
@@ -181,9 +176,8 @@ addition and multiplication modulo m without specify a modulo.
 
 There is another helpful function modulo m - exponentiation. It is a
 fast binary exponentiation algorithm described in D.Knuth, The Art of
-Computer Programming, Volume II.
-
-For instance, $101^{900} \equiv 701 \pmod{997}$
+Computer Programming, Volume II. For instance, $101^{900} \equiv 701
+\pmod{997}$.
 
 #+begin_src clojure
   (b/m** 997 101 900)
@@ -222,7 +216,6 @@ $2^3 | 24$, but $2^4 \nmid 24$, so $ord_2(24) = 3$
 ** Sign function
 
 The ~sign~ function defined as follows:
-
 $$sign(n) = \begin{cases}
 -1 & \quad \text{if } x < 0 \\
 0  & \quad \text{if } x = 0 \\
@@ -271,7 +264,6 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
 The least common multiple of two non zero integers $a$ and $b$ is denoted by
 $[a, b]$, is an smallest positive integer which is multiple of $a$ and $b$. 
 It defined in code as follows:
-
 $$[a,b] = \frac{|ab|}{(a,b)}$$
 
 #+begin_src clojure
@@ -417,7 +409,6 @@ There is ~composite?~ predicate:
 
 Integer $1$ is not a prime and it is not a composite
 
-
 #+begin_src clojure
   (p/unit? 1)
 #+end_src
@@ -436,15 +427,11 @@ of primes.
 \[
 n = {p_1}^{a_1} {p_2}^{a_2} \dots {p_k}^{a_k}
 \]
-
 or we can write it in more compact form:
-
 \[
 n = \prod_{i=1}^{k} {p_i}^{a_i}
 \]
-
 or even write as:
-
 $$n = \prod_{p|n} p^a$$
 
 For example, $360 = 2^3 3^2 5^1$.
@@ -650,9 +637,7 @@ is unordered.
 ** Additive functions
 
 Additive function is a function for which
-
 $$ f(mn) = f(m) + f(n)$$
-
 if $m$ relatively prime to $n$. If above equality holds for all
 natural $m$ and $n$ function called completely additive.
 
@@ -666,9 +651,7 @@ $$ f(n) = \sum_{i=1}^{k} f({p_i}^{a_i}) $$
 
 Multiplicative function is a function not equal to zero for all n
 for which 
-
 $$ f(mn) = f(m)f(n) $$
-
 if $m$ relatively prime to $n$. If above equality holds for all
 natural $m$ and $n$ function called completely multiplicative.
 
@@ -743,14 +726,11 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
 *** Mobius function - $\mu$.
 
 Mobius function $\mu$ is defined as follows:
-
-
 $$ \mu(n) = \begin{cases}
 1        &  \quad \text{if } n = 1 \\
 (-1)^k   &  \quad \text{if } n \text{ product of distinct primes} \\
 0        &  \quad \text{otherwise}
 \end{cases} $$
-
 For example, $\mu(6)=\mu(2 \cdot 3)=1$
 
 #+begin_src clojure
@@ -782,7 +762,6 @@ so $\varphi(6) = 2$
 *** Unit function - $\varepsilon$
 
 Unit or identity function defined as follows:
-
 $$ \varepsilon(n) = \begin{cases}
 1,&  \text{if } n = 1 \\
 0,&  \text{if } n > 1
@@ -802,7 +781,6 @@ The name ~unit~ was chosen to make it different from
 *** Constant one function - $\mathbf{1}$
 
 Constant one function $\mathbf{1}(n)$ defiened as follows:
-
 $$\mathbf{1}(n) = 1 $$
 
 #+begin_src clojure
@@ -817,9 +795,7 @@ $$\mathbf{1}(n) = 1 $$
 
 Function divisors count is a number of positive divisors which divides
 given number $n$.
-
 $$ \sigma_0(n) = \sum_{d|n} 1 $$
-
 Function $\sigma_0(n)$ is often denoted as $d(n)$.  For example,
 number $6$ has $4$ divisors, namely $1,2,3,6$, so $d(6)=4$.
 
@@ -853,9 +829,7 @@ For instance, $\sigma(6)= 1 + 2 + 3 + 6 = 12$
 *** Divisors square sum
 
 Function divisors square sum defined as follows:
-
 $$ \sigma_2(n) = \sum_{d | n} d^2 $$
-
 For instance, $\sigma_2(6) = 1^2 + 2^2 + 3^2 + 6^2 = 50$
 
 #+begin_src clojure
@@ -869,15 +843,10 @@ For instance, $\sigma_2(6) = 1^2 + 2^2 + 3^2 + 6^2 = 50$
 *** Divisors higher order function - $\sigma_{x}$
 
 In general $\sigma_x$ function is a sum of x-th powers divisors of given n
-
 $$ \sigma_x(n) = \sum_{ d | n} d^x $$
-
 If $x \ne 0$, $\sigma_x$ can be calculated as follows:
-
 $$ \sigma_{x}(n) = \prod_{i=1}^{k} \frac {p_i^{x(a_i+1)}} {p_i^x - 1} $$
-
 and if $x = 0$ as follows:
-
 $$ \sigma_{0}(n) = \prod_{i=1}^{k} (a_i + 1) $$
 
 There is higher order function ~divisors-sum-x~ which
@@ -894,7 +863,6 @@ For example we can define divisors cube sum as follows:
 Liouville function $\lambda$ defined as $\lambda(1) = 1$ and if $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$
 $\lambda(n) = (-1)^{a_1 + a_2 + \dots + a_k}$ or with early defined $\Omega$ function
 we can write definition of $\lambda$ as follows:
-
 $$\lambda(n) = (-1)^{\Omega}$$
 
 #+begin_src clojure
@@ -912,12 +880,10 @@ Liouville function is completely multiplicative.
 *** Mangoldt function - $\Lambda$
 
 Mangoldt function $\Lambda$ defined as follows:
-
 $$\Lambda(n) = \begin{cases}
    \log p,& \text{if $n = p ^k$ for some prime $p$ and some $k \ge 1$} \\
    0,& \text{otherwise} 
 \end{cases}$$
-
 For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$  
 
 #+begin_src clojure
@@ -944,10 +910,7 @@ $$\theta(x) = \sum_{p \le x} \log p$$
 : 
 
 If $x > 0$ Chebyshev $\psi$ function is defined as follows:
-
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
-
-
   
 #+begin_src clojure
   (af/chebyshev-psi 2)
@@ -961,19 +924,15 @@ $$\psi = \sum_{n \le x} {\Lambda(n)} $$
 
 For two arithmetic functions $f$ and $g$ Dirichlet convolution is a
 new arithmetic function defined as follows:
-
 $$ (f*g)(n) = \sum_{d | n} f(d)g(\frac{n}{d}) $$
 
 Dirichlet convolution is associative:
-
 $$ (f * g) * h = f * (g * h) $$
 
 Commutative:
-
 $$ f * g = g * f $$
 
 Has identify:
-
 $$ f * \varepsilon = \varepsilon * f = f $$
 
 For every $f$, which $f(1) \ne 0$ exists inverse function $f^{-1}$
@@ -1032,7 +991,6 @@ and conversely
 #+RESULTS[e17afcfeaabbc9d50d6f000814f6e2e43b7f447e]:
 : true
 : 
-
 
 Function ~inverse~ defined as recursive function, it may execute
 slow. But inverse of completely multiplicative function $f(n)$ is
@@ -1206,7 +1164,6 @@ Function ~reduced-residues~ return reduced residues modulo m.
 : (7 11 1 5)
 : 
 
-
 ** Order
 
 Order $n$ of integer $a$ coprime to $m$ modulo m is least positive integer for which
@@ -1225,11 +1182,6 @@ $a^n \equiv 1 \pmod{m}$.
 If order $a$ modulo $m$ is equal to $\phi(m)$, $a$ called
 primitive root. Primitive roots exists only for moduli
 $1,2,4,p^a,2p^a$. To find any primitive root
-
-
-
-
-
 
 #+begin_src clojure
   (pr/find-primitive-root 11)
