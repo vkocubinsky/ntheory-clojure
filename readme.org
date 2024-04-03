@@ -9,57 +9,52 @@
 
 This project cover some topics in number theory such as integer
 factorization, arithmetic functions, congruences, primitive roots.
-Here defined set of well known arithmetic functions and one can define
-custom arithmetic function. One can solve linear congruence or system
-of linear congruences including case when moduli relatively prime.
 
 I wrote this document with Emacs Org Mode. Then I generate markdown
 file [[./readme.md][readme.md]] with Org Mode export to markdown =C-c C-e m m=, and
 generate pdf file [[./readme.pdf][readme.pdf]] with Org Mode export to pdf =C-c C-e l
-p=.  Github by default render [[./readme.md][readme.md]] in project root if a project
+p=.  Github by default renders [[./readme.md][readme.md]] in project root if a project
 has such file.  Github markdown looks enough good, even math equation
-is supported. However for now math equation doesn't rendered for link
-text. I also generate [[./readme.pdf][readme.pdf]] , pdf file doesn't have any issues
-with math equations.
+is supported. However for now math equation doesn't render for link
+text, pdf file doesn't have any issues with math equations.
 
 I use Emacs babel for clojure to produce real output inside the
 document, so it is live documentation and one can open org file in
 Emacs. I use =org-latex-preview=, to preview math equation inside
 Emacs, to display all image for all fragments need to use prefix
-argument =C-u C-u C-c C-x C-l= for preview all math equations inside
-Emacs.
+argument for =org-latex-preview= function, type =C-u C-u C-c C-x C-l=
+for preview all math equations inside Emacs.
 
 Many applications require integer factorization. Integer factorization
 is relatively expensive procedure. Most straightforward way to
 factorize integer $n$ is try to divide $n$ to numbers $2,3,4, \dots,
-\sqrt{n}$.
-There is some optimization of this procedure. For instance
-exclude from candidates multiple of $2$, or multiple of $2$ and
-multiple of $3$. It is enough good strategy to factorize one
-number. But if need factorize many numbers more fast way to factorize
-number is precalculate table of first $N$ primes and try to divide
-number $n$ to primes $p_1,p_2, \dots, p_n \le \sqrt{n}$.  Table of
-first $N$ primes can be caclulated with Sieve of Eratosthenes. There
-is a way to improve performance of factorization. With slightly
-modified Sieve of Eratosthenes procedure we can precalculate least
-prime divisor table. This table keep least prime divisor for every
-integer up to $N$. This table works as linked list, in fact we know
-all divisors of any number up to $N$ and to factorize integer we need
-just iterate over "linked list" to build output data structure. But
-least prime divisor table require more memory compare to Sieve of
-Eratosthenes.  There is a way to improve performance, it is another
-modification of Sieve of Eratosthenes procedure to build full
-factorization for all numbers $1,2,\dots,N$.  It require much more
-memory for keep table of full factorization and it require more time
-for calculate full factorization table, compare to build least prime
-divisor table.
+\sqrt{n}$. There is some known optimization of this procedure. For
+instance exclude from candidates multiple of $2$, or multiple of $2$
+and multiple of $3$. It is enough good strategy to factorize one
+number. But if need to factorize many numbers more fast way to
+factorize number is precalculate table of first $N$ primes and try to
+divide number $n$ to primes $p_1,p_2, \dots, p_n \le \sqrt{n}$.  Table
+of first $N$ primes can be caclulated with Sieve of
+Eratosthenes. There is a way to improve performance of
+factorization. With slightly modified Sieve of Eratosthenes procedure
+we can precalculate least prime divisor table. This table keep least
+prime divisor for every integer up to $N$. This table may works as
+linked list, in fact we know all divisors of any number up to $N$ and
+to factorize integer we need just iterate over "linked list" to build
+output data structure. But least prime divisor table require more
+memory compare to Sieve of Eratosthenes.  There is a way to improve
+performance again, it is another modification of Sieve of Eratosthenes
+procedure to build full factorization table for all numbers
+$1,2,\dots,N$.  But it require much more memory for keep table of full
+factorization and it require more time for calculate full
+factorization table, compare to build least prime divisor table.
 
 The purpose of this library/tool is to provide fast way to play with
 relatively small numbers(millions) and I made a decision to use least
-prime divisor table as a best compromise between build table time,
-required memory for table, integer factorization time. So now
-factorization is cheap, but it require 4 bytes per number or 4MB
-for 1000000 numbers.
+prime divisor table as the best compromise between build factorization
+table time, required memory for factorization table, integer
+factorization time. So now factorization is relatively cheap, but it
+require 4 bytes per number or 4MB for 1000000 numbers.
 
 In this document I load number theory packages as: 
 
@@ -76,7 +71,7 @@ So below I will use above aliases.
 
 * Notation
 
-- $\mathbf N$ - Natural numbers, positive integers $1,2,3,\dots$
+- $\mathbf N$ - Natural numbers or positive integers $1,2,3,\dots$
 - $\mathbf C$ - Complex numbers
 - $\mathbf Z$ - Integers $\dots -3, -2, -1, 0, 1, 2, 3, \dots$
 - $\mathbf Z/m\mathbf Z$ - Ring of integers modulo $m$
@@ -103,18 +98,18 @@ user input:
 - ~check-int-non-zero~
 
 All of above accept one argument, check does argument satisfy to
-expectation, if does return argument, otherwise throw an exception.
+expectation, if does return argument, otherwise throws an exception.
 
 Some check functions accept more than one argument. Those function just
-throw an exception if expectation failed and return ~nil~ otherwise.
+throw an exception if expectation failed and return ~nil~ otherwise:
 
 - ~check-relatively-prime~
 - ~check-not-divides~
 - ~check-at-least-one-non-zero~
 
-
-There are also two helper function ~check-true~ and ~check-predicate~ which helps
-to implement another ~check-*~ function for some predicate. 
+There are also two helper function ~check-true~ and ~check-predicate~
+which helps to implement another ~check-*~ function for some
+predicate.
 
 ** Some predicates
 

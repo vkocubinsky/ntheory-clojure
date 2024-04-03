@@ -141,9 +141,10 @@
 
 (defn gcd-extended
   "Extended Euclid algorithm.
-  For two integers `a` and `b` returns vector `[d s t]`, where `d` is
-  the greatest common divisor of integers `a` and `b` and values
-  `s`,`t` and `d` satisfied condition `a * s + b * t = d`.
+  For two integers `a` and `b`,not both zero, returns vector
+  `[d s t]`, where `d` is the greatest common divisor of integers `a` and
+  `b` and values `s`,`t` and `d` satisfied condition:
+  `a * s + b * t = d`.
   "
   ([a b]
    (check-int a)
