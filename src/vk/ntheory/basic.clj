@@ -164,14 +164,12 @@
        (recur [b (mod a b)] [s' t'] [s t])))))
 
 (defn lcm
-  "Least common multiple of non zero integers `a` and `b`."
+  "The least common multiple of two non zero integers `a` and `b`."
   [a b]
   (check-int-non-zero a)
   (check-int-non-zero b)
   (let [d (gcd a b)]
-    (if (= d 0)
-      0
-      (abs (/ (* a b) d)))))
+    (abs (/ (* a b) d))))
 
 (defn check-relatively-prime
   "Throw an exception if integers `a` and `b` are not relatively prime."
