@@ -891,6 +891,7 @@ $$\Lambda(n) = \begin{cases}
    \log p,& \text{if $n = p ^k$ for some prime $p$ and some $k \ge 1$} \\
    0,& \text{otherwise} 
 \end{cases}$$
+
 For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$  
 
 #+begin_src clojure
