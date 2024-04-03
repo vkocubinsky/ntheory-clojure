@@ -6,9 +6,12 @@
 
 - basic namespace
   - add check-not-divides function
+  - add check-at-least-one-non-zero
   - rename check -> check-predicate
   - remove check-not
-  - add check-true function  
+  - add check-true function
+  - gcd arguments require at least one non zero integer
+  - lcm arguments require non zero integers
 
 * Version 0.6.0
 

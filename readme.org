@@ -110,6 +110,7 @@ throw an exception if expectation failed and return ~nil~ otherwise.
 
 - ~check-relatively-prime~
 - ~check-not-divides~
+- ~check-at-least-one-non-zero~
 
 
 There are also two helper function ~check-true~ and ~check-predicate~ which helps

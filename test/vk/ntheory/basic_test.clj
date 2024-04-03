@@ -11,6 +11,16 @@
   (testing "Zero sequence"
     (is (= [[]] (b/product [])))))
 
+(deftest check-at-least-one-non-zero-test
+  (testing "Fail"
+    (is (thrown? Exception (b/check-at-least-one-non-zero 0 0)))
+    )
+  (testing "Success"
+    (is (nil? (b/check-at-least-one-non-zero 1 1)))
+    (is (nil? (b/check-at-least-one-non-zero 0 1)))
+    (is (nil? (b/check-at-least-one-non-zero 1 0))))
+  )
+
 (deftest check-relatively-prime-test
   (testing "Fail"
     (is (thrown? Exception (b/check-relatively-prime 2 6)))
@@ -25,8 +35,7 @@
     (is (thrown? Exception (b/check-not-divides 3 6))))
   (testing "Success"
     (is (nil? (b/check-not-divides 5 6)))
-    (is (nil? (b/check-not-divides 11 6))))
-  )
+    (is (nil? (b/check-not-divides 11 6)))))
 
 (deftest check-int-test
   (testing "Fail"
@@ -174,32 +183,43 @@
     1 (b/order 2 10)))
 
 (deftest gcd-test
-  (are [x y] (= x y)
-    0 (b/gcd 0 0)
-    6 (b/gcd 6 0)
-    6 (b/gcd -6 0)
-    6 (b/gcd 0 6)
-    6 (b/gcd 0 -6)
-    6  (b/gcd 12 18)
-    6 (b/gcd -12 18)
-    6 (b/gcd 12 -18)
-    6 (b/gcd -12 -18)))
+  (testing "Fail"
+    (is (thrown? Exception (b/gcd 0 0))))
+  (testing "Success"
+    (are [x y] (= x y)
+      6 (b/gcd 6 0)
+      6 (b/gcd -6 0)
+      6 (b/gcd 0 6)
+      6 (b/gcd 0 -6)
+      6  (b/gcd 12 18)
+      6 (b/gcd -12 18)
+      6 (b/gcd 12 -18)
+      6 (b/gcd -12 -18))))
 
 (deftest lcm-test
-  (are [x y] (= x y)
-    0 (b/lcm 0 0)
-    0 (b/lcm 6 0)
-    0 (b/lcm -6 0)
-    0 (b/lcm 0 6)
-    0 (b/lcm 0 -6)
-    36  (b/lcm 12 18)
-    36 (b/lcm -12 18)
-    36 (b/lcm 12 -18)
-    36 (b/lcm -12 -18)))
+  (testing "Fail"
+    (is (thrown? Exception (b/lcm 0 0)))
+    (is (thrown? Exception (b/lcm 1 0)))
+    (is (thrown? Exception (b/lcm 0 1))))
+  (testing "Success"
+    (are [x y] (= x y)
+      36  (b/lcm 12 18)
+      36 (b/lcm -12 18)
+      36 (b/lcm 12 -18)
+      36 (b/lcm -12 -18))))
+
+(deftest gcd-lcm-property
+  (doseq [a (range -13 13)
+          b (range -13 13)]
+    (when (not-any? zero? [a b])
+    (let [d (b/gcd a b)
+          l (b/lcm a b)]
+      (is (= (abs (* a b)) (* d l)))))))
 
 (deftest gcd-extended-test
-  (doseq [a (range -12 12)
-          b (range -12 12)]
-    (let [[d s t] (b/gcd-extended a b)]
-      (is (= d (+ (* a s) (* b t))))
-      (is (= (b/gcd a b) d)))))
+  (doseq [a (range -13 13)
+          b (range -13 13)]
+    (when-not (every? zero? [a b])
+      (let [[d s t] (b/gcd-extended a b)]
+        (is (= d (+ (* a s) (* b t))))
+        (is (= (b/gcd a b) d))))))

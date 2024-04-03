@@ -6,14 +6,12 @@
   [x msg]
   (when-not x (throw (IllegalArgumentException. msg))))
 
-
 (defn check-predicate
   "Returns `x` if value of predicat `(pred x)` is true,
   otherwise throws an exception."
   [pred x msg]
-  (check-true (pred x ) msg)
-  x
-  )
+  (check-true (pred x) msg)
+  x)
 
 (defn check-int
   "Returns `n` if `n` is an integer, otherwise throws an exception."
@@ -40,6 +38,14 @@
   [n]
   (let [n (check-int n)]
     (check-predicate (complement zero?) n (format "%s is zero" n))))
+
+(defn check-at-least-one-non-zero
+  "Throw exception if all arguments are zero, otherwise returns nil."
+  [a b]
+  (check-true (not-every? zero? [a b])
+              (format "Expected at least one non zero integer"))
+  )
+
 
 (defn divides?
   "Return true if `a != 0` divides `b`, otherwise false."
@@ -123,25 +129,15 @@
     :else 0))
 
 (defn gcd
-  "Createst common divisor of integers `a` and `b`.
-  (gcd 0 0) returns 0."
+  "The greatest common divisor of integers `a` and `b`, not both
+  zero."
   [a b]
   (check-int a)
   (check-int b)
+  (check-at-least-one-non-zero a b)
   (loop [a (abs a) b (abs b)]
     (if (zero? b) a
         (recur b (mod a b)))))
-
-(defn lcm
-  "Least common multiple of `a` and `b`.
-  (lcm 0 0) returns 0."
-  [a b]
-  (check-int a)
-  (check-int b)
-  (let [d (gcd a b)]
-    (if (= d 0)
-      0
-      (abs (/ (* a b) d)))))
 
 (defn gcd-extended
   "Extended Euclid algorithm.
@@ -152,6 +148,7 @@
   ([a b]
    (check-int a)
    (check-int b)
+   (check-at-least-one-non-zero a b)
    (let [[d s t] (gcd-extended [(abs a) (abs b)] [1 0] [0 1])
          s' (* (sign a) s)
          t' (* (sign b) t)]
@@ -164,6 +161,16 @@
            s (- s'' (* s' q))
            t (- t'' (* t' q))]
        (recur [b (mod a b)] [s' t'] [s t])))))
+
+(defn lcm
+  "Least common multiple of non zero integers `a` and `b`."
+  [a b]
+  (check-int-non-zero a)
+  (check-int-non-zero b)
+  (let [d (gcd a b)]
+    (if (= d 0)
+      0
+      (abs (/ (* a b) d)))))
 
 (defn check-relatively-prime
   "Throw an exception if integers `a` and `b` are not relatively prime."
