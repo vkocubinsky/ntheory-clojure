@@ -21,7 +21,7 @@
     acc))
 
 (defn divisors'
-  "Divisors of whole integer."
+  "Backup implementation of divisors positive integer."
   [n]
   (p/check-int-pos-max n)
   (as-> n v
