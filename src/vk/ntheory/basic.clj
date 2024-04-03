@@ -139,13 +139,13 @@
 
 (defn- gcd-extended'
   "Helper function for gcd-extended."
-  ([[a b] [s'' t''] [s' t']]
+  [[a b] [s'' t''] [s' t']]
    (if (zero? b)
      [a s'' t'']
      (let [q (quot a b)
            s (- s'' (* s' q))
            t (- t'' (* t' q))]
-       (recur [b (mod a b)] [s' t'] [s t])))))
+       (recur [b (mod a b)] [s' t'] [s t]))))
 
 (defn gcd-extended
   "Extended Euclid algorithm.
@@ -154,7 +154,7 @@
   `b` and values `s`,`t` and `d` satisfied condition:
   `a * s + b * t = d`.
   "
-  ([a b]
+  [a b]
    (check-int a)
    (check-int b)
    (check-at-least-one-non-zero a b)
@@ -162,7 +162,7 @@
          s' (* (sign a) s)
          t' (* (sign b) t)]
      (assert (= d (+ (* a s') (* b t'))))
-     [d s' t'])))
+     [d s' t']))
 
 (defn lcm
   "The least common multiple of two non zero integers `a` and `b`."
