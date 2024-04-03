@@ -447,16 +447,16 @@ or even write as:
 
 $$n = \prod_{p|n} p^a$$
 
-
-If we accept that empty product is $1$ we can say that every natural
-number can be represent uniquely as a product of primes. For example
-$360 = 2^3 3^2 5^1$.
+For example, $360 = 2^3 3^2 5^1$.
 
 There are some functions to factorize integers. Each of them accept
 natural number as an argument and returns factorized value. It have
 slightly different output, which may be more appropriate to different
 use cases. For each factorize function there is also inverse function,
-which accept factorized value and convert it back to integer.
+which accept factorized value and convert it back to integer. It is
+convenient to consider empty product as $1$. All factorization
+functions below returns corresponded empty data structure for argument
+$1$.
 
 1-st factorization representation is ordered sequence of primes:
 
@@ -546,7 +546,7 @@ table. Actually least prime divisor table is a kind of linked list, to
 get ordered list of all divisors of an integer ~n~, need to get least
 prime divisor at index ~n~, let it be ~p~, ~p~ is a first element of
 the list, then divide ~n~ on ~p~, the index of quotient ~n/p~ is next
-element of "linked list".
+element of "linked list". 
 
 * Arithmetical functions 
 
