@@ -12,6 +12,7 @@
   - add check-true function
   - gcd arguments require at least one non zero integer
   - lcm arguments require non zero integers
+  - rewrite divisors function with product  
 
 * Version 0.6.0
 
