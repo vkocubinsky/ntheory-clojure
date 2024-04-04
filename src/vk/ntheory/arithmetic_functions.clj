@@ -5,29 +5,20 @@
 
 (def default-natural-sample (range 1 100))
 
-(defn- divisors'
-  "Divisors of factorized numbers.
-  Parameters:
-  cn  - factorized number in format ([k1 v1] [k2 v2])
-  acc - sequence of factorized numbers which
-        divides original value."
-  [cn acc]
-  (if-let [[p k] (first cn)]
-    (recur (rest cn) (for [i (range 0 (inc k))
-                           d acc]
-                       (if (zero? i)
-                         d
-                         (conj d [p i]))))
-    acc))
-
 (defn divisors
-  "Divisors of whole integer."
+  "Divisors of a positive integer."
   [n]
   (p/check-int-pos-max n)
-  (as-> n v
-    (p/int->factors-count v)
-    (divisors' v [[]])
-    (map p/factors-count->int v)))
+  (let [cn (p/int->factors-count n)
+        bases (map first cn)
+        powers (map second cn)
+        ranges (map #(range 0 (inc %)) powers)
+        ]
+    (for [x (b/product ranges)]
+      (p/factors-count->int (map #(vector %1 %2) bases x)))
+    )
+  )
+
 
 (defn reduce-on-prime-count
   "Higher order which return arithmetical function based on

@@ -16,19 +16,19 @@
   "Check `0 < n <= max-int`."
   [n]
   (let [n (b/check-int-pos n)]
-    (b/check less-equal-max-int? n (format "%s is more than %s" n max-int))))
+    (b/check-predicate less-equal-max-int? n (format "%s is more than %s" n max-int))))
 
 (defn check-int-non-neg-max
   "Check `0 <= n <= max-int`"
   [n]
   (let [n (b/check-int-non-neg n)]
-    (b/check less-equal-max-int? n (format "%s is more than %s" n max-int))))
+    (b/check-predicate less-equal-max-int? n (format "%s is more than %s" n max-int))))
 
 (defn check-int-non-zero-max
   "Check is given integer `n` is not zero and less or equal to max-int "
   [n]
   (let [n (b/check-int-non-zero n)]
-    (b/check less-equal-max-int? n (format "%s is more than %s" n max-int))))
+    (b/check-predicate less-equal-max-int? n (format "%s is more than %s" n max-int))))
 
 (defn- table-find-prime
   "Find next prime in least divisor table.
@@ -122,7 +122,7 @@
   (check-int-pos-max n)
   (if (unit? n)
     false
-    (let [table (least-divisor-table n)
+    (let [^ints table (least-divisor-table n)
           e (aget table n)]
       (= e n))))
 
@@ -134,16 +134,20 @@
     false
     ((complement prime?) n)))
 
+
+(defn- int->factors'
+  [^ints xs ^Integer n]
+  (lazy-seq
+   (when (> n 1)
+     (let [d (aget xs n)]
+       (cons d (int->factors' xs (quot n d))))))
+  )
+
 (defn int->factors
-  ([^Integer n]
+  [^Integer n]
    (check-int-pos-max n)
-   (int->factors (least-divisor-table n) n))
-  ([^ints xs ^Integer n]
-   (check-int-pos-max n)
-   (lazy-seq
-    (when (> n 1)
-      (let [d (aget xs n)]
-        (cons d (int->factors xs (quot n d))))))))
+   (int->factors' (least-divisor-table n) n)
+  )
 
 (defn int->factors-distinct
   [n]
@@ -185,10 +189,10 @@
 (defn check-prime
   [n]
   (let [n (check-int-pos-max n)]
-    (b/check prime? n (format "%s is not a prime" n))))
+    (b/check-predicate prime? n (format "%s is not a prime" n))))
 
 (defn check-odd-prime
   [n]
   (let [n (check-prime n)]
-    (b/check odd? n (format "%s is not odd" n))))
+    (b/check-predicate odd? n (format "%s is not odd" n))))
 

@@ -36,7 +36,7 @@
     (is (= p/max-int (p/check-int-non-zero-max p/max-int)))))
 
 
-(deftest check-prime
+(deftest check-prime-test
   (testing "Fail"
     (is (thrown? Exception (p/check-prime 0)))
     (is (thrown? Exception (p/check-prime 1)))
@@ -49,7 +49,7 @@
     (is (= 7 (p/check-odd-prime 7)))
     (is (= 11 (p/check-odd-prime 11)))))
 
-(deftest check-odd-primeest
+(deftest check-odd-prime-test
   (testing "Fail"
     (is (thrown? Exception (p/check-odd-prime 0)))
     (is (thrown? Exception (p/check-odd-prime 1)))
@@ -81,6 +81,9 @@
       8 [2 3 5 7]
       9 [2 3 5 7]
       10 [2 3 5 7]
+      11 [2 3 5 7 11]
+      12 [2 3 5 7 11]
+      13 [2 3 5 7 11 13]
       30 [2 3 5 7 11 13 17 19 23 29])))
 
 (deftest categorize-test
