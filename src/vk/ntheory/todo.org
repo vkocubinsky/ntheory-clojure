@@ -7,7 +7,7 @@
 * TODO Update arithmetic function tests , use values up to 20
 * TODO Review code and review tests for namespaces: 
 ** DONE basic
-** TODO primes
+** primes
 ** TODO arithmetic functions
 ** TODO congruences
 ** TODO primitive roots
