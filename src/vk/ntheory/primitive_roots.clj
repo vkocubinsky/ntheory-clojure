@@ -79,7 +79,7 @@
 
 (defmethod find-primitive-root :1
   [m]
-  1)
+  0)
 
 (defmethod find-primitive-root :2
   [m]
