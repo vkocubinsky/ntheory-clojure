@@ -4,8 +4,6 @@
             [vk.ntheory.primes :as p]
             [vk.ntheory.arithmetic-functions :as af]))
 
-
-
 (defn order
   "Find multiplicative order of given integer `a`."
   [a m]
@@ -136,7 +134,15 @@
 
 ;; 997, 9973
 
-
+(defn power-residue?
+  [m n a]
+  (b/check-relatively-prime a m)
+  (if-let [g (find-primitive-root m)]
+    (let [phi (af/totient m)
+          d (b/gcd n phi)
+          t (mod (b/pow a (/ phi d)) n)]
+      ;;(prn "phi=" phi " d=" d " test=" t) 
+      (= 1 t))))
 
 
 
