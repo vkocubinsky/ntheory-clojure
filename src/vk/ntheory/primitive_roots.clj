@@ -2,13 +2,14 @@
   "Primitive roots."
   (:require [vk.ntheory.basic :as b]
             [vk.ntheory.primes :as p]
+            [vk.ntheory.congruences :as c]
             [vk.ntheory.arithmetic-functions :as af]))
 
 (defn order
   "Find multiplicative order of given integer `a`."
-  [a m]
-  (b/check-int-non-neg a)
+  [m a]
   (b/check-int-pos m)
+  (b/check-int-non-neg a)
   (b/check-relatively-prime a m)
   (->> m
        af/totient
@@ -53,7 +54,7 @@
       (apply (partial b/m+ m) (map #(b/m* m %1 %2) x A)))))
 
 (defn primitive-root?
-  [a m]
+  [m a]
   (b/check-relatively-prime a m)
   (let [phi-p (af/totient m)]
     (->> phi-p
@@ -90,7 +91,7 @@
 (defmethod find-primitive-root :odd-prime
   [m]
   (->> (range 1 m)
-       (filter #(primitive-root? % m))
+       (filter #(primitive-root? m %))
        first))
 
 (defmethod find-primitive-root :odd-prime-power
@@ -130,7 +131,7 @@
   [m]
   (b/check-int-pos m)
   (->> (reduced-residues' m)
-       (filter #(primitive-root? % m))))
+       (filter #(primitive-root? m %))))
 
 ;; 997, 9973
 
@@ -144,6 +145,31 @@
       ;;(prn "phi=" phi " d=" d " test=" t) 
       (= 1 t))))
 
+(defn index
+  [m a]
+  (b/check-int-pos m)
+  (b/check-int-non-neg a)
+  (b/check-relatively-prime a m)
+  (if-let [g (find-primitive-root m)]
+    (loop [acc g
+           ind 1]
+      (if (= acc a)
+        ind
+        (recur (b/m* m acc g) (inc ind))))))
 
 
+(defn solve-power-residue
+  [m n a]
+  (b/check-int-pos m)
+  (b/check-int-pos n)
+  (b/check-int-pos a)
+  (b/check-relatively-prime a m)
+  (let [g (find-primitive-root m)
+        b (index m a)
+        phi (af/totient m)
+        xs (c/solve-linear n b phi)]
+    (prn "g = " g " b = " b " phi = " phi " xs = " xs)
+    (map (partial b/m** m g) xs)
+    )
+  )
 

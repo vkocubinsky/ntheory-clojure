@@ -10,7 +10,7 @@
 
 (deftest order-test
   (are [x y] (= x y)
-    10 (pr/order 2 11))
+    10 (pr/order 11 2))
   )
 
 (deftest find-primitive-root-test
@@ -18,7 +18,7 @@
   )
 
 (deftest primitive-root?-test
-  (is (pr/primitive-root? 2 11))
+  (is (pr/primitive-root? 11 2))
   )
 
 (deftest primitive-roots-test
