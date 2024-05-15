@@ -176,3 +176,6 @@
         xs (c/solve-linear n b phi)]
     (map (partial b/m** m g) xs)))
 
+(defn power-residues
+  [m n])
+
