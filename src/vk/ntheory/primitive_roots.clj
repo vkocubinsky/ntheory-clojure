@@ -5,12 +5,16 @@
             [vk.ntheory.congruences :as c]
             [vk.ntheory.arithmetic-functions :as af]))
 
-(defn order
-  "Find multiplicative order of given integer `a`."
+(defn check-prime-to-mod
   [m a]
   (b/check-int-pos m)
   (b/check-int-non-neg a)
-  (b/check-relatively-prime a m)
+  (b/check-relatively-prime a m))
+
+(defn order
+  "Find multiplicative order of given integer `a`."
+  [m a]
+  (check-prime-to-mod m a)
   (->> m
        af/totient
        af/divisors
@@ -55,7 +59,7 @@
 
 (defn primitive-root?
   [m a]
-  (b/check-relatively-prime a m)
+  (check-prime-to-mod m a)
   (let [phi-p (af/totient m)]
     (->> phi-p
          (p/int->factors-distinct)
@@ -133,7 +137,6 @@
   (->> (reduced-residues' m)
        (filter #(primitive-root? m %))))
 
-;; 997, 9973
 
 (defn power-residue?
   [m n a]
@@ -142,14 +145,11 @@
     (let [phi (af/totient m)
           d (b/gcd n phi)
           t (mod (b/pow a (/ phi d)) n)]
-      ;;(prn "phi=" phi " d=" d " test=" t) 
       (= 1 t))))
 
 (defn index
   [m a]
-  (b/check-int-pos m)
-  (b/check-int-non-neg a)
-  (b/check-relatively-prime a m)
+  (check-prime-to-mod m a)
   (if-let [g (find-primitive-root m)]
     (loop [acc g
            ind 1]
@@ -157,19 +157,14 @@
         ind
         (recur (b/m* m acc g) (inc ind))))))
 
-
 (defn solve-power-residue
   [m n a]
-  (b/check-int-pos m)
+  (check-prime-to-mod m a)
   (b/check-int-pos n)
-  (b/check-int-pos a)
-  (b/check-relatively-prime a m)
   (let [g (find-primitive-root m)
         b (index m a)
         phi (af/totient m)
         xs (c/solve-linear n b phi)]
     (prn "g = " g " b = " b " phi = " phi " xs = " xs)
-    (map (partial b/m** m g) xs)
-    )
-  )
+    (map (partial b/m** m g) xs)))
 
