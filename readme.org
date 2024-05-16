@@ -1205,7 +1205,7 @@ there is fucntion ~find-primitive-root~.
 : 2
 : 
 
-There is a predicate ~primitve-root?~ to check does given number $a$ is a primitive
+There is a predicate ~primitive-root?~ to check does given number $a$ is a primitive
 root modulo $m$
 
 #+begin_src clojure
@@ -1224,4 +1224,77 @@ To find all primitive roots there is function ~primitive-roots~.
 
 #+RESULTS:
 : (7 6 2 8)
+: 
+
+** Index
+
+If m has a primitive root $g$ and $(a,m) = 1$ there is an unique integer $k$,
+$0 \le k \le \varphi(m) - 1$ such that
+
+$$a \equiv g^k \pmod{m}$$
+
+Number $k$ is called an index of $a$ to the base $g$
+
+$$k = ind_g a$$
+
+There is clojure function ~index [m g a]~ to calculate index.
+
+#+begin_src clojure
+  (pr/index 11 2 5)
+#+end_src 
+
+#+RESULTS:
+: 4
+: 
+
+Often it doesn't matter which primitive root used as base. There is
+another arity of function ~index [m a]~, where $g$ is value get by
+~find-primitive-root~ function, which is $2$ for modulo $11$.
+
+#+begin_src clojure
+  (pr/index 11 5)
+#+end_src
+
+#+RESULTS:
+: 4
+: 
+
+** n-th power residues
+
+If $(a,m) = 1$ and congruence $x^n \equiv a \pmod{m}$ has a solution, number $a$ is
+called n-th power residue mod $m$. Otherwise number $a$ is called n-th power
+non residue mod $m$.
+
+To check does given number power residue there is a function ~power-residue?~.
+For instance $4$ is $2$ power residue mod $11$
+
+#+begin_src clojure
+  (pr/power-residue? 11 2 4)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+If need to get solutions of equation $x^n \equiv a \pmod m$ there is
+another function ~solve-power-residue$. For instance for get a solution
+of equation $x^2 \equiv 4 \pmod m$
+
+#+begin_src clojure
+  (pr/solve-power-residue 11 2 4)
+#+end_src
+
+#+RESULTS:
+: #{2 9}
+: 
+
+If need to get all n-th power residues modulo $m$ there is function
+~power-residues~. For instance for get all $a$ fro which $x^2 \equiv a \pmod m$
+
+#+begin_src clojure
+  (pr/power-residues 11 2)
+#+end_src
+
+#+RESULTS:
+: (1 4 5 9 3)
 : 

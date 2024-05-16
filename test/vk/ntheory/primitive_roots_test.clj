@@ -97,3 +97,7 @@
     9 #{8 3}
     10 #{}
     ))
+
+(deftest power-residues-test
+  (is (= #{1 4 5 9 3} (apply sorted-set (pr/power-residues 11 2))))
+  )
