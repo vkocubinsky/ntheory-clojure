@@ -154,19 +154,20 @@
 
 (defn check-primitive-root
   [m g]
-  (b/check-predicate (partial primitive-root? m) g (format "Value %s is not primitive root modulo %s" g m)))
-
+  (b/check-predicate (partial primitive-root? m)
+                     g
+                     (format "Value %s is not primitive root modulo %s" g m)))
 
 (defn index
-  ([m a] (index m a (get-primitive-root m)))
-  ([m a g]
+  ([m a] (index m (get-primitive-root m) a))
+  ([m g a]
    (check-prime-to-mod m a)
-   
+   (check-primitive-root m g)
    (loop [acc g
-            ind 1]
-       (if (= acc a)
-         ind
-         (recur (b/m* m acc g) (inc ind))))))
+          ind 1]
+     (if (= acc a)
+       ind
+       (recur (b/m* m acc g) (inc ind))))))
 
 (defn solve-power-residue
   [m n a]
@@ -179,5 +180,11 @@
     (->> xs (map (partial b/m** m g)) (apply sorted-set))))
 
 (defn power-residues
-  [m n])
+  [m n]
+  (let [g (get-primitive-root m)
+        phi (af/totient m)
+        d (b/gcd n phi)]
+    (map (partial b/m** m g)(range 0 phi d))
+    )
+  )
 
