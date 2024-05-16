@@ -57,7 +57,6 @@
     (for [x (b/product xss)]
       (apply (partial b/m+ m) (map #(b/m* m %1 %2) x A)))))
 
-
 (defn primitive-root?
   [m a]
   (check-prime-to-mod m a)
@@ -125,7 +124,6 @@
     g
     (throw (Exception. "Modulo doesn't have primitive root"))))
 
-
 (defn primitive-roots
   [m]
   (if-let [g (find-primitive-root m)]
@@ -145,26 +143,30 @@
   (->> (reduced-residues' m)
        (filter #(primitive-root? m %))))
 
-
 (defn power-residue?
   [m n a]
   (b/check-relatively-prime a m)
   (let [g (get-primitive-root m)
-          phi (af/totient m)
-          d (b/gcd n phi)
+        phi (af/totient m)
+        d (b/gcd n phi)
         t (mod (b/m** m a (/ phi d)) n)]
-      (= 1 t))
-  )
+    (= 1 t)))
+
+(defn check-primitive-root
+  [m g]
+  (b/check-predicate (partial primitive-root? m) g (format "Value %s is not primitive root modulo %s" g m)))
+
 
 (defn index
-  [m a]
-  (check-prime-to-mod m a)
-  (let [g (get-primitive-root m)]
-    (loop [acc g
-           ind 1]
-      (if (= acc a)
-        ind
-        (recur (b/m* m acc g) (inc ind))))))
+  ([m a] (index m a (get-primitive-root m)))
+  ([m a g]
+   (check-prime-to-mod m a)
+   
+   (loop [acc g
+            ind 1]
+       (if (= acc a)
+         ind
+         (recur (b/m* m acc g) (inc ind))))))
 
 (defn solve-power-residue
   [m n a]

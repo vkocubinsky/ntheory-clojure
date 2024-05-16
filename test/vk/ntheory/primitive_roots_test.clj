@@ -57,6 +57,19 @@
     )
   )
 
+(deftest index-test
+  (are [x y] (= y (pr/index 11 2 x))
+    1 10
+    2 1
+    3 8
+    4 2
+    5 4
+    6 9
+    7 7
+    8 3
+    9 6
+    10 5))
+
 (deftest power-residue?-test
   (are [x y] (= y (pr/power-residue? 11 2 x))
       1 true
