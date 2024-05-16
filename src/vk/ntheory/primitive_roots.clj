@@ -2,16 +2,19 @@
   "Primitive roots."
   (:require [vk.ntheory.basic :as b]
             [vk.ntheory.primes :as p]
+            [vk.ntheory.congruences :as c]
             [vk.ntheory.arithmetic-functions :as af]))
 
-
+(defn check-prime-to-mod
+  [m a]
+  (b/check-int-pos m)
+  (b/check-int-non-neg a)
+  (b/check-relatively-prime a m))
 
 (defn order
   "Find multiplicative order of given integer `a`."
-  [a m]
-  (b/check-int-non-neg a)
-  (b/check-int-pos m)
-  (b/check-relatively-prime a m)
+  [m a]
+  (check-prime-to-mod m a)
   (->> m
        af/totient
        af/divisors
@@ -55,8 +58,8 @@
       (apply (partial b/m+ m) (map #(b/m* m %1 %2) x A)))))
 
 (defn primitive-root?
-  [a m]
-  (b/check-relatively-prime a m)
+  [m a]
+  (check-prime-to-mod m a)
   (let [phi-p (af/totient m)]
     (->> phi-p
          (p/int->factors-distinct)
@@ -79,7 +82,7 @@
 
 (defmethod find-primitive-root :1
   [m]
-  1)
+  0)
 
 (defmethod find-primitive-root :2
   [m]
@@ -92,7 +95,7 @@
 (defmethod find-primitive-root :odd-prime
   [m]
   (->> (range 1 m)
-       (filter #(primitive-root? % m))
+       (filter #(primitive-root? m %))
        first))
 
 (defmethod find-primitive-root :odd-prime-power
@@ -115,6 +118,12 @@
   [m]
   nil)
 
+(defn get-primitive-root
+  [m]
+  (if-let [g (find-primitive-root m)]
+    g
+    (throw (Exception. "Modulo doesn't have primitive root"))))
+
 (defn primitive-roots
   [m]
   (if-let [g (find-primitive-root m)]
@@ -132,12 +141,50 @@
   [m]
   (b/check-int-pos m)
   (->> (reduced-residues' m)
-       (filter #(primitive-root? % m))))
+       (filter #(primitive-root? m %))))
 
-;; 997, 9973
+(defn power-residue?
+  [m n a]
+  (b/check-relatively-prime a m)
+  (let [g (get-primitive-root m)
+        phi (af/totient m)
+        d (b/gcd n phi)
+        t (mod (b/m** m a (/ phi d)) n)]
+    (= 1 t)))
 
+(defn check-primitive-root
+  [m g]
+  (b/check-predicate (partial primitive-root? m)
+                     g
+                     (format "Value %s is not primitive root modulo %s" g m)))
 
+(defn index
+  ([m a] (index m (get-primitive-root m) a))
+  ([m g a]
+   (check-prime-to-mod m a)
+   (check-primitive-root m g)
+   (loop [acc g
+          ind 1]
+     (if (= acc a)
+       ind
+       (recur (b/m* m acc g) (inc ind))))))
 
+(defn solve-power-residue
+  [m n a]
+  (check-prime-to-mod m a)
+  (b/check-int-pos n)
+  (let [g (get-primitive-root m)
+        b (index m a)
+        phi (af/totient m)
+        xs (c/solve-linear n b phi)]
+    (->> xs (map (partial b/m** m g)) (apply sorted-set))))
 
-
+(defn power-residues
+  [m n]
+  (let [g (get-primitive-root m)
+        phi (af/totient m)
+        d (b/gcd n phi)]
+    (map (partial b/m** m g)(range 0 phi d))
+    )
+  )
 

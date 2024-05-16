@@ -10,7 +10,7 @@
 
 (deftest order-test
   (are [x y] (= x y)
-    10 (pr/order 2 11))
+    10 (pr/order 11 2))
   )
 
 (deftest find-primitive-root-test
@@ -18,7 +18,7 @@
   )
 
 (deftest primitive-root?-test
-  (is (pr/primitive-root? 2 11))
+  (is (pr/primitive-root? 11 2))
   )
 
 (deftest primitive-roots-test
@@ -55,4 +55,49 @@
     30 #{}
     31 #{3 11 12 13 17 21 22 24}
     )
+  )
+
+(deftest index-test
+  (are [x y] (= y (pr/index 11 2 x))
+    1 10
+    2 1
+    3 8
+    4 2
+    5 4
+    6 9
+    7 7
+    8 3
+    9 6
+    10 5))
+
+(deftest power-residue?-test
+  (are [x y] (= y (pr/power-residue? 11 2 x))
+      1 true
+      2 false
+      3 true
+      4 true
+      5 true
+      6 false
+      7 false
+      8 false
+      9 true
+      10 false)
+  )
+
+(deftest solve-power-residue-test
+  (are [x y] (= y (pr/solve-power-residue 11 2 x))
+    1 #{1 10}
+    2 #{}
+    3 #{5 6}
+    4 #{2 9}
+    5 #{4 7}
+    6 #{}
+    7 #{}
+    8 #{}
+    9 #{8 3}
+    10 #{}
+    ))
+
+(deftest power-residues-test
+  (is (= #{1 4 5 9 3} (apply sorted-set (pr/power-residues 11 2))))
   )
