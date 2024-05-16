@@ -70,3 +70,17 @@
       9 true
       10 false)
   )
+
+(deftest solve-power-residue-test
+  (are [x y] (= y (pr/solve-power-residue 11 2 x))
+    1 '(1 10)
+    2 '()
+    3 '(5 6)
+    4 '(2 9)
+    5 '(4 7)
+    6 '()
+    7 '()
+    8 '()
+    9 '(8 3)
+    10 '()
+    ))
