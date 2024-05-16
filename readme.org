@@ -1156,14 +1156,18 @@ So the answer is $125\pmod{1496}$
 
 * Primitive roots 
 
-This section cover namespace ~vk.ntheory.primitive-roots~. It
-contains functions for find primitive roots and also contains
-fast implementation of sequence reduced residiues.
+This section cover namespace ~vk.ntheory.primitive-roots~. 
+
+It contains functions for test modulo for primitive roots,
+find primitive roots. If modulo has a primitive root there are
+functions for find index, test for n-th power residue, solve n-th
+power residue congruence, get all n-th power residues. Also there is
+a function for find reduced residues by any modulo.
+
 
 #+begin_src clojure :results silent
   (require '[vk.ntheory.primitive-roots :as pr])
 #+end_src
-
 
 ** Reduced residues
 
@@ -1187,7 +1191,7 @@ $a^n \equiv 1 \pmod{m}$.
 #+end_src
 
 #+RESULTS:
-: 10
+: 1
 : 
 
 ** Primitive root
