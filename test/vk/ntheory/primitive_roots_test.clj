@@ -56,3 +56,17 @@
     31 #{3 11 12 13 17 21 22 24}
     )
   )
+
+(deftest power-residue?-test
+  (are [x y] (= y (pr/power-residue? 11 2 x))
+      1 true
+      2 false
+      3 true
+      4 true
+      5 true
+      6 false
+      7 false
+      8 false
+      9 true
+      10 false)
+  )

@@ -152,7 +152,7 @@
   (let [g (get-primitive-root m)
           phi (af/totient m)
           d (b/gcd n phi)
-          t (mod (b/pow a (/ phi d)) n)]
+        t (mod (b/m** m a (/ phi d)) n)]
       (= 1 t))
   )
 
