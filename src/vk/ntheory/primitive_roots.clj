@@ -174,7 +174,7 @@
         b (index m a)
         phi (af/totient m)
         xs (c/solve-linear n b phi)]
-    (map (partial b/m** m g) xs)))
+    (->> xs (map (partial b/m** m g)) (apply sorted-set))))
 
 (defn power-residues
   [m n])
