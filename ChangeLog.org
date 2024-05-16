@@ -4,7 +4,16 @@
 
 * Version 0.8.0
 
-
+- primitive roots
+  - find-primitive-root
+  - primitive-roots
+  - primitive-root?
+  - index
+  - order
+  - power-residue?
+  - solve-power-residue
+  - power-residues
+  - reduced residues 
 
 * Version 0.7.0
 
