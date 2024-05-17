@@ -9,7 +9,8 @@
   [m a]
   (b/check-int-pos m)
   (b/check-int-non-neg a)
-  (b/check-relatively-prime a m))
+  (b/check-relatively-prime a m)
+  (mod a m))
 
 (defn order
   "Find multiplicative order of given integer `a`."
@@ -184,7 +185,33 @@
   (let [g (get-primitive-root m)
         phi (af/totient m)
         d (b/gcd n phi)]
-    (map (partial b/m** m g)(range 0 phi d))
-    )
-  )
+    (map (partial b/m** m g) (range 0 phi d))))
+
+(defn m2n-check-modulo
+  "Check than m is 2^n, where n >= 3. Returns n."
+  [m]
+  (b/check-int-pos m)
+  (let [[[p1 a1] [p2 a2]] (p/int->factors-count m)]
+    (if (and (= p1 2) (>= a1 3) (nil? p2))
+      a1
+      (throw (IllegalArgumentException. "Expected module 2^n where n >= 3")))))
+
+(defn m2n-index->residue
+  [m [u v]]
+  (mod (* (b/pow -1 u)
+          (b/m** m 5 v)) m))
+
+(defn m2n-indices
+  "Returns residues modulo 2^n, where n >= 3."
+  [m]
+  (let [e (m2n-check-modulo m)]
+    (for [u [0 1]
+          v (range 0 (b/pow 2 (- e 2)))]
+      [u v])))
+
+(defn m2n-index
+  [m a]
+  (let [e (m2n-check-modulo m)
+        a' (check-prime-to-mod m a)]
+    (first (filter #(= a' (m2n-index->residue m %))  (m2n-indices m)))))
 
