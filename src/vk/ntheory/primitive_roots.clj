@@ -61,7 +61,7 @@
       (apply (partial b/m+ m) (map #(b/m* m %1 %2) x A)))))
 
 (defn classify-modulo
-  [m]
+  [m & _]
   (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
     (cond
       (= m 1) ::one
@@ -70,8 +70,7 @@
       (and (nil? p2) (> p1 2) (= a1 1)) ::odd-prime ;; p
       (and (nil? p2) (> p1 2) (> a1 1)) ::odd-prime-power ;; p^a
       (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) ::two-odd-prime-power
-      (and (= p1 2) (>= a1 3) (nil? p2)) ::power-of-two 
-      )) ;; 2p^a
+      (and (= p1 2) (>= a1 3) (nil? p2)) ::power-of-two)) ;; 2p^a
   )
 
 (derive ::one ::has-primitive-root)
@@ -106,8 +105,6 @@
   (b/check-predicate (partial primitive-root? m)
                      g
                      (format "Value %s is not primitive root modulo %s" g m)))
-
-
 
 (defmulti find-primitive-root classify-modulo)
 
@@ -161,7 +158,6 @@
     (map #(b/m** m g %) (reduced-residues (af/totient m)))
     []))
 
-
 ;; Brute force implementation
 (defn reduced-residues'
   [m]
@@ -181,16 +177,36 @@
 ;; (defmulti solve-power-residue)
 ;; (defmulti power-residues)
 
-(defn power-residue?
+(defmulti power-residue? classify-modulo)
+
+(defmethod power-residue? ::has-primitive-root
+  ;; Case modulo m has a primitive root.
   [m n a]
-  (b/check-relatively-prime a m)
-  (let [g (get-primitive-root m)
-        phi (af/totient m)
+  (check-prime-to-mod m a)
+  (let [phi (af/totient m)
         d (b/gcd n phi)
-        t (mod (b/m** m a (/ phi d)) n)]
+        t (b/m** m a (/ phi d))]
     (= 1 t)))
 
+(defmethod power-residue? ::power-of-two
+  ;; Case modulo m for modulo 2^e, where e >= 3."
+  [m n a]
+  (check-prime-to-mod m a)
+  (if (odd? n)
+    true ;;solution always exists and unique
+    (if (= (mod a 4) 1)
+      (let [[[_ e]] (p/int->factors-count m)
+            m' (b/pow 2 (- e 2))
+            d (b/gcd n m')
+            t (b/m** m a
+                          (/ m' d))]
+        (= 1 t))
 
+      false)))
+
+(defmethod power-residue? :default
+  [m n a]
+  "not implemented")
 
 (defn index
   ([m a] (index m (get-primitive-root m) a))
