@@ -199,13 +199,13 @@
             m' (b/pow 2 (- e 2))
             d (b/gcd n m')
             t (b/m** m a
-                          (/ m' d))]
+                     (/ m' d))]
         (= 1 t))
-
       false)))
 
 (defmethod power-residue? :default
   [m n a]
+  ;; 
   "not implemented")
 
 (defn index
