@@ -9,7 +9,7 @@
   [m a]
   (b/check-int-pos m)
   (b/check-int-non-neg a)
-  (b/check-relatively-prime a m)
+  (b/check-relatively-prime m a)
   (mod a m))
 
 (defn order
@@ -58,38 +58,61 @@
     (for [x (b/product xss)]
       (apply (partial b/m+ m) (map #(b/m* m %1 %2) x A)))))
 
-(defn primitive-root?
-  [m a]
-  (check-prime-to-mod m a)
-  (let [phi-p (af/totient m)]
-    (->> phi-p
-         (p/int->factors-distinct)
-         (map #(/ phi-p %))
-         (map #(b/m** m a %))
-         (every? #(not (= 1 %))))))
-
 (defn classify-modulo
   [m]
   (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
     (cond
-      (= m 1) :1
-      (= m 2) :2
-      (= m 4) :4
+      (= m 1) :one
+      (= m 2) :two
+      (= m 4) :four
       (and (nil? p2) (> p1 2) (= a1 1)) :odd-prime ;; p
       (and (nil? p2) (> p1 2) (> a1 1)) :odd-prime-power ;; p^a
-      (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) :2-odd-prime-power)))
+      (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) :two-odd-prime-power
+      (and (= p1 2) (>= a1 3) (nil? p2)) :power-of-two 
+      )) ;; 2p^a
+  )
+
+(derive ::one ::possesses-primitive-root)
+(derive ::two ::possesses-primitive-root)
+(derive ::four ::posseses-primitive-root)
+(derive ::odd-prime ::possesses-primitive-root)
+(derive ::odd-prime-power ::possesses-primitive-root)
+(derive ::two-odd-prime-power ::possesses-primitive-root)
+
+(defn has-primitive-root
+  [m]
+  (isa? (classify-modulo m) ::possesses-primitive-root))
+
+(defn primitive-root?
+  "Check does a is primitive root modulo m"
+  [m a]
+  (check-prime-to-mod m a)
+  (let [phi (af/totient m)]
+    (->> phi
+         (p/int->factors-distinct)
+         (map #(/ phi %))
+         (map #(b/m** m a %))
+         (every? #(not (= 1 %))))))
+
+(defn check-primitive-root
+  [m g]
+  (b/check-predicate (partial primitive-root? m)
+                     g
+                     (format "Value %s is not primitive root modulo %s" g m)))
+
+
 
 (defmulti find-primitive-root classify-modulo)
 
-(defmethod find-primitive-root :1
+(defmethod find-primitive-root :one
   [m]
   0)
 
-(defmethod find-primitive-root :2
+(defmethod find-primitive-root :two
   [m]
   1)
 
-(defmethod find-primitive-root :4
+(defmethod find-primitive-root :four
   [m]
   3)
 
@@ -108,7 +131,7 @@
       (+ g p)
       g)))
 
-(defmethod find-primitive-root :2-odd-prime-power
+(defmethod find-primitive-root :two-odd-prime-power
   [m]
   (let [[[_ _] [p a]] (p/int->factors-count m)
         g (find-primitive-root (b/pow p a))]
@@ -130,6 +153,8 @@
   (if-let [g (find-primitive-root m)]
     (map #(b/m** m g %) (reduced-residues (af/totient m)))
     []))
+
+
 
 ;; Brute force implementation
 (defn reduced-residues'
@@ -153,11 +178,7 @@
         t (mod (b/m** m a (/ phi d)) n)]
     (= 1 t)))
 
-(defn check-primitive-root
-  [m g]
-  (b/check-predicate (partial primitive-root? m)
-                     g
-                     (format "Value %s is not primitive root modulo %s" g m)))
+
 
 (defn index
   ([m a] (index m (get-primitive-root m) a))
