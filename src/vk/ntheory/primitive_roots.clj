@@ -171,8 +171,6 @@
        (filter #(primitive-root? m %))))
 
 ;; Power residues
-
-;; (defmulti power-residue?)
 ;; (defmulti solve-power-residue)
 ;; (defmulti power-residues)
 
@@ -202,7 +200,7 @@
         (= 1 t))
       false)))
 
-(defmethod power-residue? :default
+(defmethod power-residue? ::composite
   [m n a]
   ;; 
   "not implemented")
@@ -218,7 +216,9 @@
        ind
        (recur (b/m* m acc g) (inc ind))))))
 
-(defn solve-power-residue
+(defmulti solve-power-residue classify-modulo :default ::composite)
+
+(defmethod solve-power-residue ::has-primitive-root
   [m n a]
   (check-prime-to-mod m a)
   (b/check-int-pos n)
@@ -263,3 +263,10 @@
         a' (check-prime-to-mod m a)]
     (first (filter #(= a' (m2n-index->residue m %))  (m2n-indices m)))))
 
+
+(defmethod solve-power-residue ::power-of-two
+  [m n a]
+  (check-prime-to-mod m a)
+  (b/check-int-pos n)
+  (print "power of 2 case")
+  )
