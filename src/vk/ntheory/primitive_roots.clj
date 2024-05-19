@@ -177,6 +177,10 @@
 
 ;; Power residues
 
+;; (defmulti power-residue?)
+;; (defmulti solve-power-residue)
+;; (defmulti power-residues)
+
 (defn power-residue?
   [m n a]
   (b/check-relatively-prime a m)
