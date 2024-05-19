@@ -34,7 +34,6 @@
       (and (nil? p2) (> a1 1)) :prime-power ;; p^a
       )))
 
-;; Move to primes?
 (defmulti reduced-residues classify-residues :default :composite)
 
 (defmethod reduced-residues :1
@@ -106,7 +105,7 @@
                      g
                      (format "Value %s is not primitive root modulo %s" g m)))
 
-(defmulti find-primitive-root classify-modulo)
+(defmulti find-primitive-root classify-modulo :default ::composite)
 
 (defmethod find-primitive-root ::one
   [m]
@@ -128,7 +127,7 @@
 
 (defmethod find-primitive-root ::odd-prime-power
   [m]
-  (let [[[p a]] (p/int->factors-count m)
+  (let [[[p _]] (p/int->factors-count m)
         g (find-primitive-root p)
         c (b/m** (* p p) g (dec p))]
     (if (= 1 c)
@@ -142,7 +141,7 @@
     (if (odd? g) g
         (+ g (b/pow p a)))))
 
-(defmethod find-primitive-root :default
+(defmethod find-primitive-root ::composite
   [m]
   nil)
 
