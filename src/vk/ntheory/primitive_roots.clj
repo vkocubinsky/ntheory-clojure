@@ -263,10 +263,35 @@
         a' (check-prime-to-mod m a)]
     (first (filter #(= a' (m2n-index->residue m %))  (m2n-indices m)))))
 
-
 (defmethod solve-power-residue ::power-of-two
   [m n a]
   (check-prime-to-mod m a)
   (b/check-int-pos n)
-  (print "power of 2 case")
-  )
+  (letfn [(solve-odd-n [m n a]
+            (let [[s t] (m2n-index m a)
+                  [[_ e]] (p/int->factors-count m)
+                  m' (b/pow 2 (- e 2))
+                  d (b/gcd n m')
+                  z (first (c/solve-linear n t m'))
+                  x (b/m* m (b/m** m (- 1) s) (b/m** m 5 z))]
+              (sorted-set x)))
+          (solve-even-n [m n a]
+            (let [[s t] (m2n-index m a)]
+              (if (= s 0)
+                (let [[[_ e]] (p/int->factors-count m)
+                      m' (b/pow 2 (- e 2))
+                      d (b/gcd n m')
+                      zs (c/solve-linear n t m')]
+                  (for [y [0 1]
+                        z zs]
+                    (b/m* m (b/m** m (- 1) y) (b/m** m 5 z))
+                    )
+                  )
+                (sorted-set))))]
+    (if (odd? n)
+      (solve-odd-n m n a)
+      (solve-even-n m n a))))
+
+(defmethod solve-power-residue ::composite
+  [m n a]
+  "not implemented")
