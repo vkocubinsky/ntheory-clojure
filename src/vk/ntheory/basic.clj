@@ -77,6 +77,8 @@
   [n]
   (count (Integer/toBinaryString n)))
 
+;; Consider other simple idea, if n is even a = a^(n/2) * a^(n/2)
+;; if n is odd a = a * a^(n-1)
 (defn m**
   "Raise integer `a` to the power of `n >= 0` modulo `m`.
   See D.Knuth, The Art of Computer Programming, Volume II."
