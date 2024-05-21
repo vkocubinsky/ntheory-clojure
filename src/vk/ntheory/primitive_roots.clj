@@ -24,34 +24,33 @@
        first))
 
 ;; Reduced residues
-
 (defn classify-residues
   [m]
   (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
     (cond
-      (= m 1) :1
-      (and (nil? p2) (= a1 1)) :prime ;; p
-      (and (nil? p2) (> a1 1)) :prime-power ;; p^a
+      (= m 1) ::mod-1
+      (and (nil? p2) (= a1 1)) ::mod-p 
+      (and (nil? p2) (> a1 1)) ::mod-p**e 
       )))
 
-(defmulti reduced-residues classify-residues :default :composite)
+(defmulti reduced-residues classify-residues :default ::composite)
 
-(defmethod reduced-residues :1
+(defmethod reduced-residues ::mod-1
   [m]
   '(0))
 
-(defmethod reduced-residues :prime
+(defmethod reduced-residues ::mod-p
   [m]
   (range 1 m))
 
 ;; Optimized version with concat and lazy-seq doesn't have performance imporovement
-(defmethod reduced-residues :prime-power
+(defmethod reduced-residues ::mod-p**e
   [m]
   (let [[[p a]] (p/int->factors-count m)]
     (->> (range 1 m)
          (remove #(b/divides? p %)))))
 
-(defmethod reduced-residues :composite
+(defmethod reduced-residues ::composite
   [m]
   (let [cn (p/int->factors-count m)
         xss (mapv (fn [[p k]] (reduced-residues (b/pow p k))) cn)
@@ -59,25 +58,26 @@
     (for [x (b/product xss)]
       (apply (partial b/m+ m) (map #(b/m* m %1 %2) x A)))))
 
+
 (defn classify-modulo
   [m & _]
   (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
     (cond
-      (= m 1) ::one
-      (= m 2) ::two
-      (= m 4) ::four
-      (and (nil? p2) (> p1 2) (= a1 1)) ::odd-prime ;; p
-      (and (nil? p2) (> p1 2) (> a1 1)) ::odd-prime-power ;; p^a
-      (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) ::two-odd-prime-power
-      (and (= p1 2) (>= a1 3) (nil? p2)) ::power-of-two)) ;; 2p^a
+      (= m 1) ::mod-1
+      (= m 2) ::mod-2
+      (= m 4) ::mod-4
+      (and (nil? p2) (> p1 2) (= a1 1)) ::mod-p 
+      (and (nil? p2) (> p1 2) (> a1 1)) ::mod-p**e
+      (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) ::mod-2p**e
+      (and (= p1 2) (>= a1 3) (nil? p2)) ::mod-2**e))
   )
 
-(derive ::one ::has-primitive-root)
-(derive ::two ::has-primitive-root)
-(derive ::four ::has-primitive-root)
-(derive ::odd-prime ::has-primitive-root)
-(derive ::odd-prime-power ::has-primitive-root)
-(derive ::two-odd-prime-power ::has-primitive-root)
+(derive ::mod-1 ::has-primitive-root)
+(derive ::mod-2 ::has-primitive-root)
+(derive ::mod-4 ::has-primitive-root)
+(derive ::mod-p ::has-primitive-root)
+(derive ::mod-p**e ::has-primitive-root)
+(derive ::mod-2p**e ::has-primitive-root)
 
 (defn has-primitive-root?
   [m]
@@ -107,25 +107,25 @@
 
 (defmulti find-primitive-root classify-modulo :default ::composite)
 
-(defmethod find-primitive-root ::one
+(defmethod find-primitive-root ::mod-1
   [m]
   0)
 
-(defmethod find-primitive-root ::two
+(defmethod find-primitive-root ::mod-2
   [m]
   1)
 
-(defmethod find-primitive-root ::four
+(defmethod find-primitive-root ::mod-4
   [m]
   3)
 
-(defmethod find-primitive-root ::odd-prime
+(defmethod find-primitive-root ::mod-p
   [m]
   (->> (range 1 m)
        (filter #(primitive-root? m %))
        first))
 
-(defmethod find-primitive-root ::odd-prime-power
+(defmethod find-primitive-root ::mod-p**e
   [m]
   (let [[[p _]] (p/int->factors-count m)
         g (find-primitive-root p)
@@ -134,7 +134,7 @@
       (+ g p)
       g)))
 
-(defmethod find-primitive-root ::two-odd-prime-power
+(defmethod find-primitive-root ::mod-2p**e
   [m]
   (let [[[_ _] [p a]] (p/int->factors-count m)
         g (find-primitive-root (b/pow p a))]
@@ -185,7 +185,7 @@
         t (b/m** m a (/ phi d))]
     (= 1 t)))
 
-(defmethod power-residue? ::power-of-two
+(defmethod power-residue? ::mod-2**e
   ;; Case modulo m for modulo 2^e, where e >= 3."
   [m n a]
   (check-prime-to-mod m a)
@@ -263,7 +263,7 @@
         a' (check-prime-to-mod m a)]
     (first (filter #(= a' (m2n-index->residue m %))  (m2n-indices m)))))
 
-(defmethod solve-power-residue ::power-of-two
+(defmethod solve-power-residue ::mod-2**e
   [m n a]
   (check-prime-to-mod m a)
   (b/check-int-pos n)
