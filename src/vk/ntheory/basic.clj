@@ -59,6 +59,14 @@
         b (check-int b)]
     (check-true (not (divides? a b)) (format "%s divides %s" a b))))
 
+(defn m=
+  "Check does `a` congruent to `b` modulo m"
+  ([m a] a (mod a m))
+  ([m a b] (= (mod a m) (mod b m)))
+  ;; todo
+  ;;([m a b & more] )
+  )
+
 (defn m*
   "Multiplication modulo `m`, `(m*)` returns 1, `(m* a)` returns `a`."
   ([m] 1)
@@ -142,12 +150,12 @@
 (defn- gcd-extended'
   "Helper function for `gcd-extended`."
   [[a b] [s'' t''] [s' t']]
-   (if (zero? b)
-     [a s'' t'']
-     (let [q (quot a b)
-           s (- s'' (* s' q))
-           t (- t'' (* t' q))]
-       (recur [b (mod a b)] [s' t'] [s t]))))
+  (if (zero? b)
+    [a s'' t'']
+    (let [q (quot a b)
+          s (- s'' (* s' q))
+          t (- t'' (* t' q))]
+      (recur [b (mod a b)] [s' t'] [s t]))))
 
 (defn gcd-extended
   "Extended Euclid algorithm.
@@ -157,14 +165,14 @@
   `a * s + b * t = d`.
   "
   [a b]
-   (check-int a)
-   (check-int b)
-   (check-at-least-one-non-zero a b)
-   (let [[d s t] (gcd-extended' [(abs a) (abs b)] [1 0] [0 1])
-         s' (* (sign a) s)
-         t' (* (sign b) t)]
-     (assert (= d (+ (* a s') (* b t'))))
-     [d s' t']))
+  (check-int a)
+  (check-int b)
+  (check-at-least-one-non-zero a b)
+  (let [[d s t] (gcd-extended' [(abs a) (abs b)] [1 0] [0 1])
+        s' (* (sign a) s)
+        t' (* (sign b) t)]
+    (assert (= d (+ (* a s') (* b t'))))
+    [d s' t']))
 
 (defn lcm
   "The least common multiple of two non zero integers `a` and `b`."

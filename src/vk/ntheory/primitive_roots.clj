@@ -29,9 +29,8 @@
   (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
     (cond
       (= m 1) ::mod-1
-      (and (nil? p2) (= a1 1)) ::mod-p 
-      (and (nil? p2) (> a1 1)) ::mod-p**e 
-      )))
+      (and (nil? p2) (= a1 1)) ::mod-p
+      (and (nil? p2) (> a1 1)) ::mod-p**e)))
 
 (defmulti reduced-residues classify-residues :default ::composite)
 
@@ -58,7 +57,6 @@
     (for [x (b/product xss)]
       (apply (partial b/m+ m) (map #(b/m* m %1 %2) x A)))))
 
-
 (defn classify-modulo
   [m & _]
   (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
@@ -66,11 +64,10 @@
       (= m 1) ::mod-1
       (= m 2) ::mod-2
       (= m 4) ::mod-4
-      (and (nil? p2) (> p1 2) (= a1 1)) ::mod-p 
+      (and (nil? p2) (> p1 2) (= a1 1)) ::mod-p
       (and (nil? p2) (> p1 2) (> a1 1)) ::mod-p**e
       (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) ::mod-2p**e
-      (and (= p1 2) (>= a1 3) (nil? p2)) ::mod-2**e))
-  )
+      (and (= p1 2) (>= a1 3) (nil? p2)) ::mod-2**e)))
 
 (derive ::mod-1 ::has-primitive-root)
 (derive ::mod-2 ::has-primitive-root)
@@ -174,12 +171,21 @@
 ;; (defmulti solve-power-residue)
 ;; (defmulti power-residues)
 
-(defmulti power-residue? classify-modulo)
+(defn power-residue?'
+  "Brute force version of power-residue?"
+  [m n a]
+  (check-prime-to-mod m a)
+  (b/check-int-pos n)
+  (letfn [(f [x] (b/m** m x n))]
+    (true? (some #(b/m= m a (f %)) (reduced-residues m)))))
+
+(defmulti power-residue? classify-modulo :default ::composite)
 
 (defmethod power-residue? ::has-primitive-root
   ;; Case modulo m has a primitive root.
   [m n a]
   (check-prime-to-mod m a)
+  (b/check-int-pos n)
   (let [phi (af/totient m)
         d (b/gcd n phi)
         t (b/m** m a (/ phi d))]
@@ -189,6 +195,7 @@
   ;; Case modulo m for modulo 2^e, where e >= 3."
   [m n a]
   (check-prime-to-mod m a)
+  (b/check-int-pos n)
   (if (odd? n)
     true ;;solution always exists and unique
     (if (= (mod a 4) 1)
@@ -202,8 +209,10 @@
 
 (defmethod power-residue? ::composite
   [m n a]
-  ;; 
-  "not implemented")
+  (check-prime-to-mod m a)
+  (b/check-int-pos n)
+  (every? #(power-residue? % n a)
+          (for [[p e] (p/int->factors-count m)] (b/pow p e))))
 
 (defn index
   ([m a] (index m (get-primitive-root m) a))
@@ -284,9 +293,8 @@
                       zs (c/solve-linear n t m')]
                   (for [y [0 1]
                         z zs]
-                    (b/m* m (b/m** m (- 1) y) (b/m** m 5 z))
-                    )
-                  )
+                    (b/m* m (b/m** m (- 1) y) (b/m** m 5 z))))
+
                 (sorted-set))))]
     (if (odd? n)
       (solve-odd-n m n a)

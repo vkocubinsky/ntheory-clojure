@@ -2,7 +2,6 @@
   (:require [clojure.test :refer [deftest is are testing]]
             [vk.ntheory.primitive-roots :as pr]))
 
-
 (deftest reduced-residue-test
   (is #{1 2 3 4} (pr/reduced-residues 5))
   (is #{1 2 4 5 7 8} (pr/reduced-residues 9))
@@ -10,16 +9,13 @@
 
 (deftest order-test
   (are [x y] (= x y)
-    10 (pr/order 11 2))
-  )
+    10 (pr/order 11 2)))
 
 (deftest find-primitive-root-test
-  (is (= 2 (pr/find-primitive-root 11)))
-  )
+  (is (= 2 (pr/find-primitive-root 11))))
 
 (deftest primitive-root?-test
-  (is (pr/primitive-root? 11 2))
-  )
+  (is (pr/primitive-root? 11 2)))
 
 (deftest primitive-roots-test
   (are [x y] (= (set (pr/primitive-roots x)) y)
@@ -53,9 +49,7 @@
     28 #{}
     29 #{2 3 8 10 11 14 15 18 19 21 26 27}
     30 #{}
-    31 #{3 11 12 13 17 21 22 24}
-    )
-  )
+    31 #{3 11 12 13 17 21 22 24}))
 
 (deftest index-test
   (are [x y] (= y (pr/index 11 2 x))
@@ -72,17 +66,32 @@
 
 (deftest power-residue?-test
   (are [x y] (= y (pr/power-residue? 11 2 x))
-      1 true
-      2 false
-      3 true
-      4 true
-      5 true
-      6 false
-      7 false
-      8 false
-      9 true
-      10 false)
-  )
+    1 true
+    2 false
+    3 true
+    4 true
+    5 true
+    6 false
+    7 false
+    8 false
+    9 true
+    10 false))
+
+(defn power-residue?-vs-brute-force-comparison
+  [m ns]
+  (doseq [a (pr/reduced-residues m)
+          n ns]
+     (is (= (pr/power-residue?' m n a) (pr/power-residue? m n a)))))
+
+(deftest power-residue?-vs-brute-force-test
+  ;;(power-residue?-vs-brute-force-comparison 1 [1])
+  (power-residue?-vs-brute-force-comparison 2 (range 1 2))
+  (power-residue?-vs-brute-force-comparison 4 (range 1 4))
+  (power-residue?-vs-brute-force-comparison 7 (range 1 7))
+  (power-residue?-vs-brute-force-comparison 16 (range 1 16))
+  (power-residue?-vs-brute-force-comparison 24 (range 1 24)))
+
+
 
 (deftest solve-power-residue-test
   (are [x y] (= y (pr/solve-power-residue 11 2 x))
@@ -95,9 +104,7 @@
     7 #{}
     8 #{}
     9 #{8 3}
-    10 #{}
-    ))
+    10 #{}))
 
 (deftest power-residues-test
-  (is (= #{1 4 5 9 3} (apply sorted-set (pr/power-residues 11 2))))
-  )
+  (is (= #{1 4 5 9 3} (apply sorted-set (pr/power-residues 11 2)))))

@@ -4,7 +4,11 @@
 
 * Version 0.9.0
 
-- ... 
+- basic
+  - m=
+- primitive roots
+  - power-residue? for all moduli
+  - solve congruence for reduced residues?
 
 * Version 0.8.0
 
