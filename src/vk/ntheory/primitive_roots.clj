@@ -235,7 +235,7 @@
         d (b/gcd n phi)]
     (map (partial b/m** m g) (range 0 phi d))))
 
-(defn m2n-check-modulo
+(defn mod-2**e-check-modulo
   "Check than m is 2^n, where n >= 3. Returns n."
   [m]
   (b/check-int-pos m)
@@ -244,31 +244,31 @@
       a1
       (throw (IllegalArgumentException. "Expected module 2^n where n >= 3")))))
 
-(defn m2n-index->residue
+(defn mod-2**e-index->residue
   [m [u v]]
   (mod (* (b/pow -1 u)
           (b/m** m 5 v)) m))
 
-(defn m2n-indices
+(defn mod-2**e-indices
   "Returns residues modulo 2^n, where n >= 3."
   [m]
-  (let [e (m2n-check-modulo m)]
+  (let [e (mod-2**e-check-modulo m)]
     (for [u [0 1]
           v (range 0 (b/pow 2 (- e 2)))]
       [u v])))
 
-(defn m2n-index
+(defn mod-2**e-index
   [m a]
-  (let [e (m2n-check-modulo m)
+  (let [e (mod-2**e-check-modulo m)
         a' (check-prime-to-mod m a)]
-    (first (filter #(= a' (m2n-index->residue m %))  (m2n-indices m)))))
+    (first (filter #(= a' (mod-2**e-index->residue m %))  (mod-2**e-indices m)))))
 
 (defmethod solve-power-residue ::mod-2**e
   [m n a]
   (check-prime-to-mod m a)
   (b/check-int-pos n)
   (letfn [(solve-odd-n [m n a]
-            (let [[s t] (m2n-index m a)
+            (let [[s t] (mod-2**e-index m a)
                   [[_ e]] (p/int->factors-count m)
                   m' (b/pow 2 (- e 2))
                   d (b/gcd n m')
@@ -276,7 +276,7 @@
                   x (b/m* m (b/m** m (- 1) s) (b/m** m 5 z))]
               (sorted-set x)))
           (solve-even-n [m n a]
-            (let [[s t] (m2n-index m a)]
+            (let [[s t] (mod-2**e-index m a)]
               (if (= s 0)
                 (let [[[_ e]] (p/int->factors-count m)
                       m' (b/pow 2 (- e 2))
