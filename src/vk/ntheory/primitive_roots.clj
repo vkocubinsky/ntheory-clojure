@@ -237,7 +237,10 @@
         xs (c/solve-linear n b phi)]
     (->> xs (map (partial b/m** m g)) (apply sorted-set))))
 
-(defn power-residues
+
+(defmulti power-residues classify-modulo :default ::composite)
+
+(defmethod power-residues ::has-primitive-root
   [m n]
   (let [g (get-primitive-root m)
         phi (af/totient m)
@@ -271,6 +274,17 @@
   (let [e (mod-2**e-check-modulo m)
         a' (check-prime-to-mod m a)]
     (first (filter #(b/m= m a' (mod-2**e-index->residue m %))  (mod-2**e-indices m)))))
+
+(defmethod power-residues ::mod-2**e
+  [m n]
+  "not implemented"
+  )
+
+(defmethod power-residues ::composite
+  [m n]
+  (filter (partial power-residue? m n) (reduced-residues m))
+  )
+
 
 (defmethod solve-power-residue ::mod-2**e
   [m n a]
