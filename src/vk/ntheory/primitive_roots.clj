@@ -20,7 +20,7 @@
        af/totient
        af/divisors
        sort
-       (filter #(= 1 (b/m** m a %)))
+       (filter #(b/m= m 1 (b/m** m a %)))
        first))
 
 ;; Reduced residues
@@ -94,7 +94,7 @@
          (p/int->factors-distinct)
          (map #(/ phi %))
          (map #(b/m** m a %))
-         (every? #(not (= 1 %))))))
+         (every? #(not (b/m= m 1 %))))))
 
 (defn check-primitive-root
   [m g]
@@ -127,7 +127,7 @@
   (let [[[p _]] (p/int->factors-count m)
         g (find-primitive-root p)
         c (b/m** (* p p) g (dec p))]
-    (if (= 1 c)
+    (if (b/m= m 1 c)
       (+ g p)
       g)))
 
@@ -158,7 +158,7 @@
 (defn reduced-residues'
   [m]
   (->> (range 1 m)
-       (filter #(= 1 (b/gcd m %)))))
+       (filter #(b/m= m 1 (b/gcd m %)))))
 
 (defn primitive-roots'
   "Brute force version of search primitive roots."
@@ -189,7 +189,7 @@
   (let [phi (af/totient m)
         d (b/gcd n phi)
         t (b/m** m a (/ phi d))]
-    (= 1 t)))
+    (b/m= m 1 t)))
 
 (defmethod power-residue? ::mod-2**e
   ;; Case modulo m for modulo 2^e, where e >= 3."
@@ -204,7 +204,7 @@
             d (b/gcd n m')
             t (b/m** m a
                      (/ m' d))]
-        (= 1 t))
+        (b/m= m 1 t))
       false)))
 
 (defmethod power-residue? ::composite
