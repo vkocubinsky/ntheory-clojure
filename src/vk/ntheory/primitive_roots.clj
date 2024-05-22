@@ -237,7 +237,6 @@
         xs (c/solve-linear n b phi)]
     (->> xs (map (partial b/m** m g)) (apply sorted-set))))
 
-
 (defmulti power-residues classify-modulo :default ::composite)
 
 (defmethod power-residues ::has-primitive-root
@@ -277,14 +276,24 @@
 
 (defmethod power-residues ::mod-2**e
   [m n]
-  "not implemented"
-  )
+  (b/check-int-pos n)
+  (letfn [(odd-n [m n]
+            (reduced-residues m))
+          (even-n [m n]
+            (let [[[_ e]] (p/int->factors-count m)
+                    m' (b/pow 2 (- e 2))
+                    d (b/gcd n m')
+                    ]
+                (for [y [0 1]
+                      z (range 0 m' d)]
+                (map (b/m* m (b/m** m (- 1) y) (b/m** m 5 z)) (range 0 m' d)))))]
+    (if (odd? n)
+      (odd-n m n)
+      (even-n m n))))
 
 (defmethod power-residues ::composite
   [m n]
-  (filter (partial power-residue? m n) (reduced-residues m))
-  )
-
+  (filter (partial power-residue? m n) (reduced-residues m)))
 
 (defmethod solve-power-residue ::mod-2**e
   [m n a]
@@ -308,7 +317,6 @@
                   (for [y [0 1]
                         z zs]
                     (b/m* m (b/m** m (- 1) y) (b/m** m 5 z))))
-
                 (sorted-set))))]
     (if (odd? n)
       (solve-odd-n m n a)
@@ -316,4 +324,5 @@
 
 (defmethod solve-power-residue ::composite
   [m n a]
-  "not implemented")
+  (b/product (for [[p e] (p/int->factors-count m)] (solve-power-residue (b/pow p e) n a)))  
+  )
