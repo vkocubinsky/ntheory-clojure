@@ -324,5 +324,6 @@
 
 (defmethod solve-power-residue ::composite
   [m n a]
+  ;; todo fix product to [1 2 3] * [] = []
   (b/product (for [[p e] (p/int->factors-count m)] (solve-power-residue (b/pow p e) n a)))  
   )

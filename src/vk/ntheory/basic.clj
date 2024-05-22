@@ -59,12 +59,10 @@
         b (check-int b)]
     (check-true (not (divides? a b)) (format "%s divides %s" a b))))
 
+
 (defn m=
   "Check does `a` congruent to `b` modulo m"
-  ([m a] a (mod a m))
-  ([m a b] (= (mod a m) (mod b m)))
-  ;; todo
-  ;;([m a b & more] )
+  [m a b] (= (mod a m) (mod b m))
   )
 
 (defn m*
