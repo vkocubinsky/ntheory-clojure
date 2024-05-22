@@ -84,7 +84,7 @@
      (is (= (pr/power-residue?' m n a) (pr/power-residue? m n a)))))
 
 (deftest power-residue?-vs-brute-force-test
-  ;;(power-residue?-vs-brute-force-comparison 1 [1])
+  (power-residue?-vs-brute-force-comparison 1 [1])
   (power-residue?-vs-brute-force-comparison 2 (range 1 2))
   (power-residue?-vs-brute-force-comparison 4 (range 1 4))
   (power-residue?-vs-brute-force-comparison 7 (range 1 7))

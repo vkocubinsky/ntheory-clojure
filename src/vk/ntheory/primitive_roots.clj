@@ -221,7 +221,7 @@
    (check-primitive-root m g)
    (loop [acc g
           ind 1]
-     (if (= acc a)
+     (if (b/m= m acc a)
        ind
        (recur (b/m* m acc g) (inc ind))))))
 
@@ -270,7 +270,7 @@
   [m a]
   (let [e (mod-2**e-check-modulo m)
         a' (check-prime-to-mod m a)]
-    (first (filter #(= a' (mod-2**e-index->residue m %))  (mod-2**e-indices m)))))
+    (first (filter #(b/m= m a' (mod-2**e-index->residue m %))  (mod-2**e-indices m)))))
 
 (defmethod solve-power-residue ::mod-2**e
   [m n a]
