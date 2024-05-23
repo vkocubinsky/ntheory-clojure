@@ -172,7 +172,7 @@
 ;; (defmulti power-residues)
 
 (defn power-residue?'
-  "Brute force version of power-residue?"
+  "Brute force implemntation of power-residue?"
   [m n a]
   (check-prime-to-mod m a)
   (b/check-int-pos n)
@@ -180,13 +180,22 @@
     (true? (some #(b/m= m a (f %)) (reduced-residues' m)))))
 
 (defn solve-power-residue'
-  "Brute force version of solve-power-residue"
+  "Brute force implementation of solve-power-residue"
   [m n a]
   (check-prime-to-mod m a)
   (b/check-int-pos n)
-  (for [x (reduced-residues' m)
+  (into (sorted-set) (for [x (reduced-residues' m)
         :let [xn (b/m** m x n)]
-        :when (b/m= m xn a)] x))
+        :when (b/m= m xn a)] x)))
+
+(defn power-residues'
+  "Brute force implementation of power-residues"
+  [m n]
+  (b/check-int-pos m)
+  (b/check-int-pos n)
+   (into (sorted-set )(map #(b/m** m % n) (reduced-residues' m)))
+  )
+
 
 (defmulti power-residue? classify-modulo :default ::composite)
 
@@ -327,8 +336,8 @@
                     (b/m* m (b/m** m (- 1) y) (b/m** m 5 z))))
                 (sorted-set))))]
     (if (odd? n)
-      (solve-odd-n m n a)
-      (solve-even-n m n a))))
+      (into (sorted-set) (solve-odd-n m n a))
+      (into (sorted-set) (solve-even-n m n a)))))
 
 (defmethod solve-power-residue ::composite
   [m n a]
