@@ -13,13 +13,11 @@
 
 (deftest check-at-least-one-non-zero-test
   (testing "Fail"
-    (is (thrown? Exception (b/check-at-least-one-non-zero 0 0)))
-    )
+    (is (thrown? Exception (b/check-at-least-one-non-zero 0 0))))
   (testing "Success"
     (is (nil? (b/check-at-least-one-non-zero 1 1)))
     (is (nil? (b/check-at-least-one-non-zero 0 1)))
-    (is (nil? (b/check-at-least-one-non-zero 1 0))))
-  )
+    (is (nil? (b/check-at-least-one-non-zero 1 0)))))
 
 (deftest check-relatively-prime-test
   (testing "Fail"
@@ -68,6 +66,15 @@
     (testing "Success"
       (is (= -1 (b/check-int-non-zero -1)))
       (is (= 1 (b/check-int-non-zero 1))))))
+
+(deftest m=-test
+  (is (true? (b/m= 3 1 1)))
+  (is (true? (b/m= 3 1 4)))
+  (is (false? (b/m= 3 1 2)))
+  (is (false? (b/m= 3 1 0)))
+  (is (true? (b/m= 3 0 3)))
+  (is (true? (b/m= 1 1 0)))
+  (is (true? (b/m= 1 1 1))))
 
 (deftest m*-test
   (testing "Arity"
@@ -212,9 +219,9 @@
   (doseq [a (range -13 13)
           b (range -13 13)]
     (when (not-any? zero? [a b])
-    (let [d (b/gcd a b)
-          l (b/lcm a b)]
-      (is (= (abs (* a b)) (* d l)))))))
+      (let [d (b/gcd a b)
+            l (b/lcm a b)]
+        (is (= (abs (* a b)) (* d l)))))))
 
 (deftest gcd-extended-test
   (doseq [a (range -13 13)
