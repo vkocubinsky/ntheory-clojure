@@ -154,14 +154,14 @@
     (map #(b/m** m g %) (reduced-residues (af/totient m)))
     []))
 
-;; Brute force implementation
 (defn reduced-residues'
+  "Brute force implemetation of reduced-residues'"
   [m]
-  (->> (range 1 m)
+  (->> (range 0 m)
        (filter #(b/m= m 1 (b/gcd m %)))))
 
 (defn primitive-roots'
-  "Brute force version of search primitive roots."
+  "Brute force implemtation of search primitive roots."
   [m]
   (b/check-int-pos m)
   (->> (reduced-residues' m)
@@ -177,7 +177,16 @@
   (check-prime-to-mod m a)
   (b/check-int-pos n)
   (letfn [(f [x] (b/m** m x n))]
-    (true? (some #(b/m= m a (f %)) (reduced-residues m)))))
+    (true? (some #(b/m= m a (f %)) (reduced-residues' m)))))
+
+(defn solve-power-residue'
+  "Brute force version of solve-power-residue"
+  [m n a]
+  (check-prime-to-mod m a)
+  (b/check-int-pos n)
+  (for [x (reduced-residues' m)
+        :let [xn (b/m** m x n)]
+        :when (b/m= m xn a)] x))
 
 (defmulti power-residue? classify-modulo :default ::composite)
 
@@ -281,11 +290,10 @@
             (reduced-residues m))
           (even-n [m n]
             (let [[[_ e]] (p/int->factors-count m)
-                    m' (b/pow 2 (- e 2))
-                    d (b/gcd n m')
-                    ]
-                (for [y [0 1]
-                      z (range 0 m' d)]
+                  m' (b/pow 2 (- e 2))
+                  d (b/gcd n m')]
+              (for [y [0 1]
+                    z (range 0 m' d)]
                 (map (b/m* m (b/m** m (- 1) y) (b/m** m 5 z)) (range 0 m' d)))))]
     (if (odd? n)
       (odd-n m n)
@@ -325,5 +333,4 @@
 (defmethod solve-power-residue ::composite
   [m n a]
   ;; todo fix product to [1 2 3] * [] = []
-  (b/product (for [[p e] (p/int->factors-count m)] (solve-power-residue (b/pow p e) n a)))  
-  )
+  (b/product (for [[p e] (p/int->factors-count m)] (solve-power-residue (b/pow p e) n a))))

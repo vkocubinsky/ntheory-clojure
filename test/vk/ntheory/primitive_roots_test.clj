@@ -65,23 +65,31 @@
     10 5))
 
 (deftest power-residue?-test
-  (are [x y] (= y (pr/power-residue? 11 2 x))
-    1 true
-    2 false
-    3 true
-    4 true
-    5 true
-    6 false
-    7 false
-    8 false
-    9 true
-    10 false))
+  (testing "mod 11"
+    (are [x y] (= y (pr/power-residue? 11 2 x))
+      1 true
+      2 false
+      3 true
+      4 true
+      5 true
+      6 false
+      7 false
+      8 false
+      9 true
+      10 false))
+  (testing "mod 8"
+    (are [x y] (= y (pr/power-residue? 8 2 x))
+      1 true
+      3 false
+      5 false
+      7 false))
+  )
 
 (defn power-residue?-vs-brute-force-comparison
   [m ns]
   (doseq [a (pr/reduced-residues m)
           n ns]
-     (is (= (pr/power-residue?' m n a) (pr/power-residue? m n a)))))
+    (is (= (pr/power-residue?' m n a) (pr/power-residue? m n a)))))
 
 (deftest power-residue?-vs-brute-force-test
   (power-residue?-vs-brute-force-comparison 1 [1])
@@ -90,8 +98,6 @@
   (power-residue?-vs-brute-force-comparison 7 (range 1 7))
   (power-residue?-vs-brute-force-comparison 16 (range 1 16))
   (power-residue?-vs-brute-force-comparison 24 (range 1 24)))
-
-
 
 (deftest solve-power-residue-test
   (are [x y] (= y (pr/solve-power-residue 11 2 x))
@@ -105,6 +111,8 @@
     8 #{}
     9 #{8 3}
     10 #{}))
+
+
 
 (deftest power-residues-test
   (is (= #{1 4 5 9 3} (apply sorted-set (pr/power-residues 11 2)))))
