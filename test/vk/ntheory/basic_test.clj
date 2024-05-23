@@ -9,7 +9,9 @@
   (testing "One sequence"
     (is (= [[0] [1]] (b/product [(range 2)]))))
   (testing "Zero sequence"
-    (is (= [[]] (b/product [])))))
+    (is (= [[]] (b/product []))))
+  (testing "One of sequence is empty"
+    (is (empty? (b/product [[1 2 3] []])))))
 
 (deftest check-at-least-one-non-zero-test
   (testing "Fail"

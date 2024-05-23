@@ -7,6 +7,7 @@
 - basic
   - m=
   - rewrite fast power function
+  - fix product
 - primitive roots
   - power-residue? for all moduli
   - solve congruence for reduced residues?
