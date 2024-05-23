@@ -199,5 +199,7 @@
 
 (defn product
   "Return all n-sequences combined from given n sequences."
-  [xss] (product' (mapv first xss) (mapv cycle xss)))
+  [xss] (if (not-any? empty? xss)
+          (product' (mapv first xss) (mapv cycle xss))
+          []))
 
