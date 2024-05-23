@@ -36,7 +36,7 @@
 
 (defmethod reduced-residues ::mod-1
   [m]
-  '(0))
+  [0])
 
 (defmethod reduced-residues ::mod-p
   [m]
