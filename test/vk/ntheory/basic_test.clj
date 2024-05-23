@@ -11,7 +11,8 @@
   (testing "Zero sequence"
     (is (= [[]] (b/product []))))
   (testing "One of sequence is empty"
-    (is (empty? (b/product [[1 2 3] []])))))
+    (is (empty? (b/product [[1 2 3] []])))
+    (is (empty? (b/product [[][]])))))
 
 (deftest check-at-least-one-non-zero-test
   (testing "Fail"
