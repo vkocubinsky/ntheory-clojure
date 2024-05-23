@@ -185,17 +185,15 @@
   (check-prime-to-mod m a)
   (b/check-int-pos n)
   (into (sorted-set) (for [x (reduced-residues' m)
-        :let [xn (b/m** m x n)]
-        :when (b/m= m xn a)] x)))
+                           :let [xn (b/m** m x n)]
+                           :when (b/m= m xn a)] x)))
 
 (defn power-residues'
   "Brute force implementation of power-residues"
   [m n]
   (b/check-int-pos m)
   (b/check-int-pos n)
-  (distinct (map #(b/m** m % n) (reduced-residues' m)))
-  )
-
+  (distinct (map #(b/m** m % n) (reduced-residues' m))))
 
 (defmulti power-residue? classify-modulo :default ::composite)
 
@@ -338,7 +336,13 @@
       (into (sorted-set) (solve-odd-n m n a))
       (into (sorted-set) (solve-even-n m n a)))))
 
+
 (defmethod solve-power-residue ::composite
   [m n a]
-  ;; todo fix product to [1 2 3] * [] = []
-  (b/product (for [[p e] (p/int->factors-count m)] (solve-power-residue (b/pow p e) n a))))
+  (->> (for [[p e] (p/int->factors-count m)
+                             :let [m' (b/pow p e)]]
+        (map #(vector % m') (solve-power-residue m' n a)))
+      b/product
+      (map c/solve-coprime-remainders)
+      (map first)
+      (apply sorted-set)))

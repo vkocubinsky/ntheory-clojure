@@ -124,7 +124,7 @@
   (solve-power-residue-vs-brute-force-comparison 7 (range 1 7))
   (solve-power-residue-vs-brute-force-comparison 8 (range 1 8))
   (solve-power-residue-vs-brute-force-comparison 16 (range 1 16))
-  ;;(power-residue?-vs-brute-force-comparison 24 (range 1 24))
+  (solve-power-residue-vs-brute-force-comparison 24 (range 1 24))
   )
 
 (deftest power-residues-test
