@@ -193,7 +193,7 @@
   [m n]
   (b/check-int-pos m)
   (b/check-int-pos n)
-   (into (sorted-set )(map #(b/m** m % n) (reduced-residues' m)))
+  (distinct (map #(b/m** m % n) (reduced-residues' m)))
   )
 
 
@@ -301,9 +301,8 @@
             (let [[[_ e]] (p/int->factors-count m)
                   m' (b/pow 2 (- e 2))
                   d (b/gcd n m')]
-              (for [y [0 1]
-                    z (range 0 m' d)]
-                (map (b/m* m (b/m** m (- 1) y) (b/m** m 5 z)) (range 0 m' d)))))]
+              (for [z (range 0 m' d)]
+                (b/m** m 5 z))))]
     (if (odd? n)
       (odd-n m n)
       (even-n m n))))

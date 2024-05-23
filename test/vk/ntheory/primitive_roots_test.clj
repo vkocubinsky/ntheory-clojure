@@ -82,8 +82,7 @@
       1 true
       3 false
       5 false
-      7 false))
-  )
+      7 false)))
 
 (defn power-residue?-vs-brute-force-comparison
   [m ns]
@@ -112,7 +111,6 @@
     9 #{8 3}
     10 #{}))
 
-
 (defn solve-power-residue-vs-brute-force-comparison
   [m ns]
   (doseq [a (pr/reduced-residues m)
@@ -124,10 +122,29 @@
   (solve-power-residue-vs-brute-force-comparison 2 (range 1 2))
   (solve-power-residue-vs-brute-force-comparison 4 (range 1 4))
   (solve-power-residue-vs-brute-force-comparison 7 (range 1 7))
+  (solve-power-residue-vs-brute-force-comparison 8 (range 1 8))
   (solve-power-residue-vs-brute-force-comparison 16 (range 1 16))
   ;;(power-residue?-vs-brute-force-comparison 24 (range 1 24))
   )
 
-
 (deftest power-residues-test
   (is (= #{1 4 5 9 3} (apply sorted-set (pr/power-residues 11 2)))))
+
+(defn power-residues-vs-brute-force-comparison
+  [m ns]
+  (doseq [n ns]
+    (is (= (apply sorted-set (pr/power-residues' m n))
+           (apply sorted-set (pr/power-residues m n))))))
+
+
+(deftest power-residues-vs-brute-force-test
+  (power-residues-vs-brute-force-comparison 1 [1])
+  (power-residues-vs-brute-force-comparison 2 (range 1 2))
+  (power-residues-vs-brute-force-comparison 4 (range 1 4))
+  (power-residues-vs-brute-force-comparison 7 (range 1 7))
+  (power-residues-vs-brute-force-comparison 8 (range 1 8))
+  (power-residues-vs-brute-force-comparison 16 (range 1 16))
+  (power-residues-vs-brute-force-comparison 24 (range 1 24))
+  )
+
+
