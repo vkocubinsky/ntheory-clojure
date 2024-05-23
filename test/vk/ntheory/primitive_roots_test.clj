@@ -2,10 +2,16 @@
   (:require [clojure.test :refer [deftest is are testing]]
             [vk.ntheory.primitive-roots :as pr]))
 
-(deftest reduced-residue-test
-  (is #{1 2 3 4} (pr/reduced-residues 5))
-  (is #{1 2 4 5 7 8} (pr/reduced-residues 9))
-  (is #{1 5} (pr/reduced-residues 6)))
+(deftest reduced-residues-test
+  (is (= #{1 2 3 4} (apply sorted-set (pr/reduced-residues 5))))
+  (is (= #{1 2 4 5 7 8} (apply sorted-set (pr/reduced-residues 9))))
+  (is (= #{1 5} (apply sorted-set (pr/reduced-residues 6)))))
+
+(deftest reduced-residues-vs-brute-force-test
+  (doseq [m (range 1 30)]
+    (testing (str "Test modulo " m)
+      (is (= (apply sorted-set (pr/reduced-residues m))
+             (apply sorted-set (pr/reduced-residues' m)))))))
 
 (deftest order-test
   (are [x y] (= x y)
@@ -124,8 +130,7 @@
   (solve-power-residue-vs-brute-force-comparison 7 (range 1 7))
   (solve-power-residue-vs-brute-force-comparison 8 (range 1 8))
   (solve-power-residue-vs-brute-force-comparison 16 (range 1 16))
-  (solve-power-residue-vs-brute-force-comparison 24 (range 1 24))
-  )
+  (solve-power-residue-vs-brute-force-comparison 24 (range 1 24)))
 
 (deftest power-residues-test
   (is (= #{1 4 5 9 3} (apply sorted-set (pr/power-residues 11 2)))))
@@ -136,7 +141,6 @@
     (is (= (apply sorted-set (pr/power-residues' m n))
            (apply sorted-set (pr/power-residues m n))))))
 
-
 (deftest power-residues-vs-brute-force-test
   (power-residues-vs-brute-force-comparison 1 [1])
   (power-residues-vs-brute-force-comparison 2 (range 1 2))
@@ -144,7 +148,6 @@
   (power-residues-vs-brute-force-comparison 7 (range 1 7))
   (power-residues-vs-brute-force-comparison 8 (range 1 8))
   (power-residues-vs-brute-force-comparison 16 (range 1 16))
-  (power-residues-vs-brute-force-comparison 24 (range 1 24))
-  )
+  (power-residues-vs-brute-force-comparison 24 (range 1 24)))
 
 
