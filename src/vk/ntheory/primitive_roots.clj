@@ -1,6 +1,7 @@
 (ns vk.ntheory.primitive-roots
   "Primitive roots."
-  (:require [vk.ntheory.basic :as b]
+  (:require [clojure.pprint :as pp]
+            [vk.ntheory.basic :as b]
             [vk.ntheory.primes :as p]
             [vk.ntheory.congruences :as c]
             [vk.ntheory.arithmetic-functions :as af]))
@@ -11,17 +12,6 @@
   (b/check-int-non-neg a)
   (b/check-relatively-prime m a)
   (mod a m))
-
-(defn order
-  "Find multiplicative order of given integer `a`."
-  [m a]
-  (check-prime-to-mod m a)
-  (->> m
-       af/totient
-       af/divisors
-       sort
-       (filter #(b/m= m 1 (b/m** m a %)))
-       first))
 
 ;; Reduced residues
 (defn classify-residues
@@ -56,6 +46,39 @@
         A (mapv (fn [[p k]] (/ m (b/pow p k))) cn)]
     (for [x (b/product xss)]
       (apply (partial b/m+ m) (map #(b/m* m %1 %2) x A)))))
+
+(defn order
+  "Find multiplicative order of given integer `a`."
+  [m a]
+  (check-prime-to-mod m a)
+  (->> m
+       af/totient
+       af/divisors
+       sort
+       (filter #(b/m= m 1 (b/m** m a %)))
+       first))
+
+(defn order-print-table
+  "Print order table modulo `m`"
+  [m]
+  (pp/print-table [:residue :order]
+                  (map (fn [r] {:residue r :order (order m r)})
+                       (sort (reduced-residues m)))))
+
+;; Todo: consider optiomization for prime moduli, for prime order
+;; count is phi(d) where d|p-1
+(defn order-count
+  "Return map where key is order and value is
+  count of classes/residues with this order."
+  [m]
+  (frequencies (map (partial order m) (reduced-residues m))))
+
+(defn order-count-print-table
+  [m]
+  (pp/print-table [:order :count]
+   (map (fn [[k v]] {:order k :count v})(order-count m)))
+  )
+
 
 (defn classify-modulo
   [m & _]
@@ -336,13 +359,12 @@
       (into (sorted-set) (solve-odd-n m n a))
       (into (sorted-set) (solve-even-n m n a)))))
 
-
 (defmethod solve-power-residue ::composite
   [m n a]
   (->> (for [[p e] (p/int->factors-count m)
-                             :let [m' (b/pow p e)]]
-        (map #(vector % m') (solve-power-residue m' n a)))
-      b/product
-      (map c/solve-coprime-remainders)
-      (map first)
-      (apply sorted-set)))
+             :let [m' (b/pow p e)]]
+         (map #(vector % m') (solve-power-residue m' n a)))
+       b/product
+       (map c/solve-coprime-remainders)
+       (map first)
+       (apply sorted-set)))

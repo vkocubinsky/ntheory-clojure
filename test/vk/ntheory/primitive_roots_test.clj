@@ -2,6 +2,27 @@
   (:require [clojure.test :refer [deftest is are testing]]
             [vk.ntheory.primitive-roots :as pr]))
 
+(deftest order-test
+  (are [x y] (= (pr/order 11 x) y)
+    ;;residue order
+    1 1
+    2 10
+    3 5
+    4 5 
+    5 5
+    6 10
+    7 10
+    8 10
+    9 5
+    10 2))
+
+(deftest order-count-test
+  (is (= {1 1
+          2 1
+          5 4
+          10 4} (pr/order-count 11))))
+
+
 (deftest reduced-residues-test
   (is (= #{1 2 3 4} (apply sorted-set (pr/reduced-residues 5))))
   (is (= #{1 2 4 5 7 8} (apply sorted-set (pr/reduced-residues 9))))
@@ -13,9 +34,7 @@
       (is (= (apply sorted-set (pr/reduced-residues m))
              (apply sorted-set (pr/reduced-residues' m)))))))
 
-(deftest order-test
-  (are [x y] (= x y)
-    10 (pr/order 11 2)))
+
 
 (deftest find-primitive-root-test
   (is (= 2 (pr/find-primitive-root 11))))
