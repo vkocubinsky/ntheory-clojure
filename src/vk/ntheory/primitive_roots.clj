@@ -15,14 +15,24 @@
 
 ;; Reduced residues
 (defn classify-residues
+  "Dispatch function for reduced residues"
   [m]
   (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
     (cond
       (= m 1) ::mod-1
       (and (nil? p2) (= a1 1)) ::mod-p
-      (and (nil? p2) (> a1 1)) ::mod-p**e)))
+      (and (nil? p2) (> a1 1)) ::mod-p**e
+      :else ::composite)))
 
-(defmulti reduced-residues classify-residues :default ::composite)
+(defmulti reduced-residues
+  "Returns reduced residues modulo m"
+  classify-residues)
+
+(defn reduced-residues'
+  "Brute force implemetation of reduced-residues'"
+  [m]
+  (->> (range 0 m)
+       (filter #(= 1 (b/gcd m %)))))
 
 (defmethod reduced-residues ::mod-1
   [m]
@@ -58,7 +68,7 @@
        (filter #(b/m= m 1 (b/m** m a %)))
        first))
 
-(defn order-print-table
+(defn print-orders
   "Print order table modulo `m`"
   [m]
   (pp/print-table [:residue :order]
@@ -73,13 +83,13 @@
   [m]
   (frequencies (map (partial order m) (reduced-residues m))))
 
-(defn order-count-print-table
+(defn print-order-count
   [m]
   (pp/print-table [:order :count]
    (map (fn [[k v]] {:order k :count v})(order-count m)))
   )
 
-
+;;start work HERE
 (defn classify-modulo
   [m & _]
   (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
@@ -177,11 +187,7 @@
     (map #(b/m** m g %) (reduced-residues (af/totient m)))
     []))
 
-(defn reduced-residues'
-  "Brute force implemetation of reduced-residues'"
-  [m]
-  (->> (range 0 m)
-       (filter #(b/m= m 1 (b/gcd m %)))))
+
 
 (defn primitive-roots'
   "Brute force implemtation of search primitive roots."

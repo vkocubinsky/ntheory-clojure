@@ -4,7 +4,7 @@
 
 (deftest order-test
   (are [x y] (= (pr/order 11 x) y)
-    ;;residue order
+    ;;residue -> order
     1 1
     2 10
     3 5
@@ -22,17 +22,32 @@
           5 4
           10 4} (pr/order-count 11))))
 
+(deftest classify-residues-test
+  (are [x y] (= (pr/classify-residues x) y)
+    1 ::pr/mod-1
+    5 ::pr/mod-p
+    9 ::pr/mod-p**e
+    6 ::pr/composite
+    15 ::pr/composite
+    ))
 
 (deftest reduced-residues-test
-  (is (= #{1 2 3 4} (apply sorted-set (pr/reduced-residues 5))))
-  (is (= #{1 2 4 5 7 8} (apply sorted-set (pr/reduced-residues 9))))
-  (is (= #{1 5} (apply sorted-set (pr/reduced-residues 6)))))
+  (are [x y] (= (sort (pr/reduced-residues x)) y)
+    ;;modulo -> reduced residues
+    1 [0]
+    5 [1 2 3 4]
+    9 [1 2 4 5 7 8]
+    6 [1 5])
+    15 [1 2 4 7 8 11 13 14]
+  )
+
 
 (deftest reduced-residues-vs-brute-force-test
   (doseq [m (range 1 30)]
     (testing (str "Test modulo " m)
-      (is (= (apply sorted-set (pr/reduced-residues m))
-             (apply sorted-set (pr/reduced-residues' m)))))))
+      (is (= (sort (pr/reduced-residues' m))
+             (sort (pr/reduced-residues m))
+             )))))
 
 
 
