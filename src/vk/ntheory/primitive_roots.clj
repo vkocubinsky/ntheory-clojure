@@ -249,6 +249,7 @@
 (defn index
   ([m a] (index m (find-primitive-root m) a))
   ([m g a]
+   (check-has-primitive-root m)
    (check-prime-to-mod m a)
    (check-primitive-root m g)
    (loop [acc g
