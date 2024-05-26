@@ -185,7 +185,7 @@
     (map #(b/m** m g %) (reduced-residues (af/totient m)))
     []))
 
-
+;; HERE
 ;; Power residues
 (defn power-residue?'
   "Brute force implemntation of power-residue?"
