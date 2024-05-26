@@ -213,8 +213,8 @@
 (defn power-residues-vs-brute-force-comparison
   [m ns]
   (doseq [n ns]
-    (is (= (apply sorted-set (pr/power-residues' m n))
-           (apply sorted-set (pr/power-residues m n))))))
+    (is (= (sort (pr/power-residues' m n))
+           (sort (pr/power-residues m n))))))
 
 (deftest power-residues-vs-brute-force-test
   (power-residues-vs-brute-force-comparison 1 [1])
