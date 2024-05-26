@@ -137,6 +137,21 @@ Function ~divides?~ determine does one number divides another.
 
 ** Operations in $\mathbf{Z}/m\mathbf{Z}$
 
+Integer $a$ congruent to integer $b$ modulo $m > 0$ if $m$ divides $a - b$.
+
+$$a \equiv b \mod{m}$$
+
+There is a function ~m=~ which compare does two integer are congruent modulo $m$.
+For instance $19 \equiv 7 \pmod{12}$
+
+#+begin_src clojure
+   (b/m= 12 19 7)
+#+end_src 
+
+#+RESULTS:
+: true
+: 
+
 Similar to addition function ~+~ and multiplication function ~*~ there
 are defined addition modulo m ~m+~ and multiplication modulo m ~m*~
 functions. For instance $2 + 4 \equiv 1 \pmod{5}$ in

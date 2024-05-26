@@ -59,6 +59,10 @@
         b (check-int b)]
     (check-true (not (divides? a b)) (format "%s divides %s" a b))))
 
+(defn m=
+  "Check does `a` congruent to `b` modulo m"
+  [m a b] (= (mod a m) (mod b m)))
+
 (defn m*
   "Multiplication modulo `m`, `(m*)` returns 1, `(m* a)` returns `a`."
   ([m] 1)
@@ -73,36 +77,32 @@
   ([m a b] (mod (+ a b) m))
   ([m a b & more] (reduce (partial m+ m) (m+ m a b) more)))
 
-(defn- bit-count
-  [n]
-  (count (Integer/toBinaryString n)))
+(defn- fast-power-iter
+  ([fmult a n]
+   (if
+    (= n 0) (fmult 1) ;; special handler for modulo 1, return 0 instead of 1
+    (fast-power-iter fmult 1 a n)))
+  ([fmult odd even n]
+   (if (= n 1)
+     (fmult odd even)
+     (if (odd? n)
+       (recur fmult (fmult odd even) even (dec n))
+       (recur fmult odd (fmult even even) (/ n 2))))))
 
 (defn m**
-  "Raise integer `a` to the power of `n >= 0` modulo `m`.
-  See D.Knuth, The Art of Computer Programming, Volume II."
+  "Raise integer `a` to the power of `n >= 0` modulo `m`."
   [m a n]
-  (check-int-non-neg m)
-  (check-int a)
+  (check-int-pos m)
   (check-int-non-neg n)
-  (let [c (bit-count n)
-        m*' (partial m* m)]
-    (reduce
-     (fn [acc bit] (let [s (m*' acc acc)]
-                     (if bit
-                       (m*' s a)
-                       s)))
-     1
-     (for [b1 (range c 0 -1)
-           :let [b0 (dec b1)
-                 bit (bit-test n b0)]]
-       bit))))
+  (check-int a)
+  (fast-power-iter (partial m* m) a n))
 
 (defn pow
   "Raise `a` to the power of `n >= 0`."
   [a n]
   (check-int a)
   (check-int-non-neg n)
-  (apply * (repeat n a)))
+  (fast-power-iter * a n))
 
 (defn order
   "Greatest power of `p > 0` divides `n > 0`."
@@ -140,12 +140,12 @@
 (defn- gcd-extended'
   "Helper function for `gcd-extended`."
   [[a b] [s'' t''] [s' t']]
-   (if (zero? b)
-     [a s'' t'']
-     (let [q (quot a b)
-           s (- s'' (* s' q))
-           t (- t'' (* t' q))]
-       (recur [b (mod a b)] [s' t'] [s t]))))
+  (if (zero? b)
+    [a s'' t'']
+    (let [q (quot a b)
+          s (- s'' (* s' q))
+          t (- t'' (* t' q))]
+      (recur [b (mod a b)] [s' t'] [s t]))))
 
 (defn gcd-extended
   "Extended Euclid algorithm.
@@ -155,14 +155,14 @@
   `a * s + b * t = d`.
   "
   [a b]
-   (check-int a)
-   (check-int b)
-   (check-at-least-one-non-zero a b)
-   (let [[d s t] (gcd-extended' [(abs a) (abs b)] [1 0] [0 1])
-         s' (* (sign a) s)
-         t' (* (sign b) t)]
-     (assert (= d (+ (* a s') (* b t'))))
-     [d s' t']))
+  (check-int a)
+  (check-int b)
+  (check-at-least-one-non-zero a b)
+  (let [[d s t] (gcd-extended' [(abs a) (abs b)] [1 0] [0 1])
+        s' (* (sign a) s)
+        t' (* (sign b) t)]
+    (assert (= d (+ (* a s') (* b t'))))
+    [d s' t']))
 
 (defn lcm
   "The least common multiple of two non zero integers `a` and `b`."
@@ -199,5 +199,7 @@
 
 (defn product
   "Return all n-sequences combined from given n sequences."
-  [xss] (product' (mapv first xss) (mapv cycle xss)))
+  [xss] (if (not-any? empty? xss)
+          (product' (mapv first xss) (mapv cycle xss))
+          []))
 

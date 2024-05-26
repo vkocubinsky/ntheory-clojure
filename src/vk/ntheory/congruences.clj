@@ -14,6 +14,7 @@
   (->> (range m)
        (filter (comp zero? #(mod % m) f))))
 
+;;todo: solve-linear-unique, just assert that result is unique and return it
 (defn solve-linear
   "Solve congruence ax ≡ b (mod m). Returns sorted set."
   [a b m]
