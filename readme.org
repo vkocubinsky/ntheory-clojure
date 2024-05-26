@@ -1003,7 +1003,7 @@ more than two function as an argument.
 #+end_src
 
 #+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
-: #function[vk.ntheory.arithmetic-functions/d*/fn--5881]
+: #function[vk.ntheory.arithmetic-functions/d*/fn--27033]
 : 
 
 
