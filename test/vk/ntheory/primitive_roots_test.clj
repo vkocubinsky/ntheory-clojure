@@ -8,7 +8,7 @@
     1 1
     2 10
     3 5
-    4 5 
+    4 5
     5 5
     6 10
     7 10
@@ -25,30 +25,51 @@
 (deftest classify-residues-test
   (are [x y] (= (pr/classify-residues x) y)
     1 ::pr/mod-1
-    5 ::pr/mod-p
-    9 ::pr/mod-p**e
+    2 ::pr/mod-any-p
+    3 ::pr/mod-any-p
+    4 ::pr/mod-any-p**e
+    5 ::pr/mod-any-p
     6 ::pr/composite
-    15 ::pr/composite
-    ))
+    7 ::pr/mod-any-p
+    8 ::pr/mod-any-p**e
+    9 ::pr/mod-any-p**e
+    10 ::pr/composite
+    15 ::pr/composite))
 
 (deftest reduced-residues-test
   (are [x y] (= (sort (pr/reduced-residues x)) y)
     ;;modulo -> reduced residues
     1 [0]
+    2 [1]
+    3 [1 2]
+    4 [1 3]
     5 [1 2 3 4]
+    6 [1 5]
+    7 [1 2 3 4 5 6]
+    8 [1 3 5 7]
     9 [1 2 4 5 7 8]
-    6 [1 5])
-    15 [1 2 4 7 8 11 13 14]
-  )
-
+    10 [1 3 7 9])
+  15 [1 2 4 7 8 11 13 14])
 
 (deftest reduced-residues-vs-brute-force-test
   (doseq [m (range 1 30)]
     (testing (str "Test modulo " m)
       (is (= (sort (pr/reduced-residues' m))
-             (sort (pr/reduced-residues m))
-             )))))
+             (sort (pr/reduced-residues m)))))))
 
+(deftest classify-modulo-test
+  (are [x y] (= (pr/classify-modulo x) y)
+    1 ::pr/mod-1
+    2 ::pr/mod-2
+    3 ::pr/mod-p
+    4 ::pr/mod-4
+    5 ::pr/mod-p
+    6 ::pr/mod-2p**e
+    7 ::pr/mod-p
+    8 ::pr/mod-2**e
+    9 ::pr/mod-p**e
+    10 ::pr/mod-2p**e 
+    15 ::pr/composite))
 
 
 (deftest find-primitive-root-test

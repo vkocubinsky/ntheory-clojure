@@ -20,8 +20,8 @@
   (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
     (cond
       (= m 1) ::mod-1
-      (and (nil? p2) (= a1 1)) ::mod-p
-      (and (nil? p2) (> a1 1)) ::mod-p**e
+      (and (nil? p2) (= a1 1)) ::mod-any-p
+      (and (nil? p2) (> a1 1)) ::mod-any-p**e
       :else ::composite)))
 
 (defmulti reduced-residues
@@ -38,12 +38,12 @@
   [m]
   [0])
 
-(defmethod reduced-residues ::mod-p
+(defmethod reduced-residues ::mod-any-p
   [m]
   (range 1 m))
 
 ;; Optimized version with concat and lazy-seq doesn't have performance imporovement
-(defmethod reduced-residues ::mod-p**e
+(defmethod reduced-residues ::mod-any-p**e
   [m]
   (let [[[p a]] (p/int->factors-count m)]
     (->> (range 1 m)
@@ -68,7 +68,7 @@
        (filter #(b/m= m 1 (b/m** m a %)))
        first))
 
-(defn print-orders
+(defn print-table-residue-order
   "Print order table modulo `m`"
   [m]
   (pp/print-table [:residue :order]
@@ -83,13 +83,12 @@
   [m]
   (frequencies (map (partial order m) (reduced-residues m))))
 
-(defn print-order-count
+(defn print-table-order-count
   [m]
   (pp/print-table [:order :count]
-   (map (fn [[k v]] {:order k :count v})(order-count m)))
+   (map (fn [[k v]] {:order k :count v})(sort-by first (order-count m))))
   )
 
-;;start work HERE
 (defn classify-modulo
   [m & _]
   (let [[[p1 a1] [p2 a2] [p3 a3]] (p/int->factors-count m)]
@@ -100,7 +99,9 @@
       (and (nil? p2) (> p1 2) (= a1 1)) ::mod-p
       (and (nil? p2) (> p1 2) (> a1 1)) ::mod-p**e
       (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) ::mod-2p**e
-      (and (= p1 2) (>= a1 3) (nil? p2)) ::mod-2**e)))
+      (and (= p1 2) (>= a1 3) (nil? p2)) ::mod-2**e
+      :else ::composite)
+    ))
 
 (derive ::mod-1 ::has-primitive-root)
 (derive ::mod-2 ::has-primitive-root)
@@ -108,6 +109,8 @@
 (derive ::mod-p ::has-primitive-root)
 (derive ::mod-p**e ::has-primitive-root)
 (derive ::mod-2p**e ::has-primitive-root)
+(derive ::mod-2**e ::no-primitive-root)
+(derive ::composite ::no-primitive-root)
 
 (defn has-primitive-root?
   [m]
@@ -120,14 +123,14 @@
 (defn primitive-root?
   "Check does a is primitive root modulo m"
   [m a]
-  (check-has-primitive-root m)
   (check-prime-to-mod m a)
-  (let [phi (af/totient m)]
+  (when (has-primitive-root? m) ;; optimization for modulo without primitive root
+   (let [phi (af/totient m)]
     (->> phi
          (p/int->factors-distinct)
          (map #(/ phi %))
          (map #(b/m** m a %))
-         (every? #(not (b/m= m 1 %))))))
+         (every? #(not (b/m= m 1 %)))))))
 
 (defn check-primitive-root
   [m g]
@@ -135,7 +138,7 @@
                      g
                      (format "Value %s is not primitive root modulo %s" g m)))
 
-(defmulti find-primitive-root classify-modulo :default ::composite)
+(defmulti find-primitive-root classify-modulo)
 
 (defmethod find-primitive-root ::mod-1
   [m]
@@ -171,15 +174,9 @@
     (if (odd? g) g
         (+ g (b/pow p a)))))
 
-(defmethod find-primitive-root ::composite
+(defmethod find-primitive-root ::no-primitive-root
   [m]
   nil)
-
-(defn get-primitive-root
-  [m]
-  (if-let [g (find-primitive-root m)]
-    g
-    (throw (Exception. "Modulo doesn't have primitive root"))))
 
 (defn primitive-roots
   [m]
@@ -188,18 +185,7 @@
     []))
 
 
-
-(defn primitive-roots'
-  "Brute force implemtation of search primitive roots."
-  [m]
-  (b/check-int-pos m)
-  (->> (reduced-residues' m)
-       (filter #(primitive-root? m %))))
-
 ;; Power residues
-;; (defmulti solve-power-residue)
-;; (defmulti power-residues)
-
 (defn power-residue?'
   "Brute force implemntation of power-residue?"
   [m n a]
@@ -260,7 +246,7 @@
           (for [[p e] (p/int->factors-count m)] (b/pow p e))))
 
 (defn index
-  ([m a] (index m (get-primitive-root m) a))
+  ([m a] (index m (find-primitive-root m) a))
   ([m g a]
    (check-prime-to-mod m a)
    (check-primitive-root m g)
@@ -276,7 +262,7 @@
   [m n a]
   (check-prime-to-mod m a)
   (b/check-int-pos n)
-  (let [g (get-primitive-root m)
+  (let [g (find-primitive-root m)
         b (index m a)
         phi (af/totient m)
         xs (c/solve-linear n b phi)]
@@ -286,7 +272,7 @@
 
 (defmethod power-residues ::has-primitive-root
   [m n]
-  (let [g (get-primitive-root m)
+  (let [g (find-primitive-root m)
         phi (af/totient m)
         d (b/gcd n phi)]
     (map (partial b/m** m g) (range 0 phi d))))
