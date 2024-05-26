@@ -124,13 +124,14 @@
   "Check does a is primitive root modulo m"
   [m a]
   (check-prime-to-mod m a)
-  (when (has-primitive-root? m) ;; optimization for modulo without primitive root
+  (if (has-primitive-root? m) ;; optimization for modulo without primitive root
    (let [phi (af/totient m)]
     (->> phi
          (p/int->factors-distinct)
          (map #(/ phi %))
          (map #(b/m** m a %))
-         (every? #(not (b/m= m 1 %)))))))
+         (every? #(not (b/m= m 1 %)))))
+   false))
 
 (defn check-primitive-root
   [m g]

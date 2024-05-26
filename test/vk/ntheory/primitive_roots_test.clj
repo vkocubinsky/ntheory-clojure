@@ -68,15 +68,31 @@
     7 ::pr/mod-p
     8 ::pr/mod-2**e
     9 ::pr/mod-p**e
-    10 ::pr/mod-2p**e 
+    10 ::pr/mod-2p**e
     15 ::pr/composite))
 
-
 (deftest find-primitive-root-test
-  (is (= 2 (pr/find-primitive-root 11))))
+  (is (= 0 (pr/find-primitive-root 1)))
+  (is (= 1 (pr/find-primitive-root 2)))
+  (is (= 2 (pr/find-primitive-root 3)))
+  (is (= 3 (pr/find-primitive-root 4)))
+  (is (= 2 (pr/find-primitive-root 5)))
+  (is (nil? (pr/find-primitive-root 8)))
+  (is (= 2 (pr/find-primitive-root 11)))
+  (is (nil? (pr/find-primitive-root 20))))
 
 (deftest primitive-root?-test
-  (is (pr/primitive-root? 11 2)))
+  (are [x y] (= (pr/primitive-root? 11 x) y)
+    1 false
+    2 true
+    3 false
+    4 false
+    5 false
+    6 true
+    7 true
+    8 true
+    9 false
+    10 false))
 
 (deftest primitive-roots-test
   (are [x y] (= (set (pr/primitive-roots x)) y)
@@ -113,6 +129,10 @@
     31 #{3 11 12 13 17 21 22 24}))
 
 (deftest index-test
+  (is (thrown-with-msg? IllegalArgumentException #"not relatively prime"
+                        (pr/index 6 2)))
+  (is (thrown-with-msg? IllegalArgumentException #"has not primitive root"
+                        (pr/index 20 3)))
   (are [x y] (= y (pr/index 11 2 x))
     1 10
     2 1
