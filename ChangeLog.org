@@ -10,7 +10,7 @@
   - fix product
 - primitive roots
   - power-residue? for all moduli
-  - solve congruence for reduced residues?
+  - solve-power-residue for all moduli
   - add print functions
     - order-print-table
     - order-count-print-table
