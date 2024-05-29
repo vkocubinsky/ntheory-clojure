@@ -149,7 +149,8 @@ For instance $19 \equiv 7 \pmod{12}$
 #+end_src 
 
 #+RESULTS:
-: class clojure.lang.Compiler$CompilerException
+: true
+: 
 
 Similar to addition function ~+~ and multiplication function ~*~ there
 are defined addition modulo m ~mod-add~ and multiplication modulo m ~mod-mul~
@@ -1002,7 +1003,7 @@ more than two function as an argument.
 #+end_src
 
 #+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
-: #function[vk.ntheory.arithmetic-functions/d*/fn--27033]
+: #function[vk.ntheory.arithmetic-functions/d*/fn--5866]
 : 
 
 
