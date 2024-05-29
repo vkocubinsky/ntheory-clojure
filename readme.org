@@ -141,24 +141,23 @@ Integer $a$ congruent to integer $b$ modulo $m > 0$ if $m$ divides $a - b$.
 
 $$a \equiv b \mod{m}$$
 
-There is a function ~m=~ which compare does two integer are congruent modulo $m$.
+There is a function ~congruent~ which compare does two integer are congruent modulo $m$.
 For instance $19 \equiv 7 \pmod{12}$
 
 #+begin_src clojure
-   (b/m= 12 19 7)
+   (b/congruent 12 19 7)
 #+end_src 
 
 #+RESULTS:
-: true
-: 
+: class clojure.lang.Compiler$CompilerException
 
 Similar to addition function ~+~ and multiplication function ~*~ there
-are defined addition modulo m ~m+~ and multiplication modulo m ~m*~
+are defined addition modulo m ~mod-add~ and multiplication modulo m ~mod-mul~
 functions. For instance $2 + 4 \equiv 1 \pmod{5}$ in
 $\mathbf{Z}/m\mathbf{Z}$
 
 #+begin_src clojure
-  (b/m+ 5 2 4)
+  (b/mod-add 5 2 4)
 #+end_src
 
 #+RESULTS:
@@ -167,7 +166,7 @@ $\mathbf{Z}/m\mathbf{Z}$
 #+LATEX:\noindent
 and $2 \cdot 4 \equiv 3 \pmod 5$ in $\mathbf{Z}/m\mathbf{Z}$
 #+begin_src clojure
-  (b/m* 5 2 4)
+  (b/mod-mul 5 2 4)
 #+end_src
 
 #+RESULTS:
@@ -179,10 +178,10 @@ is a first argument allow bind modulo in let expression and then use
 addition and multiplication modulo m without specify a modulo.
 
 #+begin_src clojure
-  (let [m5* (partial b/m* 5)
-        m5+ (partial b/m+ 5)]
+  (let [mul (partial b/mod-mul 5)
+        add (partial b/mod-add 5)]
     ;; ...
-    (m5+ 1 (m5* 2 4)))
+    (add 1 (mul 2 4)))
 #+end_src
 
 #+RESULTS:
@@ -195,7 +194,7 @@ Computer Programming, Volume II. For instance, $101^{900} \equiv 701
 \pmod{997}$.
 
 #+begin_src clojure
-  (b/m** 997 101 900)
+  (b/mod-pow 997 101 900)
 #+end_src
 
 #+RESULTS:

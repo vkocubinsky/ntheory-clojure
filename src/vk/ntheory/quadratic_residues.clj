@@ -8,7 +8,7 @@
 (defn R
   "Returns set of quadratic residue to prime modulo `p`."
   [p] (->> (range 1 (/ p 2))
-           (map #(b/m* p % %))
+           (map #(b/mod-mul p % %))
            (into (sorted-set))))
 
 (defn N
@@ -21,7 +21,7 @@
   "Legendre's symbol (n|p) based on Euler criteria."
   [n p]
   (p/check-odd-prime p)
-  (let [l (b/m** p n (/ (dec p) 2))]
+  (let [l (b/mod-pow p n (/ (dec p) 2))]
     (condp = l
       1 1
       (dec p) -1
@@ -36,7 +36,7 @@
     0
     (let [p-half (/ p 2)]
       (apply * (for [r (range 1 p-half)
-                     :let [v (b/m* p n r)]
+                     :let [v (b/mod-mul p n r)]
                      :when (> v p-half)]
                  -1)))))
 

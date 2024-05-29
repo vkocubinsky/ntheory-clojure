@@ -59,23 +59,23 @@
         b (check-int b)]
     (check-true (not (divides? a b)) (format "%s divides %s" a b))))
 
-(defn m=
-  "Check does `a` congruent to `b` modulo m"
+(defn congruent
+  "Check does `a` is congruent to `b` modulo m"
   [m a b] (= (mod a m) (mod b m)))
 
-(defn m*
-  "Multiplication modulo `m`, `(m*)` returns 1, `(m* a)` returns `a`."
+(defn mod-mul
+  "Multiplication modulo `m`, `(mod-mul)` returns 1, `(mod-mul a)` returns `a`."
   ([m] 1)
   ([m a] (mod a m))
   ([m a b] (mod (* a b) m))
-  ([m a b & more] (reduce (partial m* m) (m* m a b) more)))
+  ([m a b & more] (reduce (partial mod-mul m) (mod-mul m a b) more)))
 
-(defn m+
-  "Addition modulo `m`. `(m+) returns 0, `(m+ a)` returns `a`."
+(defn mod-add
+  "Addition modulo `m`. `(mod-add) returns 0, `(mod-add a)` returns `a`."
   ([m] 0)
   ([m a] (mod a m))
   ([m a b] (mod (+ a b) m))
-  ([m a b & more] (reduce (partial m+ m) (m+ m a b) more)))
+  ([m a b & more] (reduce (partial mod-add m) (mod-add m a b) more)))
 
 (defn- fast-power-iter
   ([fmult a n]
@@ -89,13 +89,13 @@
        (recur fmult (fmult odd even) even (dec n))
        (recur fmult odd (fmult even even) (/ n 2))))))
 
-(defn m**
+(defn mod-pow
   "Raise integer `a` to the power of `n >= 0` modulo `m`."
   [m a n]
   (check-int-pos m)
   (check-int-non-neg n)
   (check-int a)
-  (fast-power-iter (partial m* m) a n))
+  (fast-power-iter (partial mod-mul m) a n))
 
 (defn pow
   "Raise `a` to the power of `n >= 0`."

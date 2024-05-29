@@ -4,9 +4,12 @@
 
 * Version 0.10.0
 
-- ...
-
-
+- basic
+  - rename m= to congruent
+  - reanme m+ mod-pow
+  - rename m* mod-mul  
+  - rename m** mod-pow
+    
 * Version 0.9.0
 
 - basic
