@@ -1,5 +1,5 @@
 (ns vk.ntheory.basic
-  "Some basic function of number theory.")
+  "Some basic functions of number theory.")
 
 (defn check-true
   "Throws an exception if x is not true."
@@ -55,26 +55,48 @@
 (defn check-not-divides
   "Throw an exception if `a` not divies `b`."
   [a b]
-  (let [a (check-int a)
+  (let [a (check-int-non-zero a)
         b (check-int b)]
-    (check-true (not (divides? a b)) (format "%s divides %s" a b))))
+    (check-true (not (divides? a b)) (format "Expected %s does not divides %s" a b))))
 
-(defn congruent
+(defn congruent?
   "Check does `a` is congruent to `b` modulo m"
-  [m a b] (= (mod a m) (mod b m)))
+  [m a b]
+  (check-int-pos m)
+  (check-int a)
+  (check-int b)
+  (= (mod a m) (mod b m)))
 
 (defn mod-mul
   "Multiplication modulo `m`, `(mod-mul)` returns 1, `(mod-mul a)` returns `a`."
-  ([m] 1)
-  ([m a] (mod a m))
-  ([m a b] (mod (* a b) m))
+  ([m]
+   (check-int-pos m)
+   1)
+  ([m a]
+   (check-int-pos m)
+   (check-int a)
+   (mod a m))
+  ([m a b]
+   (check-int-pos m)
+   (check-int a)
+   (check-int b)
+   (mod (* a b) m))
   ([m a b & more] (reduce (partial mod-mul m) (mod-mul m a b) more)))
 
 (defn mod-add
   "Addition modulo `m`. `(mod-add) returns 0, `(mod-add a)` returns `a`."
-  ([m] 0)
-  ([m a] (mod a m))
-  ([m a b] (mod (+ a b) m))
+  ([m]
+   (check-int-pos m)
+   0)
+  ([m a]
+   (check-int-pos m)
+   (check-int a)
+   (mod a m))
+  ([m a b]
+   (check-int-pos m)
+   (check-int a)
+   (check-int b)
+   (mod (+ a b) m))
   ([m a b & more] (reduce (partial mod-add m) (mod-add m a b) more)))
 
 (defn- fast-power-iter
@@ -172,11 +194,15 @@
   (let [d (gcd a b)]
     (abs (/ (* a b) d))))
 
+(defn relatively-prime?
+  "Is given `a` and `b` are relatively prime"
+  [a b]
+  (= (gcd a b) 1))
+
 (defn check-relatively-prime
   "Throw an exception if integers `a` and `b` are not relatively prime."
   [a b]
-  (let [d (gcd a b)]
-    (check-true (= 1 d) (format "Integers %s and %s are not relatively prime." a b))))
+  (check-true (relatively-prime? a b) (format "Integers %s and %s are not relatively prime." a b)))
 
 (defn- product'
   "Helper function for function `product`.

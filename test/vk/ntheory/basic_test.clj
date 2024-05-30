@@ -22,6 +22,13 @@
     (is (nil? (b/check-at-least-one-non-zero 0 1)))
     (is (nil? (b/check-at-least-one-non-zero 1 0)))))
 
+(deftest relatively-prime?-test
+  (is (not (b/relatively-prime? 2 6)))
+  (is (not (b/relatively-prime? 3 6)))  
+  (is (b/relatively-prime? 1 6))
+  (is (b/relatively-prime? 5 6)))
+
+
 (deftest check-relatively-prime-test
   (testing "Fail"
     (is (thrown? Exception (b/check-relatively-prime 2 6)))
@@ -70,16 +77,16 @@
       (is (= -1 (b/check-int-non-zero -1)))
       (is (= 1 (b/check-int-non-zero 1))))))
 
-(deftest congruent-test
-  (is (true? (b/congruent 3 1 1)))
-  (is (true? (b/congruent 3 1 4)))
-  (is (false? (b/congruent 3 1 2)))
-  (is (false? (b/congruent 3 1 0)))
-  (is (true? (b/congruent 3 0 3)))
-  (is (true? (b/congruent 1 1 0)))
-  (is (true? (b/congruent 1 1 1))))
+(deftest congruent?-test
+  (is (true? (b/congruent? 3 1 1)))
+  (is (true? (b/congruent? 3 1 4)))
+  (is (false? (b/congruent? 3 1 2)))
+  (is (false? (b/congruent? 3 1 0)))
+  (is (true? (b/congruent? 3 0 3)))
+  (is (true? (b/congruent? 1 1 0)))
+  (is (true? (b/congruent? 1 1 1))))
 
-(deftest m*-test
+(deftest mod-mul-test
   (testing "Arity"
     (is (= 1 (b/mod-mul 6)))
     (is (= 5 (b/mod-mul 6 5)))
@@ -93,7 +100,7 @@
       5 (b/mod-mul 6 5 1)
       1 (b/mod-mul 6 5 5))))
 
-(deftest m+-test
+(deftest mod-add-test
   (testing "Arity"
     (is (= 0 (b/mod-add 6)))
     (is (= 5 (b/mod-add 6 5)))
@@ -109,7 +116,7 @@
       0 (b/mod-add 3 2 1)
       1 (b/mod-add 3 2 2))))
 
-(deftest m**-test
+(deftest mod-pow-test
   (are [x y] (= x y)
     1 (b/mod-pow 11 2 0)
     2 (b/mod-pow 11 2 1)

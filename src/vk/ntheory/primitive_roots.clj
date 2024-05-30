@@ -65,7 +65,7 @@
        af/totient
        af/divisors
        sort
-       (filter #(b/congruent m 1 (b/mod-pow m a %)))
+       (filter #(b/congruent? m 1 (b/mod-pow m a %)))
        first))
 
 (defn print-table-residue-order
@@ -130,7 +130,7 @@
          (p/int->factors-distinct)
          (map #(/ phi %))
          (map #(b/mod-pow m a %))
-         (every? #(not (b/congruent m 1 %)))))
+         (every? #(not (b/congruent? m 1 %)))))
    false))
 
 (defn check-primitive-root
@@ -164,7 +164,7 @@
   (let [[[p _]] (p/int->factors-count m)
         g (find-primitive-root p)
         c (b/mod-pow (* p p) g (dec p))]
-    (if (b/congruent m 1 c)
+    (if (b/congruent? m 1 c)
       (+ g p)
       g)))
 
@@ -193,7 +193,7 @@
   (check-prime-to-mod m a)
   (b/check-int-pos n)
   (letfn [(f [x] (b/mod-pow m x n))]
-    (true? (some #(b/congruent m a (f %)) (reduced-residues' m)))))
+    (true? (some #(b/congruent? m a (f %)) (reduced-residues' m)))))
 
 (defn solve-power-residue'
   "Brute force implementation of solve-power-residue"
@@ -202,7 +202,7 @@
   (b/check-int-pos n)
   (into (sorted-set) (for [x (reduced-residues' m)
                            :let [xn (b/mod-pow m x n)]
-                           :when (b/congruent m xn a)] x)))
+                           :when (b/congruent? m xn a)] x)))
 
 (defn power-residues'
   "Brute force implementation of power-residues"
@@ -221,7 +221,7 @@
   (let [phi (af/totient m)
         d (b/gcd n phi)
         t (b/mod-pow m a (/ phi d))]
-    (b/congruent m 1 t)))
+    (b/congruent? m 1 t)))
 
 (defmethod power-residue? ::mod-2**e
   ;; Case modulo m for modulo 2^e, where e >= 3."
@@ -236,7 +236,7 @@
             d (b/gcd n m')
             t (b/mod-pow m a
                      (/ m' d))]
-        (b/congruent m 1 t))
+        (b/congruent? m 1 t))
       false)))
 
 (defmethod power-residue? ::composite
@@ -254,7 +254,7 @@
    (check-primitive-root m g)
    (loop [acc g
           ind 1]
-     (if (b/congruent m acc a)
+     (if (b/congruent? m acc a)
        ind
        (recur (b/mod-mul m acc g) (inc ind))))))
 
@@ -305,7 +305,7 @@
   [m a]
   (let [e (mod-2**e-check-modulo m)
         a' (check-prime-to-mod m a)]
-    (first (filter #(b/congruent m a' (mod-2**e-index->residue m %))  (mod-2**e-indices m)))))
+    (first (filter #(b/congruent? m a' (mod-2**e-index->residue m %))  (mod-2**e-indices m)))))
 
 (defmethod power-residues ::mod-2**e
   [m n]
