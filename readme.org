@@ -100,12 +100,29 @@ user input:
 All of above accept one argument, check does argument satisfy to
 expectation, if does return argument, otherwise throws an exception.
 
-Some check functions accept more than one argument. Those function just
-throw an exception if expectation failed and return ~nil~ otherwise:
+#+begin_src clojure
+  (b/check-int 5)
+#+end_src
+
+#+RESULTS:
+: 5
+: 
+
+Some check functions accept more than one argument. Those function
+throw an exception if expectation failed and returns vector of input
+arguments otherwise:
 
 - ~check-relatively-prime~
 - ~check-not-divides~
 - ~check-at-least-one-non-zero~
+
+#+begin_src clojure
+  (b/check-relatively-prime 5 6)
+#+end_src
+
+#+RESULTS:
+: [5 6]
+: 
 
 There are also two helper function ~check-true~ and ~check-predicate~
 which helps to implement another ~check-*~ function for some
@@ -191,8 +208,9 @@ addition and multiplication modulo m without specify a modulo.
 
 There is another helpful function modulo m - exponentiation. It is a
 fast binary exponentiation algorithm described in D.Knuth, The Art of
-Computer Programming, Volume II. For instance, $101^{900} \equiv 701
-\pmod{997}$.
+Computer Programming, Volume II. and in book Structure and
+Interpretation of Computer Programs (SICP) of Harold Abelson and
+Gerald Jay Sussman.  For instance, $101^{900} \equiv 701 \pmod{997}$.
 
 #+begin_src clojure
   (b/mod-pow 997 101 900)
@@ -205,7 +223,7 @@ Computer Programming, Volume II. For instance, $101^{900} \equiv 701
 ** Power function
 
 Clojure has built-in ~clojure.math/pow~ function, but it return
-~java.lang.Double~. The library provide integer analog.
+~java.lang.Double~. The library provide integer analog. 
 
 #+begin_src clojure
    (b/pow 2 3)
