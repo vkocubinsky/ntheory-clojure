@@ -12,7 +12,7 @@
     (is (= [[]] (b/product []))))
   (testing "One of sequence is empty"
     (is (empty? (b/product [[1 2 3] []])))
-    (is (empty? (b/product [[][]])))))
+    (is (empty? (b/product [[] []])))))
 
 (deftest check-at-least-one-non-zero-test
   (testing "Fail"
@@ -24,67 +24,55 @@
 
 (deftest relatively-prime?-test
   (is (not (b/relatively-prime? 2 6)))
-  (is (not (b/relatively-prime? 3 6)))  
+  (is (not (b/relatively-prime? 3 6)))
   (is (b/relatively-prime? 1 6))
   (is (b/relatively-prime? 5 6)))
 
-
-(deftest check-relatively-prime-test
-  (testing "Fail"
-    (is (thrown? Exception (b/check-relatively-prime 2 6)))
-    (is (thrown? Exception (b/check-relatively-prime 3 6))))
+(defn check-predicate
+  [check-fn xs ys]
   (testing "Success"
-    (is (nil? (b/check-relatively-prime 1 6)))
-    (is (nil? (b/check-relatively-prime 5 6)))))
-
-(deftest check-not-divides
+    (doseq [x xs]
+      (if (coll? x)
+        (is (= x (apply check-fn x)))
+        (is (= x (check-fn x))))))
   (testing "Fail"
-    (is (thrown? Exception (b/check-not-divides 2 6)))
-    (is (thrown? Exception (b/check-not-divides 3 6))))
-  (testing "Success"
-    (is (nil? (b/check-not-divides 5 6)))
-    (is (nil? (b/check-not-divides 11 6)))))
+    (doseq [y ys]
+      (is (thrown? IllegalArgumentException (check-fn y))))))
 
 (deftest check-int-test
-  (testing "Fail"
-    (is (thrown? Exception (b/check-int 1.1))))
-  (testing "Success"
-    (is (= 1 (b/check-int 1)))))
+  (check-predicate b/check-int (range -4 5) [1.1 "s"]))
 
 (deftest check-int-pos-test
-  (testing "Fail"
-    (is (thrown? Exception (b/check-int-pos 1.1)))
-    (is (thrown? Exception (b/check-int-pos -1)))
-    (is (thrown? Exception (b/check-int-pos 0))))
-  (testing "Success"
-    (is (= 1 (b/check-int-pos 1)))
-    (is (= 2 (b/check-int-pos 2)))))
+  (check-predicate b/check-int-pos (range 1 5) [-1 0 1.1 "s"]))
 
 (deftest check-int-non-neg-test
-  (testing "Fail"
-    (is (thrown? Exception (b/check-int-non-neg 1.1)))
-    (is (thrown? Exception (b/check-int-non-neg -1)))
-    (is (thrown? Exception (b/check-int-non-neg -2))))
-  (testing "Success"
-    (is (= 0 (b/check-int-non-neg 0)))
-    (is (= 1 (b/check-int-non-neg 1)))))
+  (check-predicate b/check-int-non-neg (range 0 5) [-2 -1 1.1 "s"]))
 
 (deftest check-int-non-zero-test
-  (testing "Fail"
-    (is (thrown? Exception (b/check-int-non-zero 1.1)))
-    (is (thrown? Exception (b/check-int-non-zero 0)))
-    (testing "Success"
-      (is (= -1 (b/check-int-non-zero -1)))
-      (is (= 1 (b/check-int-non-zero 1))))))
+  (check-predicate b/check-int-non-zero [-4 -3 -2 1 2 3 4] [0 1.1 "s"]))
+
+(deftest check-relatively-prime-test
+  (check-predicate b/check-relatively-prime
+                   [[1 6] [5 6] [1 1] [0 1]]
+                   [[2 6] [3 6] [0 0]]))
+
+(deftest check-not-divides
+  (check-predicate b/check-not-divides
+                   [[5 6] [11 6]]
+                   [[2 6] [3 6] [1 2] [0 1]]))
 
 (deftest congruent?-test
-  (is (true? (b/congruent? 3 1 1)))
-  (is (true? (b/congruent? 3 1 4)))
-  (is (false? (b/congruent? 3 1 2)))
-  (is (false? (b/congruent? 3 1 0)))
-  (is (true? (b/congruent? 3 0 3)))
-  (is (true? (b/congruent? 1 1 0)))
-  (is (true? (b/congruent? 1 1 1))))
+  (are [m a b r] (= (b/congruent? m a b) r)
+    ;;modulo, number a, number b, result
+    3 1 1 true
+    3 1 4 true
+    3 1 2 false
+    3 1 0 false
+    3 0 3 true
+    1 1 0 true
+    1 1 1 true
+    )
+)
 
 (deftest mod-mul-test
   (testing "Arity"

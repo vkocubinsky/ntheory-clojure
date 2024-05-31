@@ -57,7 +57,8 @@
   [a b]
   (let [a (check-int-non-zero a)
         b (check-int b)]
-    (check-true (not (divides? a b)) (format "Expected %s does not divides %s" a b))))
+    (check-true (not (divides? a b)) (format "Expected %s does not divides %s" a b))
+    [a b]))
 
 (defn congruent?
   "Check does `a` is congruent to `b` modulo m"
@@ -202,7 +203,8 @@
 (defn check-relatively-prime
   "Throw an exception if integers `a` and `b` are not relatively prime."
   [a b]
-  (check-true (relatively-prime? a b) (format "Integers %s and %s are not relatively prime." a b)))
+  (check-true (relatively-prime? a b) (format "Integers %s and %s are not relatively prime." a b))
+  [a b])
 
 (defn- product'
   "Helper function for function `product`.
