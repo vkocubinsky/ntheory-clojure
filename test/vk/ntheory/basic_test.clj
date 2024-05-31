@@ -8,8 +8,13 @@
   "Test check function.
   Parameters:
   check-fn - check function
-  xs - sequence of success
-  ys - sequence of failure."
+  xs - sequence of success arguments of check-fn
+  ys - sequence of failure arguments of check-fn
+  In general, sequences xs and ys should be sequence of
+  vector of arguments for each call check-fn. But if check-fn
+  accept only one argument it is allowed use flat sequence of
+  wrap single value into vector for each call of check-fn.  
+  ."
   [check-fn xs ys]
   (testing "Success"
     (doseq [x xs]
