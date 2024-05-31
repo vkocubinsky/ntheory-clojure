@@ -3,6 +3,24 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.basic :as b]))
 
+;;; utils
+(defn test-check
+  "Test check function.
+  Parameters:
+  check-fn - check function
+  xs - sequence of success
+  ys - sequence of failure."
+  [check-fn xs ys]
+  (testing "Success"
+    (doseq [x xs]
+      (if (coll? x)
+        (is (= x (apply check-fn x)))
+        (is (= x (check-fn x))))))
+  (testing "Fail"
+    (doseq [y ys]
+      (is (thrown? IllegalArgumentException (check-fn y))))))
+
+;;; tests
 (deftest product-test
   (testing "Two sequences"
     (is (= [[0 0] [0 1] [0 2] [1 0] [1 1] [1 2]] (b/product [(range 2) (range 3)]))))
@@ -14,52 +32,40 @@
     (is (empty? (b/product [[1 2 3] []])))
     (is (empty? (b/product [[] []])))))
 
-(deftest check-at-least-one-non-zero-test
-  (testing "Fail"
-    (is (thrown? Exception (b/check-at-least-one-non-zero 0 0))))
-  (testing "Success"
-    (is (nil? (b/check-at-least-one-non-zero 1 1)))
-    (is (nil? (b/check-at-least-one-non-zero 0 1)))
-    (is (nil? (b/check-at-least-one-non-zero 1 0)))))
-
 (deftest relatively-prime?-test
-  (is (not (b/relatively-prime? 2 6)))
-  (is (not (b/relatively-prime? 3 6)))
-  (is (b/relatively-prime? 1 6))
-  (is (b/relatively-prime? 5 6)))
+  (are [a b r] (= (b/relatively-prime? a b ) r)
+    2 6 false
+    3 6 false
+    1 6 true
+    5 6 true)
+)
 
-(defn check-predicate
-  [check-fn xs ys]
-  (testing "Success"
-    (doseq [x xs]
-      (if (coll? x)
-        (is (= x (apply check-fn x)))
-        (is (= x (check-fn x))))))
-  (testing "Fail"
-    (doseq [y ys]
-      (is (thrown? IllegalArgumentException (check-fn y))))))
+(deftest check-at-least-one-non-zero-test
+  (test-check b/check-at-least-one-non-zero
+              [[1 1] [0 1] [1 0]]
+              [[0 0]]))
 
 (deftest check-int-test
-  (check-predicate b/check-int (range -4 5) [1.1 "s"]))
+  (test-check b/check-int (range -4 5) [1.1 "s"]))
 
 (deftest check-int-pos-test
-  (check-predicate b/check-int-pos (range 1 5) [-1 0 1.1 "s"]))
+  (test-check b/check-int-pos (range 1 5) [-1 0 1.1 "s"]))
 
 (deftest check-int-non-neg-test
-  (check-predicate b/check-int-non-neg (range 0 5) [-2 -1 1.1 "s"]))
+  (test-check b/check-int-non-neg (range 0 5) [-2 -1 1.1 "s"]))
 
 (deftest check-int-non-zero-test
-  (check-predicate b/check-int-non-zero [-4 -3 -2 1 2 3 4] [0 1.1 "s"]))
+  (test-check b/check-int-non-zero [-4 -3 -2 1 2 3 4] [0 1.1 "s"]))
 
 (deftest check-relatively-prime-test
-  (check-predicate b/check-relatively-prime
-                   [[1 6] [5 6] [1 1] [0 1]]
-                   [[2 6] [3 6] [0 0]]))
+  (test-check b/check-relatively-prime
+              [[1 6] [5 6] [1 1] [0 1]]
+              [[2 6] [3 6] [0 0]]))
 
 (deftest check-not-divides
-  (check-predicate b/check-not-divides
-                   [[5 6] [11 6]]
-                   [[2 6] [3 6] [1 2] [0 1]]))
+  (test-check b/check-not-divides
+              [[5 6] [11 6]]
+              [[2 6] [3 6] [1 2] [0 1]]))
 
 (deftest congruent?-test
   (are [m a b r] (= (b/congruent? m a b) r)
@@ -70,9 +76,7 @@
     3 1 0 false
     3 0 3 true
     1 1 0 true
-    1 1 1 true
-    )
-)
+    1 1 1 true))
 
 (deftest mod-mul-test
   (testing "Arity"
@@ -221,7 +225,7 @@
             l (b/lcm a b)]
         (is (= (abs (* a b)) (* d l)))))))
 
-(deftest gcd-extended-test
+(deftest gcd-property
   (doseq [a (range -13 13)
           b (range -13 13)]
     (when-not (every? zero? [a b])

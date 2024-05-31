@@ -43,7 +43,8 @@
   "Throw exception if all arguments are zero, otherwise returns nil."
   [a b]
   (check-true (not-every? zero? [a b])
-              (format "Expected at least one non zero integer")))
+              (format "Expected at least one non zero integer"))
+  [a b])
 
 (defn divides?
   "Return true if `a != 0` divides `b`, otherwise false."
