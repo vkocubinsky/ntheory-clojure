@@ -79,7 +79,7 @@ So below I will use above aliases.
   
 * Some basic functions
 
-This section cover namespace ~vk.ntheory.basic~. It contains some
+This section covers namespace ~vk.ntheory.basic~. It contains some
 common functions, which can be used directly or by other namespaces.
 One can use ~vk.ntheory.basic~ namespace as:
 
@@ -108,7 +108,7 @@ expectation, if does return argument, otherwise throws an exception.
 : 5
 : 
 
-Some check functions accept more than one argument. Those function
+Some check functions accept more than one argument. Those functions
 throw an exception if expectation failed and returns vector of input
 arguments otherwise:
 
@@ -124,9 +124,8 @@ arguments otherwise:
 : [5 6]
 : 
 
-There are also two helper function ~check-true~ and ~check-predicate~
-which helps to implement another ~check-*~ function for some
-predicate.
+There are also two helper functions ~check-true~ and ~check-predicate~
+which helps to implement another ~check-*~ functions.
 
 ** Some predicates
 
@@ -140,9 +139,20 @@ Function ~divides?~ determine does one number divides another.
 : true
 : 
 
+Function ~relatively-prime?~ determine does two numbers relatively prime.
+
+#+begin_src clojure
+  (b/relatively-prime? 2 3)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+
 ** Combinatorics
 
-~product~ function returns cartesian product of n sequences. For instance,
+Function ~product~ returns cartesian product of n sequences. For instance,
 
 #+begin_src clojure
   (b/product [(range 1 3) (range 1 5)]) 
@@ -154,11 +164,11 @@ Function ~divides?~ determine does one number divides another.
 
 ** Operations in $\mathbf{Z}/m\mathbf{Z}$
 
-Integer $a$ congruent to integer $b$ modulo $m > 0$ if $m$ divides $a - b$.
+Integer $a$ is congruent to integer $b$ modulo $m > 0$ if $m$ divides $a - b$.
 
 $$a \equiv b \mod{m}$$
 
-There is a function ~congruent~ which compare does two integer are congruent modulo $m$.
+There is a function ~congruent?~ which compare does two integers are congruent modulo $m$.
 For instance $19 \equiv 7 \pmod{12}$
 
 #+begin_src clojure
@@ -191,7 +201,7 @@ and $2 \cdot 4 \equiv 3 \pmod 5$ in $\mathbf{Z}/m\mathbf{Z}$
 : 3
 : 
 
-First argument of these functions is a modulo. The fact that a modulo
+First argument of these functions is a modulo. The fact that modulo
 is a first argument allow bind modulo in let expression and then use
 addition and multiplication modulo m without specify a modulo.
 
@@ -206,11 +216,12 @@ addition and multiplication modulo m without specify a modulo.
 : 4
 : 
 
-There is another helpful function modulo m - exponentiation. It is a
-fast binary exponentiation algorithm described in D.Knuth, The Art of
-Computer Programming, Volume II. and in book Structure and
-Interpretation of Computer Programs (SICP) of Harold Abelson and
-Gerald Jay Sussman.  For instance, $101^{900} \equiv 701 \pmod{997}$.
+There is another helpful function modulo m - exponentiation. It is
+implementation of a fast exponentiation algorithm described in
+D.Knuth, The Art of Computer Programming, Volume II. and in book
+Structure and Interpretation of Computer Programs (SICP) of Harold
+Abelson and Gerald Jay Sussman.  For instance, $101^{900} \equiv 701
+\pmod{997}$.
 
 #+begin_src clojure
   (b/mod-pow 997 101 900)
@@ -223,7 +234,9 @@ Gerald Jay Sussman.  For instance, $101^{900} \equiv 701 \pmod{997}$.
 ** Power function
 
 Clojure has built-in ~clojure.math/pow~ function, but it return
-~java.lang.Double~. The library provide integer analog. 
+~java.lang.Double~. The library provide integer analog. Also the
+implementation share fast exponentiation algorithm with ~mod-pow~
+function.
 
 #+begin_src clojure
    (b/pow 2 3)
@@ -268,8 +281,7 @@ $$
 ** The greatest common divisor
 
 The greatest common divisor of two integers $a$ and $b$, not both
-zero, is the largest positive integer $d$ which divides both $a$ and
-$b$.
+zero, is the largest positive integer $d$ which divides both $a$ and $b$.
 
 #+begin_src clojure
   (b/gcd 12 18)
@@ -289,7 +301,7 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
 #+end_src
 
 #+RESULTS[0c74f2cc07ec9ef25a86e65ce4219160c744cdde]:
-: [6 -1 1]
+: [6 [-1 1]]
 : 
 
 ** The least common multiple

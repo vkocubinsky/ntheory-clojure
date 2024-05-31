@@ -18,7 +18,7 @@
 (defn solve-linear
   "Solve congruence ax ≡ b (mod m). Returns sorted set."
   [a b m]
-  (let [[d x0' _] (b/gcd-extended a m)]
+  (let [[d [x0' _]] (b/gcd-extended a m)]
     (if (b/divides? d b)
       (let [c (/ b d)
             x0 (* x0' c)
@@ -38,7 +38,7 @@
    c2 m2]
   (b/check-int-pos m1)
   (b/check-int-pos m2)
-  (let [[d a' _] (b/gcd-extended m1 m2)]
+  (let [[d [a' _]] (b/gcd-extended m1 m2)]
     (when (b/divides? d (- c2 c1))
       (let [c (/ (- c2 c1) d)
             a (* a' c)
@@ -74,7 +74,7 @@
         x0 (->> xs
                 (map
                  (fn [[c m]] (let [M' (/ M m)
-                                   [d s _] (b/gcd-extended M' m)]
+                                   [d [s _]] (b/gcd-extended M' m)]
                                (when-not (= d 1) (throw (Exception. "Expected taht all modulus are coprime.")))
                                (* M' s c))))
                 (apply +)

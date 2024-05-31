@@ -174,7 +174,7 @@
 (defn gcd-extended
   "Extended Euclid algorithm.
   For two integers `a` and `b`,not both zero, returns vector
-  `[d s t]`, where `d` is the greatest common divisor of integers `a` and
+  `[d [s t]]`, where `d` is the greatest common divisor of integers `a` and
   `b` and values `s`,`t` and `d` satisfied condition:
   `a * s + b * t = d`.
   "
@@ -186,7 +186,7 @@
         s' (* (sign a) s)
         t' (* (sign b) t)]
     (assert (= d (+ (* a s') (* b t'))))
-    [d s' t']))
+    [d [s' t']]))
 
 (defn lcm
   "The least common multiple of two non zero integers `a` and `b`."

@@ -234,6 +234,6 @@
   (doseq [a (range -13 13)
           b (range -13 13)]
     (when-not (every? zero? [a b])
-      (let [[d s t] (b/gcd-extended a b)]
+      (let [[d [s t]] (b/gcd-extended a b)]
         (is (= d (+ (* a s) (* b t))))
         (is (= (b/gcd a b) d))))))
