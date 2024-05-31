@@ -162,7 +162,7 @@ There is a function ~congruent~ which compare does two integer are congruent mod
 For instance $19 \equiv 7 \pmod{12}$
 
 #+begin_src clojure
-   (b/congruent 12 19 7)
+   (b/congruent? 12 19 7)
 #+end_src 
 
 #+RESULTS:
@@ -1021,7 +1021,7 @@ more than two function as an argument.
 #+end_src
 
 #+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
-: #function[vk.ntheory.arithmetic-functions/d*/fn--5866]
+: #function[vk.ntheory.arithmetic-functions/d*/fn--6189]
 : 
 
 
