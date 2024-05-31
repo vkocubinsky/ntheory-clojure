@@ -1033,7 +1033,7 @@ more than two function as an argument.
 #+end_src
 
 #+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
-: #function[vk.ntheory.arithmetic-functions/d*/fn--6189]
+: #function[vk.ntheory.arithmetic-functions/d*/fn--14252]
 : 
 
 
@@ -1105,8 +1105,7 @@ for example solve congruence $x^2 \equiv 1 \pmod{8}$
 #+end_src
 
 #+RESULTS:
-: (1 3 5 7)
-: 
+: class clojure.lang.Compiler$CompilerException
 
 ** Linear congruence
 
@@ -1122,8 +1121,7 @@ There is function ~solve-linear~ for solve linear congruence. It accepts
 #+end_src
 
 #+RESULTS:
-: #{3 8 13}
-: 
+: class clojure.lang.Compiler$CompilerException
 
 ** System of linear congruences
 
@@ -1154,8 +1152,7 @@ x &\equiv 11 \pmod{15} \\
 #+end_src
 
 #+RESULTS:
-: [86 315]
-: 
+: class clojure.lang.Compiler$CompilerException
 
 So the answer is $86\pmod{315}$
 
@@ -1194,8 +1191,7 @@ x &\equiv -3 \pmod{8} \\
 #+end_src
 
 #+RESULTS:
-: [125 1496]
-: 
+: class clojure.lang.Compiler$CompilerException
 
 So the answer is $125\pmod{1496}$
 
