@@ -171,6 +171,7 @@
           t (- t'' (* t' q))]
       (recur [b (mod a b)] [s' t'] [s t]))))
 
+;; TODO: return [d [s t]]
 (defn gcd-extended
   "Extended Euclid algorithm.
   For two integers `a` and `b`,not both zero, returns vector
