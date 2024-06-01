@@ -174,7 +174,10 @@
 (defn int->coprime-factors
   [n]
   (check-int-pos-max n)
-  (for [[p e] (int->factors-count n)] (b/pow p e)))
+  (->> n
+       int->factors-partitions ,,,
+       (map (fn [xs] (apply * xs)) ,,, ))
+  )
 
 (defn factors->int
   [xs]

@@ -155,6 +155,33 @@
       19 [[19 1]]
       20 [[2 2] [5 1]])))
 
+(deftest int->coprime-factors-test
+  (testing "Negative numbers"
+    (is (thrown? Exception (p/int->coprime-factors 0)))
+    (is (thrown? Exception (p/int->coprime-factors -1))))
+  (testing "Positive numbers"
+    (are [x y] (= (p/int->coprime-factors x) y)
+      1  []
+      2  [2]
+      3  [3]
+      4  [4]
+      5  [5]
+      6  [2 3]
+      7  [7]
+      8  [8]
+      9  [9]
+      10 [2 5]
+      11 [11]
+      12 [4 3]
+      13 [13]
+      14 [2 7]
+      15 [3 5]
+      16 [16]
+      17 [17]
+      18 [2 9]
+      19 [19]
+      20 [4 5])))
+
 (deftest int->factors-paritions-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/int->factors-partitions 0)))
@@ -181,7 +208,6 @@
       18 [[2] [3 3]]
       19 [[19]]
       20 [[2 2] [5]])))
-
 (deftest int->factors-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/int->factors 0)))
