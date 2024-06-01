@@ -9,6 +9,8 @@
   - reanme m+ mod-pow
   - rename m* mod-mul  
   - rename m** mod-pow
+- primes
+  - add int->coproime-factors
     
 * Version 0.9.0
 
