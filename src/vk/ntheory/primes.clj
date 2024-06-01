@@ -171,6 +171,11 @@
   (check-int-pos-max n)
   (into {} (int->factors-count n)))
 
+(defn int->coprime-factors
+  [n]
+  (check-int-pos-max n)
+  (for [[p e] (int->factors-count n)] (b/pow p e)))
+
 (defn factors->int
   [xs]
   (apply * xs))
