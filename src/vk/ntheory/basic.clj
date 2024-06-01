@@ -188,6 +188,14 @@
     (assert (= d (+ (* a s') (* b t'))))
     [d [s' t']]))
 
+(defn gcd-inverse
+  "Experimental."
+  [m a]
+  (let [[d [s t]] (gcd-extended a m)]
+    (if (= 1 d)
+      s
+      (throw (IllegalArgumentException. (format "Integers %s and %s are not relatively prime." m a))))))
+
 (defn lcm
   "The least common multiple of two non zero integers `a` and `b`."
   [a b]
