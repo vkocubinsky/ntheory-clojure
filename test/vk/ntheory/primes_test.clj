@@ -240,4 +240,5 @@
     (is (= n (p/factors-count->int (p/int->factors-count n))))
     (is (= n (p/factors-count->int (p/int->factors-map n))))
     (is (= n (p/factors-partitions->int (p/int->factors-partitions n))))
-    (is (= n (p/factors->int (p/int->factors n))))))
+    (is (= n (p/factors->int (p/int->factors n))))
+    (is (= n (p/factors->int (p/int->coprime-factors n))))))

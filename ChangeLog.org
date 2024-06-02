@@ -10,7 +10,7 @@
   - rename m* mod-mul  
   - rename m** mod-pow
 - primes
-  - add int->coproime-factors
+  - add int->coprime-factors
     
 * Version 0.9.0
 
