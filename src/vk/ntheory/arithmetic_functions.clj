@@ -1,4 +1,4 @@
-(ns vk.ntheory.arithmetic-functions
+ (ns vk.ntheory.arithmetic-functions
   (:require [clojure.math :as math]
             [vk.ntheory.primes :as p]
             [vk.ntheory.basic :as b]))
