@@ -500,7 +500,7 @@ $1$.
 : (2 2 2 3 3 5)
 : 
 
-And converse function is:
+And reverse function is:
 
 #+begin_src clojure
   (p/factors->int [2 2 2 3 3 5])
@@ -521,7 +521,7 @@ grouped into partitions by a prime:
 : ((2 2 2) (3 3) (5))
 : 
 
-And converse function is:
+And reverse function is:
 
 #+begin_src clojure
   (p/factors-partitions->int [[2 2 2] [3 3] [5]])
@@ -542,7 +542,7 @@ k]~, where ~p~ is a prime and ~k~ is a power of prime:
 : ([2 3] [3 2] [5 1])
 : 
 
-And converse function is:
+And reverse function is:
 
 #+begin_src clojure
   (p/factors-count->int [[2 3] [3 2] [5 1]])
@@ -563,13 +563,37 @@ is a map instead of sequence of pairs.
 : {2 3, 3 2, 5 1}
 : 
 
-Conversion function is the same as for 3-rd representation:
+Reverse function is the same as for 3-rd representation:
 
 #+begin_src clojure
   (p/factors-count->int {2 3, 3 2, 5 1})
 #+end_src
 
 #+RESULTS[85c61af8e9717c094e6d06e3abbbbbc1303673e6]:
+: 360
+: 
+
+5-th factorization representation is sequence of coprime integers,
+that's it every pair of factors from the sequence are relatively
+prime. If we take 4-th factorization and raise every prime to
+appropriate power we get 5-th factorization. For instance, $2^3 3^2
+5^1 = 8 \cdot 9 \cdot5$
+
+#+begin_src clojure
+   (p/int->coprime-factors 360)
+#+end_src
+
+#+RESULTS:
+: (8 9 5)
+: 
+
+Reverse function is the same as for 1-st representation
+
+#+begin_src clojure
+  (p/factors->int [8 9 5])
+#+end_src
+
+#+RESULTS:
 : 360
 : 
 

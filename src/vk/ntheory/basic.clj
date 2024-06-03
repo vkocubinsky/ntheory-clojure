@@ -191,7 +191,7 @@
 (defn gcd-inverse
   "Experimental."
   [m a]
-  (let [[d [s t]] (gcd-extended a m)]
+  (let [[d [s _]] (gcd-extended a m)]
     (if (= 1 d)
       s
       (throw (IllegalArgumentException. (format "Integers %s and %s are not relatively prime." m a))))))

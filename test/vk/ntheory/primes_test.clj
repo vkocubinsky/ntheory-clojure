@@ -1,69 +1,38 @@
 (ns vk.ntheory.primes-test
   (:require
    [clojure.test :refer [deftest is are testing]]
+   [vk.ntheory.basic-test :refer [test-check]]
    [vk.ntheory.primes :as p]))
 
 (deftest check-int-pos-max-test
-  (testing "Fail"
-    (is (thrown? Exception (p/check-int-pos-max 1.1)))
-    (is (thrown? Exception (p/check-int-pos-max (inc p/max-int))))
-    (is (thrown? Exception (p/check-int-pos-max -1)))
-    (is (thrown? Exception (p/check-int-pos-max 0))))
-  (testing "Success"
-    (is (= 1 (p/check-int-pos-max 1)))
-    (is (= 2 (p/check-int-pos-max 2)))
-    (is (= p/max-int (p/check-int-pos-max p/max-int)))))
+  (test-check p/check-int-pos-max
+              [1 2 3 4 5 p/max-int]
+              [1.1 (inc p/max-int) -2 -1 0 "s"])
+  )
 
 (deftest check-int-non-neg-max-test
-  (testing "Fail"
-    (is (thrown? Exception (p/check-int-non-neg-max 1.1)))
-    (is (thrown? Exception (p/check-int-non-neg-max (inc p/max-int))))
-    (is (thrown? Exception (p/check-int-non-neg-max -1)))
-    (is (thrown? Exception (p/check-int-non-neg-max -2))))
-  (testing "Success"
-    (is (= 0 (p/check-int-non-neg-max 0)))
-    (is (= 1 (p/check-int-non-neg-max 1)))
-    (is (= p/max-int (p/check-int-non-neg-max p/max-int)))))
+  (test-check p/check-int-non-neg-max
+              [0 1 2 3 4 5 p/max-int]
+              [1.1 (inc p/max-int) -2 -1 "s"])
+  )
 
 (deftest check-int-non-zero-max-test
-  (testing "Fail"
-    (is (thrown? Exception (p/check-int-non-zero-max 1.1)))
-    (is (thrown? Exception (p/check-int-non-zero-max (inc p/max-int))))
-    (is (thrown? Exception (p/check-int-non-zero-max 0)))
-    (testing "Success"
-      (is (= -1 (p/check-int-non-zero-max -1)))
-      (is (= 1 (p/check-int-non-zero-max 1))))
-    (is (= p/max-int (p/check-int-non-zero-max p/max-int)))))
-
+  (test-check p/check-int-non-zero-max
+              [(- p/max-int) -4 -3 -2 -1 1 2 3 4 p/max-int]
+              [1.1 (inc p/max-int) (- (inc p/max-int)) 0 "s"]
+              ))
 
 (deftest check-prime-test
-  (testing "Fail"
-    (is (thrown? Exception (p/check-prime 0)))
-    (is (thrown? Exception (p/check-prime 1)))
-    (is (thrown? Exception (p/check-prime 1.1)))
-    (is (thrown? Exception (p/check-prime -1)))
-    (is (thrown? Exception (p/check-prime -2))))
-  (testing "Success"
-    (is (= 3 (p/check-odd-prime 3)))
-    (is (= 5 (p/check-odd-prime 5)))
-    (is (= 7 (p/check-odd-prime 7)))
-    (is (= 11 (p/check-odd-prime 11)))))
+  (test-check p/check-prime
+              [3 5 7 11 13 17 19]
+              [-3 -2 -1 0 1 1.1 "s"])
+  )
 
 (deftest check-odd-prime-test
-  (testing "Fail"
-    (is (thrown? Exception (p/check-odd-prime 0)))
-    (is (thrown? Exception (p/check-odd-prime 1)))
-    (is (thrown? Exception (p/check-odd-prime 2)))
-    (is (thrown? Exception (p/check-odd-prime 1.1)))
-    (is (thrown? Exception (p/check-odd-prime -1)))
-    (is (thrown? Exception (p/check-odd-prime -2))))
-  (testing "Success"
-    (is (= 3 (p/check-odd-prime 3)))
-    (is (= 5 (p/check-odd-prime 5)))
-    (is (= 7 (p/check-odd-prime 7)))
-    (is (= 11 (p/check-odd-prime 11)))))
-
-
+  (test-check p/check-odd-prime
+              [3 5 7 11 13 17 19]
+              [-3 -2 -1 0 1 2 1.1 "s"])
+  )
 
 (deftest primes-test
   (testing "cache"

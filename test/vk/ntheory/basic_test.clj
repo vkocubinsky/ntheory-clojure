@@ -18,12 +18,14 @@
   [check-fn xs ys]
   (testing "Success"
     (doseq [x xs]
-      (if (coll? x)
+      (testing (str "Test value x = " x)
+       (if (coll? x)
         (is (= x (apply check-fn x)))
-        (is (= x (check-fn x))))))
+        (is (= x (check-fn x)))))))
   (testing "Fail"
     (doseq [y ys]
-      (is (thrown? IllegalArgumentException (check-fn y))))))
+      (testing (str "Test value y = " y)
+      (is (thrown? IllegalArgumentException (check-fn y)))))))
 
 ;;; tests
 (deftest product-test

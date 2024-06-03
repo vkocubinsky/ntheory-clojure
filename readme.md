@@ -1,64 +1,64 @@
 
 # Table of Contents
 
-1.  [About](#org220aa86)
-2.  [Notation](#orgedba677)
-3.  [Some basic functions](#orgdde0e18)
-    1.  [Check functions](#org3ce61b0)
-    2.  [Some predicates](#org96ee0eb)
-    3.  [Combinatorics](#org3717584)
-    4.  [Operations in $\mathbf{Z}/m\mathbf{Z}$](#orgcdbd990)
-    5.  [Power function](#orgc8b54aa)
-    6.  [Order function](#orgb8a543c)
-    7.  [Sign function](#orgacd9baf)
-    8.  [The greatest common divisor](#org1851a02)
-    9.  [The least common multiple](#orgdb05aab)
-4.  [Primes and integer factorization](#orgeef1351)
-    1.  [Check functions](#org139f9fa)
-    2.  [Performance and cache](#org1ec2313)
-    3.  [Primes](#org23281cf)
-    4.  [Integer factorization](#org16e0043)
-5.  [Arithmetical functions](#orge7eef81)
-    1.  [Arithmetical function](#orge876216)
-    2.  [Function equality](#org56d46d6)
-    3.  [Pointwise addition](#org2cf0394)
-    4.  [Pointwise multiplication](#org2214b9f)
-    5.  [Divisors](#org40fc573)
-    6.  [Additive functions](#org7c640fb)
-    7.  [Multiplicative functions](#org83bb2fd)
-    8.  [Higher order function for define multiplicative and additive functions](#orgfae494d)
-    9.  [Some additive functions](#orgc28a8c2)
-        1.  [Count of distinct primes - $\omega$](#orga2d5a92)
-        2.  [Total count of primes - $\Omega$](#orgc586c4d)
-    10. [Some multiplicative functions](#orgf66e750)
-        1.  [Mobius function - $\mu$.](#org200b8fb)
-        2.  [Euler totient function - $\varphi$](#org4c60c36)
-        3.  [Unit function - $\varepsilon$](#org982958c)
-        4.  [Constant one function - $\mathbf{1}$](#org4446ed1)
-        5.  [Divisors count - $\sigma_0$](#org0cd9bf4)
-        6.  [Divisors sum - $\sigma_1$](#org48acc65)
-        7.  [Divisors square sum](#org29909c4)
-        8.  [Divisors higher order function - $\sigma_{x}$](#org830e785)
-        9.  [Liouville function - $\lambda$](#orgfb73aed)
-    11. [Some other arithmetic functions](#org915ca0f)
-        1.  [Mangoldt function - $\Lambda$](#org686f642)
-        2.  [Chebyshev functions $\theta$ and $\psi$](#orgaf620ba)
-    12. [Dirichlet convolution](#org87e5af2)
-6.  [Congruences](#org6f542ac)
-    1.  [Brute force solution](#org1f929b1)
-    2.  [Linear congruence](#org0dec864)
-    3.  [System of linear congruences](#org43fa808)
-    4.  [Coprime moduli case](#org8f701aa)
-7.  [Primitive roots](#org2f60b93)
-    1.  [Reduced residues](#orga33f3d4)
-    2.  [Order](#orgfc7aedc)
-    3.  [Primitive root](#org52e6af2)
-    4.  [Index](#org8ecbc53)
-    5.  [n-th power residues](#org15db005)
+1.  [About](#orga482edd)
+2.  [Notation](#org8d97ff3)
+3.  [Some basic functions](#org37e8958)
+    1.  [Check functions](#org37e889b)
+    2.  [Some predicates](#org25793d8)
+    3.  [Combinatorics](#org8174289)
+    4.  [Operations in $\mathbf{Z}/m\mathbf{Z}$](#orge0cf578)
+    5.  [Power function](#org4a4d2a0)
+    6.  [Order function](#org54e8cb5)
+    7.  [Sign function](#org19752c9)
+    8.  [The greatest common divisor](#org51a1381)
+    9.  [The least common multiple](#orgeb4fa4f)
+4.  [Primes and integer factorization](#orgbf88abd)
+    1.  [Check functions](#orgd5f6c16)
+    2.  [Performance and cache](#org477f79a)
+    3.  [Primes](#orgd843e41)
+    4.  [Integer factorization](#org8f24d85)
+5.  [Arithmetical functions](#orgde022c9)
+    1.  [Arithmetical function](#orgdc8e40b)
+    2.  [Function equality](#org2c39f42)
+    3.  [Pointwise addition](#orgf93baa8)
+    4.  [Pointwise multiplication](#org66e99e4)
+    5.  [Divisors](#orgb18e4a8)
+    6.  [Additive functions](#org098b2e7)
+    7.  [Multiplicative functions](#org06f5322)
+    8.  [Higher order function for define multiplicative and additive functions](#orgd6f971c)
+    9.  [Some additive functions](#org9fb2e50)
+        1.  [Count of distinct primes - $\omega$](#orgefc9eae)
+        2.  [Total count of primes - $\Omega$](#orgf35c9b8)
+    10. [Some multiplicative functions](#orgee9e3c7)
+        1.  [Mobius function - $\mu$.](#org1c0e093)
+        2.  [Euler totient function - $\varphi$](#org3c6397b)
+        3.  [Unit function - $\varepsilon$](#orgf49040a)
+        4.  [Constant one function - $\mathbf{1}$](#org6806970)
+        5.  [Divisors count - $\sigma_0$](#orgaad1b40)
+        6.  [Divisors sum - $\sigma_1$](#orgb3ca852)
+        7.  [Divisors square sum](#orgaea207a)
+        8.  [Divisors higher order function - $\sigma_{x}$](#orgb129f5c)
+        9.  [Liouville function - $\lambda$](#org837287a)
+    11. [Some other arithmetic functions](#org8541600)
+        1.  [Mangoldt function - $\Lambda$](#orgc024429)
+        2.  [Chebyshev functions $\theta$ and $\psi$](#org89ffcb4)
+    12. [Dirichlet convolution](#org704edc4)
+6.  [Congruences](#org98f94a1)
+    1.  [Brute force solution](#org31b890b)
+    2.  [Linear congruence](#org72405ca)
+    3.  [System of linear congruences](#orgb258a37)
+    4.  [Coprime moduli case](#orgd19b563)
+7.  [Primitive roots](#orge940890)
+    1.  [Reduced residues](#org8da53d8)
+    2.  [Order](#org013ae7d)
+    3.  [Primitive root](#orgd02feac)
+    4.  [Index](#org9d59e38)
+    5.  [n-th power residues](#org0c8c015)
 
 
 
-<a id="org220aa86"></a>
+<a id="orga482edd"></a>
 
 # About
 
@@ -123,7 +123,7 @@ In this document I load number theory packages as:
 So below I will use above aliases.
 
 
-<a id="orgedba677"></a>
+<a id="org8d97ff3"></a>
 
 # Notation
 
@@ -137,7 +137,7 @@ So below I will use above aliases.
 -   $a \nmid b$ - $a$ does not divide $b$
 
 
-<a id="orgdde0e18"></a>
+<a id="org37e8958"></a>
 
 # Some basic functions
 
@@ -148,7 +148,7 @@ One can use `vk.ntheory.basic` namespace as:
     (require '[vk.ntheory.basic :as b])
 
 
-<a id="org3ce61b0"></a>
+<a id="org37e889b"></a>
 
 ## Check functions
 
@@ -183,7 +183,7 @@ There are also two helper functions `check-true` and `check-predicate`
 which helps to implement another `check-*` functions.
 
 
-<a id="org96ee0eb"></a>
+<a id="org25793d8"></a>
 
 ## Some predicates
 
@@ -200,7 +200,7 @@ Function `relatively-prime?` determine does two numbers relatively prime.
     true
 
 
-<a id="org3717584"></a>
+<a id="org8174289"></a>
 
 ## Combinatorics
 
@@ -211,7 +211,7 @@ Function `product` returns cartesian product of n sequences. For instance,
     ((1 1) (1 2) (1 3) (1 4) (2 1) (2 2) (2 3) (2 4))
 
 
-<a id="orgcdbd990"></a>
+<a id="orge0cf578"></a>
 
 ## Operations in $\mathbf{Z}/m\mathbf{Z}$
 
@@ -264,7 +264,7 @@ Abelson and Gerald Jay Sussman.  For instance, $101^{900} \equiv 701
     701
 
 
-<a id="orgc8b54aa"></a>
+<a id="org4a4d2a0"></a>
 
 ## Power function
 
@@ -278,7 +278,7 @@ function.
     8
 
 
-<a id="orgb8a543c"></a>
+<a id="org54e8cb5"></a>
 
 ## Order function
 
@@ -290,7 +290,7 @@ $2^3 | 24$, but $2^4 \nmid 24$, so $ord_2(24) = 3$
     3
 
 
-<a id="orgacd9baf"></a>
+<a id="org19752c9"></a>
 
 ## Sign function
 
@@ -308,7 +308,7 @@ $$
     [-1 1 0]
 
 
-<a id="org1851a02"></a>
+<a id="org51a1381"></a>
 
 ## The greatest common divisor
 
@@ -329,7 +329,7 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
     [6 [-1 1]]
 
 
-<a id="orgdb05aab"></a>
+<a id="orgeb4fa4f"></a>
 
 ## The least common multiple
 
@@ -344,7 +344,7 @@ $$[a,b] = \frac{|ab|}{(a,b)}$$
     36
 
 
-<a id="orgeef1351"></a>
+<a id="orgbf88abd"></a>
 
 # Primes and integer factorization
 
@@ -355,7 +355,7 @@ for integer factorization and get list of primes. One can use
     (require '[vk.ntheory.primes :as p])
 
 
-<a id="org139f9fa"></a>
+<a id="orgd5f6c16"></a>
 
 ## Check functions
 
@@ -374,7 +374,7 @@ more check functions:
 -   `check-odd-prime`
 
 
-<a id="org1ec2313"></a>
+<a id="org477f79a"></a>
 
 ## Performance and cache
 
@@ -429,7 +429,7 @@ contains `7`. Index zero is not used, index `1` is a special case and
 value for index `1` is `1`.
 
 
-<a id="org23281cf"></a>
+<a id="orgd843e41"></a>
 
 ## Primes
 
@@ -440,7 +440,7 @@ value for index `1` is `1`.
     (2 3 5 7 11 13 17 19 23 29)
 
 
-<a id="org16e0043"></a>
+<a id="org8f24d85"></a>
 
 ## Integer factorization
 
@@ -505,7 +505,7 @@ $1$.
 
     (2 2 2 3 3 5)
 
-And converse function is:
+And reverse function is:
 
     (p/factors->int [2 2 2 3 3 5])
 
@@ -518,7 +518,7 @@ grouped into partitions by a prime:
 
     ((2 2 2) (3 3) (5))
 
-And converse function is:
+And reverse function is:
 
     (p/factors-partitions->int [[2 2 2] [3 3] [5]])
 
@@ -531,7 +531,7 @@ k]`, where `p` is a prime and `k` is a power of prime:
 
     ([2 3] [3 2] [5 1])
 
-And converse function is:
+And reverse function is:
 
     (p/factors-count->int [[2 3] [3 2] [5 1]])
 
@@ -544,9 +544,25 @@ is a map instead of sequence of pairs.
 
     {2 3, 3 2, 5 1}
 
-Conversion function is the same as for 3-rd representation:
+Reverse function is the same as for 3-rd representation:
 
     (p/factors-count->int {2 3, 3 2, 5 1})
+
+    360
+
+5-th factorization representation is sequence of coprime integers,
+that's it every pair of factors from the sequence are relatively
+prime. If we take 4-th factorization and raise every prime to
+appropriate power we get 5-th factorization. For instance, $2^3 3^2
+5^1 = 8 \cdot 9 \cdot5$
+
+    (p/int->coprime-factors 360)
+
+    (8 9 5)
+
+Reverse function is the same as for 1-st representation
+
+    (p/factors->int [8 9 5])
 
     360
 
@@ -558,7 +574,7 @@ the list, then divide `n` on `p`, the index of quotient `n/p` is next
 element of "linked list". 
 
 
-<a id="orge7eef81"></a>
+<a id="orgde022c9"></a>
 
 # Arithmetical functions
 
@@ -569,7 +585,7 @@ new arithmetical functions.
     (require '[vk.ntheory.arithmetic-functions :as af])
 
 
-<a id="orge876216"></a>
+<a id="orgdc8e40b"></a>
 
 ## Arithmetical function
 
@@ -579,7 +595,7 @@ mostly works with functions which also returns integer $f: \mathbf N
 \to \mathbf Z$.
 
 
-<a id="org56d46d6"></a>
+<a id="org2c39f42"></a>
 
 ## Function equality
 
@@ -606,7 +622,7 @@ sequence of natural number we can for example do next:
     (af/f= f g (filter even? (range 1 100))) ;; true
 
 
-<a id="org2cf0394"></a>
+<a id="orgf93baa8"></a>
 
 ## Pointwise addition
 
@@ -623,7 +639,7 @@ In Clojure function `f+` returns pointwise addition:
     15
 
 
-<a id="org2214b9f"></a>
+<a id="org66e99e4"></a>
 
 ## Pointwise multiplication
 
@@ -641,7 +657,7 @@ In clojure function `f*` returns pointwise multiplication:
     54
 
 
-<a id="org40fc573"></a>
+<a id="orgb18e4a8"></a>
 
 ## Divisors
 
@@ -655,7 +671,7 @@ is unordered.
     (1 5 3 15 2 10 6 30)
 
 
-<a id="org7c640fb"></a>
+<a id="org098b2e7"></a>
 
 ## Additive functions
 
@@ -673,7 +689,7 @@ If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 $$f(n) = \sum_{i=1}^{k} f({p_i}^{a_i})$$
 
 
-<a id="org83bb2fd"></a>
+<a id="org06f5322"></a>
 
 ## Multiplicative functions
 
@@ -692,7 +708,7 @@ calculate a function on power of primes. If $n = p_1^{a_1} p_2^{a_2}
 $$f(n) = \prod_{i=1}^{k} f({p_i}^{a_i})$$
 
 
-<a id="orgfae494d"></a>
+<a id="orgd6f971c"></a>
 
 ## Higher order function for define multiplicative and additive functions
 
@@ -722,12 +738,12 @@ Of course there is predefined function `divisors-count`, but it
 is an example how to define custom function.
 
 
-<a id="orgc28a8c2"></a>
+<a id="org9fb2e50"></a>
 
 ## Some additive functions
 
 
-<a id="orga2d5a92"></a>
+<a id="orgefc9eae"></a>
 
 ### Count of distinct primes - $\omega$
 
@@ -739,7 +755,7 @@ divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k
     2
 
 
-<a id="orgc586c4d"></a>
+<a id="orgf35c9b8"></a>
 
 ### Total count of primes - $\Omega$
 
@@ -753,12 +769,12 @@ $$\Omega = a_1 + a_2 + \dots + a_k$$
     3
 
 
-<a id="orgf66e750"></a>
+<a id="orgee9e3c7"></a>
 
 ## Some multiplicative functions
 
 
-<a id="org200b8fb"></a>
+<a id="org1c0e093"></a>
 
 ### Mobius function - $\mu$.
 
@@ -777,7 +793,7 @@ For example, $\mu(6)=\mu(2 \cdot 3)=1$
     1
 
 
-<a id="org4c60c36"></a>
+<a id="org3c6397b"></a>
 
 ### Euler totient function - $\varphi$
 
@@ -794,7 +810,7 @@ so $\varphi(6) = 2$
     2
 
 
-<a id="org982958c"></a>
+<a id="orgf49040a"></a>
 
 ### Unit function - $\varepsilon$
 
@@ -813,7 +829,7 @@ The name `unit` was chosen to make it different from
 `clojure.core/identity` function. 
 
 
-<a id="org4446ed1"></a>
+<a id="org6806970"></a>
 
 ### Constant one function - $\mathbf{1}$
 
@@ -825,7 +841,7 @@ $$\mathbf{1}(n) = 1$$
     1
 
 
-<a id="org0cd9bf4"></a>
+<a id="orgaad1b40"></a>
 
 ### Divisors count - $\sigma_0$
 
@@ -842,7 +858,7 @@ number $6$ has $4$ divisors, namely $1,2,3,6$, so $d(6)=4$.
     4
 
 
-<a id="org48acc65"></a>
+<a id="orgb3ca852"></a>
 
 ### Divisors sum - $\sigma_1$
 
@@ -859,7 +875,7 @@ For instance, $\sigma(6)= 1 + 2 + 3 + 6 = 12$
     12
 
 
-<a id="org29909c4"></a>
+<a id="orgaea207a"></a>
 
 ### Divisors square sum
 
@@ -874,7 +890,7 @@ For instance, $\sigma_2(6) = 1^2 + 2^2 + 3^2 + 6^2 = 50$
     50
 
 
-<a id="org830e785"></a>
+<a id="orgb129f5c"></a>
 
 ### Divisors higher order function - $\sigma_{x}$
 
@@ -898,7 +914,7 @@ For example we can define divisors cube sum as follows:
     (def my-divisors-cube-sum (af/divisors-sum-x 3))
 
 
-<a id="orgfb73aed"></a>
+<a id="org837287a"></a>
 
 ### Liouville function - $\lambda$
 
@@ -915,12 +931,12 @@ $$\lambda(n) = (-1)^{\Omega}$$
 Liouville function is completely multiplicative.
 
 
-<a id="org915ca0f"></a>
+<a id="org8541600"></a>
 
 ## Some other arithmetic functions
 
 
-<a id="org686f642"></a>
+<a id="orgc024429"></a>
 
 ### Mangoldt function - $\Lambda$
 
@@ -938,7 +954,7 @@ For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$
     0.6931471805599453
 
 
-<a id="orgaf620ba"></a>
+<a id="org89ffcb4"></a>
 
 ### Chebyshev functions $\theta$ and $\psi$
 
@@ -959,7 +975,7 @@ $$\psi = \sum_{n \le x} {\Lambda(n)} $$
     0.6931471805599453
 
 
-<a id="org87e5af2"></a>
+<a id="org704edc4"></a>
 
 ## Dirichlet convolution
 
@@ -1003,7 +1019,7 @@ more than two function as an argument.
 
     (af/d* af/mobius af/one af/mobius af/one)
 
-    #function[vk.ntheory.arithmetic-functions/d*/fn--14252]
+    #function[vk.ntheory.arithmetic-functions/d*/fn--6199]
 
 Functions $\mu(n)$ and $1(n)$ are inverse of each other, we can easy check
 this
@@ -1033,7 +1049,7 @@ identity function, let's denote it as $N(n)$, is $N(n) \cdot \mu(n)$
     true
 
 
-<a id="org6f542ac"></a>
+<a id="org98f94a1"></a>
 
 # Congruences
 
@@ -1045,7 +1061,7 @@ and system of linear congruences.
     (require '[vk.ntheory.congruence :as c])
 
 
-<a id="org1f929b1"></a>
+<a id="org31b890b"></a>
 
 ## Brute force solution
 
@@ -1062,10 +1078,10 @@ for example solve congruence $x^2 \equiv 1 \pmod{8}$
       (c/solve f 8)
       )
 
-    class clojure.lang.Compiler$CompilerException
+    (1 3 5 7)
 
 
-<a id="org0dec864"></a>
+<a id="org72405ca"></a>
 
 ## Linear congruence
 
@@ -1078,10 +1094,10 @@ There is function `solve-linear` for solve linear congruence. It accepts
 
     (c/solve-linear 6 3 15)
 
-    class clojure.lang.Compiler$CompilerException
+    #{3 8 13}
 
 
-<a id="org43fa808"></a>
+<a id="orgb258a37"></a>
 
 ## System of linear congruences
 
@@ -1109,12 +1125,12 @@ x &\equiv 11 \pmod{15} \\
 
     (c/solve-remainders [[2 7][5 9][11 15]])
 
-    class clojure.lang.Compiler$CompilerException
+    [86 315]
 
 So the answer is $86\pmod{315}$
 
 
-<a id="org8f701aa"></a>
+<a id="orgd19b563"></a>
 
 ## Coprime moduli case
 
@@ -1148,12 +1164,12 @@ x &\equiv -3 \pmod{8} \\
 
     (c/solve-remainders [[6 17][4 11][-3 8]])
 
-    class clojure.lang.Compiler$CompilerException
+    [125 1496]
 
 So the answer is $125\pmod{1496}$
 
 
-<a id="org2f60b93"></a>
+<a id="orge940890"></a>
 
 # Primitive roots
 
@@ -1168,7 +1184,7 @@ a function for find reduced residues by any modulo.
     (require '[vk.ntheory.primitive-roots :as pr])
 
 
-<a id="orga33f3d4"></a>
+<a id="org8da53d8"></a>
 
 ## Reduced residues
 
@@ -1179,7 +1195,7 @@ Function `reduced-residues` return reduced residues modulo m.
     (7 11 1 5)
 
 
-<a id="orgfc7aedc"></a>
+<a id="org013ae7d"></a>
 
 ## Order
 
@@ -1191,7 +1207,7 @@ $a^n \equiv 1 \pmod{m}$.
     1
 
 
-<a id="org52e6af2"></a>
+<a id="orgd02feac"></a>
 
 ## Primitive root
 
@@ -1218,7 +1234,7 @@ To find all primitive roots there is function `primitive-roots`.
     (7 6 2 8)
 
 
-<a id="org8ecbc53"></a>
+<a id="org9d59e38"></a>
 
 ## Index
 
@@ -1246,7 +1262,7 @@ another arity of function `index [m a]`, where $g$ is value get by
     4
 
 
-<a id="org15db005"></a>
+<a id="org0c8c015"></a>
 
 ## n-th power residues
 
