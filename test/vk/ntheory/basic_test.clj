@@ -3,31 +3,6 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.basic :as b]))
 
-;;; utils
-(defn test-check
-  "Test check function.
-  Parameters:
-  check-fn - check function
-  xs - sequence of success arguments of check-fn
-  ys - sequence of failure arguments of check-fn
-  In general, sequences xs and ys should be sequence of
-  vector of arguments for each call check-fn. But if check-fn
-  accept only one argument it is allowed use flat sequence of
-  wrap single value into vector for each call of check-fn.  
-  ."
-  [check-fn xs ys]
-  (testing "Success"
-    (doseq [x xs]
-      (testing (str "Test value x = " x)
-        (if (coll? x)
-          (is (= x (apply check-fn x)))
-          (is (= x (check-fn x)))))))
-  (testing "Fail"
-    (doseq [y ys]
-      (testing (str "Test value y = " y)
-        (is (thrown? IllegalArgumentException (check-fn y)))))))
-
-
 (deftest product-test
   (testing "Two sequences"
     (is (= [[0 0] [0 1] [0 2] [1 0] [1 1] [1 2]] (b/product [(range 2) (range 3)]))))

@@ -37,16 +37,30 @@
       1.1 "s")))
 
 
-
 (deftest check-prime-test
-  (test-check p/check-prime
-              [3 5 7 11 13 17 19]
-              [-3 -2 -1 0 1 1.1 "s"]))
+  (testing "Primes"
+    (are [x] (= x (p/check-prime x))
+      3 5 7 11 13 19
+      ))
+  (testing "Not primes"
+    (are [x] (thrown? IllegalArgumentException (p/check-prime x))
+      -3 -2 -1 0 1))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (p/check-prime x))
+      1.1 "s")))
 
 (deftest check-odd-prime-test
-  (test-check p/check-odd-prime
-              [3 5 7 11 13 17 19]
-              [-3 -2 -1 0 1 2 1.1 "s"]))
+  (testing "Odd primes"
+    (are [x] (= x (p/check-odd-prime x))
+      3 5 7 11 13 19
+      ))
+  (testing "Not odd primes"
+    (are [x] (thrown? IllegalArgumentException (p/check-odd-prime x))
+      -3 -2 -1 0 1 2))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (p/check-odd-prime x))
+      1.1 "s")))
+
 
 (deftest primes-test
   (testing "cache"
