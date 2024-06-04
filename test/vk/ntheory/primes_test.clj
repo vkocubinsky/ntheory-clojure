@@ -19,12 +19,22 @@
       1.1 "s"))
   )
 
-
 (deftest check-int-non-neg-max-test
-  (test-check p/check-int-non-neg-max
-              [0 1 2 3 4 5 p/max-int]
-              [1.1 (inc p/max-int) -2 -1 "s"])
+  (testing "Positive integers which not exceeds max"
+    (are [x] (= x (p/check-int-non-neg-max x))
+      0 1 2 3 4 p/max-int)
+    )
+  (testing "Negative or exceeds max"
+    (are [x] (thrown? IllegalArgumentException (p/check-int-non-neg-max x)
+                      )
+      -4 -3 -2 -1 (inc p/max-int))
+    )
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (p/check-int-non-neg-max x))
+      1.1 "s"))
   )
+
+
 
 (deftest check-int-non-zero-max-test
   (test-check p/check-int-non-zero-max
