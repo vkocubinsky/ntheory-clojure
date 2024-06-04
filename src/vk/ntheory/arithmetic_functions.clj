@@ -154,13 +154,13 @@
                (reduce + (for [d (divisors n) :when (< d n)] (* (f (/ n d)) (inv f d)))))))]
     (partial inv f)))
 
-(defn pointwise-mull
+(defn pointwise-mul
   "Pointwise multiplication of two functions `f` and `g`."
   [f g]
   (fn [n]
     (* (f n) (g n))))
 
-(defn pointwise-addd
+(defn pointwise-add
   "Pointwise addition of two functions `f` and `g`."
   [f g]
   (fn [n]

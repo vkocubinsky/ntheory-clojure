@@ -9,7 +9,7 @@
     (doseq [x (range 1 10)]
       (let [f (constantly 2)
             g identity
-            f+g (af/pointwise-addd f g)]
+            f+g (af/pointwise-add f g)]
         (is (= (+ 2 x) (f+g x)))))))
 
 (deftest pointwise-mul-test
@@ -17,7 +17,7 @@
     (doseq [x (range 1 10)]
       (let [f (constantly 2)
             g identity
-            f*g (af/pointwise-mull f g)]
+            f*g (af/pointwise-mul f g)]
         (is (= (* 2 x) (f*g x)))))))
 
 

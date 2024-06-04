@@ -59,7 +59,7 @@ In this document I load number theory packages as:
 #+begin_src clojure :results silent
   (require '[vk.ntheory.basic :as b])
   (require '[vk.ntheory.primes :as p])
-  (require '[vk.ntheory.arithmetic-functions :as af])
+  (require '[vk.ntheory.arithmetic-functions :as f])
   (require '[vk.ntheory.congruences :as c])
   (require '[vk.ntheory.primitive-roots :as pr])
   (require '[clojure.math :as math])
@@ -631,7 +631,7 @@ default for sequence of natural numbers, it is a variable
 ~default-natural-sample~, which is currently ~range(1,100)~.
 
 #+begin_src clojure
-   (take 10 af/default-natural-sample)
+   (take 10 f/default-natural-sample)
 #+end_src
 
 #+RESULTS:
@@ -646,9 +646,9 @@ sequence of natural number we can for example do next:
   (def f identity)
   (def g (constantly 1))
   ;; Then we able to check does those functions are equals
-  (af/f= f g) ;; true
-  (af/f= f g (range 1 1000)) ;; true
-  (af/f= f g (filter even? (range 1 100))) ;; true
+  (f/equal f g) ;; true
+  (f/equal f g (range 1 1000)) ;; true
+  (f/equal f g (filter even? (range 1 100))) ;; true
 #+end_src
 
 ** Pointwise addition
@@ -657,12 +657,12 @@ For two functions $f$ an $g$ pointwise addition defined as follows:
 
 $$(f + g)(n) = f(n) + f(n)$$
 
-In Clojure function ~f+~ returns pointwise addition:
+In Clojure function ~pointwise-add~ returns pointwise addition:
 
 #+begin_src clojure
       (let [f #(* % %)  
             g #(* 2 %)] 
-       ((af/f+ f g) 3)) 
+       ((f/pointwise-add f g) 3)) 
 #+end_src
 
 #+RESULTS:
@@ -676,12 +676,12 @@ follows:
 
 $$(f \cdot g)(n) = f(n) \cdot f(n)$$
 
-In clojure function ~f*~ returns pointwise multiplication:
+In clojure function ~pointwise-mul~ returns pointwise multiplication:
 
 #+begin_src clojure
       (let [f #(* % %)  
             g #(* 2 %)] 
-       ((af/f* f g) 3)) 
+       ((f/pointwise-mul f g) 3)) 
 #+end_src
 
 #+RESULTS:
@@ -696,7 +696,7 @@ divisors of number ~n~ there is ~divisor~ function. List of divisors
 is unordered.
 
 #+begin_src clojure
-  (af/divisors 30)
+  (f/divisors 30)
 #+end_src
 
 #+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
@@ -754,7 +754,7 @@ With helper function it can be defined as
 
 #+begin_src clojure
   (def my-divisors-count
-  (af/reduce-on-prime-count * (fn [p k] (inc k))))
+  (f/reduce-on-prime-count * (fn [p k] (inc k))))
   (my-divisors-count 6)
 #+end_src
 
@@ -773,7 +773,7 @@ Count of distinct primes is a number of distinct primes which
 divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k$.
 
 #+begin_src clojure
-   (af/primes-count-distinct (* 2 2 3))
+   (f/primes-count-distinct (* 2 2 3))
 #+end_src
 
 #+RESULTS[3552f94a82caf8b47add374a87b582087b94f377]:
@@ -788,7 +788,7 @@ which divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 $$\Omega = a_1 + a_2 + \dots + a_k$$
 
 #+begin_src clojure
-  (af/primes-count-total (* 2 2 3))
+  (f/primes-count-total (* 2 2 3))
 #+end_src
 
 #+RESULTS[51c9f0f12a6224d26735728783dec13755a0633e]:
@@ -809,7 +809,7 @@ $$\mu(n) = \begin{cases}
 For example, $\mu(6)=\mu(2 \cdot 3)=1$
 
 #+begin_src clojure
-  (af/mobius 6)
+  (f/mobius 6)
 #+end_src
 
 #+RESULTS[cf4859295d68505bb9cd0db612b385de1ebf5376]:
@@ -827,7 +827,7 @@ For example, count of numbers relative prime to $6$ are $1$ and $5$,
 so $\varphi(6) = 2$
 
 #+begin_src clojure
-  (af/totient 6)
+  (f/totient 6)
 #+end_src
 
 #+RESULTS[c7763e09447503d128331d4f95f7799db7bd4679]:
@@ -844,7 +844,7 @@ $$\varepsilon(n) = \begin{cases}
 \end{cases}$$
 
 #+begin_src clojure
-  (af/unit 6)
+  (f/unit 6)
 #+end_src
 
 #+RESULTS[fe946ead0f672382244e7788ffc0800baecdad98]:
@@ -860,7 +860,7 @@ Constant one function $\mathbf{1}(n)$ defiened as follows:
 $$\mathbf{1}(n) = 1$$
 
 #+begin_src clojure
-  (af/one 6)
+  (f/one 6)
 #+end_src
 
 #+RESULTS[a9b4f951368a936801ef98b7badd4dc39dea886f]:
@@ -878,7 +878,7 @@ Function $\sigma_0(n)$ is often denoted as $d(n)$.  For example,
 number $6$ has $4$ divisors, namely $1,2,3,6$, so $d(6)=4$.
 
 #+begin_src clojure
-  (af/divisors-count 6)
+  (f/divisors-count 6)
 #+end_src
 
 #+RESULTS[decfebfc920e6b3c30105d4e96db3a33f2f50e35]:
@@ -896,7 +896,7 @@ Function $\sigma_1$ is often denoted as $\sigma$.
 For instance, $\sigma(6)= 1 + 2 + 3 + 6 = 12$
 
 #+begin_src clojure
-  (af/divisors-sum 6)
+  (f/divisors-sum 6)
 #+end_src
 
 #+RESULTS[937569fa024eae6602b07f07b2c3b364ac62cf0c]:
@@ -912,7 +912,7 @@ $$\sigma_2(n) = \sum_{d | n} d^2$$
 For instance, $\sigma_2(6) = 1^2 + 2^2 + 3^2 + 6^2 = 50$
 
 #+begin_src clojure
-  (af/divisors-square-sum 6)
+  (f/divisors-square-sum 6)
 #+end_src
 
 #+RESULTS[e37fb8014bf18bca9cc23b39e26bb461bc7ce6d6]:
@@ -939,7 +939,7 @@ accept ~x~ and return appropriate function.
 For example we can define divisors cube sum as follows:
 
 #+begin_src clojure :results silent
-  (def my-divisors-cube-sum (af/divisors-sum-x 3))
+  (def my-divisors-cube-sum (f/divisors-sum-x 3))
 #+end_src
 
 *** Liouville function - $\lambda$
@@ -951,7 +951,7 @@ we can write definition of $\lambda$ as follows:
 $$\lambda(n) = (-1)^{\Omega}$$
 
 #+begin_src clojure
-  (af/liouville (* 2 3)) 
+  (f/liouville (* 2 3)) 
 #+end_src
 
 #+RESULTS[869850b293d2a60abef6a5639489018149613db4]:
@@ -974,7 +974,7 @@ $$\Lambda(n) = \begin{cases}
 For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$  
 
 #+begin_src clojure
-  (af/mangoldt 2)
+  (f/mangoldt 2)
 #+end_src
 
 #+RESULTS[542691e004afaeca227b31c85287fa1086ef1c7a]:
@@ -988,7 +988,7 @@ If $x > 0$ Chebyshev $\theta$ function is defined as follows:
 $$\theta(x) = \sum_{p \le x} \log p$$
 
 #+begin_src clojure
-  (af/chebyshev-theta 2)
+  (f/chebyshev-theta 2)
 #+end_src
 
 #+RESULTS[cebd13d9e26c3ad5f4dffa6d9b3318e352ecaf8b]:
@@ -1000,7 +1000,7 @@ If $x > 0$ Chebyshev $\psi$ function is defined as follows:
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
   
 #+begin_src clojure
-  (af/chebyshev-psi 2)
+  (f/chebyshev-psi 2)
 #+end_src
 
 #+RESULTS[2a19f1e0aa91c0b965be5aee1939f687592600b2]:
@@ -1037,27 +1037,27 @@ $$f^{-1}(n) = \begin{cases}
 \end{cases}$$
 
 
-In clojure, function ~d*~ calculate Dirichlet convolution:
+In clojure, function ~dirichlet-mul~ calculate Dirichlet convolution:
 
 #+begin_src clojure :results silent
-  (af/d* af/one af/one)
+  (f/dirichlet-mul f/one f/one)
 #+end_src
 
 Function ~inverse~ calculate Dirichlet inverse:
 
 #+begin_src clojure :results silent
-  (af/inverse af/one)
+  (f/dirichlet-inverse f/one)
 #+end_src
 
 Dirichlet convolution is associative so clojure function ~d*~ support
 more than two function as an argument.
 
 #+begin_src clojure
-  (af/d* af/mobius af/one af/mobius af/one)
+  (f/dirichlet-mul f/mobius f/one f/mobius f/one)
 #+end_src
 
 #+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
-: #function[vk.ntheory.arithmetic-functions/d*/fn--14252]
+: #function[vk.ntheory.arithmetic-functions/dirichlet-mul/fn--15244]
 : 
 
 
@@ -1065,7 +1065,7 @@ Functions $\mu(n)$ and $1(n)$ are inverse of each other, we can easy check
 this
 
 #+begin_src clojure
-  (af/f= (af/inverse af/one) af/mobius)
+  (f/equal (f/dirichlet-inverse f/one) f/mobius)
 #+end_src
 
 #+RESULTS[33bbf9139c179db71af6a5d185b937afad79f0f6]:
@@ -1075,25 +1075,25 @@ this
 and conversely
 
 #+begin_src clojure
-  (af/f= (af/inverse af/mobius) af/one)
+  (f/equal (f/dirichlet-inverse f/mobius) f/one)
 #+end_src
 
 #+RESULTS[e17afcfeaabbc9d50d6f000814f6e2e43b7f447e]:
 : true
 : 
 
-Function ~inverse~ defined as recursive function, it may execute
+Function ~dirichlet-inverse~ defined as recursive function, it may execute
 slow. But inverse of completely multiplicative function $f(n)$ is
 $f(n) \cdot \mu(n)$(usual,pointwise multiplication), for instance inverse of
 identity function, let's denote it as $N(n)$, is $N(n) \cdot \mu(n)$
 
 #+begin_src clojure
-  (af/f=
-   (af/d* 
-      (af/f* identity af/mobius)
+  (f/equal
+   (f/dirichlet-mul 
+      (f/pointwise-mul identity f/mobius)
       identity
    )
-   af/unit)
+   f/unit)
 #+end_src
 
 #+RESULTS:
@@ -1129,7 +1129,8 @@ for example solve congruence $x^2 \equiv 1 \pmod{8}$
 #+end_src
 
 #+RESULTS:
-: class clojure.lang.Compiler$CompilerException
+: (1 3 5 7)
+: 
 
 ** Linear congruence
 
@@ -1145,7 +1146,8 @@ There is function ~solve-linear~ for solve linear congruence. It accepts
 #+end_src
 
 #+RESULTS:
-: class clojure.lang.Compiler$CompilerException
+: #{3 8 13}
+: 
 
 ** System of linear congruences
 
@@ -1176,7 +1178,8 @@ x &\equiv 11 \pmod{15} \\
 #+end_src
 
 #+RESULTS:
-: class clojure.lang.Compiler$CompilerException
+: [86 315]
+: 
 
 So the answer is $86\pmod{315}$
 
@@ -1215,7 +1218,8 @@ x &\equiv -3 \pmod{8} \\
 #+end_src
 
 #+RESULTS:
-: class clojure.lang.Compiler$CompilerException
+: [125 1496]
+: 
 
 So the answer is $125\pmod{1496}$
 
