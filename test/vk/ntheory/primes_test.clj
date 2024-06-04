@@ -5,10 +5,20 @@
    [vk.ntheory.primes :as p]))
 
 (deftest check-int-pos-max-test
-  (test-check p/check-int-pos-max
-              [1 2 3 4 5 p/max-int]
-              [1.1 (inc p/max-int) -2 -1 0 "s"])
+  (testing "Positive integers which not exceeds max"
+    (are [x] (= x (p/check-int-pos-max x))
+      1 2 3 4 p/max-int)
+    )
+  (testing "Non positive or exceeds max"
+    (are [x] (thrown? IllegalArgumentException (p/check-int-pos-max x)
+                      )
+      -4 -3 -2 -1 0 (inc p/max-int))
+    )
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (p/check-int-pos-max x))
+      1.1 "s"))
   )
+
 
 (deftest check-int-non-neg-max-test
   (test-check p/check-int-non-neg-max
