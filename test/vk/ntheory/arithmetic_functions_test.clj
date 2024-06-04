@@ -4,20 +4,20 @@
    [clojure.math :as math]
    [vk.ntheory.arithmetic-functions :as af]))
 
-(deftest f+-test
+(deftest pointwise-add-test
   (testing "Pointwise addition 2 + x"
     (doseq [x (range 1 10)]
       (let [f (constantly 2)
             g identity
-            f+g (af/f+ f g)]
+            f+g (af/pointwise-addd f g)]
         (is (= (+ 2 x) (f+g x)))))))
 
-(deftest f*-test
-  (testing "Pointwise addition 2x"
+(deftest pointwise-mul-test
+  (testing "Pointwise mutiplication 2x"
     (doseq [x (range 1 10)]
       (let [f (constantly 2)
             g identity
-            f*g (af/f* f g)]
+            f*g (af/pointwise-mull f g)]
         (is (= (* 2 x) (f*g x)))))))
 
 
@@ -201,20 +201,20 @@
            10 130}))
 
 (deftest divisors-sum-a-test
-  (is (af/f= af/divisors-count (af/divisors-sum-x 0)))
-  (is (af/f= af/divisors-sum (af/divisors-sum-x 1)))
-  (is (af/f= af/divisors-square-sum (af/divisors-sum-x 2))))
+  (is (af/equal af/divisors-count (af/divisors-sum-x 0)))
+  (is (af/equal af/divisors-sum (af/divisors-sum-x 1)))
+  (is (af/equal af/divisors-square-sum (af/divisors-sum-x 2))))
 
 (deftest relations-test
-  (is (af/f= af/unit (af/d* af/mobius af/one)))
-  (is (af/f= identity (af/d* af/totient af/one)))
-  (is (af/f= af/divisors-count (af/d* af/one af/one)))
-  (is (af/f= af/divisors-sum (af/d* identity af/one)))
-  (is (af/f= af/divisors-sum (af/d* af/totient af/divisors-count))))
+  (is (af/equal af/unit (af/dirichlet-mul af/mobius af/one)))
+  (is (af/equal identity (af/dirichlet-mul af/totient af/one)))
+  (is (af/equal af/divisors-count (af/dirichlet-mul af/one af/one)))
+  (is (af/equal af/divisors-sum (af/dirichlet-mul identity af/one)))
+  (is (af/equal af/divisors-sum (af/dirichlet-mul af/totient af/divisors-count))))
 
 (deftest inverse-test
-  (is (af/f= (af/inverse af/one) af/mobius))
-  (is (af/f= (af/inverse af/mobius) af/one)))
+  (is (af/equal (af/dirichlet-inverse af/one) af/mobius))
+  (is (af/equal (af/dirichlet-inverse af/mobius) af/one)))
 
 
 
