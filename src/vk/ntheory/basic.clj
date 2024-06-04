@@ -193,7 +193,7 @@
   [m a]
   (let [[d [s _]] (gcd-extended a m)]
     (if (= 1 d)
-      s
+      (mod s m)
       (throw (IllegalArgumentException. (format "Integers %s and %s are not relatively prime." m a))))))
 
 (defn lcm

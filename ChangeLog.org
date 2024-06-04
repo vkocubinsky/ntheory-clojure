@@ -5,14 +5,23 @@
 * Version 0.10.0
 
 - basic
-  - rename m= to congruent
+  - rename m= to congruent?
   - reanme m+ mod-pow
   - rename m* mod-mul  
   - rename m** mod-pow
 - primes
   - add int->coprime-factors
+- arithmetic functions
+  - f= -> equal
+  - f* -> pointwise-mul
+  - f+ -> pointwise-add
+  - d* -> dirichlet-mul
+  - inverse -> dirichlet-inverse
+  - change alias: af -> f
+- primitive roots
+  - change alias: pr -> r      
     
-* Version 0.9.0
+* Version 0.9.0 <2024-05-26 Sun>
 
 - basic
   - m=
@@ -25,7 +34,7 @@
     - order-print-table
     - order-count-print-table
 
-* Version 0.8.0
+* Version 0.8.0 <2024-05-16 Thu>
 
 - primitive roots
   - find-primitive-root
@@ -38,7 +47,7 @@
   - power-residues
   - reduced residues 
 
-* Version 0.7.0
+* Version 0.7.0 <2024-04-04 Thu>
 
 - basic namespace
   - add check-not-divides function
@@ -50,7 +59,7 @@
   - lcm arguments require non zero integers
   - rewrite divisors function with product  
 
-* Version 0.6.0
+* Version 0.6.0 <2024-04-01 Mon>
 
 - basic namespace
   - check-relatively-prime
@@ -61,7 +70,7 @@
   - find all primitive roots
   - check for primitive root
 
-* Version 0.5.0
+* Version 0.5.0 <2024-03-28 Thu>
 
 - Update arithmetical functions documentation
 - Pointwise addition and multiplication

@@ -61,7 +61,7 @@ In this document I load number theory packages as:
   (require '[vk.ntheory.primes :as p])
   (require '[vk.ntheory.arithmetic-functions :as f])
   (require '[vk.ntheory.congruences :as c])
-  (require '[vk.ntheory.primitive-roots :as pr])
+  (require '[vk.ntheory.primitive-roots :as r])
   (require '[clojure.math :as math])
 #+end_src
 So below I will use above aliases.
@@ -1043,13 +1043,13 @@ In clojure, function ~dirichlet-mul~ calculate Dirichlet convolution:
   (f/dirichlet-mul f/one f/one)
 #+end_src
 
-Function ~inverse~ calculate Dirichlet inverse:
+Function ~dirichlet-inverse~ calculate Dirichlet inverse:
 
 #+begin_src clojure :results silent
   (f/dirichlet-inverse f/one)
 #+end_src
 
-Dirichlet convolution is associative so clojure function ~d*~ support
+Dirichlet convolution is associative so clojure function ~dirichlet-multiplication~ support
 more than two function as an argument.
 
 #+begin_src clojure
@@ -1057,7 +1057,7 @@ more than two function as an argument.
 #+end_src
 
 #+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
-: #function[vk.ntheory.arithmetic-functions/dirichlet-mul/fn--15244]
+: #function[vk.ntheory.arithmetic-functions/dirichlet-mul/fn--6199]
 : 
 
 
@@ -1108,7 +1108,7 @@ contains solutions for specific congruences such as linear congruence
 and system of linear congruences.
 
 #+begin_src clojure :results silent
-  (require '[vk.ntheory.congruence :as c])
+  (require '[vk.ntheory.congruences :as c])
 #+end_src
 
 ** Brute force solution
@@ -1235,7 +1235,7 @@ a function for find reduced residues by any modulo.
 
 
 #+begin_src clojure :results silent
-  (require '[vk.ntheory.primitive-roots :as pr])
+  (require '[vk.ntheory.primitive-roots :as r])
 #+end_src
 
 ** Reduced residues
@@ -1243,7 +1243,7 @@ a function for find reduced residues by any modulo.
 Function ~reduced-residues~ return reduced residues modulo m.
 
 #+begin_src clojure
-  (pr/reduced-residues 12)
+  (r/reduced-residues 12)
 #+end_src
 
 #+RESULTS:
@@ -1256,7 +1256,7 @@ Order $n$ of integer $a$ coprime to $m$ modulo m is least positive integer for w
 $a^n \equiv 1 \pmod{m}$.
 
 #+begin_src clojure
-  (pr/order 2 11)
+  (r/order 2 11)
 #+end_src
 
 #+RESULTS:
@@ -1271,7 +1271,7 @@ $1,2,4,p^a,2p^a$, where $p$ odd prime. To find any primitive root
 there is fucntion ~find-primitive-root~.
 
 #+begin_src clojure
-  (pr/find-primitive-root 11)
+  (r/find-primitive-root 11)
 #+end_src
 
 #+RESULTS:
@@ -1282,7 +1282,7 @@ There is a predicate ~primitive-root?~ to check does given number $a$ is a primi
 root modulo $m$
 
 #+begin_src clojure
-  (pr/primitive-root? 2 11)
+  (r/primitive-root? 2 11)
 #+end_src
 
 #+RESULTS:
@@ -1292,7 +1292,7 @@ root modulo $m$
 To find all primitive roots there is function ~primitive-roots~.
 
 #+begin_src clojure
-  (pr/primitive-roots 11)
+  (r/primitive-roots 11)
 #+end_src
 
 #+RESULTS:
@@ -1313,7 +1313,7 @@ $$k = ind_g a$$
 There is clojure function ~index [m g a]~ to calculate index.
 
 #+begin_src clojure
-  (pr/index 11 2 5)
+  (r/index 11 2 5)
 #+end_src 
 
 #+RESULTS:
@@ -1325,7 +1325,7 @@ another arity of function ~index [m a]~, where $g$ is value get by
 ~find-primitive-root~ function, which is $2$ for modulo $11$.
 
 #+begin_src clojure
-  (pr/index 11 5)
+  (r/index 11 5)
 #+end_src
 
 #+RESULTS:
@@ -1342,7 +1342,7 @@ To check does given number power residue there is a function ~power-residue?~.
 For instance $4$ is $2$ power residue mod $11$
 
 #+begin_src clojure
-  (pr/power-residue? 11 2 4)
+  (r/power-residue? 11 2 4)
 #+end_src
 
 #+RESULTS:
@@ -1354,7 +1354,7 @@ another function ~solve-power-residue$. For instance for get a solution
 of equation $x^2 \equiv 4 \pmod m$
 
 #+begin_src clojure
-  (pr/solve-power-residue 11 2 4)
+  (r/solve-power-residue 11 2 4)
 #+end_src
 
 #+RESULTS:
@@ -1365,7 +1365,7 @@ If need to get all n-th power residues modulo $m$ there is function
 ~power-residues~. For instance for get all $a$ fro which $x^2 \equiv a \pmod m$
 
 #+begin_src clojure
-  (pr/power-residues 11 2)
+  (r/power-residues 11 2)
 #+end_src
 
 #+RESULTS:

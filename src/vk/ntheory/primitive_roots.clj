@@ -35,7 +35,7 @@
        (filter #(= 1 (b/gcd m %)))))
 
 (defmethod reduced-residues ::mod-1
-  [m]
+  [_]
   [0])
 
 (defmethod reduced-residues ::mod-any-p
@@ -142,15 +142,15 @@
 (defmulti find-primitive-root classify-modulo)
 
 (defmethod find-primitive-root ::mod-1
-  [m]
+  [_]
   0)
 
 (defmethod find-primitive-root ::mod-2
-  [m]
+  [_]
   1)
 
 (defmethod find-primitive-root ::mod-4
-  [m]
+  [_]
   3)
 
 (defmethod find-primitive-root ::mod-p
@@ -176,7 +176,7 @@
         (+ g (b/pow p a)))))
 
 (defmethod find-primitive-root ::no-primitive-root
-  [m]
+  [_]
   nil)
 
 (defn primitive-roots
@@ -310,7 +310,7 @@
 (defmethod power-residues ::mod-2**e
   [m n]
   (b/check-int-pos n)
-  (letfn [(odd-n [m n]
+  (letfn [(odd-n [m _]
             (reduced-residues m))
           (even-n [m n]
             (let [[[_ e]] (p/int->factors-count m)
@@ -334,7 +334,6 @@
             (let [[s t] (mod-2**e-index m a)
                   [[_ e]] (p/int->factors-count m)
                   m' (b/pow 2 (- e 2))
-                  d (b/gcd n m')
                   z (first (c/solve-linear n t m'))
                   x (b/mod-mul m (b/mod-pow m (- 1) s) (b/mod-pow m 5 z))]
               (sorted-set x)))
@@ -343,7 +342,6 @@
               (if (= s 0)
                 (let [[[_ e]] (p/int->factors-count m)
                       m' (b/pow 2 (- e 2))
-                      d (b/gcd n m')
                       zs (c/solve-linear n t m')]
                   (for [y [0 1]
                         z zs]

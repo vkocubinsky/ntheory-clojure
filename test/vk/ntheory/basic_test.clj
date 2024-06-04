@@ -274,3 +274,15 @@
       (let [[d [s t]] (b/gcd-extended a b)]
         (is (= d (+ (* a s) (* b t))))
         (is (= (b/gcd a b) d))))))
+
+(deftest gcd-inverse-test
+  (testing "Has inverse"
+    (are [x y] (= y (b/gcd-inverse 5 x))
+      1 1
+      2 3
+      3 2
+      4 4)))
+
+(deftest gcd-inverse-property
+  (doseq [a (range 1 11)]
+    (is (= 1 (b/mod-mul 11 a (b/gcd-inverse 11 a))))))
