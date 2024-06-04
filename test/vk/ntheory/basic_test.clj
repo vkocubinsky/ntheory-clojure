@@ -27,7 +27,7 @@
       (testing (str "Test value y = " y)
         (is (thrown? IllegalArgumentException (check-fn y)))))))
 
-;;; tests
+
 (deftest product-test
   (testing "Two sequences"
     (is (= [[0 0] [0 1] [0 2] [1 0] [1 1] [1 2]] (b/product [(range 2) (range 3)]))))
@@ -41,10 +41,12 @@
 
 (deftest relatively-prime?-test
   (are [a b r] (= (b/relatively-prime? a b) r)
+    1 6 true
     2 6 false
     3 6 false
-    1 6 true
-    5 6 true))
+    4 6 false
+    5 6 true
+    ))
 
 (deftest check-at-least-one-non-zero-test
   (testing "At least one non zero pairs"
@@ -125,6 +127,7 @@
       2 6
       3 6
       1 0
+      1 1
       ))
   (testing "division by 0"
     (is (thrown-with-msg? IllegalArgumentException #"Expected non zero" (b/check-not-divides 0 1))))
@@ -134,12 +137,12 @@
 (deftest congruent?-test
   (are [m a b r] (= (b/congruent? m a b) r)
     ;;modulo, number a, number b, result
-    3 1 1 true
-    3 1 4 true
-    3 1 2 false
-    3 1 0 false
     3 0 3 true
-    1 1 0 true
+    3 1 4 true
+    3 2 5 true
+    3 0 1 false
+    3 0 2 false
+    3 0 3 true
     1 1 1 true))
 
 (deftest mod-mul-test
