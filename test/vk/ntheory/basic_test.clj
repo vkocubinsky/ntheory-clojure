@@ -19,13 +19,13 @@
   (testing "Success"
     (doseq [x xs]
       (testing (str "Test value x = " x)
-       (if (coll? x)
-        (is (= x (apply check-fn x)))
-        (is (= x (check-fn x)))))))
+        (if (coll? x)
+          (is (= x (apply check-fn x)))
+          (is (= x (check-fn x)))))))
   (testing "Fail"
     (doseq [y ys]
       (testing (str "Test value y = " y)
-      (is (thrown? IllegalArgumentException (check-fn y)))))))
+        (is (thrown? IllegalArgumentException (check-fn y)))))))
 
 ;;; tests
 (deftest product-test
@@ -40,39 +40,96 @@
     (is (empty? (b/product [[] []])))))
 
 (deftest relatively-prime?-test
-  (are [a b r] (= (b/relatively-prime? a b ) r)
+  (are [a b r] (= (b/relatively-prime? a b) r)
     2 6 false
     3 6 false
     1 6 true
-    5 6 true)
-)
+    5 6 true))
 
 (deftest check-at-least-one-non-zero-test
-  (test-check b/check-at-least-one-non-zero
-              [[1 1] [0 1] [1 0]]
-              [[0 0]]))
+  (testing "At least one non zero pairs"
+    (are [x y] (= [x y] (b/check-at-least-one-non-zero x y))
+      1 1
+      0 1
+      1 0))
+  (testing "All zero's"
+    (is (thrown? IllegalArgumentException (b/check-at-least-one-non-zero 0 0)))))
 
 (deftest check-int-test
-  (test-check b/check-int (range -4 5) [1.1 "s"]))
+  (testing "Small integers"
+    (are [x] (= x (b/check-int x))
+      -4 -3 -2 -1 0 1 2 3 4))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (b/check-int x))
+      1.1 "s")))
 
 (deftest check-int-pos-test
-  (test-check b/check-int-pos (range 1 5) [-1 0 1.1 "s"]))
+  (testing "Small positive integers"
+    (are [x] (= x (b/check-int-pos x))
+      1 2 3 4))
+  (testing "Small non positive integers"
+    (are [x] (thrown? IllegalArgumentException (b/check-int-pos x))
+      -4 -3 -2 -1 0))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (b/check-int-pos x))
+      1.1 "s")))
 
 (deftest check-int-non-neg-test
-  (test-check b/check-int-non-neg (range 0 5) [-2 -1 1.1 "s"]))
+  (testing "Small non negative integers"
+    (are [x] (= x (b/check-int-non-neg x))
+      0 1 2 3 4))
+  (testing "Small negative integers"
+    (are [x] (thrown? IllegalArgumentException (b/check-int-non-neg x))
+      -4 -3 -2 -1))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (b/check-int-non-neg x))
+      1.1 "s")))
 
 (deftest check-int-non-zero-test
-  (test-check b/check-int-non-zero [-4 -3 -2 1 2 3 4] [0 1.1 "s"]))
+  (testing "Small non zero integers"
+    (are [x] (= x (b/check-int-non-zero x))
+      -4 -3 -2 -1 1 2 3 4))
+  (testing "Zero"
+    (is (thrown-with-msg? IllegalArgumentException #"Expected non zero" (b/check-int-non-zero 0))))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (b/check-int-non-zero x))
+      1.1 "s")))
 
 (deftest check-relatively-prime-test
-  (test-check b/check-relatively-prime
-              [[1 6] [5 6] [1 1] [0 1]]
-              [[2 6] [3 6] [0 0]]))
+  (testing "Relatively prime pairs"
+    (are [x y] (= [x y] (b/check-relatively-prime x y))
+      1 6
+      5 6
+      1 1
+      0 1
+      1 0))
+  (testing "Not relatively prime pairs"
+    (are [x y] (thrown? IllegalArgumentException (b/check-relatively-prime x y))
+      2 6
+      3 6
+      ))
+  (testing "All zero's"
+    (is (thrown-with-msg? IllegalArgumentException #"Expected at least one non zero" (b/check-relatively-prime 0 0))))
+  )
 
 (deftest check-not-divides
-  (test-check b/check-not-divides
-              [[5 6] [11 6]]
-              [[2 6] [3 6] [1 2] [0 1]]))
+  (testing "a does not divide b pairs"
+    (are [x y] (= [x y] (b/check-not-divides x y))
+      4 6
+      5 6
+      )
+    )
+  (testing "a divides b"
+    (are [x y] (thrown? IllegalArgumentException (b/check-not-divides x y))
+      1 6
+      2 6
+      3 6
+      1 0
+      ))
+  (testing "division by 0"
+    (is (thrown-with-msg? IllegalArgumentException #"Expected non zero" (b/check-not-divides 0 1))))
+  )
+
 
 (deftest congruent?-test
   (are [m a b r] (= (b/congruent? m a b) r)

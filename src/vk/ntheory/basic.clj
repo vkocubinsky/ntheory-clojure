@@ -37,7 +37,7 @@
   otherwise throw an exception."
   [n]
   (let [n (check-int n)]
-    (check-predicate (complement zero?) n (format "%s is zero" n))))
+    (check-predicate (complement zero?) n "Expected non zero")))
 
 (defn check-at-least-one-non-zero
   "Throw exception if all arguments are zero, otherwise returns nil."
