@@ -7,52 +7,46 @@
 (deftest check-int-pos-max-test
   (testing "Positive integers which not exceeds max"
     (are [x] (= x (p/check-int-pos-max x))
-      1 2 3 4 p/max-int)
-    )
+      1 2 3 4 p/max-int))
   (testing "Non positive or exceeds max"
-    (are [x] (thrown? IllegalArgumentException (p/check-int-pos-max x)
-                      )
-      -4 -3 -2 -1 0 (inc p/max-int))
-    )
+    (are [x] (thrown? IllegalArgumentException (p/check-int-pos-max x))
+      -4 -3 -2 -1 0 (inc p/max-int)))
   (testing "Not integers"
     (are [x] (thrown? IllegalArgumentException (p/check-int-pos-max x))
-      1.1 "s"))
-  )
+      1.1 "s")))
 
 (deftest check-int-non-neg-max-test
   (testing "Positive integers which not exceeds max"
     (are [x] (= x (p/check-int-non-neg-max x))
-      0 1 2 3 4 p/max-int)
-    )
+      0 1 2 3 4 p/max-int))
   (testing "Negative or exceeds max"
-    (are [x] (thrown? IllegalArgumentException (p/check-int-non-neg-max x)
-                      )
-      -4 -3 -2 -1 (inc p/max-int))
-    )
+    (are [x] (thrown? IllegalArgumentException (p/check-int-non-neg-max x))
+      -4 -3 -2 -1 (inc p/max-int)))
   (testing "Not integers"
     (are [x] (thrown? IllegalArgumentException (p/check-int-non-neg-max x))
-      1.1 "s"))
-  )
-
-
+      1.1 "s")))
 
 (deftest check-int-non-zero-max-test
-  (test-check p/check-int-non-zero-max
-              [(- p/max-int) -4 -3 -2 -1 1 2 3 4 p/max-int]
-              [1.1 (inc p/max-int) (- (inc p/max-int)) 0 "s"]
-              ))
+  (testing "Positive integers which not exceeds max"
+    (are [x] (= x (p/check-int-non-zero-max x))
+      (- p/max-int) -4 -3 -2 -1 1 2 3 4 p/max-int))
+  (testing "Zero"
+    (is (thrown? IllegalArgumentException (p/check-int-non-zero-max 0))))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (p/check-int-non-zero-max x))
+      1.1 "s")))
+
+
 
 (deftest check-prime-test
   (test-check p/check-prime
               [3 5 7 11 13 17 19]
-              [-3 -2 -1 0 1 1.1 "s"])
-  )
+              [-3 -2 -1 0 1 1.1 "s"]))
 
 (deftest check-odd-prime-test
   (test-check p/check-odd-prime
               [3 5 7 11 13 17 19]
-              [-3 -2 -1 0 1 2 1.1 "s"])
-  )
+              [-3 -2 -1 0 1 2 1.1 "s"]))
 
 (deftest primes-test
   (testing "cache"
