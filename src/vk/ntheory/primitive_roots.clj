@@ -4,7 +4,7 @@
             [vk.ntheory.basic :as b]
             [vk.ntheory.primes :as p]
             [vk.ntheory.congruences :as c]
-            [vk.ntheory.arithmetic-functions :as af]))
+            [vk.ntheory.arithmetic-functions :as f]))
 
 (defn check-prime-to-mod
   [m a]
@@ -62,8 +62,8 @@
   [m a]
   (check-prime-to-mod m a)
   (->> m
-       af/totient
-       af/divisors
+       f/totient
+       f/divisors
        sort
        (filter #(b/congruent? m 1 (b/mod-pow m a %)))
        first))
@@ -125,7 +125,7 @@
   [m a]
   (check-prime-to-mod m a)
   (if (has-primitive-root? m) ;; optimization for modulo without primitive root
-   (let [phi (af/totient m)]
+   (let [phi (f/totient m)]
     (->> phi
          (p/int->factors-distinct)
          (map #(/ phi %))
@@ -182,7 +182,7 @@
 (defn primitive-roots
   [m]
   (if-let [g (find-primitive-root m)]
-    (map #(b/mod-pow m g %) (reduced-residues (af/totient m)))
+    (map #(b/mod-pow m g %) (reduced-residues (f/totient m)))
     []))
 
 ;; HERE
@@ -218,7 +218,7 @@
   [m n a]
   (check-prime-to-mod m a)
   (b/check-int-pos n)
-  (let [phi (af/totient m)
+  (let [phi (f/totient m)
         d (b/gcd n phi)
         t (b/mod-pow m a (/ phi d))]
     (b/congruent? m 1 t)))
@@ -266,7 +266,7 @@
   (b/check-int-pos n)
   (let [g (find-primitive-root m)
         b (index m a)
-        phi (af/totient m)
+        phi (f/totient m)
         xs (c/solve-linear n b phi)]
     (->> xs (map (partial b/mod-pow m g)) (apply sorted-set))))
 
@@ -275,7 +275,7 @@
 (defmethod power-residues ::has-primitive-root
   [m n]
   (let [g (find-primitive-root m)
-        phi (af/totient m)
+        phi (f/totient m)
         d (b/gcd n phi)]
     (map (partial b/mod-pow m g) (range 0 phi d))))
 

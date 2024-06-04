@@ -2,14 +2,14 @@
   (:require
    [clojure.test :refer [deftest is are testing]]
    [clojure.math :as math]
-   [vk.ntheory.arithmetic-functions :as af]))
+   [vk.ntheory.arithmetic-functions :as f]))
 
 (deftest pointwise-add-test
   (testing "Pointwise addition 2 + x"
     (doseq [x (range 1 10)]
       (let [f (constantly 2)
             g identity
-            f+g (af/pointwise-add f g)]
+            f+g (f/pointwise-add f g)]
         (is (= (+ 2 x) (f+g x)))))))
 
 (deftest pointwise-mul-test
@@ -17,16 +17,16 @@
     (doseq [x (range 1 10)]
       (let [f (constantly 2)
             g identity
-            f*g (af/pointwise-mul f g)]
+            f*g (f/pointwise-mul f g)]
         (is (= (* 2 x) (f*g x)))))))
 
 
 (deftest divisors-test
   (testing "Non postive numbers"
-    (is (thrown? Exception (af/divisors 0)))
-    (is (thrown? Exception (af/divisors -1))))
+    (is (thrown? Exception (f/divisors 0)))
+    (is (thrown? Exception (f/divisors -1))))
   (testing "Small Positive Numbers"
-    (are [x y] (= (sort (af/divisors x)) y)
+    (are [x y] (= (sort (f/divisors x)) y)
       1  [1]
       2  [1 2]
       3  [1 3]
@@ -52,7 +52,7 @@
         (is (= fe fa) (format "Expected f(%s) == %s, but got %s" x fe fa))))))
 
 (deftest primes-count-distinct-test
-  (f-test af/primes-count-distinct
+  (f-test f/primes-count-distinct
           {1 0
            2 1
            3 1
@@ -65,7 +65,7 @@
            10 2}))
 
 (deftest primes-count-total-test
-  (f-test af/primes-count-total
+  (f-test f/primes-count-total
           {1 0
            2 1
            3 1
@@ -78,7 +78,7 @@
            10 2}))
 
 (deftest chebyshev-theta-test
-  (f-test af/chebyshev-theta
+  (f-test f/chebyshev-theta
           {1 0
            2 (math/log 2)
            3 (+ (math/log 2) (math/log 3))
@@ -86,15 +86,15 @@
            5 (+ (math/log 2) (math/log 3) (math/log 5))}))
 
 (deftest chebyshev-psi-test
-  (f-test af/chebyshev-psi
+  (f-test f/chebyshev-psi
           {1 0
-           2 (+ (af/mangoldt 2))
-           3 (+ (af/mangoldt 2) (af/mangoldt 3))
-           4 (+ (af/mangoldt 2) (af/mangoldt 4) (af/mangoldt 3))
-           5 (+ (af/mangoldt 2) (af/mangoldt 4) (af/mangoldt 3) (af/mangoldt 5))}))
+           2 (+ (f/mangoldt 2))
+           3 (+ (f/mangoldt 2) (f/mangoldt 3))
+           4 (+ (f/mangoldt 2) (f/mangoldt 4) (f/mangoldt 3))
+           5 (+ (f/mangoldt 2) (f/mangoldt 4) (f/mangoldt 3) (f/mangoldt 5))}))
 
 (deftest mangoldt-test
-  (f-test af/mangoldt
+  (f-test f/mangoldt
           {1 0
            2 (math/log 2)
            3 (math/log 3)
@@ -107,7 +107,7 @@
            10 0}))
 
 (deftest liouville-test
-  (f-test af/liouville
+  (f-test f/liouville
           {1 1
            2 -1
            3 -1
@@ -120,7 +120,7 @@
            10 1}))
 
 (deftest mobius-test
-  (f-test af/mobius
+  (f-test f/mobius
           {1  1
            2 -1
            3 -1
@@ -133,7 +133,7 @@
            10 1}))
 
 (deftest totient-test
-  (f-test af/totient
+  (f-test f/totient
           {1  1
            2  1
            3  2
@@ -146,7 +146,7 @@
            10 4}))
 
 (deftest unit-test
-  (f-test af/unit
+  (f-test f/unit
           {1 1
            2 0
            3 0
@@ -154,7 +154,7 @@
            5 0}))
 
 (deftest one-test
-  (f-test af/one
+  (f-test f/one
           {1 1
            2 1
            3 1
@@ -162,7 +162,7 @@
            5 1}))
 
 (deftest divisors-count-test
-  (f-test af/divisors-count
+  (f-test f/divisors-count
           {1  1
            2  2
            3  2
@@ -175,7 +175,7 @@
            10 4}))
 
 (deftest divisors-sum-test
-  (f-test af/divisors-sum
+  (f-test f/divisors-sum
           {1   1
            2   3
            3   4
@@ -188,7 +188,7 @@
            10 18}))
 
 (deftest divisors-square-sum-test
-  (f-test af/divisors-square-sum
+  (f-test f/divisors-square-sum
           {1    1
            2    5
            3   10
@@ -201,20 +201,20 @@
            10 130}))
 
 (deftest divisors-sum-a-test
-  (is (af/equal af/divisors-count (af/divisors-sum-x 0)))
-  (is (af/equal af/divisors-sum (af/divisors-sum-x 1)))
-  (is (af/equal af/divisors-square-sum (af/divisors-sum-x 2))))
+  (is (f/equal f/divisors-count (f/divisors-sum-x 0)))
+  (is (f/equal f/divisors-sum (f/divisors-sum-x 1)))
+  (is (f/equal f/divisors-square-sum (f/divisors-sum-x 2))))
 
 (deftest relations-test
-  (is (af/equal af/unit (af/dirichlet-mul af/mobius af/one)))
-  (is (af/equal identity (af/dirichlet-mul af/totient af/one)))
-  (is (af/equal af/divisors-count (af/dirichlet-mul af/one af/one)))
-  (is (af/equal af/divisors-sum (af/dirichlet-mul identity af/one)))
-  (is (af/equal af/divisors-sum (af/dirichlet-mul af/totient af/divisors-count))))
+  (is (f/equal f/unit (f/dirichlet-mul f/mobius f/one)))
+  (is (f/equal identity (f/dirichlet-mul f/totient f/one)))
+  (is (f/equal f/divisors-count (f/dirichlet-mul f/one f/one)))
+  (is (f/equal f/divisors-sum (f/dirichlet-mul identity f/one)))
+  (is (f/equal f/divisors-sum (f/dirichlet-mul f/totient f/divisors-count))))
 
 (deftest inverse-test
-  (is (af/equal (af/dirichlet-inverse af/one) af/mobius))
-  (is (af/equal (af/dirichlet-inverse af/mobius) af/one)))
+  (is (f/equal (f/dirichlet-inverse f/one) f/mobius))
+  (is (f/equal (f/dirichlet-inverse f/mobius) f/one)))
 
 
 
