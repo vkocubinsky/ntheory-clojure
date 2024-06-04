@@ -611,7 +611,7 @@ well known arithmetical functions and also functions which allow build
 new arithmetical functions.
 
 #+begin_src clojure :results silent
-  (require '[vk.ntheory.arithmetic-functions :as af])
+  (require '[vk.ntheory.arithmetic-functions :as f])
 #+end_src
 
 ** Arithmetical function
