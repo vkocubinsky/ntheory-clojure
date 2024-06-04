@@ -1,7 +1,6 @@
 (ns vk.ntheory.primes-test
   (:require
    [clojure.test :refer [deftest is are testing]]
-   [vk.ntheory.basic-test :refer [test-check]]
    [vk.ntheory.primes :as p]))
 
 (deftest check-int-pos-max-test
