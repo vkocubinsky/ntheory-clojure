@@ -256,6 +256,7 @@
        ind
        (recur (b/mod-mul m acc g) (inc ind))))))
 
+;; Index table is experimental
 (defn- index-table'
   [m g gn ind]
   (lazy-seq (cons [ind gn]
