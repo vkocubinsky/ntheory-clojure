@@ -1,4 +1,4 @@
-(ns vk.ntheory.arithmetic-functions
+ (ns vk.ntheory.arithmetic-functions
   (:require [clojure.math :as math]
             [vk.ntheory.primes :as p]
             [vk.ntheory.basic :as b]))
@@ -132,18 +132,18 @@
                                (math/log %)))))
        (apply +)))
 
-(defn d*
+(defn dirichlet-mul
   "Dirichlet product(or convolution)."
   ([f g]
    (fn [n] (apply + (for [d (divisors n)] (* (f d) (g (/ n d)))))))
-  ([f g & more] (reduce d* f (cons g more))))
+  ([f g & more] (reduce dirichlet-mul f (cons g more))))
 
-(defn f=
-  ([f g] (f= f g default-natural-sample))
+(defn equal
+  ([f g] (equal f g default-natural-sample))
   ([f g xs]
    (every? (fn [[a b]] (= a b))  (map (fn [n] [(f n) (g n)]) xs))))
 
-(defn inverse
+(defn dirichlet-inverse
   "Dirichlet inverse."
   [f]
   (letfn [(inv [f n]
@@ -154,13 +154,13 @@
                (reduce + (for [d (divisors n) :when (< d n)] (* (f (/ n d)) (inv f d)))))))]
     (partial inv f)))
 
-(defn f*
+(defn pointwise-mul
   "Pointwise multiplication of two functions `f` and `g`."
   [f g]
   (fn [n]
     (* (f n) (g n))))
 
-(defn f+
+(defn pointwise-add
   "Pointwise addition of two functions `f` and `g`."
   [f g]
   (fn [n]

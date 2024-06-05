@@ -4,65 +4,61 @@
    [vk.ntheory.primes :as p]))
 
 (deftest check-int-pos-max-test
-  (testing "Fail"
-    (is (thrown? Exception (p/check-int-pos-max 1.1)))
-    (is (thrown? Exception (p/check-int-pos-max (inc p/max-int))))
-    (is (thrown? Exception (p/check-int-pos-max -1)))
-    (is (thrown? Exception (p/check-int-pos-max 0))))
-  (testing "Success"
-    (is (= 1 (p/check-int-pos-max 1)))
-    (is (= 2 (p/check-int-pos-max 2)))
-    (is (= p/max-int (p/check-int-pos-max p/max-int)))))
+  (testing "Positive integers which not exceeds max"
+    (are [x] (= x (p/check-int-pos-max x))
+      1 2 3 4 p/max-int))
+  (testing "Non positive or exceeds max"
+    (are [x] (thrown? IllegalArgumentException (p/check-int-pos-max x))
+      -4 -3 -2 -1 0 (inc p/max-int)))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (p/check-int-pos-max x))
+      1.1 "s")))
 
 (deftest check-int-non-neg-max-test
-  (testing "Fail"
-    (is (thrown? Exception (p/check-int-non-neg-max 1.1)))
-    (is (thrown? Exception (p/check-int-non-neg-max (inc p/max-int))))
-    (is (thrown? Exception (p/check-int-non-neg-max -1)))
-    (is (thrown? Exception (p/check-int-non-neg-max -2))))
-  (testing "Success"
-    (is (= 0 (p/check-int-non-neg-max 0)))
-    (is (= 1 (p/check-int-non-neg-max 1)))
-    (is (= p/max-int (p/check-int-non-neg-max p/max-int)))))
+  (testing "Positive integers which not exceeds max"
+    (are [x] (= x (p/check-int-non-neg-max x))
+      0 1 2 3 4 p/max-int))
+  (testing "Negative or exceeds max"
+    (are [x] (thrown? IllegalArgumentException (p/check-int-non-neg-max x))
+      -4 -3 -2 -1 (inc p/max-int)))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (p/check-int-non-neg-max x))
+      1.1 "s")))
 
 (deftest check-int-non-zero-max-test
-  (testing "Fail"
-    (is (thrown? Exception (p/check-int-non-zero-max 1.1)))
-    (is (thrown? Exception (p/check-int-non-zero-max (inc p/max-int))))
-    (is (thrown? Exception (p/check-int-non-zero-max 0)))
-    (testing "Success"
-      (is (= -1 (p/check-int-non-zero-max -1)))
-      (is (= 1 (p/check-int-non-zero-max 1))))
-    (is (= p/max-int (p/check-int-non-zero-max p/max-int)))))
+  (testing "Positive integers which not exceeds max"
+    (are [x] (= x (p/check-int-non-zero-max x))
+      (- p/max-int) -4 -3 -2 -1 1 2 3 4 p/max-int))
+  (testing "Zero"
+    (is (thrown? IllegalArgumentException (p/check-int-non-zero-max 0))))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (p/check-int-non-zero-max x))
+      1.1 "s")))
 
 
 (deftest check-prime-test
-  (testing "Fail"
-    (is (thrown? Exception (p/check-prime 0)))
-    (is (thrown? Exception (p/check-prime 1)))
-    (is (thrown? Exception (p/check-prime 1.1)))
-    (is (thrown? Exception (p/check-prime -1)))
-    (is (thrown? Exception (p/check-prime -2))))
-  (testing "Success"
-    (is (= 3 (p/check-odd-prime 3)))
-    (is (= 5 (p/check-odd-prime 5)))
-    (is (= 7 (p/check-odd-prime 7)))
-    (is (= 11 (p/check-odd-prime 11)))))
+  (testing "Primes"
+    (are [x] (= x (p/check-prime x))
+      3 5 7 11 13 19
+      ))
+  (testing "Not primes"
+    (are [x] (thrown? IllegalArgumentException (p/check-prime x))
+      -3 -2 -1 0 1))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (p/check-prime x))
+      1.1 "s")))
 
 (deftest check-odd-prime-test
-  (testing "Fail"
-    (is (thrown? Exception (p/check-odd-prime 0)))
-    (is (thrown? Exception (p/check-odd-prime 1)))
-    (is (thrown? Exception (p/check-odd-prime 2)))
-    (is (thrown? Exception (p/check-odd-prime 1.1)))
-    (is (thrown? Exception (p/check-odd-prime -1)))
-    (is (thrown? Exception (p/check-odd-prime -2))))
-  (testing "Success"
-    (is (= 3 (p/check-odd-prime 3)))
-    (is (= 5 (p/check-odd-prime 5)))
-    (is (= 7 (p/check-odd-prime 7)))
-    (is (= 11 (p/check-odd-prime 11)))))
-
+  (testing "Odd primes"
+    (are [x] (= x (p/check-odd-prime x))
+      3 5 7 11 13 19
+      ))
+  (testing "Not odd primes"
+    (are [x] (thrown? IllegalArgumentException (p/check-odd-prime x))
+      -3 -2 -1 0 1 2))
+  (testing "Not integers"
+    (are [x] (thrown? IllegalArgumentException (p/check-odd-prime x))
+      1.1 "s")))
 
 
 (deftest primes-test
@@ -155,6 +151,33 @@
       19 [[19 1]]
       20 [[2 2] [5 1]])))
 
+(deftest int->coprime-factors-test
+  (testing "Negative numbers"
+    (is (thrown? Exception (p/int->coprime-factors 0)))
+    (is (thrown? Exception (p/int->coprime-factors -1))))
+  (testing "Positive numbers"
+    (are [x y] (= (p/int->coprime-factors x) y)
+      1  []
+      2  [2]
+      3  [3]
+      4  [4]
+      5  [5]
+      6  [2 3]
+      7  [7]
+      8  [8]
+      9  [9]
+      10 [2 5]
+      11 [11]
+      12 [4 3]
+      13 [13]
+      14 [2 7]
+      15 [3 5]
+      16 [16]
+      17 [17]
+      18 [2 9]
+      19 [19]
+      20 [4 5])))
+
 (deftest int->factors-paritions-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/int->factors-partitions 0)))
@@ -181,7 +204,6 @@
       18 [[2] [3 3]]
       19 [[19]]
       20 [[2 2] [5]])))
-
 (deftest int->factors-test
   (testing "Negative numbers"
     (is (thrown? Exception (p/int->factors 0)))
@@ -214,4 +236,5 @@
     (is (= n (p/factors-count->int (p/int->factors-count n))))
     (is (= n (p/factors-count->int (p/int->factors-map n))))
     (is (= n (p/factors-partitions->int (p/int->factors-partitions n))))
-    (is (= n (p/factors->int (p/int->factors n))))))
+    (is (= n (p/factors->int (p/int->factors n))))
+    (is (= n (p/factors->int (p/int->coprime-factors n))))))

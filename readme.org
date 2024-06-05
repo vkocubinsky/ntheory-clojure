@@ -59,9 +59,9 @@ In this document I load number theory packages as:
 #+begin_src clojure :results silent
   (require '[vk.ntheory.basic :as b])
   (require '[vk.ntheory.primes :as p])
-  (require '[vk.ntheory.arithmetic-functions :as af])
+  (require '[vk.ntheory.arithmetic-functions :as f])
   (require '[vk.ntheory.congruences :as c])
-  (require '[vk.ntheory.primitive-roots :as pr])
+  (require '[vk.ntheory.primitive-roots :as r])
   (require '[clojure.math :as math])
 #+end_src
 So below I will use above aliases.
@@ -79,7 +79,7 @@ So below I will use above aliases.
   
 * Some basic functions
 
-This section cover namespace ~vk.ntheory.basic~. It contains some
+This section covers namespace ~vk.ntheory.basic~. It contains some
 common functions, which can be used directly or by other namespaces.
 One can use ~vk.ntheory.basic~ namespace as:
 
@@ -100,16 +100,32 @@ user input:
 All of above accept one argument, check does argument satisfy to
 expectation, if does return argument, otherwise throws an exception.
 
-Some check functions accept more than one argument. Those function just
-throw an exception if expectation failed and return ~nil~ otherwise:
+#+begin_src clojure
+  (b/check-int 5)
+#+end_src
+
+#+RESULTS:
+: 5
+: 
+
+Some check functions accept more than one argument. Those functions
+throw an exception if expectation failed and returns vector of input
+arguments otherwise:
 
 - ~check-relatively-prime~
 - ~check-not-divides~
 - ~check-at-least-one-non-zero~
 
-There are also two helper function ~check-true~ and ~check-predicate~
-which helps to implement another ~check-*~ function for some
-predicate.
+#+begin_src clojure
+  (b/check-relatively-prime 5 6)
+#+end_src
+
+#+RESULTS:
+: [5 6]
+: 
+
+There are also two helper functions ~check-true~ and ~check-predicate~
+which helps to implement another ~check-*~ functions.
 
 ** Some predicates
 
@@ -123,9 +139,20 @@ Function ~divides?~ determine does one number divides another.
 : true
 : 
 
+Function ~relatively-prime?~ determine does two numbers relatively prime.
+
+#+begin_src clojure
+  (b/relatively-prime? 2 3)
+#+end_src
+
+#+RESULTS:
+: true
+: 
+
+
 ** Combinatorics
 
-~product~ function returns cartesian product of n sequences. For instance,
+Function ~product~ returns cartesian product of n sequences. For instance,
 
 #+begin_src clojure
   (b/product [(range 1 3) (range 1 5)]) 
@@ -137,15 +164,15 @@ Function ~divides?~ determine does one number divides another.
 
 ** Operations in $\mathbf{Z}/m\mathbf{Z}$
 
-Integer $a$ congruent to integer $b$ modulo $m > 0$ if $m$ divides $a - b$.
+Integer $a$ is congruent to integer $b$ modulo $m > 0$ if $m$ divides $a - b$.
 
 $$a \equiv b \mod{m}$$
 
-There is a function ~m=~ which compare does two integer are congruent modulo $m$.
+There is a function ~congruent?~ which compare does two integers are congruent modulo $m$.
 For instance $19 \equiv 7 \pmod{12}$
 
 #+begin_src clojure
-   (b/m= 12 19 7)
+   (b/congruent? 12 19 7)
 #+end_src 
 
 #+RESULTS:
@@ -153,12 +180,12 @@ For instance $19 \equiv 7 \pmod{12}$
 : 
 
 Similar to addition function ~+~ and multiplication function ~*~ there
-are defined addition modulo m ~m+~ and multiplication modulo m ~m*~
+are defined addition modulo m ~mod-add~ and multiplication modulo m ~mod-mul~
 functions. For instance $2 + 4 \equiv 1 \pmod{5}$ in
 $\mathbf{Z}/m\mathbf{Z}$
 
 #+begin_src clojure
-  (b/m+ 5 2 4)
+  (b/mod-add 5 2 4)
 #+end_src
 
 #+RESULTS:
@@ -167,35 +194,37 @@ $\mathbf{Z}/m\mathbf{Z}$
 #+LATEX:\noindent
 and $2 \cdot 4 \equiv 3 \pmod 5$ in $\mathbf{Z}/m\mathbf{Z}$
 #+begin_src clojure
-  (b/m* 5 2 4)
+  (b/mod-mul 5 2 4)
 #+end_src
 
 #+RESULTS:
 : 3
 : 
 
-First argument of these functions is a modulo. The fact that a modulo
+First argument of these functions is a modulo. The fact that modulo
 is a first argument allow bind modulo in let expression and then use
 addition and multiplication modulo m without specify a modulo.
 
 #+begin_src clojure
-  (let [m5* (partial b/m* 5)
-        m5+ (partial b/m+ 5)]
+  (let [mul (partial b/mod-mul 5)
+        add (partial b/mod-add 5)]
     ;; ...
-    (m5+ 1 (m5* 2 4)))
+    (add 1 (mul 2 4)))
 #+end_src
 
 #+RESULTS:
 : 4
 : 
 
-There is another helpful function modulo m - exponentiation. It is a
-fast binary exponentiation algorithm described in D.Knuth, The Art of
-Computer Programming, Volume II. For instance, $101^{900} \equiv 701
+There is another helpful function modulo m - exponentiation. It is
+implementation of a fast exponentiation algorithm described in
+D.Knuth, The Art of Computer Programming, Volume II. and in book
+Structure and Interpretation of Computer Programs (SICP) of Harold
+Abelson and Gerald Jay Sussman.  For instance, $101^{900} \equiv 701
 \pmod{997}$.
 
 #+begin_src clojure
-  (b/m** 997 101 900)
+  (b/mod-pow 997 101 900)
 #+end_src
 
 #+RESULTS:
@@ -205,7 +234,9 @@ Computer Programming, Volume II. For instance, $101^{900} \equiv 701
 ** Power function
 
 Clojure has built-in ~clojure.math/pow~ function, but it return
-~java.lang.Double~. The library provide integer analog.
+~java.lang.Double~. The library provide integer analog. Also the
+implementation share fast exponentiation algorithm with ~mod-pow~
+function.
 
 #+begin_src clojure
    (b/pow 2 3)
@@ -250,8 +281,7 @@ $$
 ** The greatest common divisor
 
 The greatest common divisor of two integers $a$ and $b$, not both
-zero, is the largest positive integer $d$ which divides both $a$ and
-$b$.
+zero, is the largest positive integer $d$ which divides both $a$ and $b$.
 
 #+begin_src clojure
   (b/gcd 12 18)
@@ -271,7 +301,7 @@ divisor. For example, $6 = 12 (-1) + 18 (1)$
 #+end_src
 
 #+RESULTS[0c74f2cc07ec9ef25a86e65ce4219160c744cdde]:
-: [6 -1 1]
+: [6 [-1 1]]
 : 
 
 ** The least common multiple
@@ -470,7 +500,7 @@ $1$.
 : (2 2 2 3 3 5)
 : 
 
-And converse function is:
+And reverse function is:
 
 #+begin_src clojure
   (p/factors->int [2 2 2 3 3 5])
@@ -491,7 +521,7 @@ grouped into partitions by a prime:
 : ((2 2 2) (3 3) (5))
 : 
 
-And converse function is:
+And reverse function is:
 
 #+begin_src clojure
   (p/factors-partitions->int [[2 2 2] [3 3] [5]])
@@ -512,7 +542,7 @@ k]~, where ~p~ is a prime and ~k~ is a power of prime:
 : ([2 3] [3 2] [5 1])
 : 
 
-And converse function is:
+And reverse function is:
 
 #+begin_src clojure
   (p/factors-count->int [[2 3] [3 2] [5 1]])
@@ -533,13 +563,37 @@ is a map instead of sequence of pairs.
 : {2 3, 3 2, 5 1}
 : 
 
-Conversion function is the same as for 3-rd representation:
+Reverse function is the same as for 3-rd representation:
 
 #+begin_src clojure
   (p/factors-count->int {2 3, 3 2, 5 1})
 #+end_src
 
 #+RESULTS[85c61af8e9717c094e6d06e3abbbbbc1303673e6]:
+: 360
+: 
+
+5-th factorization representation is sequence of coprime integers,
+that's it every pair of factors from the sequence are relatively
+prime. If we take 4-th factorization and raise every prime to
+appropriate power we get 5-th factorization. For instance, $2^3 3^2
+5^1 = 8 \cdot 9 \cdot5$
+
+#+begin_src clojure
+   (p/int->coprime-factors 360)
+#+end_src
+
+#+RESULTS:
+: (8 9 5)
+: 
+
+Reverse function is the same as for 1-st representation
+
+#+begin_src clojure
+  (p/factors->int [8 9 5])
+#+end_src
+
+#+RESULTS:
 : 360
 : 
 
@@ -557,7 +611,7 @@ well known arithmetical functions and also functions which allow build
 new arithmetical functions.
 
 #+begin_src clojure :results silent
-  (require '[vk.ntheory.arithmetic-functions :as af])
+  (require '[vk.ntheory.arithmetic-functions :as f])
 #+end_src
 
 ** Arithmetical function
@@ -577,7 +631,7 @@ default for sequence of natural numbers, it is a variable
 ~default-natural-sample~, which is currently ~range(1,100)~.
 
 #+begin_src clojure
-   (take 10 af/default-natural-sample)
+   (take 10 f/default-natural-sample)
 #+end_src
 
 #+RESULTS:
@@ -592,9 +646,9 @@ sequence of natural number we can for example do next:
   (def f identity)
   (def g (constantly 1))
   ;; Then we able to check does those functions are equals
-  (af/f= f g) ;; true
-  (af/f= f g (range 1 1000)) ;; true
-  (af/f= f g (filter even? (range 1 100))) ;; true
+  (f/equal f g) ;; true
+  (f/equal f g (range 1 1000)) ;; true
+  (f/equal f g (filter even? (range 1 100))) ;; true
 #+end_src
 
 ** Pointwise addition
@@ -603,12 +657,12 @@ For two functions $f$ an $g$ pointwise addition defined as follows:
 
 $$(f + g)(n) = f(n) + f(n)$$
 
-In Clojure function ~f+~ returns pointwise addition:
+In Clojure function ~pointwise-add~ returns pointwise addition:
 
 #+begin_src clojure
       (let [f #(* % %)  
             g #(* 2 %)] 
-       ((af/f+ f g) 3)) 
+       ((f/pointwise-add f g) 3)) 
 #+end_src
 
 #+RESULTS:
@@ -622,12 +676,12 @@ follows:
 
 $$(f \cdot g)(n) = f(n) \cdot f(n)$$
 
-In clojure function ~f*~ returns pointwise multiplication:
+In clojure function ~pointwise-mul~ returns pointwise multiplication:
 
 #+begin_src clojure
       (let [f #(* % %)  
             g #(* 2 %)] 
-       ((af/f* f g) 3)) 
+       ((f/pointwise-mul f g) 3)) 
 #+end_src
 
 #+RESULTS:
@@ -642,7 +696,7 @@ divisors of number ~n~ there is ~divisor~ function. List of divisors
 is unordered.
 
 #+begin_src clojure
-  (af/divisors 30)
+  (f/divisors 30)
 #+end_src
 
 #+RESULTS[eb92a166694fca9e52907ba5cc3800b132e83a1f]:
@@ -700,7 +754,7 @@ With helper function it can be defined as
 
 #+begin_src clojure
   (def my-divisors-count
-  (af/reduce-on-prime-count * (fn [p k] (inc k))))
+  (f/reduce-on-prime-count * (fn [p k] (inc k))))
   (my-divisors-count 6)
 #+end_src
 
@@ -719,7 +773,7 @@ Count of distinct primes is a number of distinct primes which
 divides given $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then $\omega = k$.
 
 #+begin_src clojure
-   (af/primes-count-distinct (* 2 2 3))
+   (f/primes-count-distinct (* 2 2 3))
 #+end_src
 
 #+RESULTS[3552f94a82caf8b47add374a87b582087b94f377]:
@@ -734,7 +788,7 @@ which divides $n$. If $n = p_1^{a_1} p_2^{a_2} \dots p_k^{a_k}$ then:
 $$\Omega = a_1 + a_2 + \dots + a_k$$
 
 #+begin_src clojure
-  (af/primes-count-total (* 2 2 3))
+  (f/primes-count-total (* 2 2 3))
 #+end_src
 
 #+RESULTS[51c9f0f12a6224d26735728783dec13755a0633e]:
@@ -755,7 +809,7 @@ $$\mu(n) = \begin{cases}
 For example, $\mu(6)=\mu(2 \cdot 3)=1$
 
 #+begin_src clojure
-  (af/mobius 6)
+  (f/mobius 6)
 #+end_src
 
 #+RESULTS[cf4859295d68505bb9cd0db612b385de1ebf5376]:
@@ -773,7 +827,7 @@ For example, count of numbers relative prime to $6$ are $1$ and $5$,
 so $\varphi(6) = 2$
 
 #+begin_src clojure
-  (af/totient 6)
+  (f/totient 6)
 #+end_src
 
 #+RESULTS[c7763e09447503d128331d4f95f7799db7bd4679]:
@@ -790,7 +844,7 @@ $$\varepsilon(n) = \begin{cases}
 \end{cases}$$
 
 #+begin_src clojure
-  (af/unit 6)
+  (f/unit 6)
 #+end_src
 
 #+RESULTS[fe946ead0f672382244e7788ffc0800baecdad98]:
@@ -806,7 +860,7 @@ Constant one function $\mathbf{1}(n)$ defiened as follows:
 $$\mathbf{1}(n) = 1$$
 
 #+begin_src clojure
-  (af/one 6)
+  (f/one 6)
 #+end_src
 
 #+RESULTS[a9b4f951368a936801ef98b7badd4dc39dea886f]:
@@ -824,7 +878,7 @@ Function $\sigma_0(n)$ is often denoted as $d(n)$.  For example,
 number $6$ has $4$ divisors, namely $1,2,3,6$, so $d(6)=4$.
 
 #+begin_src clojure
-  (af/divisors-count 6)
+  (f/divisors-count 6)
 #+end_src
 
 #+RESULTS[decfebfc920e6b3c30105d4e96db3a33f2f50e35]:
@@ -842,7 +896,7 @@ Function $\sigma_1$ is often denoted as $\sigma$.
 For instance, $\sigma(6)= 1 + 2 + 3 + 6 = 12$
 
 #+begin_src clojure
-  (af/divisors-sum 6)
+  (f/divisors-sum 6)
 #+end_src
 
 #+RESULTS[937569fa024eae6602b07f07b2c3b364ac62cf0c]:
@@ -858,7 +912,7 @@ $$\sigma_2(n) = \sum_{d | n} d^2$$
 For instance, $\sigma_2(6) = 1^2 + 2^2 + 3^2 + 6^2 = 50$
 
 #+begin_src clojure
-  (af/divisors-square-sum 6)
+  (f/divisors-square-sum 6)
 #+end_src
 
 #+RESULTS[e37fb8014bf18bca9cc23b39e26bb461bc7ce6d6]:
@@ -885,7 +939,7 @@ accept ~x~ and return appropriate function.
 For example we can define divisors cube sum as follows:
 
 #+begin_src clojure :results silent
-  (def my-divisors-cube-sum (af/divisors-sum-x 3))
+  (def my-divisors-cube-sum (f/divisors-sum-x 3))
 #+end_src
 
 *** Liouville function - $\lambda$
@@ -897,7 +951,7 @@ we can write definition of $\lambda$ as follows:
 $$\lambda(n) = (-1)^{\Omega}$$
 
 #+begin_src clojure
-  (af/liouville (* 2 3)) 
+  (f/liouville (* 2 3)) 
 #+end_src
 
 #+RESULTS[869850b293d2a60abef6a5639489018149613db4]:
@@ -920,7 +974,7 @@ $$\Lambda(n) = \begin{cases}
 For example $\Lambda(8) = \log 2$, $\Lambda(6) = 0$  
 
 #+begin_src clojure
-  (af/mangoldt 2)
+  (f/mangoldt 2)
 #+end_src
 
 #+RESULTS[542691e004afaeca227b31c85287fa1086ef1c7a]:
@@ -934,7 +988,7 @@ If $x > 0$ Chebyshev $\theta$ function is defined as follows:
 $$\theta(x) = \sum_{p \le x} \log p$$
 
 #+begin_src clojure
-  (af/chebyshev-theta 2)
+  (f/chebyshev-theta 2)
 #+end_src
 
 #+RESULTS[cebd13d9e26c3ad5f4dffa6d9b3318e352ecaf8b]:
@@ -946,7 +1000,7 @@ If $x > 0$ Chebyshev $\psi$ function is defined as follows:
 $$\psi = \sum_{n \le x} {\Lambda(n)} $$
   
 #+begin_src clojure
-  (af/chebyshev-psi 2)
+  (f/chebyshev-psi 2)
 #+end_src
 
 #+RESULTS[2a19f1e0aa91c0b965be5aee1939f687592600b2]:
@@ -983,27 +1037,27 @@ $$f^{-1}(n) = \begin{cases}
 \end{cases}$$
 
 
-In clojure, function ~d*~ calculate Dirichlet convolution:
+In clojure, function ~dirichlet-mul~ calculate Dirichlet convolution:
 
 #+begin_src clojure :results silent
-  (af/d* af/one af/one)
+  (f/dirichlet-mul f/one f/one)
 #+end_src
 
-Function ~inverse~ calculate Dirichlet inverse:
+Function ~dirichlet-inverse~ calculate Dirichlet inverse:
 
 #+begin_src clojure :results silent
-  (af/inverse af/one)
+  (f/dirichlet-inverse f/one)
 #+end_src
 
-Dirichlet convolution is associative so clojure function ~d*~ support
+Dirichlet convolution is associative so clojure function ~dirichlet-multiplication~ support
 more than two function as an argument.
 
 #+begin_src clojure
-  (af/d* af/mobius af/one af/mobius af/one)
+  (f/dirichlet-mul f/mobius f/one f/mobius f/one)
 #+end_src
 
 #+RESULTS[13fd6000aaba4122437535d8be6a4d8841038ace]:
-: #function[vk.ntheory.arithmetic-functions/d*/fn--5881]
+: #function[vk.ntheory.arithmetic-functions/dirichlet-mul/fn--6199]
 : 
 
 
@@ -1011,7 +1065,7 @@ Functions $\mu(n)$ and $1(n)$ are inverse of each other, we can easy check
 this
 
 #+begin_src clojure
-  (af/f= (af/inverse af/one) af/mobius)
+  (f/equal (f/dirichlet-inverse f/one) f/mobius)
 #+end_src
 
 #+RESULTS[33bbf9139c179db71af6a5d185b937afad79f0f6]:
@@ -1021,25 +1075,25 @@ this
 and conversely
 
 #+begin_src clojure
-  (af/f= (af/inverse af/mobius) af/one)
+  (f/equal (f/dirichlet-inverse f/mobius) f/one)
 #+end_src
 
 #+RESULTS[e17afcfeaabbc9d50d6f000814f6e2e43b7f447e]:
 : true
 : 
 
-Function ~inverse~ defined as recursive function, it may execute
+Function ~dirichlet-inverse~ defined as recursive function, it may execute
 slow. But inverse of completely multiplicative function $f(n)$ is
 $f(n) \cdot \mu(n)$(usual,pointwise multiplication), for instance inverse of
 identity function, let's denote it as $N(n)$, is $N(n) \cdot \mu(n)$
 
 #+begin_src clojure
-  (af/f=
-   (af/d* 
-      (af/f* identity af/mobius)
+  (f/equal
+   (f/dirichlet-mul 
+      (f/pointwise-mul identity f/mobius)
       identity
    )
-   af/unit)
+   f/unit)
 #+end_src
 
 #+RESULTS:
@@ -1054,7 +1108,7 @@ contains solutions for specific congruences such as linear congruence
 and system of linear congruences.
 
 #+begin_src clojure :results silent
-  (require '[vk.ntheory.congruence :as c])
+  (require '[vk.ntheory.congruences :as c])
 #+end_src
 
 ** Brute force solution
@@ -1181,7 +1235,7 @@ a function for find reduced residues by any modulo.
 
 
 #+begin_src clojure :results silent
-  (require '[vk.ntheory.primitive-roots :as pr])
+  (require '[vk.ntheory.primitive-roots :as r])
 #+end_src
 
 ** Reduced residues
@@ -1189,7 +1243,7 @@ a function for find reduced residues by any modulo.
 Function ~reduced-residues~ return reduced residues modulo m.
 
 #+begin_src clojure
-  (pr/reduced-residues 12)
+  (r/reduced-residues 12)
 #+end_src
 
 #+RESULTS:
@@ -1202,7 +1256,7 @@ Order $n$ of integer $a$ coprime to $m$ modulo m is least positive integer for w
 $a^n \equiv 1 \pmod{m}$.
 
 #+begin_src clojure
-  (pr/order 2 11)
+  (r/order 2 11)
 #+end_src
 
 #+RESULTS:
@@ -1217,7 +1271,7 @@ $1,2,4,p^a,2p^a$, where $p$ odd prime. To find any primitive root
 there is fucntion ~find-primitive-root~.
 
 #+begin_src clojure
-  (pr/find-primitive-root 11)
+  (r/find-primitive-root 11)
 #+end_src
 
 #+RESULTS:
@@ -1228,7 +1282,7 @@ There is a predicate ~primitive-root?~ to check does given number $a$ is a primi
 root modulo $m$
 
 #+begin_src clojure
-  (pr/primitive-root? 2 11)
+  (r/primitive-root? 2 11)
 #+end_src
 
 #+RESULTS:
@@ -1238,7 +1292,7 @@ root modulo $m$
 To find all primitive roots there is function ~primitive-roots~.
 
 #+begin_src clojure
-  (pr/primitive-roots 11)
+  (r/primitive-roots 11)
 #+end_src
 
 #+RESULTS:
@@ -1259,7 +1313,7 @@ $$k = ind_g a$$
 There is clojure function ~index [m g a]~ to calculate index.
 
 #+begin_src clojure
-  (pr/index 11 2 5)
+  (r/index 11 2 5)
 #+end_src 
 
 #+RESULTS:
@@ -1271,7 +1325,7 @@ another arity of function ~index [m a]~, where $g$ is value get by
 ~find-primitive-root~ function, which is $2$ for modulo $11$.
 
 #+begin_src clojure
-  (pr/index 11 5)
+  (r/index 11 5)
 #+end_src
 
 #+RESULTS:
@@ -1288,7 +1342,7 @@ To check does given number power residue there is a function ~power-residue?~.
 For instance $4$ is $2$ power residue mod $11$
 
 #+begin_src clojure
-  (pr/power-residue? 11 2 4)
+  (r/power-residue? 11 2 4)
 #+end_src
 
 #+RESULTS:
@@ -1300,7 +1354,7 @@ another function ~solve-power-residue$. For instance for get a solution
 of equation $x^2 \equiv 4 \pmod m$
 
 #+begin_src clojure
-  (pr/solve-power-residue 11 2 4)
+  (r/solve-power-residue 11 2 4)
 #+end_src
 
 #+RESULTS:
@@ -1311,7 +1365,7 @@ If need to get all n-th power residues modulo $m$ there is function
 ~power-residues~. For instance for get all $a$ fro which $x^2 \equiv a \pmod m$
 
 #+begin_src clojure
-  (pr/power-residues 11 2)
+  (r/power-residues 11 2)
 #+end_src
 
 #+RESULTS:

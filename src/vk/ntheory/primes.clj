@@ -7,28 +7,28 @@
   "Max integer which can be factorized."
   10000000)
 
-(defn- less-equal-max-int?
-  "Less or equal to `max-int`"
+(defn- le-abs-max-int?
+  "Absolute value of n is less or equal to `max-int`"
   [n]
-  (<= n max-int))
+  (<= (abs n) max-int))
 
 (defn check-int-pos-max
   "Check `0 < n <= max-int`."
   [n]
   (let [n (b/check-int-pos n)]
-    (b/check-predicate less-equal-max-int? n (format "%s is more than %s" n max-int))))
+    (b/check-predicate le-abs-max-int? n (format "%s is more than %s" n max-int))))
 
 (defn check-int-non-neg-max
   "Check `0 <= n <= max-int`"
   [n]
   (let [n (b/check-int-non-neg n)]
-    (b/check-predicate less-equal-max-int? n (format "%s is more than %s" n max-int))))
+    (b/check-predicate le-abs-max-int? n (format "%s is more than %s" n max-int))))
 
 (defn check-int-non-zero-max
   "Check is given integer `n` is not zero and less or equal to max-int "
   [n]
   (let [n (b/check-int-non-zero n)]
-    (b/check-predicate less-equal-max-int? n (format "%s is more than %s" n max-int))))
+    (b/check-predicate le-abs-max-int? n (format "%s is more than %s" n max-int))))
 
 (defn- table-find-prime
   "Find next prime in least divisor table.
@@ -170,6 +170,14 @@
   [n]
   (check-int-pos-max n)
   (into {} (int->factors-count n)))
+
+(defn int->coprime-factors
+  [n]
+  (check-int-pos-max n)
+  (->> n
+       int->factors-partitions ,,,
+       (map (fn [xs] (apply * xs)) ,,, ))
+  )
 
 (defn factors->int
   [xs]

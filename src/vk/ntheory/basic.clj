@@ -1,5 +1,5 @@
 (ns vk.ntheory.basic
-  "Some basic function of number theory.")
+  "Some basic functions of number theory.")
 
 (defn check-true
   "Throws an exception if x is not true."
@@ -37,13 +37,14 @@
   otherwise throw an exception."
   [n]
   (let [n (check-int n)]
-    (check-predicate (complement zero?) n (format "%s is zero" n))))
+    (check-predicate (complement zero?) n "Expected non zero")))
 
 (defn check-at-least-one-non-zero
   "Throw exception if all arguments are zero, otherwise returns nil."
   [a b]
   (check-true (not-every? zero? [a b])
-              (format "Expected at least one non zero integer")))
+              (format "Expected at least one non zero integer"))
+  [a b])
 
 (defn divides?
   "Return true if `a != 0` divides `b`, otherwise false."
@@ -55,27 +56,50 @@
 (defn check-not-divides
   "Throw an exception if `a` not divies `b`."
   [a b]
-  (let [a (check-int a)
+  (let [a (check-int-non-zero a)
         b (check-int b)]
-    (check-true (not (divides? a b)) (format "%s divides %s" a b))))
+    (check-true (not (divides? a b)) (format "Expected %s does not divides %s" a b))
+    [a b]))
 
-(defn m=
-  "Check does `a` congruent to `b` modulo m"
-  [m a b] (= (mod a m) (mod b m)))
+(defn congruent?
+  "Check does `a` is congruent to `b` modulo m"
+  [m a b]
+  (check-int-pos m)
+  (check-int a)
+  (check-int b)
+  (= (mod a m) (mod b m)))
 
-(defn m*
-  "Multiplication modulo `m`, `(m*)` returns 1, `(m* a)` returns `a`."
-  ([m] 1)
-  ([m a] (mod a m))
-  ([m a b] (mod (* a b) m))
-  ([m a b & more] (reduce (partial m* m) (m* m a b) more)))
+(defn mod-mul
+  "Multiplication modulo `m`, `(mod-mul)` returns 1, `(mod-mul a)` returns `a`."
+  ([m]
+   (check-int-pos m)
+   1)
+  ([m a]
+   (check-int-pos m)
+   (check-int a)
+   (mod a m))
+  ([m a b]
+   (check-int-pos m)
+   (check-int a)
+   (check-int b)
+   (mod (* a b) m))
+  ([m a b & more] (reduce (partial mod-mul m) (mod-mul m a b) more)))
 
-(defn m+
-  "Addition modulo `m`. `(m+) returns 0, `(m+ a)` returns `a`."
-  ([m] 0)
-  ([m a] (mod a m))
-  ([m a b] (mod (+ a b) m))
-  ([m a b & more] (reduce (partial m+ m) (m+ m a b) more)))
+(defn mod-add
+  "Addition modulo `m`. `(mod-add) returns 0, `(mod-add a)` returns `a`."
+  ([m]
+   (check-int-pos m)
+   0)
+  ([m a]
+   (check-int-pos m)
+   (check-int a)
+   (mod a m))
+  ([m a b]
+   (check-int-pos m)
+   (check-int a)
+   (check-int b)
+   (mod (+ a b) m))
+  ([m a b & more] (reduce (partial mod-add m) (mod-add m a b) more)))
 
 (defn- fast-power-iter
   ([fmult a n]
@@ -89,13 +113,13 @@
        (recur fmult (fmult odd even) even (dec n))
        (recur fmult odd (fmult even even) (/ n 2))))))
 
-(defn m**
+(defn mod-pow
   "Raise integer `a` to the power of `n >= 0` modulo `m`."
   [m a n]
   (check-int-pos m)
   (check-int-non-neg n)
   (check-int a)
-  (fast-power-iter (partial m* m) a n))
+  (fast-power-iter (partial mod-mul m) a n))
 
 (defn pow
   "Raise `a` to the power of `n >= 0`."
@@ -150,7 +174,7 @@
 (defn gcd-extended
   "Extended Euclid algorithm.
   For two integers `a` and `b`,not both zero, returns vector
-  `[d s t]`, where `d` is the greatest common divisor of integers `a` and
+  `[d [s t]]`, where `d` is the greatest common divisor of integers `a` and
   `b` and values `s`,`t` and `d` satisfied condition:
   `a * s + b * t = d`.
   "
@@ -162,7 +186,15 @@
         s' (* (sign a) s)
         t' (* (sign b) t)]
     (assert (= d (+ (* a s') (* b t'))))
-    [d s' t']))
+    [d [s' t']]))
+
+(defn gcd-inverse
+  "Experimental."
+  [m a]
+  (let [[d [s _]] (gcd-extended a m)]
+    (if (= 1 d)
+      (mod s m)
+      (throw (IllegalArgumentException. (format "Integers %s and %s are not relatively prime." m a))))))
 
 (defn lcm
   "The least common multiple of two non zero integers `a` and `b`."
@@ -172,11 +204,16 @@
   (let [d (gcd a b)]
     (abs (/ (* a b) d))))
 
+(defn relatively-prime?
+  "Is given `a` and `b` are relatively prime"
+  [a b]
+  (= (gcd a b) 1))
+
 (defn check-relatively-prime
   "Throw an exception if integers `a` and `b` are not relatively prime."
   [a b]
-  (let [d (gcd a b)]
-    (check-true (= 1 d) (format "Integers %s and %s are not relatively prime." a b))))
+  (check-true (relatively-prime? a b) (format "Integers %s and %s are not relatively prime." a b))
+  [a b])
 
 (defn- product'
   "Helper function for function `product`.
