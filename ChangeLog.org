@@ -2,7 +2,7 @@
 #+author: Valery Kocubinsky
 #+language: en
 
-* Version 0.10.0
+* Version 0.10.0 <2024-06-05 Wed>
 
 - basic
   - rename m= to congruent?
