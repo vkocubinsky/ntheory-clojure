@@ -10,7 +10,8 @@
                  (do
                    (require '[vk.ntheory.basic :as b]
                                 '[vk.ntheory.primes :as p]
-                                '[vk.ntheory.arithmetic-functions :as af]
+                                '[vk.ntheory.arithmetic-functions :as f]
                                 '[vk.ntheory.congruences :as c]
+                                '[vk.ntheory.primitive-roots :as r]
                                 )
                    (set! *warn-on-reflection* true))})

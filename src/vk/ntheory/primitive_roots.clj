@@ -86,8 +86,7 @@
 (defn print-table-order-count
   [m]
   (pp/print-table [:order :count]
-   (map (fn [[k v]] {:order k :count v})(sort-by first (order-count m))))
-  )
+                  (map (fn [[k v]] {:order k :count v}) (sort-by first (order-count m)))))
 
 (defn classify-modulo
   [m & _]
@@ -100,8 +99,7 @@
       (and (nil? p2) (> p1 2) (> a1 1)) ::mod-p**e
       (and (= p1 2) (= a1 1) (not (nil? p2)) (nil? p3)) ::mod-2p**e
       (and (= p1 2) (>= a1 3) (nil? p2)) ::mod-2**e
-      :else ::composite)
-    ))
+      :else ::composite)))
 
 (derive ::mod-1 ::has-primitive-root)
 (derive ::mod-2 ::has-primitive-root)
@@ -125,13 +123,13 @@
   [m a]
   (check-prime-to-mod m a)
   (if (has-primitive-root? m) ;; optimization for modulo without primitive root
-   (let [phi (f/totient m)]
-    (->> phi
-         (p/int->factors-distinct)
-         (map #(/ phi %))
-         (map #(b/mod-pow m a %))
-         (every? #(not (b/congruent? m 1 %)))))
-   false))
+    (let [phi (f/totient m)]
+      (->> phi
+           (p/int->factors-distinct)
+           (map #(/ phi %))
+           (map #(b/mod-pow m a %))
+           (every? #(not (b/congruent? m 1 %)))))
+    false))
 
 (defn check-primitive-root
   [m g]
@@ -235,7 +233,7 @@
             m' (b/pow 2 (- e 2))
             d (b/gcd n m')
             t (b/mod-pow m a
-                     (/ m' d))]
+                         (/ m' d))]
         (b/congruent? m 1 t))
       false)))
 
@@ -257,6 +255,23 @@
      (if (b/congruent? m acc a)
        ind
        (recur (b/mod-mul m acc g) (inc ind))))))
+
+(defn- index-table'
+  [m g gn ind]
+  (lazy-seq (cons [ind gn]
+                  (when-not (b/congruent? m 1 gn)
+                    (index-table' m g (b/mod-mul m gn g) (inc ind))))))
+
+(defn index-table
+  [m]
+  (check-has-primitive-root m)
+  (let [g (find-primitive-root m)]
+    (into (sorted-map) (index-table' m g g 1))))
+
+(defn print-index-table
+  [m]
+  (pp/print-table (map (fn [[ind gn]]{:ind ind :value gn})(index-table m)))
+  )
 
 (defmulti solve-power-residue classify-modulo :default ::composite)
 
