@@ -88,7 +88,7 @@
   (let [val (aget table n)]
     (= val n)))
 
-(defn table->primes
+(defn primes
   "Make primes sequecne from least divisor table"
   [table]
   (->> table
