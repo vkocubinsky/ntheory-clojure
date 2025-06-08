@@ -89,7 +89,7 @@
     (= val n)))
 
 (defn table->primes
-  "Make primes vector from least divisor table"
+  "Make primes sequecne from least divisor table"
   [table]
   (->> table
        (keep-indexed #(when (= %1 %2) %1))
