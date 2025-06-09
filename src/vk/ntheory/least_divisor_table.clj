@@ -67,14 +67,23 @@
       (dec len)
       0)))
 
+(defn- check-in-table [table n]
+  "Check does given number in table.
+
+  Parameters:
+  - table: least divisor table.
+  - n: number.  
+  "
+  (when-not (and (<= n (upper-limit table)) (> n 0))
+    (throw (ex-info "Out of range" {:upper-limit (upper-limit table) :value n}))))
+
 (defn int->factors
   "Factorize integer.
 
   Returns: ordered factors of given integer
   "
   [^ints table ^Integer n]
-  (when-not (and (<= n (upper-limit table)) (> n 0))
-    (throw (ex-info "Bad argument" {:upper-limit (upper-limit table) :value n})))
+  (check-in-table table n)
   (lazy-seq
    (when (> n 1)
      (let [d (aget table n)]
@@ -83,10 +92,10 @@
 (defn prime?
   "Check does given integer is a prime."
   [table n]
-  (when-not (and (<= n (upper-limit table)) (> n 0))
-    (throw (ex-info "Bad argument" {:upper-limit (upper-limit table) :value n})))
+  (check-in-table table n)
   (let [val (aget table n)]
-    (= val n)))
+    (and (> val 1)
+         (= val n))))
 
 (defn primes
   "Make primes sequecne from least divisor table"
@@ -100,7 +109,6 @@
        (map-indexed (fn [idx val] {:index idx :value val}))
        (pp/print-table)))
 
-;; (-> 10 make-table print-table)
-;; (int->factors (make-table 100) 100)
+
 
 
