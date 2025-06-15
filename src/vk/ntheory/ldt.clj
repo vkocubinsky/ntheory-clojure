@@ -1,10 +1,9 @@
-;; Least divisor table namespace.
-;;
-;; Least divisor table is an java array where element at index idx
-;; equal to least(prime) divisor of idx. Elements with index 0 and 1
-;; doesn't used.
-
 (ns vk.ntheory.ldt
+  "Least divisor table namespace.
+
+   Least divisor table is an java array where element at index idx
+   equal to least(prime) divisor of idx. Elements with index 0 and 1
+   doesn't used."
   (:require [clojure.pprint :as pp]))
 
 (defn- find-prime
