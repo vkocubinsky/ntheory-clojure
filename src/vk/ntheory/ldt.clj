@@ -4,7 +4,7 @@
 ;; equal to least(prime) divisor of idx. Elements with index 0 and 1
 ;; doesn't used.
 
-(ns vk.ntheory.least-divisor-table
+(ns vk.ntheory.ldt
   (:require [clojure.pprint :as pp]))
 
 (defn- find-prime

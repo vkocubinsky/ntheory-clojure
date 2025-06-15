@@ -1,8 +1,10 @@
-(ns vk.ntheory.least-divisor-table-test
+(ns vk.ntheory.ldt-test
   (:require
    [clojure.test :refer [deftest is are testing]]
-   [vk.ntheory.least-divisor-table :as tbl]
+   [vk.ntheory.ldt :as tbl]
    [clojure.string :as str]))
+
+(def prop-test-upper-limit 30)
 
 (deftest make-table-test
   (are [x y] (= (vec (tbl/make-table x)) y)
@@ -16,13 +18,17 @@
     7  [0 1 2 3 2 5 2 7]
     8  [0 1 2 3 2 5 2 7 2]
     9  [0 1 2 3 2 5 2 7 2 3]
-    10 [0 1 2 3 2 5 2 7 2 3 2]
-    ))
+    10 [0 1 2 3 2 5 2 7 2 3 2]))
 
 (deftest upper-limit-test
+  (is (= (tbl/upper-limit (tbl/make-table -1)) 0))
   (is (= (tbl/upper-limit (tbl/make-table 0)) 0))
-  (is (= (tbl/upper-limit (tbl/make-table 1)) 1))
-  (is (= (tbl/upper-limit (tbl/make-table 2)) 2)))
+  (is (= (tbl/upper-limit (tbl/make-table 1)) 1)))
+
+(deftest upper-limit-prop-test
+  (doseq [upper-limit (range 0 prop-test-upper-limit)]
+    (let [table (tbl/make-table upper-limit)]
+      (is (= upper-limit (tbl/upper-limit table))))))
 
 (deftest int->factors-test
   (let [table (tbl/make-table 20)]
@@ -52,6 +58,11 @@
         18 [2 3 3]
         19 [19]
         20 [2 2 5]))))
+
+(deftest int->factors-prop-test
+  (let [table (tbl/make-table prop-test-upper-limit)]
+    (doseq [n (range 1 prop-test-upper-limit)]
+      (is (= n (->> n (tbl/int->factors table) (apply *)))))))
 
 (deftest prime?-test
   (let [table (tbl/make-table 20)]
@@ -105,32 +116,33 @@
     19 [2 3 5 7 11 13 17 19]
     20 [2 3 5 7 11 13 17 19]))
 
-(deftest factorization-properties-test
-  (doseq [n (range 1 100)]
-    (is (= n (p/factors-count->int (p/int->factors-count n))))
-    (is (= n (p/factors-count->int (p/int->factors-map n))))
-    (is (= n (p/factors-partitions->int (p/int->factors-partitions n))))
-    (is (= n (p/factors->int (p/int->factors n))))
-    (is (= n (p/factors->int (p/int->coprime-factors n))))))
-
-
+(deftest primes-prop-test
+  (doseq [upper-limit (range 1 prop-test-upper-limit)]
+    (let [table (tbl/make-table upper-limit)]
+      (is (every? #(tbl/prime? table %) (tbl/primes table)))
+      )
+    )
+  )
 
 (deftest table-print-test
   (let [table (tbl/make-table 10)
         output (with-out-str (tbl/print-table table))
-        expected-lines 
-          ["| :index | :value |"
-           "|--------+--------|"
-           "|      0 |      0 |"
-           "|      1 |      1 |"
-           "|      2 |      2 |"
-           "|      3 |      3 |"
-           "|      4 |      2 |"
-           "|      5 |      5 |"
-           "|      6 |      2 |"
-           "|      7 |      7 |"
-           "|      8 |      2 |"
-           "|      9 |      3 |"
-           "|     10 |      2 |"]
+        expected-lines
+        ["| :index | :value |"
+         "|--------+--------|"
+         "|      0 |      0 |"
+         "|      1 |      1 |"
+         "|      2 |      2 |"
+         "|      3 |      3 |"
+         "|      4 |      2 |"
+         "|      5 |      5 |"
+         "|      6 |      2 |"
+         "|      7 |      7 |"
+         "|      8 |      2 |"
+         "|      9 |      3 |"
+         "|     10 |      2 |"]
         expected-output (str/join \newline expected-lines)]
     (is (= (str/trim output) expected-output))))
+
+
+
