@@ -4,7 +4,8 @@
    Least divisor table is an java array where element at index idx
    equal to least(prime) divisor of idx. Elements with index 0 and 1
    doesn't used."
-  (:require [clojure.pprint :as pp]))
+  (:require [clojure.pprint :as pp]
+            [vk.ntheory.factorization :as f]))
 
 (defn- find-prime
   "Find prime in least divisor table.
@@ -40,7 +41,7 @@
     (when (= curr-val idx)
       (aset table idx val))))
 
-(defn make-table
+(defn- make-table
   "Make least divisor table.
   
   Use slightly modified Eratosthenes algorithm for build least divisor table.
@@ -58,7 +59,7 @@
           (mark-multiple table k p))
         (recur table (find-prime table (inc p)))))))
 
-(defn upper-limit
+(defn- ldt-upper-limit
   "Upper limit for given table"
   [table]
   (let [len (count table)]
@@ -73,10 +74,10 @@
   - table: least divisor table.
   - n: number.  
   "
-  (when-not (and (<= n (upper-limit table)) (> n 0))
-    (throw (ex-info "Out of range" {:upper-limit (upper-limit table) :value n}))))
+  (when-not (and (<= n (ldt-upper-limit table)) (> n 0))
+    (throw (ex-info "Out of range" {:upper-limit (ldt-upper-limit table) :value n}))))
 
-(defn int->factors
+(defn- ldt-int->factors
   "Factorize integer.
 
   Returns: ordered factors of given integer
@@ -88,7 +89,7 @@
      (let [d (aget table n)]
        (cons d (int->factors table (quot n d)))))))
 
-(defn prime?
+(defn- ldt-prime?
   "Check does given integer is a prime."
   [table n]
   (check-in-table table n)
@@ -96,18 +97,37 @@
     (and (> val 1)
          (= val n))))
 
-(defn primes
-  "Make primes sequecne from least divisor table"
+(defn- ldt-primes
+  "Make primes sequence from least divisor table"
   [table]
   (->> table
        (keep-indexed #(when (= %1 %2) %1))
        (drop-while #(< % 2))))
 
-(defn print-table [table]
+(defn- ldt-print-table [table]
   (->> table
        (map-indexed (fn [idx val] {:index idx :value val}))
        (pp/print-table)))
 
 
+(defrecord LeastDivisorTable [table]
+  f/Factorization
+  (int->factors [this a] (ldt-int->factors (:table this) a))
+  (prime? [this a] (ldt-prime? (:table this) a))
+  (primes [this] (ldt-primes (:table this)))
+  )
+
+(defn make-factorization [n]
+  (LeastDivisorTable. (make-table n))
+  )
+
+(defn upper-limit [ldt]
+  (ldt-upper-limit (:table ldt))
+  )
+
+
+(defn print-table [ldt]
+  (ldt-print-table (:table ldt))
+  )
 
 
