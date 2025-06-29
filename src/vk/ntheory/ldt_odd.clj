@@ -1,4 +1,4 @@
-(ns vk.ntheory.ldt-full
+(ns vk.ntheory.ldt-odd
   "Least divisor table(full) namespace.
 
    Least divisor table(full) is an java array where element at index idx
