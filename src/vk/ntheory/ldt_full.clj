@@ -1,4 +1,4 @@
-(ns vk.ntheory.ldt
+(ns vk.ntheory.ldt-full
   "Least divisor table namespace.
 
    Least divisor table is an java array where element at index idx

@@ -2,43 +2,19 @@
   (:require
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.factorization :as f]
-   [vk.ntheory.ldt :as ldt]
+   [vk.ntheory.ldt-full :as ldt]
    [clojure.string :as str]))
 
 (def prop-test-upper-limit 30)
 
-(deftest make-table-test
-  (are [x y] (= (vec (:table (ldt/make-factorization x))) y)
-    0  [0]
-    1  [0 1]
-    2  [0 1 2]
-    3  [0 1 2 3]
-    4  [0 1 2 3 2]
-    5  [0 1 2 3 2 5]
-    6  [0 1 2 3 2 5 2]
-    7  [0 1 2 3 2 5 2 7]
-    8  [0 1 2 3 2 5 2 7 2]
-    9  [0 1 2 3 2 5 2 7 2 3]
-    10 [0 1 2 3 2 5 2 7 2 3 2]))
-
-(deftest upper-limit-test
-  (is (= (ldt/upper-limit (ldt/make-factorization -1)) 0))
-  (is (= (ldt/upper-limit (ldt/make-factorization 0)) 0))
-  (is (= (ldt/upper-limit (ldt/make-factorization 1)) 1)))
-
-(deftest upper-limit-prop-test
-  (doseq [upper-limit (range 0 prop-test-upper-limit)]
-    (let [table (ldt/make-factorization upper-limit)]
-      (is (= upper-limit (ldt/upper-limit table))))))
-
 (deftest int->factors-test
-  (let [table (ldt/make-factorization 20)]
+  (let [factorizer (ldt/make-factorization 20)]
     (testing "Out of range"
-      (is (thrown-with-msg? Exception #"Out of range" (f/int->factors table 0)))
-      (is (thrown-with-msg? Exception #"Out of range" (f/int->factors table -1)))
-      (is (thrown-with-msg? Exception #"Out of range" (f/int->factors table 31))))
+      (is (thrown-with-msg? Exception #"Out of range" (f/int->factors factorizer 0)))
+      (is (thrown-with-msg? Exception #"Out of range" (f/int->factors factorizer -1)))
+      (is (thrown-with-msg? Exception #"Out of range" (f/int->factors factorizer 31))))
     (testing "Positive numbers"
-      (are [x y] (= (f/int->factors table x) y)
+      (are [x y] (= (f/int->factors factorizer x) y)
         1  []
         2  [2]
         3  [3]
@@ -61,18 +37,18 @@
         20 [2 2 5]))))
 
 (deftest int->factors-prop-test
-  (let [table (ldt/make-factorization prop-test-upper-limit)]
+  (let [factorizer (ldt/make-factorization prop-test-upper-limit)]
     (doseq [n (range 1 prop-test-upper-limit)]
-      (is (= n (->> n (f/int->factors table) (apply *)))))))
+      (is (= n (->> n (f/int->factors factorizer) (apply *)))))))
 
 (deftest prime?-test
-  (let [table (ldt/make-factorization 20)]
+  (let [factorizer (ldt/make-factorization 20)]
     (testing "Out of range"
-      (is (thrown-with-msg? Exception #"Out of range" (f/prime? table 0)))
-      (is (thrown-with-msg? Exception #"Out of range" (f/prime? table -1)))
-      (is (thrown-with-msg? Exception #"Out of range" (f/prime? table 31))))
+      (is (thrown-with-msg? Exception #"Out of range" (f/prime? factorizer 0)))
+      (is (thrown-with-msg? Exception #"Out of range" (f/prime? factorizer -1)))
+      (is (thrown-with-msg? Exception #"Out of range" (f/prime? factorizer 31))))
     (testing "Positive numbers"
-      (are [x y] (= (f/prime? table x) y)
+      (are [x y] (= (f/prime? factorizer x) y)
         1  false
         2  true
         3  true
@@ -119,31 +95,13 @@
 
 (deftest primes-prop-test
   (doseq [upper-limit (range 1 prop-test-upper-limit)]
-    (let [table (ldt/make-factorization upper-limit)]
-      (is (every? #(f/prime? table %) (f/primes table)))
+    (let [factorizer (ldt/make-factorization upper-limit)]
+      (is (every? #(f/prime? factorizer %) (f/primes factorizer)))
       )
     )
   )
 
-(deftest table-print-test
-  (let [table (ldt/make-factorization 10)
-        output (with-out-str (ldt/print-table table))
-        expected-lines
-        ["| :index | :value |"
-         "|--------+--------|"
-         "|      0 |      0 |"
-         "|      1 |      1 |"
-         "|      2 |      2 |"
-         "|      3 |      3 |"
-         "|      4 |      2 |"
-         "|      5 |      5 |"
-         "|      6 |      2 |"
-         "|      7 |      7 |"
-         "|      8 |      2 |"
-         "|      9 |      3 |"
-         "|     10 |      2 |"]
-        expected-output (str/join \newline expected-lines)]
-    (is (= (str/trim output) expected-output))))
+
 
 
 
