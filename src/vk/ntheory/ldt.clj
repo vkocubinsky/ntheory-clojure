@@ -60,42 +60,49 @@
         (recur table (find-prime table (inc p)))))))
 
 (defn- ldt-upper-limit
-  "Upper limit for given table"
+  "Upper limit for given table."
   [table]
   (let [len (count table)]
     (if (> len 0)
       (dec len)
       0)))
 
-(defn- check-in-table [table n]
+(defn- in-table?
+  "Does table support n."
+  [table a]
+  (and (<= a (ldt-upper-limit table)) (> a 0))
+  )
+
+(defn- check-in-table 
   "Check does given number in table.
 
   Parameters:
   - table: least divisor table.
-  - n: number.  
+  - a: number.  
   "
-  (when-not (and (<= n (ldt-upper-limit table)) (> n 0))
-    (throw (ex-info "Out of range" {:upper-limit (ldt-upper-limit table) :value n}))))
+  [table a]
+  (when-not (in-table? table a)
+    (throw (ex-info "Out of range" {:upper-limit (ldt-upper-limit table) :value a}))))
 
 (defn- ldt-int->factors
   "Factorize integer.
 
   Returns: ordered factors of given integer
   "
-  [^ints table ^Integer n]
-  (check-in-table table n)
+  [^ints table ^Integer a]
+  (check-in-table table a)
   (lazy-seq
-   (when (> n 1)
-     (let [d (aget table n)]
-       (cons d (int->factors table (quot n d)))))))
+   (when (> a 1)
+     (let [d (aget table a)]
+       (cons d (ldt-int->factors table (quot a d)))))))
 
 (defn- ldt-prime?
   "Check does given integer is a prime."
-  [table n]
-  (check-in-table table n)
-  (let [val (aget table n)]
+  [table a]
+  (check-in-table table a)
+  (let [val (aget table a)]
     (and (> val 1)
-         (= val n))))
+         (= val a))))
 
 (defn- ldt-primes
   "Make primes sequence from least divisor table"
@@ -115,6 +122,7 @@
   (int->factors [this a] (ldt-int->factors (:table this) a))
   (prime? [this a] (ldt-prime? (:table this) a))
   (primes [this] (ldt-primes (:table this)))
+  (in-domain? [this a] (in-table? (:table this) a))
   )
 
 (defn make-factorization [n]
