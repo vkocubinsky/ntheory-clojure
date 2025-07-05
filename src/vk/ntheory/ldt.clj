@@ -8,66 +8,42 @@
   (:require [clojure.pprint :as pp]
             [vk.ntheory.factorization :as f]))
 
-(defprotocol Store
-  "Store protocol for Table."
-  (set-number! [arr k v] "Store value v for natural number k.")
-  (get-number [arr k] "Get value for given natural number k.")
-  (in-table? [arr k] "Does given natural number k in table")
-  (upper-limit [arr] "Experimental. Return max number in table."))
+(defprotocol Table
+  (table-set-number! [arr k v] "Store value v for natural number k.")
+  (table-get-number [arr k] "Get value for given natural number k.")
+  (table-in-table? [arr k] "Does given natural number k in table")
+  (table-upper-limit [arr] "Experimental. Return max number in table."))
 
 (defrecord FullTable [arr]
-  Store
-  (set-number! [this k v]
+  Table
+  (table-set-number! [this k v]
+    (assert (table-in-table? this k) "Number must be in table")
     (aset-int arr k v))
-  (get-number [this k]
+  (table-get-number [this k]
+    (assert (table-in-table? this k) "Number must be in table")
     (aget arr k))
-  (in-table? [this k] (and (int? k) (> k 0) (<= k (upper-limit this))))
-  (upper-limit [this] (dec (alength arr))))
-
-(let [a (int-array (range 10))
-      t (->FullTable a)]
-  (set-number! t 1 5)
-  (get-number t 1)
-  (upper-limit t)
-  (in-table? t 5))
+  (table-in-table? [this k] (and (int? k) (> k 0) (<= k (table-upper-limit this))))
+  (table-upper-limit [this] (let [len (alength arr)]
+                              (if (pos? len)
+                                (dec (alength arr))
+                                0))))
 
 (defrecord OddTable [arr]
-  Store
-  (set-number! [this k v]
+  Table
+  (table-set-number! [this k v]
+    (assert (table-in-table? this k) "Number must be in table")
     (let [idx (bit-shift-right k 1)]
       (aset-int arr idx v)))
-  (get-number [this k]
+  (table-get-number [this k]
+    (assert (table-in-table? this k) "Number must be in table")
     (let [idx (bit-shift-right k 1)]
       (aget arr k)))
-  (in-table? [this k] (and (int? k) (odd? k) (> k 0) (<= k (upper-limit this))))
-  (upper-limit [this]
+  (table-in-table? [this k] (and (int? k) (odd? k) (> k 0) (<= k (table-upper-limit this))))
+  (table-upper-limit [this]
     (let [len (alength arr)]
       (if (pos? len)
         (inc (bit-shift-left (dec len) 1))
         0))))
-
-
-(let [a (int-array (range 10))
-      t (->OddTable a)]
-  (set-number! t 1 5)
-  (get-number t 1)
-  ;;(upper-limit t)
-  ;;(in-table? t 5)
-  )
-
-
-(defn- ldt-upper-limit
-  "Upper limit for given table."
-  [table]
-  (let [len (count table)]
-    (if (> len 0)
-      (dec len)
-      0)))
-
-(defn- in-table?
-  "Does table support n."
-  [table a]
-  (and (<= a (ldt-upper-limit table)) (> a 0)))
 
 (defn- check-in-table
   "Check does given number in table.
@@ -77,60 +53,47 @@
   - a: number.  
   "
   [table a]
-  (when-not (in-table? table a)
-    (throw (ex-info "Out of range" {:upper-limit (ldt-upper-limit table) :value a}))))
+  (when-not (table-in-table? table a)
+    (throw (ex-info "Out of range" {:upper-limit (table-upper-limit table) :value a}))))
 
 (defn- find-prime
-  "Find prime in least divisor table.
-  
-  Parameters: 
-  - table: Least divisor table.
-  - start: Start index inclusive.
-  
-  Returns:
-  - first prime starts from given index, that is value in array for which index are equals to value.
-  "
+  "Find prime in least divisor table."
   [table start]
-  (let [end (count table)]
-    (loop [idx start]
-      (when (< idx end)
-        (let [val (aget table idx)]
-          (if (= val idx)
-            idx
-            (recur (inc idx))))))))
+  (let [end (table-upper-limit table)]
+    (loop [k start]
+      (when (<= k end)
+        (let [k' (table-get-number table k)]
+          (if (= k' k)
+            k
+            (recur (inc k))))))))
 
 (defn- mark-multiple
-  "Mark idx in least divisor table as multiple of val if it is not already marked.
+  "Mark a as multiple of p in least divisor table if it is not already marked."
+  [^ints table ^Integer k ^Integer p]
+  (let [k' (table-get-number table k)]
+    (when (= k' k)
+      (table-set-number! table k p))))
 
-  Parameters:
-  - table: Least divisor table
-  - idx: index
-  - val: multiple of
-
-  Return
-  "
-  [^ints table ^Integer idx ^Integer val]
-  (let [curr-val (aget table idx)]
-    (when (= curr-val idx)
-      (aset table idx val))))
-
-(defn- make-table
-  "Make least divisor table.
-  
-  Use slightly modified Eratosthenes algorithm for build least divisor table.
-
-  Parameters:
-  - n: upper limit inclusive
-  "
-  [n]
-  (loop [table (int-array (range (inc n)))
-         p  (find-prime table 2)]
-    (if (or (nil? p) (> (* p p) n))
+(defn- sieve
+  "Sieve of Erathosphene."
+  [table]
+  (loop [p  (find-prime table 2)]
+    (if (or (nil? p) (> (* p p) (table-upper-limit table)))
       table
-      (do
-        (doseq [k (range (* p p) (inc n) p)]
+      ;; if p != 2 skip even numbers 
+      (let [step (if (= p 2) p (bit-shift-left p 1))]
+        (doseq [k (range (* p p) (inc (table-upper-limit table)) step)]
           (mark-multiple table k p))
-        (recur table (find-prime table (inc p)))))))
+        (recur (find-prime table (inc p)))))))
+
+(defn- make-odd-table
+  [upper-limit]
+  (assert (odd? upper-limit) "Upper limit must be odd")
+  (sieve (->OddTable (int-array (range 1 (inc upper-limit) 2)))))
+
+(defn- make-full-table
+  [upper-limit]
+  (sieve (->FullTable (int-array (range (inc upper-limit))))))
 
 (defn- ldt-int->factors
   "Factorize integer.
@@ -164,15 +127,29 @@
        (map-indexed (fn [idx val] {:index idx :value val}))
        (pp/print-table)))
 
-(defrecord LeastDivisorTable [table]
+(defrecord FullLeastDivisorTable [table]
   f/Factorization
   (int->factors [this a] (ldt-int->factors (:table this) a))
   (prime? [this a] (ldt-prime? (:table this) a))
   (primes [this] (ldt-primes (:table this)))
-  (in-domain? [this a] (in-table? (:table this) a)))
+  (in-domain? [this a] (table-in-table? (:table this) a)))
 
-(defn make-factorization [n]
-  (LeastDivisorTable. (make-table n)))
+(defrecord OddLeastDivisorTable [table]
+  f/Factorization
+  (int->factors [this a] (ldt-int->factors (:table this) a))
+  (prime? [this a] (ldt-prime? (:table this) a))
+  (primes [this] (ldt-primes (:table this)))
+  (in-domain? [this a] (table-in-table? (:table this) a)))
+
+
+
+(defn make-full-factorization [n]
+  (->FullLeastDivisorTable (make-table n)))
+
+(defn make-odd-factorization [n]
+  (->FullLeastDivisorTable (make-table n)))
+
+
 
 (defn upper-limit [ldt]
   (ldt-upper-limit (:table ldt)))
