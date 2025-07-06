@@ -1,20 +1,16 @@
 (ns vk.ntheory.ldt
-  "Least divisor table(full) namespace.
-
-   Least divisor table(full) is an java array where element at index idx
-   equal to least(prime) divisor of idx. Elements with index 0 is not used,
-   element with index 1 contains 1."
+  "Least divisor table namespace."
 
   (:require [clojure.pprint :as pp]
             [vk.ntheory.factorization :as f]))
 
 (defprotocol Table
-  (table-set-number! [arr k v] "Store value v for natural number k.")
-  (table-get-number [arr k] "Get value for given natural number k.")
-  (table-in-table? [arr k] "Does given natural number k in table")
+  (table-set-number! [arr k v] "Store value `v` for natural number `k`.")
+  (table-get-number [arr k] "Get value for given natural number `k`.")
+  (table-in-table? [arr k] "Does given natural number `k` in table")
   (table-upper-limit [arr] "Experimental. Return max number in table."))
 
-(defrecord FullTable [arr]
+(defrecord FullTable [^ints arr]
   Table
   (table-set-number! [this k v]
     (assert (table-in-table? this k) "Number must be in table")
@@ -28,7 +24,7 @@
                                 (dec (alength arr))
                                 0))))
 
-(defrecord OddTable [arr]
+(defrecord OddTable [^ints arr]
   Table
   (table-set-number! [this k v]
     (assert (table-in-table? this k) "Number must be in table")
@@ -46,15 +42,10 @@
         0))))
 
 (defn- check-in-table
-  "Check does given number in table.
-
-  Parameters:
-  - table: least divisor table.
-  - a: number.  
-  "
-  [table a]
-  (when-not (table-in-table? table a)
-    (throw (ex-info "Out of range" {:upper-limit (table-upper-limit table) :value a}))))
+  "Check does given number `n` in table."
+  [table n]
+  (when-not (table-in-table? table n)
+    (throw (ex-info "Out of range" {:upper-limit (table-upper-limit table) :value n}))))
 
 (defn- find-prime
   "Find prime in least divisor table."
@@ -68,7 +59,7 @@
             (recur (inc k))))))))
 
 (defn- mark-multiple
-  "Mark a as multiple of p in least divisor table if it is not already marked."
+  "Mark `k` as multiple of `p` in least divisor table if it is not already marked."
   [^ints table ^Integer k ^Integer p]
   (let [k' (table-get-number table k)]
     (when (= k' k)
@@ -96,24 +87,21 @@
   (sieve (->FullTable (int-array (range (inc upper-limit))))))
 
 (defn- ldt-int->factors
-  "Factorize integer.
-
-  Returns: ordered factors of given integer
-  "
-  [^ints table ^Integer a]
-  (check-in-table table a)
+  "Factorize integer."
+  [table ^Integer n]
+  (check-in-table table n)
   (lazy-seq
-   (when (> a 1)
-     (let [d (aget table a)]
-       (cons d (ldt-int->factors table (quot a d)))))))
+   (when (> n 1)
+     (let [d (table-get-number table n)]
+       (cons d (ldt-int->factors table (quot n d)))))))
 
 (defn- ldt-prime?
-  "Check does given integer is a prime."
-  [table a]
-  (check-in-table table a)
-  (let [val (aget table a)]
-    (and (> val 1)
-         (= val a))))
+  "Check does given integer is `n` prime."
+  [table n]
+  (check-in-table table n)
+  (let [n' (table-get-number table n)]
+    (and (> n' 1)
+         (= n' n))))
 
 (defn- ldt-primes
   "Make primes sequence from least divisor table"
@@ -129,30 +117,28 @@
 
 (defrecord FullLeastDivisorTable [table]
   f/Factorization
-  (int->factors [this a] (ldt-int->factors (:table this) a))
-  (prime? [this a] (ldt-prime? (:table this) a))
+  (int->factors [this n] (ldt-int->factors (:table this) n))
+  (prime? [this n] (ldt-prime? (:table this) n))
   (primes [this] (ldt-primes (:table this)))
-  (in-domain? [this a] (table-in-table? (:table this) a)))
+  (in-domain? [this n] (table-in-table? (:table this) n)))
 
-(defrecord OddLeastDivisorTable [table]
+(defrecord OddLeastDivisorTable [table upper-limit]
   f/Factorization
-  (int->factors [this a] (ldt-int->factors (:table this) a))
-  (prime? [this a] (ldt-prime? (:table this) a))
+  (int->factors [this n] (ldt-int->factors (:table this) n))
+  (prime? [this n] (ldt-prime? (:table this) n))
   (primes [this] (ldt-primes (:table this)))
-  (in-domain? [this a] (table-in-table? (:table this) a)))
+  (in-domain? [this n] (table-in-table? (:table this) n)))
 
+(defn make-full-factorization [upper-limit]
+  (->FullLeastDivisorTable (make-full-table upper-limit)))
 
-
-(defn make-full-factorization [n]
-  (->FullLeastDivisorTable (make-table n)))
-
-(defn make-odd-factorization [n]
-  (->FullLeastDivisorTable (make-table n)))
-
-
+(defn make-odd-factorization [upper-limit]
+  (let [half-upper-limit (bit-shift-right upper-limit 1)
+        odd-upper-limit (if (odd? half-upper-limit) half-upper-limit (dec half-upper-limit))]
+    (->FullLeastDivisorTable (make-odd-table odd-upper-limit) upper-limit)))
 
 (defn upper-limit [ldt]
-  (ldt-upper-limit (:table ldt)))
+  (table-upper-limit (:table ldt)))
 
 (defn print-table [ldt]
   (ldt-print-table (:table ldt)))
