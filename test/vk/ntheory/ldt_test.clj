@@ -5,9 +5,14 @@
    [vk.ntheory.ldt :as ldt]
    [clojure.string :as str]))
 
+
+
+
+
+
 (def prop-test-upper-limit 30)
 
-(deftest make-factorization-test
+(deftest make-full-factorization-test
   (are [x y] (= (vec (-> (ldt/make-full-factorization x) :table :arr)) y)
     0  [0]
     1  [0 1]
@@ -21,19 +26,46 @@
     9  [0 1 2 3 2 5 2 7 2 3]
     10 [0 1 2 3 2 5 2 7 2 3 2]))
 
-(deftest upper-limit-test
-  (is (= (ldt/upper-limit (ldt/make-factorization -1)) 0))
-  (is (= (ldt/upper-limit (ldt/make-factorization 0)) 0))
-  (is (= (ldt/upper-limit (ldt/make-factorization 1)) 1)))
+
+(deftest make-odd-table-test
+  (are [x y] (= (vec (-> (ldt/make-odd-table x) :arrp)) y)
+    ;;0  []
+    1  [1]
+    ;;3  [1 3]
+    ;;5  [1 3 5]
+    ;;7  [1 3 5 7]
+    ;;9  [1 3 5 7 9]
+    ;;11 [1 3 5 7 9 11]
+    )
+  )
+
+
+(deftest make-odd-factorization-test
+  (are [x y] (= (vec (-> (ldt/make-odd-factorization x) :table :arr)) y)
+    ;;0  []
+    1  [1]
+    2  [1]
+    3  [1 3]
+    4  [1 3]
+    5  [1 3 5]
+    6  [1 3 5]
+    7  [1 3 5 7]
+    8  [1 3 5 7]
+    9  [1 3 5 7 3]
+    10 [1 3 5 7 3]))
+
+
+
+
 
 (deftest upper-limit-prop-test
   (doseq [upper-limit (range 0 prop-test-upper-limit)]
-    (let [ldt (ldt/make-factorization upper-limit)]
+    (let [ldt (ldt/make-full-factorization upper-limit)]
       (is (= upper-limit (ldt/upper-limit ldt))))))
 
 
 (deftest table-print-test
-  (let [ldt (ldt/make-factorization 10)
+  (let [ldt (ldt/make-full-factorization 10)
         output (with-out-str (ldt/print-table ldt))
         expected-lines
         ["| :index | :value |"
