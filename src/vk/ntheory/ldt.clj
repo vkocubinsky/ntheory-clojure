@@ -8,7 +8,7 @@
   (table-set-number! [arr k v] "Store value `v` for natural number `k`.")
   (table-get-number [arr k] "Get value for given natural number `k`.")
   (table-in-table? [arr k] "Does given natural number `k` in table")
-  (table-upper-limit [arr] "Experimental. Return max number in table."))
+  (table-upper-limit [arr] "Return max number in table."))
 
 (defrecord FullTable [^ints arr]
   Table
@@ -122,10 +122,26 @@
   (primes [this] (ldt-primes (:table this)))
   (in-domain? [this n] (table-in-table? (:table this) n)))
 
+(defn power-of-two-parts
+  "Returns power of two and rest for given number"
+  [n]
+  (let [k (Long/numberOfTrailingZeros n)
+        r (bit-shift-right n k)]
+    [k r]))
+
+(defn- odd-ldt-int->factors [table n]
+  (let [[power rest] n]
+    (concat (repeat power 2) (ldt-int->factors table n))))
+
+(defn- odd-ldt-prime? [table n]
+  (let [[power rest] n]
+    (and (zero? power) (ldt-prime? table n))))
+
+
 (defrecord OddLeastDivisorTable [table upper-limit]
   f/Factorization
-  (int->factors [this n] (ldt-int->factors (:table this) n))
-  (prime? [this n] (ldt-prime? (:table this) n))
+  (int->factors [this n] (odd-ldt-int->factors (:table this) n))
+  (prime? [this n] (odd-ldt-prime? (:table this) n))
   (primes [this] (ldt-primes (:table this)))
   (in-domain? [this n] (table-in-table? (:table this) n)))
 
