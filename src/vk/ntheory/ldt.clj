@@ -66,7 +66,7 @@
     (throw (ex-info "Upper limit must be positive odd integer" {:upper-limit upper-limit})))
   (->OddTable upper-limit (int-array (range 1 (inc upper-limit) 2))))
 
-(defn- check-in-table
+(defn- check-table-contains
   "Check does given number `n` in table."
   [table n]
   (when-not (table-contains? table n)
@@ -97,7 +97,7 @@
     (if (or (nil? p) (> (* p p) (table-upper-limit table)))
       table
       ;; if p != 2 skip even numbers 
-      (let [step (if (= p 2) p (bit-shift-left p 1))]
+      (let [step (if (= p 2) p (* p 2))]
         (doseq [k (range (* p p) (inc (table-upper-limit table)) step)]
           (mark-multiple table k p))
         (recur (find-prime table (inc p)))))))
@@ -105,7 +105,7 @@
 (defn- ldt-int->factors
   "Factorize integer."
   [table ^Integer n]
-  (check-in-table table n)
+  (check-table-contains table n)
   (lazy-seq
    (when (> n 1)
      (let [d (table-get-number table n)]
@@ -114,7 +114,7 @@
 (defn- ldt-prime?
   "Check does given integer is `n` prime."
   [table n]
-  (check-in-table table n)
+  (check-table-contains table n)
   (let [n' (table-get-number table n)]
     (and (> n' 1)
          (= n' n))))
