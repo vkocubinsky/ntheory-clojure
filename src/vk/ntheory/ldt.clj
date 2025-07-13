@@ -20,7 +20,7 @@
     (throw (ex-info "Empty table." {:table :empty})))
   (table-upper-limit [this] 0))
 
-(defrecord FullTable [^long upper-limit ^ints arr]
+(defrecord FullTable [^int upper-limit ^ints arr]
   Table
   (table-set-number! [this k v]
     (when-not (table-contains? this k)
@@ -144,17 +144,17 @@
 (defn power-of-two-parts
   "Returns power of two and rest for given number"
   [n]
-  (let [k (Long/numberOfTrailingZeros n)
+  (let [k (Integer/numberOfTrailingZeros n)
         r (bit-shift-right n k)]
     [k r]))
 
 (defn- odd-ldt-int->factors [table n]
-  (let [[power rest] n]
-    (concat (repeat power 2) (ldt-int->factors table n))))
+  (let [[power rest] (power-of-two-parts n)]
+    (concat (repeat power 2) (ldt-int->factors table rest))))
 
 (defn- odd-ldt-prime? [table n]
-  (let [[power rest] n]
-    (and (zero? power) (ldt-prime? table n))))
+  (let [[power rest] (power-of-two-parts n)]
+    (and (zero? power) (ldt-prime? table rest))))
 
 (defrecord OddLeastDivisorTable [table upper-limit]
   f/Factorization
@@ -176,7 +176,6 @@
     (sieve table)
     (->OddLeastDivisorTable table upper-limit)))
 
-(defn print-table [ldt]
-  (ldt-print-table (:table ldt)))
+
 
 
