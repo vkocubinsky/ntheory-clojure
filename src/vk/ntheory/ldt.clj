@@ -71,6 +71,7 @@
   (when-not (table-contains? table n)
     (throw (ex-info "Out of range" {:upper-limit (table-upper-limit table) :value n}))))
 
+;; todo: step 2 if k > 2
 (defn- find-prime
   "Find prime in least divisor table."
   [table start]
@@ -91,6 +92,7 @@
     (when (= k' k)
       (table-set-number! table k p))))
 
+;; todo step 2 if p > 2
 (defn- sieve
   "Sieve of Erathosphene."
   [table]
@@ -172,7 +174,7 @@
                           (dec upper-limit))
         table (make-odd-table odd-upper-limit)]
     (sieve table)
-    (->OddLeastDivisorTable upper-limit table)))
+    (->OddLeastDivisorTable table upper-limit)))
 
 (defn print-table [ldt]
   (ldt-print-table (:table ldt)))
