@@ -127,12 +127,9 @@
   [table]
   (->> table
        (keep-indexed #(when (= %1 %2) %1))
-       (drop-while #(< % 2))))
+        (drop-while #(< % 2))))
 
-(defn- ldt-print-table [table]
-  (->> table
-       (map-indexed (fn [idx val] {:index idx :value val}))
-       (pp/print-table)))
+
 
 (defrecord FullLeastDivisorTable [table]
   f/Factorization
