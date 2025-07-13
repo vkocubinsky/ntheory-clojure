@@ -55,8 +55,7 @@
       (throw (ex-info "Number must be in table"
                       {:operation :table-get-number :k k :upper-limit upper-limit})))
     (let [idx (bit-shift-right k 1)]
-      (aget arr idx)
-      ))
+      (aget arr idx)))
   (table-contains? [this k] (and (int? k) (odd? k) (pos? k) (<= k upper-limit)))
   (table-upper-limit [this] upper-limit))
 
@@ -78,10 +77,12 @@
   (let [end (table-upper-limit table)]
     (loop [k start]
       (when (<= k end)
-        (let [k' (table-get-number table k)]
-          (if (= k' k)
-            k
-            (recur (inc k))))))))
+        (if (table-contains? table k)
+          (let [k' (table-get-number table k)]
+            (if (and (= k' k) (> k 1))
+              k
+              (recur (inc k))))
+          (recur (inc k)))))))
 
 (defn- mark-multiple
   "Mark `k` as multiple of `p` in least divisor table if it is not already marked."
@@ -93,7 +94,7 @@
 (defn- sieve
   "Sieve of Erathosphene."
   [table]
-  (loop [p  (find-prime table 2)]
+  (loop [p  (find-prime table 1)]
     (if (or (nil? p) (> (* p p) (table-upper-limit table)))
       table
       ;; if p != 2 skip even numbers 
