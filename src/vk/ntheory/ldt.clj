@@ -126,8 +126,11 @@
   "Make primes sequence from least divisor table"
   [table]
   (->> table
+       :arr
        (keep-indexed #(when (= %1 %2) %1))
         (drop-while #(< % 2))))
+
+
 
 
 
@@ -152,6 +155,8 @@
 (defn- odd-ldt-prime? [table n]
   (let [[power rest] (power-of-two-parts n)]
     (and (zero? power) (ldt-prime? table rest))))
+
+
 
 (defrecord OddLeastDivisorTable [table upper-limit]
   f/Factorization
