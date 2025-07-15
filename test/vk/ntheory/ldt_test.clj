@@ -7,9 +7,15 @@
 
 (def prop-test-upper-limit 30)
 
+(deftest make-empty-table-test
+  (let [table (ldt/make-empty-table)]
+    (is (thrown? Exception (ldt/table-set-number! table 1 1)))
+    (is (thrown? Exception (ldt/table-get-number table 1)))
+    (is (not (ldt/table-contains? table 1)))
+    (is (ldt/table-upper-limit table) 0)))
+
 (deftest make-full-table-test
   (are [x y] (= y (vec (:arr (ldt/make-full-table x))))
-    0  [0]
     1  [0 1]
     2  [0 1 2]
     ,,,
@@ -17,16 +23,13 @@
 
 (deftest full-table-test
   (let [table (ldt/make-full-table 5)]
-    (is (= [0 1 2 3 4 5] (vec (:arr table)) ))
+    (is (= [0 1 2 3 4 5] (vec (:arr table))))
     (is (ldt/table-contains? table 1))
     (is (ldt/table-contains? table 4))
     (is (ldt/table-contains? table 5))
     (is (not (ldt/table-contains? table 6)))
     (ldt/table-set-number! table 4 2)
-    (is (= 2 (ldt/table-get-number table 4)))
-    )
-  )
-
+    (is (= 2 (ldt/table-get-number table 4)))))
 
 (deftest make-odd-table-test
   (are [x y] (= y (vec (:arr (ldt/make-odd-table x))))
@@ -38,43 +41,32 @@
 
 (deftest odd-table-test
   (let [table (ldt/make-odd-table 11)]
-    (is (= [1 3 5 7 9 11] (vec (:arr table)) ))
+    (is (= [1 3 5 7 9 11] (vec (:arr table))))
     (is (ldt/table-contains? table 1))
     (is (ldt/table-contains? table 9))
     (is (ldt/table-contains? table 11))
     (is (not (ldt/table-contains? table 13)))
     (ldt/table-set-number! table 9 3)
-    (is (= 3 (ldt/table-get-number table 9)))
+    (is (= 3 (ldt/table-get-number table 9)))))
+
+
+(deftest full-factorization-test
+  (let [factorizer (ldt/make-full-factorization 16)]
+    (is (= [2 2 3] (f/int->factors factorizer 12)))
+    (is (f/prime? factorizer 2))
+    (is (f/prime? factorizer 3))
+    (is (= [2 3 5 7 11 13] (f/primes factorizer) ))
     )
   )
 
-
-(deftest make-full-factorization-test
-  (are [x y] (= y (vec (-> (ldt/make-full-factorization x) :table :arr)))
-    1  [0 1]
-    2  [0 1 2]
-    3  [0 1 2 3]
-    4  [0 1 2 3 2]
-    5  [0 1 2 3 2 5]
-    6  [0 1 2 3 2 5 2]
-    7  [0 1 2 3 2 5 2 7]
-    8  [0 1 2 3 2 5 2 7 2]
-    9  [0 1 2 3 2 5 2 7 2 3]
-    10 [0 1 2 3 2 5 2 7 2 3 2]))
-
-
-(deftest make-odd-factorization-test
-  (are [x y] (= y (vec (-> (ldt/make-odd-factorization x) :table :arr)))
-    1  [1]
-    2  [1]
-    3  [1 3]
-    4  [1 3]
-    5  [1 3 5]
-    6  [1 3 5]
-    7  [1 3 5 7]
-    8  [1 3 5 7]
-    9  [1 3 5 7 3]
-    10 [1 3 5 7 3]))
+(deftest odd-factorization-test
+  (let [factorizer (ldt/make-odd-factorization 16)]
+    (is (= [2 2 3] (f/int->factors factorizer 12)))
+    (is (f/prime? factorizer 2))
+    (is (f/prime? factorizer 3))
+    (is (= [2 3 5 7 11 13] (f/primes factorizer) ))
+    )
+  )
 
 
 

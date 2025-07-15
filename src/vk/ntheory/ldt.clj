@@ -5,10 +5,10 @@
             [vk.ntheory.factorization :as f]))
 
 (defprotocol Table
-  (table-set-number! [arr k v] "Store value `v` for natural number `k`.")
-  (table-get-number [arr k] "Get value for given natural number `k`.")
-  (table-contains? [arr k] "Does given natural number `k` in table")
-  (table-upper-limit [arr] "Return max number in table."))
+  (table-set-number! [this k v] "Store value `v` for natural number `k`.")
+  (table-get-number [this k] "Get value for given natural number `k`.")
+  (table-contains? [this k] "Does given natural number `k` in table")
+  (table-upper-limit [this] "Return max number in table."))
 
 (defrecord EmptyTable []
   Table
@@ -16,9 +16,11 @@
     (throw (ex-info "Empty table." {:table :empty})))
   (table-get-number [this k]
     (throw (ex-info "Empty table." {:table :empty})))
-  (table-contains? [this k]
-    (throw (ex-info "Empty table." {:table :empty})))
+  (table-contains? [this k] false)
   (table-upper-limit [this] 0))
+
+(defn make-empty-table []
+  (->EmptyTable))
 
 (defrecord FullTable [^int upper-limit ^ints arr]
   Table
@@ -122,23 +124,19 @@
     (and (> n' 1)
          (= n' n))))
 
-(defn- ldt-primes
+(defn- full-ldt-primes
   "Make primes sequence from least divisor table"
   [table]
   (->> table
-       :arr
-       (keep-indexed #(when (= %1 %2) %1))
-        (drop-while #(< % 2))))
-
-
-
-
+       :arr ,,,
+       (keep-indexed #(when (= %1 %2) %1) ,,, )
+       (drop-while #(< % 2) ,,,)))
 
 (defrecord FullLeastDivisorTable [table]
   f/Factorization
   (int->factors [this n] (ldt-int->factors (:table this) n))
   (prime? [this n] (ldt-prime? (:table this) n))
-  (primes [this] (ldt-primes (:table this)))
+  (primes [this] (full-ldt-primes (:table this)))
   (in-domain? [this n] (table-contains? (:table this) n)))
 
 (defn power-of-two-parts
@@ -153,16 +151,29 @@
     (concat (repeat power 2) (ldt-int->factors table rest))))
 
 (defn- odd-ldt-prime? [table n]
-  (let [[power rest] (power-of-two-parts n)]
-    (and (zero? power) (ldt-prime? table rest))))
+  (if (= n 2)
+    true ;; but what if 2 not in tabler
+    (let [[power rest] (power-of-two-parts n)]
+      (and (zero? power) (ldt-prime? table rest)))))
 
-
+(defn- odd-ldt-primes
+  "Make primes sequence from least divisor table"
+  [table]
+  (->> table
+       :arr
+       (map #(vector %1 %2) (range 1 (inc (table-upper-limit table)) 2) ,,, )
+       (filter (fn [[k v]] (= k v)) ,,,)
+       (map first ,,,)
+       (drop-while #(< % 2) ,,,)
+       ;; what if upper-limit < 2
+       (cons 2 ,,,)
+       ))
 
 (defrecord OddLeastDivisorTable [table upper-limit]
   f/Factorization
   (int->factors [this n] (odd-ldt-int->factors (:table this) n))
   (prime? [this n] (odd-ldt-prime? (:table this) n))
-  (primes [this] (ldt-primes (:table this)))
+  (primes [this] (odd-ldt-primes (:table this)))
   (in-domain? [this n] (table-contains? (:table this) n)))
 
 (defn make-full-factorization [upper-limit]
