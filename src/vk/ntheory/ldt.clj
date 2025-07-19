@@ -111,14 +111,14 @@
   [table seq]
   (->> table
        :arr
-       (map #(vector %1 %2) (range 1 (inc (table-upper-limit table)) 2))
-       (filter (fn [[k v]] (= k v)))
-       (map first)
-       (drop-while #(< % 2))))
+       (map #(vector %1 %2) seq ,,,)
+       (filter (fn [[k v]] (= k v)) ,,,)
+       (map first ,,,)
+       (drop-while #(< % 2) ,,,)))
 
 (defn- full-ldt-primes
   [table]
-  (ldt-primes table (range (inc (table-upper-limit table)))))
+  (ldt-primes table (range 0 (inc (table-upper-limit table)))))
 
 (defrecord FullLeastDivisorTable [table]
   f/Factorization
