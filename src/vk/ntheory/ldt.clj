@@ -116,8 +116,7 @@
 (defn odd-table-primes
   [table]
   (let [upper-limit (table-upper-limit table)
-        seq (table-primes table (odd-table-init-seq upper-limit))
-        ]
+        seq (table-primes table (odd-table-init-seq upper-limit))]
     (if (> upper-limit 2)
       (cons 2 seq)
       seq)))
