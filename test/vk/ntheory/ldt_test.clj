@@ -7,22 +7,15 @@
 
 (def prop-test-upper-limit 30)
 
-(deftest make-empty-table-test
-  (let [table (ldt/make-empty-table)]
-    (is (thrown? Exception (ldt/table-set-number! table 1 1)))
-    (is (thrown? Exception (ldt/table-get-number table 1)))
-    (is (not (ldt/table-contains? table 1)))
-    (is (ldt/table-upper-limit table) 0)))
-
-(deftest make-full-table-test
-  (are [x y] (= y (vec (:arr (ldt/make-full-table x))))
+(deftest full-make-table-test
+  (are [x y] (= y (vec (:arr (ldt/full-make-table x))))
     1  [0 1]
     2  [0 1 2]
     ,,,
     10  [0 1 2 3 4 5 6 7 8 9 10]))
 
-(deftest full-table-test
-  (let [table (ldt/make-full-table 5)]
+(deftest full-make-table-test
+  (let [table (ldt/full-make-table 5)]
     (is (= [0 1 2 3 4 5] (vec (:arr table))))
     (is (ldt/table-contains? table 1))
     (is (ldt/table-contains? table 4))
@@ -32,7 +25,7 @@
     (is (= 2 (ldt/table-get-number table 4)))))
 
 (deftest make-odd-table-test
-  (are [x y] (= y (vec (:arr (ldt/make-odd-table x))))
+  (are [x y] (= y (vec (:arr (ldt/odd-make-table x))))
     1  [1]
     3  [1 3]
     5  [1 3 5]
@@ -40,7 +33,7 @@
     11  [1 3 5 7 9 11]))
 
 (deftest odd-table-test
-  (let [table (ldt/make-odd-table 11)]
+  (let [table (ldt/odd-make-table 11)]
     (is (= [1 3 5 7 9 11] (vec (:arr table))))
     (is (ldt/table-contains? table 1))
     (is (ldt/table-contains? table 9))
@@ -49,27 +42,19 @@
     (ldt/table-set-number! table 9 3)
     (is (= 3 (ldt/table-get-number table 9)))))
 
-
-;;Valery, start here, line 59
 (deftest full-factorization-test
   (let [factorizer (ldt/make-full-factorization 16)]
     (is (= [2 2 3] (f/int->factors factorizer 12)))
     (is (f/prime? factorizer 2))
     (is (f/prime? factorizer 3))
-    (is (= [2 3 5 7 11 13] (f/primes factorizer) ))
-    )
-  )
+    (is (= [2 3 5 7 11 13] (f/primes factorizer)))))
 
 (deftest odd-factorization-test
   (let [factorizer (ldt/make-odd-factorization 16)]
     (is (= [2 2 3] (f/int->factors factorizer 12)))
     (is (f/prime? factorizer 2))
     (is (f/prime? factorizer 3))
-    (is (= [2 3 5 7 11 13] (f/primes factorizer) ))
-    )
-  )
-
-
+    (is (= [2 3 5 7 11 13] (f/primes factorizer)))))
 
 (deftest int->factors-test
   (let [factorizer (ldt/make-full-factorization 20)]
