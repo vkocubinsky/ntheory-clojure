@@ -21,10 +21,10 @@
   (table-get-number [this k]
     (assert (table-contains? this k))
     (aget arr k))
-  (table-contains? [this k] (and (int? k) (pos? k) (<= k upper-limit)))
+  (table-contains? [this k] (and (natural? k) (<= k upper-limit)))
   (table-upper-limit [this] upper-limit))
 
-(defn- full-init-seq [upper-limit]
+(defn full-init-seq [upper-limit]
   (range (inc upper-limit)))
 
 (defn full-make-table
@@ -43,7 +43,7 @@
     (assert (table-contains? this k))
     (let [idx (bit-shift-right k 1)]
       (aget arr idx)))
-  (table-contains? [this k] (and (int? k) (odd? k) (pos? k) (<= k upper-limit)))
+  (table-contains? [this k] (and (natural? k) (odd? k) (<= k upper-limit)))
   (table-upper-limit [this] upper-limit))
 
 (defn odd-init-seq [upper-limit]
@@ -54,17 +54,16 @@
   (assert (odd? upper-limit))
   (->OddTable upper-limit (int-array (odd-init-seq upper-limit))))
 
-(defn- table-check-contains
+(defn table-check-contains
   "Check does given number `n` in table."
   [table n]
   (when-not (table-contains? table n)
     (throw (ex-info "Out of range" {:upper-limit (table-upper-limit table) :value n}))))
 
-(defn- sieve
+(defn sieve
   "Sieve of Erathosphene."
   [table start]
   (loop [p  start]
-    (prn "consider number=" p)
     (if (> (* p p) (table-upper-limit table))
       table
       (let [p' (table-get-number table p)
@@ -77,7 +76,7 @@
                 (table-set-number! table k p)))))
         (recur (+ p iter-step))))))
 
-(defn- table-int->factors
+(defn table-int->factors
   "Factorize integer."
   [table ^Integer n]
   (table-check-contains table n)
@@ -86,7 +85,7 @@
      (let [d (table-get-number table n)]
        (cons d (table-int->factors table (quot n d)))))))
 
-(defn- table-prime?
+(defn table-prime?
   "Check does given integer is `n` prime."
   [table n]
   (table-check-contains table n)
@@ -94,7 +93,7 @@
     (and (> n' 1)
          (= n' n))))
 
-(defn- table-primes
+(defn table-primes
   [table seq]
   (->> table
        :arr
@@ -103,9 +102,9 @@
        (map first)
        (drop-while #(< % 2))))
 
-(defn- full-table-primes
+(defn full-table-primes
   [table]
-  (table-primes table (full-init-seq table-upper-limit)))
+  (table-primes table (full-init-seq (table-upper-limit table))))
 
 (defrecord FullLeastDivisorTable [table]
   f/Factorization
@@ -114,10 +113,11 @@
   (primes [this] (full-table-primes (:table this)))
   (in-domain? [this n] (table-contains? (:table this) n)))
 
-(defn- odd-table-primes
+(defn odd-table-primes
   [table]
-  (let [seq (odd-init-seq (table-upper-limit table))
-        upper-limit (table-upper-limit table)]
+  (let [upper-limit (table-upper-limit table)
+        seq (table-primes table (odd-init-seq upper-limit))
+        ]
     (if (> upper-limit 2)
       (cons 2 seq)
       seq)))
@@ -129,11 +129,11 @@
         r (bit-shift-right n k)]
     [k r]))
 
-(defn- odd-table-int->factors [table n]
+(defn odd-table-int->factors [table n]
   (let [[power rest] (power-of-two-parts n)]
     (concat (repeat power 2) (table-int->factors table rest))))
 
-(defn- odd-table-prime? [table n]
+(defn odd-table-prime? [table n]
   (cond
     (< (table-upper-limit table) 2) false
     (= n 2) true
