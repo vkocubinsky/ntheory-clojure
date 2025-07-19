@@ -24,14 +24,14 @@
   (table-contains? [this k] (and (natural? k) (<= k upper-limit)))
   (table-upper-limit [this] upper-limit))
 
-(defn full-init-seq [upper-limit]
+(defn full-table-init-seq [upper-limit]
   (range (inc upper-limit)))
 
-(defn full-make-table
+(defn full-table-make
   "Initialize full table for sieve."
   [upper-limit]
   (assert (natural? upper-limit))
-  (->FullTable upper-limit (int-array (full-init-seq upper-limit))))
+  (->FullTable upper-limit (int-array (full-table-init-seq upper-limit))))
 
 (defrecord OddTable [upper-limit ^ints arr]
   Table
@@ -46,13 +46,13 @@
   (table-contains? [this k] (and (natural? k) (odd? k) (<= k upper-limit)))
   (table-upper-limit [this] upper-limit))
 
-(defn odd-init-seq [upper-limit]
+(defn odd-table-init-seq [upper-limit]
   (range 1 (inc upper-limit) 2))
 
-(defn odd-make-table
+(defn odd-table-make
   [upper-limit]
   (assert (odd? upper-limit))
-  (->OddTable upper-limit (int-array (odd-init-seq upper-limit))))
+  (->OddTable upper-limit (int-array (odd-table-init-seq upper-limit))))
 
 (defn table-check-contains
   "Check does given number `n` in table."
@@ -104,7 +104,7 @@
 
 (defn full-table-primes
   [table]
-  (table-primes table (full-init-seq (table-upper-limit table))))
+  (table-primes table (full-table-init-seq (table-upper-limit table))))
 
 (defrecord FullLeastDivisorTable [table]
   f/Factorization
@@ -116,7 +116,7 @@
 (defn odd-table-primes
   [table]
   (let [upper-limit (table-upper-limit table)
-        seq (table-primes table (odd-init-seq upper-limit))
+        seq (table-primes table (odd-table-init-seq upper-limit))
         ]
     (if (> upper-limit 2)
       (cons 2 seq)
@@ -150,7 +150,7 @@
 (defn make-full-factorization [upper-limit]
   (when-not (natural? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
-  (let [table (full-make-table upper-limit)]
+  (let [table (full-table-make upper-limit)]
     (sieve table 2)
     (->FullLeastDivisorTable table)))
 
@@ -160,7 +160,7 @@
   (let [odd-upper-limit (if (odd? upper-limit)
                           upper-limit
                           (dec upper-limit))
-        table (odd-make-table odd-upper-limit)]
+        table (odd-table-make odd-upper-limit)]
     (sieve table 3)
     (->OddLeastDivisorTable table upper-limit)))
 
