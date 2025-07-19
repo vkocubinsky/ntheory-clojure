@@ -106,13 +106,19 @@
     (and (> n' 1)
          (= n' n))))
 
-(defn- full-ldt-primes
-  "Make primes sequence from least divisor table"
-  [table]
+(defn- ldt-primes
+  "Primes for give table. Caller knows sequence of numbers corresponded to the table."
+  [table seq]
   (->> table
-       :arr ,,,
-       (keep-indexed #(when (= %1 %2) %1))
+       :arr
+       (map #(vector %1 %2) (range 1 (inc (table-upper-limit table)) 2))
+       (filter (fn [[k v]] (= k v)))
+       (map first)
        (drop-while #(< % 2))))
+
+(defn- full-ldt-primes
+  [table]
+  (ldt-primes table (range (inc (table-upper-limit table)))))
 
 (defrecord FullLeastDivisorTable [table]
   f/Factorization
@@ -120,6 +126,14 @@
   (prime? [this n] (ldt-prime? (:table this) n))
   (primes [this] (full-ldt-primes (:table this)))
   (in-domain? [this n] (table-contains? (:table this) n)))
+
+(defn- odd-ldt-primes
+  [table]
+  (let [seq (range 1 (inc (table-upper-limit table)) 2)
+        upper-limit (table-upper-limit table)]
+    (if (> upper-limit 2)
+      (cons 2 seq)
+      seq)))
 
 (defn power-of-two-parts
   "Returns power of two and rest for given number"
@@ -133,22 +147,11 @@
     (concat (repeat power 2) (ldt-int->factors table rest))))
 
 (defn- odd-ldt-prime? [table n]
-  (if (= n 2)
-    true ;; but what if 2 not in tabler
-    (let [[power rest] (power-of-two-parts n)]
-      (and (zero? power) (ldt-prime? table rest)))))
-
-(defn- odd-ldt-primes
-  "Make primes sequence from least divisor table"
-  [table]
-  (->> table
-       :arr
-       (map #(vector %1 %2) (range 1 (inc (table-upper-limit table)) 2))
-       (filter (fn [[k v]] (= k v)))
-       (map first)
-       (drop-while #(< % 2))
-       ;; what if upper-limit < 2
-       (cons 2)))
+  (cond
+    (< (table-upper-limit table) 2) false
+    (= n 2) true
+    :else (let [[power rest] (power-of-two-parts n)]
+            (and (zero? power) (ldt-prime? table rest)))))
 
 (defrecord OddLeastDivisorTable [table upper-limit]
   f/Factorization
@@ -158,17 +161,21 @@
   (in-domain? [this n] (table-contains? (:table this) n)))
 
 (defn make-full-factorization [upper-limit]
-  (let [table (make-full-table upper-limit)]
-    (sieve table 2)
-    (->FullLeastDivisorTable table)))
+  (if (< upper-limit 2)
+    (->EmptyTable)
+    (let [table (make-full-table upper-limit)]
+      (sieve table 2)
+      (->FullLeastDivisorTable table))))
 
 (defn make-odd-factorization [upper-limit]
-  (let [odd-upper-limit (if (odd? upper-limit)
-                          upper-limit
-                          (dec upper-limit))
-        table (make-odd-table odd-upper-limit)]
-    (sieve table 3)
-    (->OddLeastDivisorTable table upper-limit)))
+  (if (< upper-limit 2)
+    (->EmptyTable)
+    (let [odd-upper-limit (if (odd? upper-limit)
+                            upper-limit
+                            (dec upper-limit))
+          table (make-odd-table odd-upper-limit)]
+      (sieve table 3)
+      (->OddLeastDivisorTable table upper-limit))))
 
 
 
