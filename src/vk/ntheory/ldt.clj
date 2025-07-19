@@ -73,39 +73,21 @@
   (when-not (table-contains? table n)
     (throw (ex-info "Out of range" {:upper-limit (table-upper-limit table) :value n}))))
 
-;; todo: step 2 if k > 2
-(defn- find-prime
-  "Find prime in least divisor table."
-  [table start]
-  (let [end (table-upper-limit table)]
-    (loop [k start]
-      (when (<= k end)
-        (if (table-contains? table k)
-          (let [k' (table-get-number table k)]
-            (if (and (= k' k) (> k 1))
-              k
-              (recur (inc k))))
-          (recur (inc k)))))))
-
-(defn- mark-multiple
-  "Mark `k` as multiple of `p` in least divisor table if it is not already marked."
-  [^ints table ^Integer k ^Integer p]
-  (let [k' (table-get-number table k)]
-    (when (= k' k)
-      (table-set-number! table k p))))
-
-;; todo step 2 if p > 2
 (defn- sieve
   "Sieve of Erathosphene."
-  [table]
-  (loop [p  (find-prime table 1)]
-    (if (or (nil? p) (> (* p p) (table-upper-limit table)))
+  [table start]
+  (loop [p  start]
+    (if (> (* p p) (table-upper-limit table))
       table
-      ;; if p != 2 skip even numbers 
-      (let [step (if (= p 2) p (* p 2))]
-        (doseq [k (range (* p p) (inc (table-upper-limit table)) step)]
-          (mark-multiple table k p))
-        (recur (find-prime table (inc p)))))))
+      (let [p' (table-get-number table p)
+            step (if (= p 2) p (* p 2))]
+        (when (= p' p)
+          (doseq [k (range (* p p) (inc (table-upper-limit table)) step)]
+            (let [k' (table-get-number table k)]
+              (when (= k' k)
+                (table-set-number! table k p)))))
+
+        (recur (+ p step))))))
 
 (defn- ldt-int->factors
   "Factorize integer."
@@ -129,8 +111,8 @@
   [table]
   (->> table
        :arr ,,,
-       (keep-indexed #(when (= %1 %2) %1) ,,, )
-       (drop-while #(< % 2) ,,,)))
+       (keep-indexed #(when (= %1 %2) %1))
+       (drop-while #(< % 2))))
 
 (defrecord FullLeastDivisorTable [table]
   f/Factorization
@@ -161,13 +143,12 @@
   [table]
   (->> table
        :arr
-       (map #(vector %1 %2) (range 1 (inc (table-upper-limit table)) 2) ,,, )
-       (filter (fn [[k v]] (= k v)) ,,,)
-       (map first ,,,)
-       (drop-while #(< % 2) ,,,)
+       (map #(vector %1 %2) (range 1 (inc (table-upper-limit table)) 2))
+       (filter (fn [[k v]] (= k v)))
+       (map first)
+       (drop-while #(< % 2))
        ;; what if upper-limit < 2
-       (cons 2 ,,,)
-       ))
+       (cons 2)))
 
 (defrecord OddLeastDivisorTable [table upper-limit]
   f/Factorization
@@ -178,7 +159,7 @@
 
 (defn make-full-factorization [upper-limit]
   (let [table (make-full-table upper-limit)]
-    (sieve table)
+    (sieve table 2)
     (->FullLeastDivisorTable table)))
 
 (defn make-odd-factorization [upper-limit]
@@ -186,7 +167,7 @@
                           upper-limit
                           (dec upper-limit))
         table (make-odd-table odd-upper-limit)]
-    (sieve table)
+    (sieve table 3)
     (->OddLeastDivisorTable table upper-limit)))
 
 
