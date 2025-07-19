@@ -4,70 +4,57 @@
   (:require [clojure.pprint :as pp]
             [vk.ntheory.factorization :as f]))
 
+(defn natural? [n]
+  (and (int? n) (pos? n)))
+
 (defprotocol Table
   (table-set-number! [this k v] "Store value `v` for natural number `k`.")
   (table-get-number [this k] "Get value for given natural number `k`.")
   (table-contains? [this k] "Does given natural number `k` in table")
   (table-upper-limit [this] "Return max number in table."))
 
-(defrecord EmptyTable []
-  Table
-  (table-set-number! [this k v]
-    (throw (ex-info "Empty table." {:table :empty})))
-  (table-get-number [this k]
-    (throw (ex-info "Empty table." {:table :empty})))
-  (table-contains? [this k] false)
-  (table-upper-limit [this] 0))
-
-(defn make-empty-table []
-  (->EmptyTable))
-
 (defrecord FullTable [^int upper-limit ^ints arr]
   Table
   (table-set-number! [this k v]
-    (when-not (table-contains? this k)
-      (throw (ex-info "Number must be in table"
-                      {:operation :table-set-number! :k k :v v :upper-limit upper-limit})))
+    (assert (table-contains? this k))
     (aset-int arr k v))
   (table-get-number [this k]
-    (when-not (table-contains? this k)
-      (throw (ex-info "Number must be in table"
-                      {:operation :table-get-number :k k :upper-limit upper-limit})))
+    (assert (table-contains? this k))
     (aget arr k))
   (table-contains? [this k] (and (int? k) (pos? k) (<= k upper-limit)))
   (table-upper-limit [this] upper-limit))
 
-(defn make-full-table
+(defn- full-init-seq [upper-limit]
+  (range (inc upper-limit)))
+
+(defn full-make-table
   "Initialize full table for sieve."
   [upper-limit]
-  (when-not (and (int? upper-limit) (pos? upper-limit))
-    (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
-  (->FullTable upper-limit (int-array (range (inc upper-limit)))))
+  (assert (natural? upper-limit))
+  (->FullTable upper-limit (int-array (full-init-seq upper-limit))))
 
 (defrecord OddTable [upper-limit ^ints arr]
   Table
   (table-set-number! [this k v]
-    (when-not (table-contains? this k)
-      (throw (ex-info "Number must be in table"
-                      {:operation :table-set-number! :k k :v v :upper-limit upper-limit})))
+    (assert (table-contains? this k))
     (let [idx (bit-shift-right k 1)]
       (aset-int arr idx v)))
   (table-get-number [this k]
-    (when-not (table-contains? this k)
-      (throw (ex-info "Number must be in table"
-                      {:operation :table-get-number :k k :upper-limit upper-limit})))
+    (assert (table-contains? this k))
     (let [idx (bit-shift-right k 1)]
       (aget arr idx)))
   (table-contains? [this k] (and (int? k) (odd? k) (pos? k) (<= k upper-limit)))
   (table-upper-limit [this] upper-limit))
 
-(defn make-odd-table
-  [upper-limit]
-  (when-not (and (int? upper-limit) (pos? upper-limit) (odd? upper-limit))
-    (throw (ex-info "Upper limit must be positive odd integer" {:upper-limit upper-limit})))
-  (->OddTable upper-limit (int-array (range 1 (inc upper-limit) 2))))
+(defn odd-init-seq [upper-limit]
+  (range 1 (inc upper-limit) 2))
 
-(defn- check-table-contains
+(defn odd-make-table
+  [upper-limit]
+  (assert (odd? upper-limit))
+  (->OddTable upper-limit (int-array (odd-init-seq upper-limit))))
+
+(defn- table-check-contains
   "Check does given number `n` in table."
   [table n]
   (when-not (table-contains? table n)
@@ -77,59 +64,59 @@
   "Sieve of Erathosphene."
   [table start]
   (loop [p  start]
+    (prn "consider number=" p)
     (if (> (* p p) (table-upper-limit table))
       table
       (let [p' (table-get-number table p)
-            step (if (= p 2) p (* p 2))]
+            mark-step (if (= p 2) p (* p 2))
+            iter-step (if (= p 2) 1 2)]
         (when (= p' p)
-          (doseq [k (range (* p p) (inc (table-upper-limit table)) step)]
+          (doseq [k (range (* p p) (inc (table-upper-limit table)) mark-step)]
             (let [k' (table-get-number table k)]
               (when (= k' k)
                 (table-set-number! table k p)))))
+        (recur (+ p iter-step))))))
 
-        (recur (+ p step))))))
-
-(defn- ldt-int->factors
+(defn- table-int->factors
   "Factorize integer."
   [table ^Integer n]
-  (check-table-contains table n)
+  (table-check-contains table n)
   (lazy-seq
    (when (> n 1)
      (let [d (table-get-number table n)]
-       (cons d (ldt-int->factors table (quot n d)))))))
+       (cons d (table-int->factors table (quot n d)))))))
 
-(defn- ldt-prime?
+(defn- table-prime?
   "Check does given integer is `n` prime."
   [table n]
-  (check-table-contains table n)
+  (table-check-contains table n)
   (let [n' (table-get-number table n)]
     (and (> n' 1)
          (= n' n))))
 
-(defn- ldt-primes
-  "Primes for give table. Caller knows sequence of numbers corresponded to the table."
+(defn- table-primes
   [table seq]
   (->> table
        :arr
-       (map #(vector %1 %2) seq ,,,)
-       (filter (fn [[k v]] (= k v)) ,,,)
-       (map first ,,,)
-       (drop-while #(< % 2) ,,,)))
+       (map #(vector %1 %2) seq)
+       (filter (fn [[k v]] (= k v)))
+       (map first)
+       (drop-while #(< % 2))))
 
-(defn- full-ldt-primes
+(defn- full-table-primes
   [table]
-  (ldt-primes table (range 0 (inc (table-upper-limit table)))))
+  (table-primes table (full-init-seq table-upper-limit)))
 
 (defrecord FullLeastDivisorTable [table]
   f/Factorization
-  (int->factors [this n] (ldt-int->factors (:table this) n))
-  (prime? [this n] (ldt-prime? (:table this) n))
-  (primes [this] (full-ldt-primes (:table this)))
+  (int->factors [this n] (table-int->factors (:table this) n))
+  (prime? [this n] (table-prime? (:table this) n))
+  (primes [this] (full-table-primes (:table this)))
   (in-domain? [this n] (table-contains? (:table this) n)))
 
-(defn- odd-ldt-primes
+(defn- odd-table-primes
   [table]
-  (let [seq (range 1 (inc (table-upper-limit table)) 2)
+  (let [seq (odd-init-seq (table-upper-limit table))
         upper-limit (table-upper-limit table)]
     (if (> upper-limit 2)
       (cons 2 seq)
@@ -142,40 +129,40 @@
         r (bit-shift-right n k)]
     [k r]))
 
-(defn- odd-ldt-int->factors [table n]
+(defn- odd-table-int->factors [table n]
   (let [[power rest] (power-of-two-parts n)]
-    (concat (repeat power 2) (ldt-int->factors table rest))))
+    (concat (repeat power 2) (table-int->factors table rest))))
 
-(defn- odd-ldt-prime? [table n]
+(defn- odd-table-prime? [table n]
   (cond
     (< (table-upper-limit table) 2) false
     (= n 2) true
     :else (let [[power rest] (power-of-two-parts n)]
-            (and (zero? power) (ldt-prime? table rest)))))
+            (and (zero? power) (table-prime? table rest)))))
 
 (defrecord OddLeastDivisorTable [table upper-limit]
   f/Factorization
-  (int->factors [this n] (odd-ldt-int->factors (:table this) n))
-  (prime? [this n] (odd-ldt-prime? (:table this) n))
-  (primes [this] (odd-ldt-primes (:table this)))
+  (int->factors [this n] (odd-table-int->factors (:table this) n))
+  (prime? [this n] (odd-table-prime? (:table this) n))
+  (primes [this] (odd-table-primes (:table this)))
   (in-domain? [this n] (table-contains? (:table this) n)))
 
 (defn make-full-factorization [upper-limit]
-  (if (< upper-limit 2)
-    (->EmptyTable)
-    (let [table (make-full-table upper-limit)]
-      (sieve table 2)
-      (->FullLeastDivisorTable table))))
+  (when-not (natural? upper-limit)
+    (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
+  (let [table (full-make-table upper-limit)]
+    (sieve table 2)
+    (->FullLeastDivisorTable table)))
 
 (defn make-odd-factorization [upper-limit]
-  (if (< upper-limit 2)
-    (->EmptyTable)
-    (let [odd-upper-limit (if (odd? upper-limit)
-                            upper-limit
-                            (dec upper-limit))
-          table (make-odd-table odd-upper-limit)]
-      (sieve table 3)
-      (->OddLeastDivisorTable table upper-limit))))
+  (when-not (natural? upper-limit)
+    (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
+  (let [odd-upper-limit (if (odd? upper-limit)
+                          upper-limit
+                          (dec upper-limit))
+        table (odd-make-table odd-upper-limit)]
+    (sieve table 3)
+    (->OddLeastDivisorTable table upper-limit)))
 
 
 
