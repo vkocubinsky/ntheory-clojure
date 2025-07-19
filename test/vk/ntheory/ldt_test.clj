@@ -50,6 +50,7 @@
     (is (= 3 (ldt/table-get-number table 9)))))
 
 
+;;Valery, start here, line 59
 (deftest full-factorization-test
   (let [factorizer (ldt/make-full-factorization 16)]
     (is (= [2 2 3] (f/int->factors factorizer 12)))
