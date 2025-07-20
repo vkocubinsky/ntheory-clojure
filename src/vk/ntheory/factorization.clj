@@ -7,3 +7,7 @@
   (primes [this] "Lazy sequence of primes.")
   (in-domain? [this a] "Returns true if value a is supported otherwise false.")
   )
+
+
+;;(defmulti make (fn [name upper-limit] name))
+(defmulti make first)

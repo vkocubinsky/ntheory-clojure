@@ -2,66 +2,63 @@
   (:require
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.factorization :as f]
-   [vk.ntheory.ldt :as ldt]
+   [vk.ntheory.ldt :as t]
    [clojure.string :as str]))
 
 (def prop-test-upper-limit 30)
 
-(deftest full-make-table-test
-  (are [x y] (= y (vec (:arr (ldt/full-make-table x))))
-    1  [0 1]
-    2  [0 1 2]
+(deftest full-table-make-test
+  (are [x y] (= y (t/table-content (t/full-table-make x)))
+    1  [[1 1] ]
+    2  [[1 1] [2 2]]
     ,,,
-    10  [0 1 2 3 4 5 6 7 8 9 10]))
+    5  [[1 1] [2 2] [3 3] [4 4] [5 5]]))
 
-(deftest full-make-table-test
-  (let [table (ldt/full-make-table 5)]
-    (is (= [0 1 2 3 4 5] (vec (:arr table))))
-    (is (ldt/table-contains? table 1))
-    (is (ldt/table-contains? table 4))
-    (is (ldt/table-contains? table 5))
-    (is (not (ldt/table-contains? table 6)))
+(deftest full-table-test
+  (let [table (t/full-table-make 5)]
+    (is (t/table-contains? table 1))
+    (is (t/table-contains? table 4))
+    (is (t/table-contains? table 5))
+    (is (not (t/table-contains? table 6)))
     (ldt/table-set-number! table 4 2)
-    (is (= 2 (ldt/table-get-number table 4)))))
+    (is (= 2 (t/table-get-number table 4)))))
 
 (deftest make-odd-table-test
-  (are [x y] (= y (vec (:arr (ldt/odd-make-table x))))
-    1  [1]
-    3  [1 3]
-    5  [1 3 5]
+  (are [x y] (= y (t/table-content (ldt/odd-table-make x)))
+    1  [[1 1]]
+    3  [[1 1] [3 3]]
     ,,,
-    11  [1 3 5 7 9 11]))
+    5  [[1 1] [3 3] [5 5]]))
 
 (deftest odd-table-test
-  (let [table (ldt/odd-make-table 11)]
-    (is (= [1 3 5 7 9 11] (vec (:arr table))))
-    (is (ldt/table-contains? table 1))
-    (is (ldt/table-contains? table 9))
-    (is (ldt/table-contains? table 11))
-    (is (not (ldt/table-contains? table 13)))
+  (let [table (t/odd-table-make 11)]
+    (is (t/table-contains? table 1))
+    (is (t/table-contains? table 9))
+    (is (t/table-contains? table 11))
+    (is (not (t/table-contains? table 13)))
     (ldt/table-set-number! table 9 3)
-    (is (= 3 (ldt/table-get-number table 9)))))
+    (is (= 3 (t/table-get-number table 9)))))
 
 (deftest full-factorization-test
-  (let [factorizer (ldt/make-full-factorization 16)]
+  (let [factorizer (t/make-full-factorization 16)]
     (is (= [2 2 3] (f/int->factors factorizer 12)))
     (is (f/prime? factorizer 2))
     (is (f/prime? factorizer 3))
     (is (= [2 3 5 7 11 13] (f/primes factorizer)))))
 
 (deftest odd-factorization-test
-  (let [factorizer (ldt/make-odd-factorization 16)]
+  (let [factorizer (t/make-odd-factorization 16)]
     (is (= [2 2 3] (f/int->factors factorizer 12)))
     (is (f/prime? factorizer 2))
     (is (f/prime? factorizer 3))
     (is (= [2 3 5 7 11 13] (f/primes factorizer)))))
 
-(deftest int->factors-test
-  (let [factorizer (ldt/make-full-factorization 20)]
+(defn int->factors-test-helper [factorizer-name]
+  (let [factorizer (f/make factorizer-name 20)]
     (testing "Out of range"
       (is (thrown-with-msg? Exception #"Out of range" (f/int->factors factorizer 0)))
       (is (thrown-with-msg? Exception #"Out of range" (f/int->factors factorizer -1)))
-      (is (thrown-with-msg? Exception #"Out of range" (f/int->factors factorizer 31))))
+      (is (thrown-with-msg? Exception #"Out of range" (f/int->factors factorizer 21))))
     (testing "Positive numbers"
       (are [x y] (= y (f/int->factors factorizer x))
         1  []
@@ -85,13 +82,33 @@
         19 [19]
         20 [2 2 5]))))
 
-(deftest int->factors-prop-test
-  (let [factorizer (ldt/make-full-factorization prop-test-upper-limit)]
+(deftest int->factors-test
+  (doseq [factorizer-name [:full-ldt :odd-ldt]]
+    (testing (str "factorize " factorizer-name)
+      (int->factors-test-helper factorizer-name)
+      )
+    )
+  )
+
+
+
+(defn int->factors-prop-test-helper [factorizer-name]
+  (let [factorizer (f/make factorizer-name prop-test-upper-limit)]
     (doseq [n (range 1 prop-test-upper-limit)]
       (is (= n (->> n (f/int->factors factorizer) (apply *)))))))
 
-(deftest prime?-test
-  (let [factorizer (ldt/make-full-factorization 20)]
+
+(deftest int->factors-prop-test
+  (doseq [factorizer-name [:full-ldt :odd-ldt]]
+    (testing (str "factorize " factorizer-name)
+      (int->factors-prop-test-helper factorizer-name)
+      )
+    )
+  )
+
+;; Valery start here
+(defn prime?-test-helper [factorizer-name]
+  (let [factorizer (f/make factorizer-name 20)]
     (testing "Out of range"
       (is (thrown-with-msg? Exception #"Out of range" (f/prime? factorizer 0)))
       (is (thrown-with-msg? Exception #"Out of range" (f/prime? factorizer -1)))
@@ -118,6 +135,14 @@
         18 false
         19 true
         20 false))))
+
+(deftest prime?-test
+  (doseq [factorizer-name [:full-ldt :odd-ldt]]
+    (testing (str "factorize " factorizer-name)
+      (prime?-test-helper factorizer-name)
+      )
+    )
+  )
 
 (deftest primes-test
   (are [x y] (= y (f/primes (ldt/make-full-factorization x)))

@@ -39,7 +39,7 @@
           (full-table-init-seq upper-limit)
           arr))))
 
-(defn- full-table-make
+(defn full-table-make
   "Initialize full table for sieve."
   [upper-limit]
   (assert (natural? upper-limit))
@@ -65,7 +65,7 @@
          (odd-table-init-seq upper-limit)
          arr)))
 
-(defn- odd-table-make
+(defn odd-table-make
   [upper-limit]
   (assert (odd? upper-limit))
   (->OddTable upper-limit (int-array (odd-table-init-seq upper-limit))))
@@ -117,7 +117,7 @@
        (map first ,,,)
        (drop-while #(< % 2) ,,,)))
 
-(defrecord FullLeastDivisorTable [table]
+(defrecord FullTableFactorization [table]
   f/Factorization
   (int->factors [this n] (table-int->factors (:table this) n))
   (prime? [this n] (table-prime? (:table this) n))
@@ -150,21 +150,21 @@
     :else (let [[power rest] (power-of-two-parts n)]
             (and (zero? power) (table-prime? table rest)))))
 
-(defrecord OddLeastDivisorTable [table upper-limit]
+(defrecord OddTableFactorization [table upper-limit]
   f/Factorization
   (int->factors [this n] (odd-table-int->factors (:table this) n))
   (prime? [this n] (odd-table-prime? (:table this) n))
   (primes [this] (odd-table-primes (:table this)))
   (in-domain? [this n] (table-contains? (:table this) n)))
 
-(defn make-full-factorization [upper-limit]
+(defmethod f/make :full-ldt [_ upper-limit]
   (when-not (natural? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
   (let [table (full-table-make upper-limit)]
     (sieve table 2)
-    (->FullLeastDivisorTable table)))
+    (->FullTableFactorization table)))
 
-(defn make-odd-factorization [upper-limit]
+(defmethod f/make :odd-ldt [_ upper-limit]
   (when-not (natural? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
   (let [odd-upper-limit (if (odd? upper-limit)
@@ -172,7 +172,7 @@
                           (dec upper-limit))
         table (odd-table-make odd-upper-limit)]
     (sieve table 3)
-    (->OddLeastDivisorTable table upper-limit)))
+    (->OddTableFactorization table upper-limit)))
 
 
 
