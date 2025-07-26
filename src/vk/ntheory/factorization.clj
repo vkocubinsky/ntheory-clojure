@@ -9,5 +9,5 @@
   )
 
 
-;;(defmulti make (fn [name upper-limit] name))
-(defmulti make first)
+(defmulti make (fn [name upper-limit] name))
+
