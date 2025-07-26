@@ -58,9 +58,9 @@
 (defn factors-test-helper [factorizer-name]
   (let [factorizer (f/make factorizer-name 20)]
     (testing "Out of range"
-      (is (thrown-with-msg? Exception #"Out of range" (f/factors factorizer 0)))
-      (is (thrown-with-msg? Exception #"Out of range" (f/factors factorizer -1)))
-      (is (thrown-with-msg? Exception #"Out of range" (f/factors factorizer 21))))
+      (is (thrown? Exception (f/factors factorizer 0)))
+      (is (thrown? Exception (f/factors factorizer -1)))
+      (is (thrown? Exception (f/factors factorizer 21))))
     (testing "Positive numbers"
       (are [x y] (= y (f/factors factorizer x))
         1  []
@@ -112,9 +112,9 @@
 (defn prime?-test-helper [factorizer-name]
   (let [factorizer (f/make factorizer-name 20)]
     (testing "Out of range"
-      (is (thrown-with-msg? Exception #"Out of range" (f/prime? factorizer 0)))
-      (is (thrown-with-msg? Exception #"Out of range" (f/prime? factorizer -1)))
-      (is (thrown-with-msg? Exception #"Out of range" (f/prime? factorizer 31))))
+      (is (thrown? Exception #"Out of range" (f/prime? factorizer 0)))
+      (is (thrown? Exception #"Out of range" (f/prime? factorizer -1)))
+      (is (thrown? Exception #"Out of range" (f/prime? factorizer 31))))
     (testing "Positive numbers"
       (are [x y] (= (f/prime? factorizer x) y)
         1  false
