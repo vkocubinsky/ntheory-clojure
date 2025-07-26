@@ -108,7 +108,7 @@
     )
   )
 
-;; Valery start here
+
 (defn prime?-test-helper [factorizer-name]
   (let [factorizer (f/make factorizer-name 20)]
     (testing "Out of range"

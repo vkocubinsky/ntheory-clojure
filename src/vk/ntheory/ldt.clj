@@ -71,8 +71,14 @@
   "Check does given number `n` in table."
   [table n]
   (check-true (table-contains? table n)
-              "Out of range"
+              "Out of range."
               {:upper-limit (table-upper-limit table) :value n}))
+
+(defn- check-pos-int [n]
+  (check-true (pos-int? n) "Expected positive integer."
+              {:n n})
+  )
+
 
 (defn- sieve
   "Sieve of Erathosphene."
@@ -110,9 +116,9 @@
 (defn- table-primes
   [table]
   (->> (table-content table)
-       (filter (fn [[k v]] (= k v)) ,,,)
-       (map first ,,,)
-       (drop-while #(< % 2) ,,,)))
+       (filter (fn [[k v]] (= k v)))
+       (map first)
+       (drop-while #(< % 2))))
 
 (defrecord FullTableFactorization [table]
   f/Factorization
@@ -129,18 +135,21 @@
       (cons 2 seq)
       seq)))
 
-(defn- power-of-two-parts
-  "Returns power of two and rest for given number"
+(defn power-of-two-parts
+  "Returns power of two and rest for given number."
   [n]
+  (assert (pos-int? n))
   (let [k (Integer/numberOfTrailingZeros n)
         r (bit-shift-right n k)]
     [k r]))
 
 (defn- odd-table-factors [table n]
+  (check-pos-int n)
   (let [[power rest] (power-of-two-parts n)]
     (concat (repeat power 2) (table-factors table rest))))
 
 (defn- odd-table-prime? [table n]
+  (check-pos-int n)
   (cond
     (< (table-upper-limit table) 2) false
     (= n 2) true
