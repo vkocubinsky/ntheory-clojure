@@ -4,9 +4,6 @@
   (:require [clojure.pprint :as pp]
             [vk.ntheory.factorization :as f]))
 
-(defn natural? [n]
-  (and (int? n) (pos? n)))
-
 (defn- check-true
   "Throws exception when x is not true."
   [x err-msg err-map]
@@ -14,9 +11,9 @@
     (throw (ex-info err-msg err-map))))
 
 (defprotocol Table
-  (table-set-number! [this k v] "Store value `v` for natural number `k`.")
-  (table-get-number [this k] "Get value for given natural number `k`.")
-  (table-contains? [this k] "Does given natural number `k` in table")
+  (table-set-number! [this k v] "Store value `v` for positive integer `k`.")
+  (table-get-number [this k] "Get value for given positive integer `k`.")
+  (table-contains? [this k] "Does given positive integer `k` in table")
   (table-upper-limit [this] "Return max number in table.")
   (table-content [this] "Returns sequence of pair [k,v] from the table."))
 
@@ -31,7 +28,7 @@
   (table-get-number [this k]
     (assert (table-contains? this k))
     (aget arr k))
-  (table-contains? [this k] (and (natural? k) (<= k upper-limit)))
+  (table-contains? [this k] (and (pos-int? k) (<= k upper-limit)))
   (table-upper-limit [this] upper-limit)
   (table-content [this]
     (rest ;; exclude 0
@@ -42,7 +39,7 @@
 (defn full-table-make
   "Initialize full table for sieve."
   [upper-limit]
-  (assert (natural? upper-limit))
+  (assert (pos-int? upper-limit))
   (->FullTable upper-limit (int-array (full-table-init-seq upper-limit))))
 
 (defn- odd-table-init-seq [upper-limit]
@@ -58,7 +55,7 @@
     (assert (table-contains? this k))
     (let [idx (bit-shift-right k 1)]
       (aget arr idx)))
-  (table-contains? [this k] (and (natural? k) (odd? k) (<= k upper-limit)))
+  (table-contains? [this k] (and (pos-int? k) (odd? k) (<= k upper-limit)))
   (table-upper-limit [this] upper-limit)
   (table-content [this]
     (map #(vector %1 %2)
@@ -93,14 +90,14 @@
                 (table-set-number! table k p)))))
         (recur (+ p iter-step))))))
 
-(defn- table-int->factors
+(defn- table-factors
   "Factorize integer."
   [table ^Integer n]
   (table-check-contains table n)
   (lazy-seq
    (when (> n 1)
      (let [d (table-get-number table n)]
-       (cons d (table-int->factors table (quot n d)))))))
+       (cons d (table-factors table (quot n d)))))))
 
 (defn- table-prime?
   "Check does given integer is `n` prime."
@@ -119,7 +116,7 @@
 
 (defrecord FullTableFactorization [table]
   f/Factorization
-  (int->factors [this n] (table-int->factors (:table this) n))
+  (factors [this n] (table-factors (:table this) n))
   (prime? [this n] (table-prime? (:table this) n))
   (primes [this] (table-primes (:table this)))
   (in-domain? [this n] (table-contains? (:table this) n)))
@@ -139,9 +136,9 @@
         r (bit-shift-right n k)]
     [k r]))
 
-(defn- odd-table-int->factors [table n]
+(defn- odd-table-factors [table n]
   (let [[power rest] (power-of-two-parts n)]
-    (concat (repeat power 2) (table-int->factors table rest))))
+    (concat (repeat power 2) (table-factors table rest))))
 
 (defn- odd-table-prime? [table n]
   (cond
@@ -152,20 +149,20 @@
 
 (defrecord OddTableFactorization [table upper-limit]
   f/Factorization
-  (int->factors [this n] (odd-table-int->factors (:table this) n))
+  (factors [this n] (odd-table-factors (:table this) n))
   (prime? [this n] (odd-table-prime? (:table this) n))
   (primes [this] (odd-table-primes (:table this)))
   (in-domain? [this n] (table-contains? (:table this) n)))
 
 (defmethod f/make :full-ldt [_ upper-limit]
-  (when-not (natural? upper-limit)
+  (when-not (pos-int? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
   (let [table (full-table-make upper-limit)]
     (sieve table 2)
     (->FullTableFactorization table)))
 
 (defmethod f/make :odd-ldt [_ upper-limit]
-  (when-not (natural? upper-limit)
+  (when-not (pos-int? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
   (let [odd-upper-limit (if (odd? upper-limit)
                           upper-limit
