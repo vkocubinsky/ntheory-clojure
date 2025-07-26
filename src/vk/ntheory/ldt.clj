@@ -76,9 +76,7 @@
 
 (defn- check-pos-int [n]
   (check-true (pos-int? n) "Expected positive integer."
-              {:n n})
-  )
-
+              {:n n}))
 
 (defn- sieve
   "Sieve of Erathosphene."
@@ -127,6 +125,7 @@
   (primes [this] (table-primes (:table this)))
   (in-domain? [this n] (table-contains? (:table this) n)))
 
+;; Valery, may be names are wrong
 (defn- odd-table-primes
   [table]
   (let [upper-limit (table-upper-limit table)
@@ -145,23 +144,28 @@
 
 (defn- odd-table-factors [table n]
   (check-pos-int n)
-  (let [[power rest] (power-of-two-parts n)]
-    (concat (repeat power 2) (table-factors table rest))))
+  (let [[power-of-two rest] (power-of-two-parts n)]
+    (concat (repeat power-of-two 2) (table-factors table rest))))
 
 (defn- odd-table-prime? [table n]
   (check-pos-int n)
   (cond
     (< (table-upper-limit table) 2) false
     (= n 2) true
-    :else (let [[power rest] (power-of-two-parts n)]
-            (and (zero? power) (table-prime? table rest)))))
+    :else (let [[power-of-two rest] (power-of-two-parts n)]
+            (and (zero? power-of-two) (table-prime? table rest)))))
+
+(defn- odd-table-contains [table n]
+  (check-pos-int n)
+  (let [[power-of-two rest] (power-of-two-parts n)]
+    (table-contains? table rest)))
 
 (defrecord OddTableFactorization [table upper-limit]
   f/Factorization
   (factors [this n] (odd-table-factors (:table this) n))
   (prime? [this n] (odd-table-prime? (:table this) n))
   (primes [this] (odd-table-primes (:table this)))
-  (in-domain? [this n] (table-contains? (:table this) n)))
+  (in-domain? [this n] (odd-table-contains? (:table this) n)))
 
 (defmethod f/make :full-ldt [_ upper-limit]
   (when-not (pos-int? upper-limit)
