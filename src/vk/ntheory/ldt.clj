@@ -130,7 +130,7 @@
   [table]
   (let [upper-limit (table-upper-limit table)
         seq (table-primes table)]
-    (if (> upper-limit 2)
+    (if (>= upper-limit 2)
       (cons 2 seq)
       seq)))
 

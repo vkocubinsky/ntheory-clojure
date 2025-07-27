@@ -7,6 +7,16 @@
 
 
 (def factorizer-names [:full-ldt :odd-ldt])
+
+(defn run-for-all-factorizers [f]
+  (doseq [factorizer-name factorizer-names]
+    (testing (str "factorize " factorizer-name)
+      (f factorizer-name)
+      )
+    )
+  )
+
+
 (def prop-test-upper-limit 30)
 
 (deftest full-table-make-test
@@ -85,13 +95,7 @@
         20 [2 2 5]))))
 
 (deftest factors-test
-  (doseq [factorizer-name factorizer-names]
-    (testing (str "factorize " factorizer-name)
-      (factors-test-helper factorizer-name)
-      )
-    )
-  )
-
+  (run-for-all-factorizers factors-test-helper))
 
 
 (defn factors-prop-test-helper [factorizer-name]
@@ -101,12 +105,7 @@
 
 
 (deftest factors-prop-test
-  (doseq [factorizer-name factorizer-names]
-    (testing (str "factorize " factorizer-name)
-      (factors-prop-test-helper factorizer-name)
-      )
-    )
-  )
+  (run-for-all-factorizers factors-prop-test-helper))
 
 
 (defn prime?-test-helper [factorizer-name]
@@ -139,12 +138,7 @@
         20 false))))
 
 (deftest prime?-test
-  (doseq [factorizer-name factorizer-names]
-    (testing (str "factorize " factorizer-name)
-      (prime?-test-helper factorizer-name)
-      )
-    )
-  )
+  (run-for-all-factorizers prime?-test-helper))
 
 (defn primes-test-helper [factorizer-name]
   (are [x y] (= y (f/primes (f/make factorizer-name x)))
@@ -170,12 +164,7 @@
     20 [2 3 5 7 11 13 17 19]))
 
 (deftest primes-test
-  (doseq [factorizer-name factorizer-names]
-    (testing (str "factorize " factorizer-name)
-      (primes-test-helper factorizer-name)
-      )
-    )
-  )
+  (run-for-all-factorizers primes-test-helper))
 
 (defn primes-prop-test-helper [factorizer-name]
   (doseq [upper-limit (range 1 prop-test-upper-limit)]
@@ -184,9 +173,4 @@
 
 
 (deftest primes-test
-  (doseq [factorizer-name factorizer-names]
-    (testing (str "factorize " factorizer-name)
-      (primes-prop-test-helper factorizer-name)
-      )
-    )
-  )
+  (run-for-all-factorizers primes-prop-test-helper))
