@@ -5,23 +5,26 @@
    [vk.ntheory.ldt :as t]
    [clojure.string :as str]))
 
-
 (def factorizer-names [:full-ldt :odd-ldt])
+(def prop-test-upper-limit 30)
 
+;; Valery, think about pass factorizer, factorizer name, number etc
 (defn run-for-all-factorizers [f]
   (doseq [factorizer-name factorizer-names]
     (testing (str "factorize " factorizer-name)
-      (f factorizer-name)
-      )
-    )
-  )
+      (f factorizer-name))))
 
+(defn run-for-all-numbers [f]
+  (for [factorizer-name factorizer-names
+        n (range 1 prop-test-upper-limit)]
+    (testing (str "factorize " factorizer-name " number " n)
+      
+      (f factorizer-name n))))
 
-(def prop-test-upper-limit 30)
 
 (deftest full-table-make-test
   (are [x y] (= y (t/table-content (t/full-table-make x)))
-    1  [[1 1] ]
+    1  [[1 1]]
     2  [[1 1] [2 2]]
     ,,,
     5  [[1 1] [2 2] [3 3] [4 4] [5 5]]))
@@ -97,16 +100,13 @@
 (deftest factors-test
   (run-for-all-factorizers factors-test-helper))
 
-
 (defn factors-prop-test-helper [factorizer-name]
   (let [factorizer (f/make factorizer-name prop-test-upper-limit)]
     (doseq [n (range 1 prop-test-upper-limit)]
       (is (= n (->> n (f/factors factorizer) (apply *)))))))
 
-
 (deftest factors-prop-test
   (run-for-all-factorizers factors-prop-test-helper))
-
 
 (defn prime?-test-helper [factorizer-name]
   (let [factorizer (f/make factorizer-name 20)]
@@ -166,11 +166,10 @@
 (deftest primes-test
   (run-for-all-factorizers primes-test-helper))
 
-(defn primes-prop-test-helper [factorizer-name]
+(defn primes-prop-test-helper [factorizer-name n]
   (doseq [upper-limit (range 1 prop-test-upper-limit)]
     (let [factorizer (f/make factorizer-name upper-limit)]
       (is (every? #(f/prime? factorizer %) (f/primes factorizer))))))
 
-
-(deftest primes-test
+(deftest primes-prop-test
   (run-for-all-factorizers primes-prop-test-helper))
