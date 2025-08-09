@@ -5,6 +5,8 @@
    [vk.ntheory.ldt :as t]
    [clojure.string :as str]))
 
+;;Valery think about pass factorizer into helper function
+
 (def factorizer-names [:full-ldt :odd-ldt])
 (def prop-test-upper-limit 30)
 
