@@ -155,7 +155,7 @@
     :else (let [[power-of-two rest] (power-of-two-parts n)]
             (and (zero? power-of-two) (table-prime? table rest)))))
 
-(defn- odd-table-contains [table n]
+(defn- odd-table-contains? [table n]
   (check-pos-int n)
   (let [[power-of-two rest] (power-of-two-parts n)]
     (table-contains? table rest)))

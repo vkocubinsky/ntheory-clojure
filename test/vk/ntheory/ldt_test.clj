@@ -8,19 +8,16 @@
 (def factorizer-names [:full-ldt :odd-ldt])
 (def prop-test-upper-limit 30)
 
-;; Valery, think about pass factorizer, factorizer name, number etc
 (defn run-for-all-factorizers [f]
   (doseq [factorizer-name factorizer-names]
     (testing (str "factorize " factorizer-name)
       (f factorizer-name))))
 
 (defn run-for-all-numbers [f]
-  (for [factorizer-name factorizer-names
+  (doseq [factorizer-name factorizer-names
         n (range 1 prop-test-upper-limit)]
     (testing (str "factorize " factorizer-name " number " n)
-      
       (f factorizer-name n))))
-
 
 (deftest full-table-make-test
   (are [x y] (= y (t/table-content (t/full-table-make x)))
@@ -68,108 +65,101 @@
     (is (f/prime? factorizer 3))
     (is (= [2 3 5 7 11 13] (f/primes factorizer)))))
 
-(defn factors-test-helper [factorizer-name]
-  (let [factorizer (f/make factorizer-name 20)]
-    (testing "Out of range"
-      (is (thrown? Exception (f/factors factorizer 0)))
-      (is (thrown? Exception (f/factors factorizer -1)))
-      (is (thrown? Exception (f/factors factorizer 21))))
-    (testing "Positive numbers"
-      (are [x y] (= y (f/factors factorizer x))
-        1  []
-        2  [2]
-        3  [3]
-        4  [2 2]
-        5  [5]
-        6  [2 3]
-        7  [7]
-        8  [2 2 2]
-        9  [3 3]
-        10 [2 5]
-        11 [11]
-        12 [2 2 3]
-        13 [13]
-        14 [2 7]
-        15 [3 5]
-        16 [2 2 2 2]
-        17 [17]
-        18 [2 3 3]
-        19 [19]
-        20 [2 2 5]))))
-
 (deftest factors-test
-  (run-for-all-factorizers factors-test-helper))
-
-(defn factors-prop-test-helper [factorizer-name]
-  (let [factorizer (f/make factorizer-name prop-test-upper-limit)]
-    (doseq [n (range 1 prop-test-upper-limit)]
-      (is (= n (->> n (f/factors factorizer) (apply *)))))))
+  (letfn [(test-helper [factorizer-name]
+            (let [factorizer (f/make factorizer-name 20)]
+              (testing "Out of range"
+                (is (thrown? Exception (f/factors factorizer 0)))
+                (is (thrown? Exception (f/factors factorizer -1)))
+                (is (thrown? Exception (f/factors factorizer 21))))
+              (testing "Positive numbers"
+                (are [x y] (= y (f/factors factorizer x))
+                  1  []
+                  2  [2]
+                  3  [3]
+                  4  [2 2]
+                  5  [5]
+                  6  [2 3]
+                  7  [7]
+                  8  [2 2 2]
+                  9  [3 3]
+                  10 [2 5]
+                  11 [11]
+                  12 [2 2 3]
+                  13 [13]
+                  14 [2 7]
+                  15 [3 5]
+                  16 [2 2 2 2]
+                  17 [17]
+                  18 [2 3 3]
+                  19 [19]
+                  20 [2 2 5]))))]
+    (run-for-all-factorizers test-helper)))
 
 (deftest factors-prop-test
-  (run-for-all-factorizers factors-prop-test-helper))
-
-(defn prime?-test-helper [factorizer-name]
-  (let [factorizer (f/make factorizer-name 20)]
-    (testing "Out of range"
-      (is (thrown? Exception #"Out of range" (f/prime? factorizer 0)))
-      (is (thrown? Exception #"Out of range" (f/prime? factorizer -1)))
-      (is (thrown? Exception #"Out of range" (f/prime? factorizer 31))))
-    (testing "Positive numbers"
-      (are [x y] (= (f/prime? factorizer x) y)
-        1  false
-        2  true
-        3  true
-        4  false
-        5  true
-        6  false
-        7  true
-        8  false
-        9  false
-        10 false
-        11 true
-        12 false
-        13 true
-        14 false
-        15 false
-        16 false
-        17 true
-        18 false
-        19 true
-        20 false))))
+  (letfn [(test-helper [factorizer-name n]
+            (let [factorizer (f/make factorizer-name prop-test-upper-limit)]
+              (is (= n (->> n (f/factors factorizer) (apply *))))))]
+    (run-for-all-numbers test-helper)))
 
 (deftest prime?-test
-  (run-for-all-factorizers prime?-test-helper))
-
-(defn primes-test-helper [factorizer-name]
-  (are [x y] (= y (f/primes (f/make factorizer-name x)))
-    1 []
-    2 [2]
-    3 [2 3]
-    4 [2 3]
-    5 [2 3 5]
-    6 [2 3 5]
-    7 [2 3 5 7]
-    8 [2 3 5 7]
-    9 [2 3 5 7]
-    10 [2 3 5 7]
-    11 [2 3 5 7 11]
-    12 [2 3 5 7 11]
-    13 [2 3 5 7 11 13]
-    14 [2 3 5 7 11 13]
-    15 [2 3 5 7 11 13]
-    16 [2 3 5 7 11 13]
-    17 [2 3 5 7 11 13 17]
-    18 [2 3 5 7 11 13 17]
-    19 [2 3 5 7 11 13 17 19]
-    20 [2 3 5 7 11 13 17 19]))
+  (letfn [(test-helper [factorizer-name]
+            (let [factorizer (f/make factorizer-name 20)]
+              (testing "Out of range"
+                (is (thrown? Exception #"Out of range" (f/prime? factorizer 0)))
+                (is (thrown? Exception #"Out of range" (f/prime? factorizer -1)))
+                (is (thrown? Exception #"Out of range" (f/prime? factorizer 31))))
+              (testing "Positive numbers"
+                (are [x y] (= (f/prime? factorizer x) y)
+                  1  false
+                  2  true
+                  3  true
+                  4  false
+                  5  true
+                  6  false
+                  7  true
+                  8  false
+                  9  false
+                  10 false
+                  11 true
+                  12 false
+                  13 true
+                  14 false
+                  15 false
+                  16 false
+                  17 true
+                  18 false
+                  19 true
+                  20 false))))]
+    (run-for-all-factorizers test-helper)))
 
 (deftest primes-test
-  (run-for-all-factorizers primes-test-helper))
-
-(defn primes-prop-test-helper [factorizer-name n]
-  (doseq [upper-limit (range 1 prop-test-upper-limit)]
-    (let [factorizer (f/make factorizer-name upper-limit)]
-      (is (every? #(f/prime? factorizer %) (f/primes factorizer))))))
+  (letfn [(test-helper [factorizer-name]
+            (are [x y] (= y (f/primes (f/make factorizer-name x)))
+              1 []
+              2 [2]
+              3 [2 3]
+              4 [2 3]
+              5 [2 3 5]
+              6 [2 3 5]
+              7 [2 3 5 7]
+              8 [2 3 5 7]
+              9 [2 3 5 7]
+              10 [2 3 5 7]
+              11 [2 3 5 7 11]
+              12 [2 3 5 7 11]
+              13 [2 3 5 7 11 13]
+              14 [2 3 5 7 11 13]
+              15 [2 3 5 7 11 13]
+              16 [2 3 5 7 11 13]
+              17 [2 3 5 7 11 13 17]
+              18 [2 3 5 7 11 13 17]
+              19 [2 3 5 7 11 13 17 19]
+              20 [2 3 5 7 11 13 17 19]))]
+    (run-for-all-factorizers test-helper)))
 
 (deftest primes-prop-test
-  (run-for-all-factorizers primes-prop-test-helper))
+  (letfn [(test-helper [factorizer-name n]
+            (let [factorizer (f/make factorizer-name prop-test-upper-limit)]
+                (is (every? #(f/prime? factorizer %) (f/primes factorizer)))))]
+    (run-for-all-factorizers test-helper)))
