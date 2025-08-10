@@ -8,50 +8,63 @@
 ;;Valery think about pass factorizer into helper function
 
 (def factorizer-names [:full-ldt :odd-ldt])
-(def prop-test-upper-limit 30)
+(def test-prop-upper-limit 30)
 
 (defn run-for-all-factorizers [f]
-  (doseq [factorizer-name factorizer-names]
-    (testing (str "factorize " factorizer-name)
-      (f factorizer-name))))
+  (let [upper-limit 30]
+    (doseq [factorizer-name factorizer-names]
+      (testing (str "factorizer " factorizer-name)
+        (let [factorizer (f/make factorizer-name test-prop-upper-limit)]
+          (f factorizer))))))
+
+(deftest run-for-all-factorizers-test
+  (letfn [(test-helper [factorizer]
+            (is (some? factorizer)))]
+    (run-for-all-factorizers test-helper)))
 
 (defn run-for-all-numbers [f]
-  (doseq [factorizer-name factorizer-names
-        n (range 1 prop-test-upper-limit)]
-    (testing (str "factorize " factorizer-name " number " n)
-      (f factorizer-name n))))
+  (letfn [(test-helper [factorizer]
+            (doseq [n (range 1 test-prop-upper-limit)]
+              (testing (str "number " n)
+                (f factorizer n))))]
+    (run-for-all-factorizers test-helper)))
+
+(deftest run-for-all-numbers-test
+  (letfn [(test-helper [factorizer n]
+            (is (some? factorizer))
+            (is (some? n)))]
+    (run-for-all-numbers test-helper)))
 
 (deftest full-table-make-test
   (are [x y] (= y (t/table-content (t/full-table-make x)))
     1  [[1 1]]
     2  [[1 1] [2 2]]
-    ,,,
+    3  [[1 1] [2 2] [3 3]]
+    4  [[1 1] [2 2] [3 3] [4 4]]
     5  [[1 1] [2 2] [3 3] [4 4] [5 5]]))
-
-(deftest full-table-test
-  (let [table (t/full-table-make 5)]
-    (is (t/table-contains? table 1))
-    (is (t/table-contains? table 4))
-    (is (t/table-contains? table 5))
-    (is (not (t/table-contains? table 6)))
-    (t/table-set-number! table 4 2)
-    (is (= 2 (t/table-get-number table 4)))))
 
 (deftest make-odd-table-test
   (are [x y] (= y (t/table-content (t/odd-table-make x)))
     1  [[1 1]]
     3  [[1 1] [3 3]]
-    ,,,
-    5  [[1 1] [3 3] [5 5]]))
+    5  [[1 1] [3 3] [5 5]]
+    7  [[1 1] [3 3] [5 5] [7 7]]))
+
+(defn table-test-helper [upper-limit table numbers]
+  (is (= (t/table-upper-limit table) upper-limit))
+  (doseq [n numbers]
+    (is (t/table-contains? table n))
+    (let [v (inc (rand-int upper-limit))]
+      (t/table-set-number! table n v)
+      (is (= v (t/table-get-number table n)))))
+  (is (not (t/table-contains? table (inc upper-limit)))))
+
+(deftest full-table-test
+  (table-test-helper 10 (t/full-table-make 10) (range 1 11)))
 
 (deftest odd-table-test
-  (let [table (t/odd-table-make 11)]
-    (is (t/table-contains? table 1))
-    (is (t/table-contains? table 9))
-    (is (t/table-contains? table 11))
-    (is (not (t/table-contains? table 13)))
-    (t/table-set-number! table 9 3)
-    (is (= 3 (t/table-get-number table 9)))))
+  (table-test-helper 11 (t/odd-table-make 11) (range 1 12 2)))
+
 
 (deftest full-factorization-test
   (let [factorizer (f/make :full-ldt 16)]
@@ -100,7 +113,7 @@
 
 (deftest factors-prop-test
   (letfn [(test-helper [factorizer-name n]
-            (let [factorizer (f/make factorizer-name prop-test-upper-limit)]
+            (let [factorizer (f/make factorizer-name test-prop-upper-limit)]
               (is (= n (->> n (f/factors factorizer) (apply *))))))]
     (run-for-all-numbers test-helper)))
 
@@ -162,6 +175,6 @@
 
 (deftest primes-prop-test
   (letfn [(test-helper [factorizer-name n]
-            (let [factorizer (f/make factorizer-name prop-test-upper-limit)]
-                (is (every? #(f/prime? factorizer %) (f/primes factorizer)))))]
+            (let [factorizer (f/make factorizer-name test-prop-upper-limit)]
+              (is (every? #(f/prime? factorizer %) (f/primes factorizer)))))]
     (run-for-all-factorizers test-helper)))
