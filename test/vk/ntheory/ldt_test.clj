@@ -5,8 +5,6 @@
    [vk.ntheory.ldt :as t]
    [clojure.string :as str]))
 
-;;Valery think about pass factorizer into helper function
-
 (def factorizer-names [:full-ldt :odd-ldt])
 (def test-prop-upper-limit 30)
 
@@ -67,6 +65,8 @@
 (deftest odd-table-test
   (table-test-helper 11 (t/odd-table-make 11) (range 1 12 2)))
 
+;; Valery , start here, make single function, think about use factorization-test
+;; for retry factorization
 
 (deftest full-factorization-test
   (let [factorizer (f/make :full-ldt 16)]
