@@ -17,6 +17,7 @@
         (let [factorizer (f/make factorizer-name test-prop-upper-limit)]
           (f factorizer))))))
 
+;; Example of run-for-all-factorizers
 (deftest run-for-all-factorizers-test
   (letfn [(test-helper [factorizer]
             (is (some? factorizer)))]
@@ -29,6 +30,7 @@
                 (f factorizer n))))]
     (run-for-all-factorizers test-helper)))
 
+;; Example of run-for-all-numbers
 (deftest run-for-all-numbers-test
   (letfn [(test-helper [factorizer n]
             (is (some? factorizer))
