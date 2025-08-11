@@ -159,7 +159,6 @@
         (let [n' (apply * n (repeat k 2))
               factors' (f/factors factorizer n')]
           (is (f/in-domain? factorizer n'))
-          (is (= (repeat k 2) (take k factors')))
-          )))))
+          (is (= (repeat k 2) (take k factors'))))))))
 
 
