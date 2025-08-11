@@ -10,14 +10,14 @@
 
 (defn run-for-all-factorizers [f]
   (doseq [factorizer-name factorizer-names]
-      (testing (str "factorizer " factorizer-name)
-        (let [factorizer (t/make-factorization factorizer-name test-prop-upper-limit)]
-          (f factorizer)))))
+    (testing (str "factorizer " factorizer-name)
+      (let [factorizer (t/make-factorization factorizer-name test-prop-upper-limit)]
+        (f factorizer)))))
 
 (defn run-for-all-factorizer-names [f]
   (doseq [factorizer-name factorizer-names]
-      (testing (str "factorizer " factorizer-name)
-        (f factorizer-name))))
+    (testing (str "factorizer " factorizer-name)
+      (f factorizer-name))))
 
 (defn run-for-all-numbers [f]
   (letfn [(test-helper [factorizer]
@@ -25,7 +25,6 @@
               (testing (str "number " n)
                 (f factorizer n))))]
     (run-for-all-factorizers test-helper)))
-
 
 (deftest full-table-make-test
   (are [x y] (= y (t/table-content (t/full-table-make x)))
@@ -52,7 +51,7 @@
   (is (not (t/table-contains? table (inc upper-limit)))))
 
 (deftest full-table-test
-  (table-test-helper 10 (t/full-table-make 10) (range 1 11)))
+  (table-test-helper 10 (t/full-table-make 10) (range 1 11 1)))
 
 (deftest odd-table-test
   (table-test-helper 11 (t/odd-table-make 11) (range 1 12 2)))
@@ -93,28 +92,28 @@
 
 (deftest prime?-test
   (letfn [(test-helper [factorizer]
-              (testing "Positive numbers"
-                (are [x y] (= (f/prime? factorizer x) y)
-                  1  false
-                  2  true
-                  3  true
-                  4  false
-                  5  true
-                  6  false
-                  7  true
-                  8  false
-                  9  false
-                  10 false
-                  11 true
-                  12 false
-                  13 true
-                  14 false
-                  15 false
-                  16 false
-                  17 true
-                  18 false
-                  19 true
-                  20 false)))]
+            (testing "Positive numbers"
+              (are [x y] (= (f/prime? factorizer x) y)
+                1  false
+                2  true
+                3  true
+                4  false
+                5  true
+                6  false
+                7  true
+                8  false
+                9  false
+                10 false
+                11 true
+                12 false
+                13 true
+                14 false
+                15 false
+                16 false
+                17 true
+                18 false
+                19 true
+                20 false)))]
     (run-for-all-factorizers test-helper)))
 
 (deftest primes-test
@@ -146,3 +145,21 @@
   (letfn [(test-helper [factorizer]
             (is (every? #(f/prime? factorizer %) (f/primes factorizer))))]
     (run-for-all-factorizers test-helper)))
+
+(deftest in-domain?-test
+  (letfn [(test-helper [factorizer n]
+            (is (f/in-domain? factorizer n)))]
+    (run-for-all-numbers test-helper)))
+
+(deftest odd-factorizer-test
+  (let [factorizer (t/make-factorization :odd-ldt test-prop-upper-limit)]
+    (doseq [n (range 1 test-prop-upper-limit)
+            k (range 1 3)]
+      (testing (str "number: " n " power of 2: " k)
+        (let [n' (apply * n (repeat k 2))
+              factors' (f/factors factorizer n')]
+          (is (f/in-domain? factorizer n'))
+          (is (= (repeat k 2) (take k factors')))
+          )))))
+
+
