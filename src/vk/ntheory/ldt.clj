@@ -17,7 +17,7 @@
   (table-upper-limit [this] "Return max number in table.")
   (table-content [this] "Returns sequence of pair [k,v] from the table."))
 
-(defn- full-table-init-seq [upper-limit]
+(defn full-table-init-seq [upper-limit]
   (range (inc upper-limit)))
 
 (defrecord FullTable [^int upper-limit ^ints arr]
@@ -42,7 +42,7 @@
   (assert (pos-int? upper-limit))
   (->FullTable upper-limit (int-array (full-table-init-seq upper-limit))))
 
-(defn- odd-table-init-seq [upper-limit]
+(defn odd-table-init-seq [upper-limit]
   (range 1 (inc upper-limit) 2))
 
 (defrecord OddTable [^int upper-limit ^ints arr]
@@ -120,19 +120,10 @@
 
 (defrecord FullTableFactorization [table]
   f/Factorization
-  (factors [this n] (table-factors (:table this) n))
-  (prime? [this n] (table-prime? (:table this) n))
-  (primes [this] (table-primes (:table this)))
-  (in-domain? [this n] (table-contains? (:table this) n)))
-
-;; Valery, may be names are wrong
-(defn- odd-table-primes
-  [table]
-  (let [upper-limit (table-upper-limit table)
-        seq (table-primes table)]
-    (if (>= upper-limit 2)
-      (cons 2 seq)
-      seq)))
+  (factors [this n] (table-factors table n))
+  (prime? [this n] (table-prime? table n))
+  (primes [this] (table-primes table))
+  (in-domain? [this n] (table-contains? table n)))
 
 (defn power-of-two-parts
   "Returns power of two and rest for given number."
@@ -141,11 +132,6 @@
   (let [k (Integer/numberOfTrailingZeros n)
         r (bit-shift-right n k)]
     [k r]))
-
-(defn- odd-table-contains? [table n]
-  (check-pos-int n)
-  (let [[power-of-two rest] (power-of-two-parts n)]
-    (table-contains? table rest)))
 
 (defrecord OddTableFactorization [table upper-limit]
   f/Factorization
@@ -158,24 +144,24 @@
       (= n 2) true
       :else (let [[power-of-two rest] (power-of-two-parts n)]
               (and (zero? power-of-two) (table-prime? table rest)))))
-  (primes [this] (let [table (:table this)
-                       seq (table-primes table)]
+  (primes [this] (let [seq (table-primes table)]
                    (if (>= upper-limit 2)
                      (cons 2 seq)
                      seq)))
   (in-domain? [this n] (check-pos-int n)
-    (let [table (:table this)
-          [power-of-two rest] (power-of-two-parts n)]
+    (let [[power-of-two rest] (power-of-two-parts n)]
       (table-contains? table rest))))
 
-(defmethod f/make :full-ldt [_ upper-limit]
+(defmulti make-factorization (fn [name upper-limit] name))
+
+(defmethod make-factorization :full-ldt [_ upper-limit]
   (when-not (pos-int? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
   (let [table (full-table-make upper-limit)]
     (sieve table 2)
     (->FullTableFactorization table)))
 
-(defmethod f/make :odd-ldt [_ upper-limit]
+(defmethod make-factorization :odd-ldt [_ upper-limit]
   (when-not (pos-int? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
   (let [odd-upper-limit (if (odd? upper-limit)

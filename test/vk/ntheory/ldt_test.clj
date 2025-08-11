@@ -11,7 +11,7 @@
 (defn run-for-all-factorizers [f]
   (doseq [factorizer-name factorizer-names]
       (testing (str "factorizer " factorizer-name)
-        (let [factorizer (f/make factorizer-name test-prop-upper-limit)]
+        (let [factorizer (t/make-factorization factorizer-name test-prop-upper-limit)]
           (f factorizer)))))
 
 (defn run-for-all-factorizer-names [f]
@@ -119,7 +119,7 @@
 
 (deftest primes-test
   (letfn [(test-helper [factorizer-name]
-            (are [x y] (= y (f/primes (f/make factorizer-name x)))
+            (are [x y] (= y (f/primes (t/make-factorization factorizer-name x)))
               1 []
               2 [2]
               3 [2 3]
