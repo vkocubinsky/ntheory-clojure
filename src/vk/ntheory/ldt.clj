@@ -142,19 +142,6 @@
         r (bit-shift-right n k)]
     [k r]))
 
-(defn- odd-table-factors [table n]
-  (check-pos-int n)
-  (let [[power-of-two rest] (power-of-two-parts n)]
-    (concat (repeat power-of-two 2) (table-factors table rest))))
-
-(defn- odd-table-prime? [table n]
-  (check-pos-int n)
-  (cond
-    (< (table-upper-limit table) 2) false
-    (= n 2) true
-    :else (let [[power-of-two rest] (power-of-two-parts n)]
-            (and (zero? power-of-two) (table-prime? table rest)))))
-
 (defn- odd-table-contains? [table n]
   (check-pos-int n)
   (let [[power-of-two rest] (power-of-two-parts n)]
@@ -162,10 +149,24 @@
 
 (defrecord OddTableFactorization [table upper-limit]
   f/Factorization
-  (factors [this n] (odd-table-factors (:table this) n))
-  (prime? [this n] (odd-table-prime? (:table this) n))
-  (primes [this] (odd-table-primes (:table this)))
-  (in-domain? [this n] (odd-table-contains? (:table this) n)))
+  (factors [this n] (check-pos-int n)
+    (let [[power-of-two rest] (power-of-two-parts n)]
+      (concat (repeat power-of-two 2) (table-factors table rest))))
+  (prime? [this n] (check-pos-int n)
+    (cond
+      (< upper-limit 2) false
+      (= n 2) true
+      :else (let [[power-of-two rest] (power-of-two-parts n)]
+              (and (zero? power-of-two) (table-prime? table rest)))))
+  (primes [this] (let [table (:table this)
+                       seq (table-primes table)]
+                   (if (>= upper-limit 2)
+                     (cons 2 seq)
+                     seq)))
+  (in-domain? [this n] (check-pos-int n)
+    (let [table (:table this)
+          [power-of-two rest] (power-of-two-parts n)]
+      (table-contains? table rest))))
 
 (defmethod f/make :full-ldt [_ upper-limit]
   (when-not (pos-int? upper-limit)
