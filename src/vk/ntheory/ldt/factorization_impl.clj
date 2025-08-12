@@ -54,31 +54,25 @@
   (primes [this] (table-primes table))
   (in-domain? [this n] (t/table-contains? table n)))
 
-(defn power-of-two-parts
-  "Returns power of two and rest for given number."
-  [n]
-  (assert (pos-int? n))
-  (let [k (Integer/numberOfTrailingZeros n)
-        r (bit-shift-right n k)]
-    [k r]))
+
 
 (defrecord OddTableFactorization [table upper-limit]
   f/Factorization
   (factors [this n] (u/check-pos-int n)
-    (let [[power-of-two rest] (power-of-two-parts n)]
+    (let [[power-of-two rest] (u/power-of-two-parts n)]
       (concat (repeat power-of-two 2) (table-factors table rest))))
   (prime? [this n] (u/check-pos-int n)
     (cond
       (< upper-limit 2) false
       (= n 2) true
-      :else (let [[power-of-two rest] (power-of-two-parts n)]
+      :else (let [[power-of-two rest] (u/power-of-two-parts n)]
               (and (zero? power-of-two) (table-prime? table rest)))))
   (primes [this] (let [seq (table-primes table)]
                    (if (>= upper-limit 2)
                      (cons 2 seq)
                      seq)))
   (in-domain? [this n] (u/check-pos-int n)
-    (let [[power-of-two rest] (power-of-two-parts n)]
+    (let [[power-of-two rest] (u/power-of-two-parts n)]
       (t/table-contains? table rest))))
 
 (defmulti make-factorization (fn [name upper-limit] name))
