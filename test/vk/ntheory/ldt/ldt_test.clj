@@ -2,7 +2,8 @@
   (:require
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.factorization :as f]
-   [vk.ntheory.ldt :as t]
+   [vk.ntheory.ldt.factorization-impl :as i]
+   [vk.ntheory.ldt.table :as t]
    [clojure.string :as str]))
 
 (def factorizer-names [:full-ldt :odd-ldt])
@@ -11,7 +12,7 @@
 (defn run-for-all-factorizers [f]
   (doseq [factorizer-name factorizer-names]
     (testing (str "factorizer " factorizer-name)
-      (let [factorizer (t/make-factorization factorizer-name test-prop-upper-limit)]
+      (let [factorizer (i/make-factorization factorizer-name test-prop-upper-limit)]
         (f factorizer)))))
 
 (defn run-for-all-factorizer-names [f]
@@ -26,35 +27,6 @@
                 (f factorizer n))))]
     (run-for-all-factorizers test-helper)))
 
-(deftest full-table-make-test
-  (are [x y] (= y (t/table-content (t/full-table-make x)))
-    1  [[1 1]]
-    2  [[1 1] [2 2]]
-    3  [[1 1] [2 2] [3 3]]
-    4  [[1 1] [2 2] [3 3] [4 4]]
-    5  [[1 1] [2 2] [3 3] [4 4] [5 5]]))
-
-(deftest make-odd-table-test
-  (are [x y] (= y (t/table-content (t/odd-table-make x)))
-    1  [[1 1]]
-    3  [[1 1] [3 3]]
-    5  [[1 1] [3 3] [5 5]]
-    7  [[1 1] [3 3] [5 5] [7 7]]))
-
-(defn table-test-helper [upper-limit table numbers]
-  (is (= (t/table-upper-limit table) upper-limit))
-  (doseq [n numbers]
-    (is (t/table-contains? table n))
-    (let [v (inc (rand-int upper-limit))]
-      (t/table-set-number! table n v)
-      (is (= v (t/table-get-number table n)))))
-  (is (not (t/table-contains? table (inc upper-limit)))))
-
-(deftest full-table-test
-  (table-test-helper 10 (t/full-table-make 10) (range 1 11 1)))
-
-(deftest odd-table-test
-  (table-test-helper 11 (t/odd-table-make 11) (range 1 12 2)))
 
 (deftest factors-test
   (letfn [(test-helper [factorizer]
@@ -118,7 +90,7 @@
 
 (deftest primes-test
   (letfn [(test-helper [factorizer-name]
-            (are [x y] (= y (f/primes (t/make-factorization factorizer-name x)))
+            (are [x y] (= y (f/primes (i/make-factorization factorizer-name x)))
               1 []
               2 [2]
               3 [2 3]
@@ -152,7 +124,7 @@
     (run-for-all-numbers test-helper)))
 
 (deftest odd-factorizer-test
-  (let [factorizer (t/make-factorization :odd-ldt test-prop-upper-limit)]
+  (let [factorizer (i/make-factorization :odd-ldt test-prop-upper-limit)]
     (doseq [n (range 1 test-prop-upper-limit)
             k (range 1 3)]
       (testing (str "number: " n " power of 2: " k)
