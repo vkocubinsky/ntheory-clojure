@@ -2,38 +2,34 @@
   (:require
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.ldt.table :as t]
+   [vk.ntheory.ldt.odd-table :as odd]
+   [vk.ntheory.ldt.full-table :as full]
    [clojure.string :as str]))
 
-(deftest full-table-make-test
-  (are [x y] (= y (t/table-content (t/full-table-make x)))
-    1  [[1 1]]
-    2  [[1 1] [2 2]]
-    3  [[1 1] [2 2] [3 3]]
-    4  [[1 1] [2 2] [3 3] [4 4]]
-    5  [[1 1] [2 2] [3 3] [4 4] [5 5]]))
+(deftest full-table-keys-test
+  (are [upper-limit numbers] (= numbers (t/table-keys (t/make-for-sieve :full upper-limit)))
+    1  [1]
+    2  [1 2]
+    3  [1 2 3]
+    4  [1 2 3 4]
+    5  [1 2 3 4 5]))
 
-(deftest odd-table-make-test
-  (are [x y] (= y (t/table-content (t/odd-table-make x)))
-    1  [[1 1]]
-    3  [[1 1] [3 3]]
-    5  [[1 1] [3 3] [5 5]]
-    7  [[1 1] [3 3] [5 5] [7 7]]))
+(deftest odd-table-keys-test
+  (are [upper-limit numbers] (= numbers (t/table-keys (t/make-for-sieve :odd upper-limit)))
+    1  [1]
+    3  [1 3]
+    5  [1 3 5]
+    7  [1 3 5 7]))
 
-(defn table-test-helper [upper-limit table numbers]
-  (is (= (t/table-upper-limit table) upper-limit))
-  (doseq [n numbers]
-    (is (t/table-contains? table n))
-    (let [v (inc (rand-int upper-limit))]
-      (t/table-set-number! table n v)
-      (is (= v (t/table-get-number table n)))))
-  (is (not (t/table-contains? table (inc upper-limit)))))
-
-(deftest full-table-test
-  (table-test-helper 10 (t/full-table-make 10) (range 1 11 1)))
-
-(deftest odd-table-test
-  (table-test-helper 11 (t/odd-table-make 11) (range 1 12 2)))
-
-
+(deftest table-test
+  (letfn [(table-test-helper [table]
+            (doseq [n (t/table-keys table)]
+              (is (t/table-contains? table n))
+              (let [v (inc (rand-int (t/table-upper-limit table)))]
+                (t/table-set-number! table n v)
+                (is (= v (t/table-get-number table n))))))]
+    (doseq [[name upper-limit] {:full 10 :odd 11}]
+      (testing (format "%s %s " name upper-limit)
+        (table-test-helper (t/make-for-sieve name upper-limit))))))
 
 
