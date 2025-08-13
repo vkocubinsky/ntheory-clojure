@@ -6,28 +6,47 @@
    [vk.ntheory.ldt.full-table :as full]
    [clojure.string :as str]))
 
-(deftest full-table-keys-test
-  (are [upper-limit numbers] (= numbers (t/table-keys (t/make {:table-type :full
-                                                               :init-type :index
-                                                               :array-type :int
-                                                               :upper-limit upper-limit})))
-    1  [1]
-    2  [1 2]
-    3  [1 2 3]
-    4  [1 2 3 4]
-    5  [1 2 3 4 5]))
+(deftest full-index-table-values-test
+  (doseq [array-type [:int :short]]
+    (are [upper-limit numbers] (= numbers (t/table-values
+                                           (t/make {:table-type :full
+                                                    :init-type :index
+                                                    :array-type :int
+                                                    :upper-limit upper-limit})))
+      1  [1]
+      2  [1 2]
+      3  [1 2 3]
+      4  [1 2 3 4]
+      5  [1 2 3 4 5])))
 
-(deftest odd-table-keys-test
-  (are [upper-limit numbers] (= numbers (t/table-keys (t/make {:table-type :odd
-                                                               :init-type :index
-                                                               :array-type :int
-                                                               :upper-limit upper-limit})))
-    1  [1]
-    3  [1 3]
-    5  [1 3 5]
-    7  [1 3 5 7]))
+(deftest odd-index-table-values-test
+  (doseq [array-type [:int :short]]
+    (are [upper-limit numbers] (= numbers (t/table-values
+                                           (t/make {:table-type :odd
+                                                    :init-type :index
+                                                    :array-type array-type
+                                                    :upper-limit upper-limit})))
+      1  [1]
+      3  [1 3]
+      5  [1 3 5]
+      7  [1 3 5 7])))
 
-(deftest table-test
+(deftest)
+
+(deftest ones-table-values-test
+  (doseq [table-type [:full :odd]
+          init-type [:ones]
+          array-type [:int :short]
+          upper-limit [11]]
+    (let [table-spec {:table-type table-type
+                      :init-type init-type
+                      :array-type array-type
+                      :upper-limit upper-limit}
+          table (t/make table-spec)]
+      (testing (str table-spec)
+        (is (every? (partial = 1) (t/table-values table)))))))
+
+(deftest table-contains-set-get-test
   (letfn [(table-test-helper [table]
             (doseq [n (t/table-keys table)]
               (is (t/table-contains? table n))
@@ -40,8 +59,10 @@
             upper-limit [11]]
       (let [table-spec {:table-type table-type
                         :init-type init-type
-                        :array-type array-type}]
+                        :array-type array-type
+                        :upper-limit upper-limit}
+            table (t/make table-spec)]
         (testing (str table-spec)
-          (table-test-helper (t/make table-spec)))))))
+          (table-test-helper table))))))
 
 

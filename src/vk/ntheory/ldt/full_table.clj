@@ -8,11 +8,11 @@
   [upper-limit]
   (range 1 (inc upper-limit)))
 
-(defrecord FullTable [^int upper-limit ^ints arr]
+(defrecord FullTable [upper-limit arr setfn]
   t/Table
   (table-set-number! [this k v]
     (assert (t/table-contains? this k))
-    (aset-int arr (dec k) v))
+    (setfn arr (dec k) v))
   (table-get-number [this k]
     (assert (t/table-contains? this k))
     (aget arr (dec k)))
@@ -24,22 +24,22 @@
 (defmethod t/make [:full :index :int]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
-  (->FullTable upper-limit (int-array (init-index-keys upper-limit))))
+  (->FullTable upper-limit (int-array (init-index-keys upper-limit)) aset-int))
 
 (defmethod t/make [:full :index :short]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
-  (->FullTable upper-limit (short-array (init-index-keys upper-limit))))
+  (->FullTable upper-limit (short-array (init-index-keys upper-limit)) aset-short))
 
 (defmethod t/make [:full :ones :int]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
-  (->FullTable upper-limit (int-array (repeat upper-limit 1))))
+  (->FullTable upper-limit (int-array (repeat upper-limit 1)) aset-int))
 
 (defmethod t/make [:full :ones :short]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
-  (->FullTable upper-limit (short-array (repeat upper-limit 1))))
+  (->FullTable upper-limit (short-array (repeat upper-limit 1)) aset-short))
 
 
 

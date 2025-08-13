@@ -7,12 +7,12 @@
 (defn- init-index-keys [upper-limit]
   (range 1 (inc upper-limit) 2))
 
-(defrecord OddTable [^int upper-limit ^ints arr]
+(defrecord OddTable [upper-limit arr setfn]
   t/Table
   (table-set-number! [this k v]
     (assert (t/table-contains? this k))
     (let [idx (bit-shift-right k 1)]
-      (aset-int arr idx v)))
+      (setfn arr idx v)))
   (table-get-number [this k]
     (assert (t/table-contains? this k))
     (let [idx (bit-shift-right k 1)]
@@ -25,22 +25,22 @@
 (defmethod t/make [:odd :index :int]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
-  (->OddTable upper-limit (int-array (init-index-keys upper-limit))))
+  (->OddTable upper-limit (int-array (init-index-keys upper-limit)) aset-int))
 
 (defmethod t/make [:odd :index :short]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
-  (->OddTable upper-limit (short-array (init-index-keys upper-limit))))
+  (->OddTable upper-limit (short-array (init-index-keys upper-limit)) aset-short))
 
 (defmethod t/make [:odd :ones :int]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
-  (->OddTable upper-limit (int-array (repeat upper-limit 1))))
+  (->OddTable upper-limit (int-array (repeat upper-limit 1)) aset-int))
 
 (defmethod t/make [:odd :ones :short]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
-  (->OddTable upper-limit (short-array (repeat upper-limit 1))))
+  (->OddTable upper-limit (short-array (repeat upper-limit 1)) aset-short))
 
 
 

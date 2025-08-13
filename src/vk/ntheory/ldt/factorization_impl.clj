@@ -42,7 +42,7 @@
 
 (defn- table-primes
   [table]
-  (->> (map vector (t/table-keys table) (:arr table))
+  (->> (map vector (t/table-keys table) (t/table-values table))
        (filter (fn [[k v]] (= k v)))
        (map first)
        (drop-while #(< % 2))))
