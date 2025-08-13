@@ -75,12 +75,15 @@
     (let [[power-of-two rest] (u/power-of-two-parts n)]
       (t/table-contains? table rest))))
 
-(defmulti make-factorization (fn [name upper-limit] name))
+(defmulti make-factorization (fn [name upper-limit] table-type))
 
 (defmethod make-factorization :full [_ upper-limit]
   (when-not (pos-int? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
-  (let [table (t/make-for-sieve :full upper-limit)]
+  (let [table (t/make {:table-type :full
+                       :init-type :index
+                       :array-type :int
+                       :upper-limit upper-limit})]
     (sieve table 2)
     (->FullTableFactorization table)))
 
@@ -90,7 +93,10 @@
   (let [odd-upper-limit (if (odd? upper-limit)
                           upper-limit
                           (dec upper-limit))
-        table (t/make-for-sieve :odd odd-upper-limit)]
+        table (t/make {:table-type :odd
+                       :init-type :index
+                       :array-type :int
+                       :upper-limit odd-upper-limit})]
     (sieve table 3)
     (->OddTableFactorization table upper-limit)))
 

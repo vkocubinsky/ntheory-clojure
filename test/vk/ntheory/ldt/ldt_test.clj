@@ -6,7 +6,7 @@
    [vk.ntheory.ldt.table :as t]
    [clojure.string :as str]))
 
-(def factorizer-names [:full-ldt :odd-ldt])
+(def factorizer-names [:full :odd])
 (def test-prop-upper-limit 30)
 
 (defn run-for-all-factorizers [f]
@@ -124,7 +124,7 @@
     (run-for-all-numbers test-helper)))
 
 (deftest odd-factorizer-test
-  (let [factorizer (i/make-factorization :odd-ldt test-prop-upper-limit)]
+  (let [factorizer (i/make-factorization :odd test-prop-upper-limit)]
     (doseq [n (range 1 test-prop-upper-limit)
             k (range 1 3)]
       (testing (str "number: " n " power of 2: " k)
