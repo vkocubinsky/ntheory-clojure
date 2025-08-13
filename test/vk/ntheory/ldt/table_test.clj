@@ -7,7 +7,10 @@
    [clojure.string :as str]))
 
 (deftest full-table-keys-test
-  (are [upper-limit numbers] (= numbers (t/table-keys (t/make-for-sieve :full upper-limit)))
+  (are [upper-limit numbers] (= numbers (t/table-keys (t/make {:table-type :full
+                                                               :init-type :index
+                                                               :array-type :int
+                                                               :upper-limit upper-limit})))
     1  [1]
     2  [1 2]
     3  [1 2 3]
@@ -15,7 +18,10 @@
     5  [1 2 3 4 5]))
 
 (deftest odd-table-keys-test
-  (are [upper-limit numbers] (= numbers (t/table-keys (t/make-for-sieve :odd upper-limit)))
+  (are [upper-limit numbers] (= numbers (t/table-keys (t/make {:table-type :odd
+                                                               :init-type :index
+                                                               :array-type :int
+                                                               :upper-limit upper-limit})))
     1  [1]
     3  [1 3]
     5  [1 3 5]
@@ -28,8 +34,14 @@
               (let [v (inc (rand-int (t/table-upper-limit table)))]
                 (t/table-set-number! table n v)
                 (is (= v (t/table-get-number table n))))))]
-    (doseq [[name upper-limit] {:full 10 :odd 11}]
-      (testing (format "%s %s " name upper-limit)
-        (table-test-helper (t/make-for-sieve name upper-limit))))))
+    (doseq [table-type [:full :odd]
+            init-type [:index :ones]
+            array-type [:int :short]
+            upper-limit [11]]
+      (let [table-spec {:table-type table-type
+                        :init-type init-type
+                        :array-type array-type}]
+        (testing (str table-spec)
+          (table-test-helper (t/make table-spec)))))))
 
 

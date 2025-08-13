@@ -4,7 +4,7 @@
             [vk.ntheory.ldt.table :as t]
             [vk.ntheory.util :as u]))
 
-(defn init-keys
+(defn init-index-keys
   [upper-limit]
   (range 1 (inc upper-limit)))
 
@@ -18,13 +18,28 @@
     (aget arr (dec k)))
   (table-contains? [this k] (and (pos-int? k) (<= k upper-limit)))
   (table-upper-limit [this] upper-limit)
-  (table-keys [this] (init-keys upper-limit))
-)
+  (table-keys [this] (init-index-keys upper-limit))
+  (table-values [this] (seq arr)))
 
-(defmethod t/make-for-sieve :full  [_ upper-limit]
+(defmethod t/make [:full :index :int]
+  [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
-  (->FullTable upper-limit (int-array (init-keys upper-limit))))
+  (->FullTable upper-limit (int-array (init-index-keys upper-limit))))
 
+(defmethod t/make [:full :index :short]
+  [{:keys [upper-limit]}]
+  (assert (pos-int? upper-limit))
+  (->FullTable upper-limit (short-array (init-index-keys upper-limit))))
+
+(defmethod t/make [:full :ones :int]
+  [{:keys [upper-limit]}]
+  (assert (pos-int? upper-limit))
+  (->FullTable upper-limit (int-array (repeat upper-limit 1))))
+
+(defmethod t/make [:full :ones :short]
+  [{:keys [upper-limit]}]
+  (assert (pos-int? upper-limit))
+  (->FullTable upper-limit (short-array (repeat upper-limit 1))))
 
 
 
