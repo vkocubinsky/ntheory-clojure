@@ -1,8 +1,8 @@
-(ns vk.ntheory.ldt-test
+(ns vk.ntheory.ldt.table-factorization-test
   (:require
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.factorization :as f]
-   [vk.ntheory.ldt.factorization-impl :as i]
+   [vk.ntheory.ldt.table-factorization :as i]
    [vk.ntheory.ldt.table :as t]
    [clojure.string :as str]))
 
@@ -26,7 +26,6 @@
               (testing (str "number " n)
                 (f factorizer n))))]
     (run-for-all-factorizers test-helper)))
-
 
 (deftest factors-test
   (letfn [(test-helper [factorizer]
@@ -59,8 +58,69 @@
             (let [factors (f/factors factorizer n)]
               (is (= n (apply * factors)) "Product of factors n equals to n")
               (is (= factors (sort factors)) "Factors must be ordered")))]
-
     (run-for-all-numbers test-helper)))
+
+(deftest factor-counts-test
+  (letfn [(test-helper [factorizer]
+            (testing "Positive numbers"
+              (are [x y] (= y (f/factor-counts factorizer x))
+                1  []
+                2  [[2 1]]
+                3  [[3 1]]
+                4  [[2 2]]
+                5  [[5 1]]
+                6  [[2 1] [3 1]]
+                7  [[7 1]]
+                8  [[2 3]]
+                9  [[3 2]]
+                10 [[2 1] [5 1]]
+                11 [[11 1]]
+                12 [[2 2] [3 1]]
+                13 [[13 1]]
+                14 [[2 1] [7 1]]
+                15 [[3 1] [5 1]]
+                16 [[2 4]]
+                17 [[17 1]]
+                18 [[2 1] [3 2]]
+                19 [[19 1]]
+                20 [[2 2] [5 1]])))]
+    (run-for-all-factorizers test-helper)))
+
+(deftest factor-counts-prop-test
+  (letfn [(test-helper [factorizer n]
+            (let [counts (f/factor-counts factorizer n)
+                  factors (f/counts->factors counts)]
+              (is (= n (apply * factors)) "Product of factors n equals to n")
+              (is (= factors (sort factors)) "Factors must be ordered")))]
+    (run-for-all-numbers test-helper)))
+
+
+(deftest distinct-factors-test
+  (letfn [(test-helper [factorizer]
+            (testing "Positive numbers"
+              (are [x y] (= y (f/distinct-factors factorizer x))
+                1  []
+                2  [2]
+                3  [3]
+                4  [2]
+                5  [5]
+                6  [2 3]
+                7  [7]
+                8  [2]
+                9  [3]
+                10 [2 5]
+                11 [11]
+                12 [2 3]
+                13 [13]
+                14 [2 7]
+                15 [3 5]
+                16 [2]
+                17 [17]
+                18 [2 3]
+                19 [19]
+                20 [2 5])))]
+    (run-for-all-factorizers test-helper)))
+
 
 (deftest prime?-test
   (letfn [(test-helper [factorizer]

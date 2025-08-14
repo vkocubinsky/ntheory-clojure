@@ -6,10 +6,10 @@
    [vk.ntheory.ldt.full-table :as full]
    [clojure.string :as str]))
 
-(deftest full-index-table-values-test
+(deftest full-index-table-vals-test
   (doseq [array-type [:int :short]]
-    (are [upper-limit numbers] (= numbers (t/table-values
-                                           (t/make {:table-type :full
+    (are [upper-limit numbers] (= numbers (t/table-vals
+                                           (t/make-table {:table-type :full
                                                     :init-type :index
                                                     :array-type :int
                                                     :upper-limit upper-limit})))
@@ -19,10 +19,10 @@
       4  [1 2 3 4]
       5  [1 2 3 4 5])))
 
-(deftest odd-index-table-values-test
+(deftest odd-index-table-vals-test
   (doseq [array-type [:int :short]]
-    (are [upper-limit numbers] (= numbers (t/table-values
-                                           (t/make {:table-type :odd
+    (are [upper-limit numbers] (= numbers (t/table-vals
+                                           (t/make-table {:table-type :odd
                                                     :init-type :index
                                                     :array-type array-type
                                                     :upper-limit upper-limit})))
@@ -31,9 +31,8 @@
       5  [1 3 5]
       7  [1 3 5 7])))
 
-(deftest)
 
-(deftest ones-table-values-test
+(deftest ones-table-vals-test
   (doseq [table-type [:full :odd]
           init-type [:ones]
           array-type [:int :short]
@@ -42,9 +41,9 @@
                       :init-type init-type
                       :array-type array-type
                       :upper-limit upper-limit}
-          table (t/make table-spec)]
+          table (t/make-table table-spec)]
       (testing (str table-spec)
-        (is (every? (partial = 1) (t/table-values table)))))))
+        (is (every? (partial = 1) (t/table-vals table)))))))
 
 (deftest table-contains-set-get-test
   (letfn [(table-test-helper [table]
@@ -61,7 +60,7 @@
                         :init-type init-type
                         :array-type array-type
                         :upper-limit upper-limit}
-            table (t/make table-spec)]
+            table (t/make-table table-spec)]
         (testing (str table-spec)
           (table-test-helper table))))))
 

@@ -16,7 +16,11 @@
   (partition-by identity xs))
 
 (defn factors->counts [xs]
-  (map (fn [ys] [(first xs) (count ys)]) (factors->partitions xs))
+  (map (fn [ys] [(first ys) (count ys)]) (factors->partitions xs)))
+
+(defn counts->factors [xs]
+  (mapcat (fn [[p k]] (repeat k p)) xs))
+
+(defn counts->distinct [xs]
+  (map first xs)
   )
-
-
