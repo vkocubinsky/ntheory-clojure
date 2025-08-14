@@ -1,8 +1,7 @@
 (ns vk.ntheory.ldt.full-table
   "Table for store positive integers."
-  (:require [clojure.pprint :as pp]
-            [vk.ntheory.ldt.table :as t]
-            [vk.ntheory.util :as u]))
+  (:require
+   [vk.ntheory.ldt.table :as t]))
 
 (defn init-index-keys
   [upper-limit]
@@ -19,24 +18,24 @@
   (table-contains? [this k] (and (pos-int? k) (<= k upper-limit)))
   (table-upper-limit [this] upper-limit)
   (table-keys [this] (init-index-keys upper-limit))
-  (table-values [this] (seq arr)))
+  (table-vals [this] (seq arr)))
 
-(defmethod t/make [:full :index :int]
+(defmethod t/make-table [:full :index :int]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
   (->FullTable upper-limit (int-array (init-index-keys upper-limit)) aset-int))
 
-(defmethod t/make [:full :index :short]
+(defmethod t/make-table [:full :index :short]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
   (->FullTable upper-limit (short-array (init-index-keys upper-limit)) aset-short))
 
-(defmethod t/make [:full :ones :int]
+(defmethod t/make-table [:full :ones :int]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
   (->FullTable upper-limit (int-array (repeat upper-limit 1)) aset-int))
 
-(defmethod t/make [:full :ones :short]
+(defmethod t/make-table [:full :ones :short]
   [{:keys [upper-limit]}]
   (assert (pos-int? upper-limit))
   (->FullTable upper-limit (short-array (repeat upper-limit 1)) aset-short))
