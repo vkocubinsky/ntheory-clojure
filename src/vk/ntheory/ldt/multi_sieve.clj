@@ -1,0 +1,59 @@
+(ns vk.ntheory.ldt.multi-sieve
+  "Functions for table."
+
+  (:require
+   [vk.ntheory.util :as u]
+   [vk.ntheory.ldt.table :as t]))
+
+(defrecord MultiTable [divisors quotients powers])
+
+;;Valery , I replaced table to multi table on this moment and that's it
+(defn sieve
+  "Sieve of Erathosphene."
+  [multi-table start]
+  (let [{:keys [divisors quotients powers]} multi-table]
+    (loop [p  start]
+      (if (> (* p p) (t/table-upper-limit divisors))
+        multi-table
+        (let [p' (t/table-get-number divisors p)
+              mark-step (if (= p 2) p (* p 2))
+              iter-step (if (= p 2) 1 2)]
+          (when (= p' p)
+            (doseq [k (range (* p p) (inc (t/table-upper-limit divisors)) mark-step)]
+              (let [k' (t/table-get-number divisors k)]
+                (when (= k' k)
+                  (t/table-set-number! divisors k p)))))
+          (recur (+ p iter-step)))))))
+
+(defn table-factors
+  "Factorize integer."
+  [multi-table n]
+  (let [{:keys [divisors quotients powers]} multi-table]
+    (t/table-check-contains divisors n)
+    (lazy-seq
+     (when (> n 1)
+       (let [d (t/table-get-number divisors n)]
+         (cons d (table-factors divisors (quot n d))))))))
+
+(defn table-prime?
+  "Check does given integer is `n` prime."
+  [multi-table n]
+  (let [{:keys [divisors quotients powers]} multi-table]
+    (t/table-check-contains divisors n)
+    (let [n' (t/table-get-number divisors n)]
+      (and (> n' 1)
+           (= n' n)))))
+
+(defn table-primes
+  [multi-table]
+  (let [{:keys [divisors quotients powers]} multi-table]
+    (->> (map vector (t/table-keys divisors) (t/table-vals divisors))
+         (filter (fn [[k v]] (= k v)))
+         (map first)
+         (drop-while #(< % 2)))))
+
+
+
+
+
+
