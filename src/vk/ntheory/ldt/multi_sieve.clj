@@ -7,7 +7,6 @@
 
 (defrecord MultiTable [divisors quotients powers])
 
-;;Valery , I replaced table to multi table on this moment and that's it
 (defn sieve
   "Sieve of Erathosphene."
   [multi-table start]
@@ -52,7 +51,12 @@
          (map first)
          (drop-while #(< % 2)))))
 
-
+(defn table-contains?
+  [multi-table n]
+  (let [{:keys [divisors quotients powers]} multi-table]
+    (t/table-contains? divisors n)
+    )
+  )
 
 
 

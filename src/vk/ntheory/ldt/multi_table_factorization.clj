@@ -14,7 +14,7 @@
   (distinct-factors [this n] (f/factors->distinct (f/factors this n)))
   (prime? [this n] (s/table-prime? multi-table n))
   (primes [this] (s/table-primes multi-table))
-  (in-domain? [this n] (t/table-contains? multi-table n)))
+  (in-domain? [this n] (s/table-contains? multi-table n)))
 
 (defrecord OddMultiTableFactorization [multi-table upper-limit]
   f/Factorization
@@ -35,7 +35,7 @@
                      seq)))
   (in-domain? [this n] (u/check-pos-int n)
     (let [[power-of-two rest] (u/power-of-two-parts n)]
-      (t/table-contains? multi-table rest))))
+      (s/table-contains? multi-table rest))))
 
 (defmethod f/make-factorization :full-multi-table [{:keys [upper-limit]}]
   (when-not (pos-int? upper-limit)
@@ -55,7 +55,7 @@
         multi-table (s/->MultiTable divisors quotients powers)
         ]
 
-    (s/sieve (s/->MultiTable divisors quotients powers) 2)
+    (s/sieve multi-table 2)
     (->FullMultiTableFactorization multi-table)))
 
 (defmethod f/make-factorization :odd-multi-table [{:keys [upper-limit]}]
