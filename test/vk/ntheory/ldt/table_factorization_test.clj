@@ -3,6 +3,7 @@
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.factorization :as f]
    [vk.ntheory.ldt.table-factorization :as tf]
+   [vk.ntheory.ldt.multi-table-factorization :as mf]
    [vk.ntheory.ldt.table :as t]
    [vk.ntheory.ldt.full-table :as ft]
    [vk.ntheory.ldt.odd-table :as ot]
@@ -13,7 +14,12 @@
 (def factorizer-specs [{:type :full-table
                         :upper-limit test-prop-upper-limit}
                        {:type :odd-table
-                        :upper-limit test-prop-upper-limit}])
+                        :upper-limit test-prop-upper-limit}
+                       {:type :full-multi-table
+                        :upper-limit test-prop-upper-limit}
+                       {:type :odd-multi-table
+                        :upper-limit test-prop-upper-limit}
+                       ])
 
 (defn run-for-all-factorizers [f]
   (doseq [factorizer-spec factorizer-specs]

@@ -7,7 +7,7 @@
             [vk.ntheory.ldt.multi-sieve :as s]
             [vk.ntheory.factorization :as f]))
 
-(defrecord FullTableFactorization [multi-table]
+(defrecord FullMultiTableFactorization [multi-table]
   f/Factorization
   (factors [this n] (s/table-factors multi-table n))
   (factor-counts [this n] (f/factors->counts (f/factors this n)))
@@ -16,7 +16,7 @@
   (primes [this] (s/table-primes multi-table))
   (in-domain? [this n] (t/table-contains? multi-table n)))
 
-(defrecord OddTableFactorization [multi-table upper-limit]
+(defrecord OddMultiTableFactorization [multi-table upper-limit]
   f/Factorization
   (factors [this n] (u/check-pos-int n)
     (let [[power-of-two rest] (u/power-of-two-parts n)]
@@ -37,17 +37,26 @@
     (let [[power-of-two rest] (u/power-of-two-parts n)]
       (t/table-contains? multi-table rest))))
 
-
-;; Valery make multi table here instead of table
 (defmethod f/make-factorization :full-multi-table [{:keys [upper-limit]}]
   (when-not (pos-int? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
-  (let [table (t/make-table {:table-type :full
-                             :init-type :index
-                             :array-type :int
-                             :upper-limit upper-limit})]
-    (s/sieve table 2)
-    (->FullTableFactorization table)))
+  (let [divisors (t/make-table {:table-type :full
+                                :init-type :index
+                                :array-type :int
+                                :upper-limit upper-limit})
+        quotients (t/make-table {:table-type :full
+                                 :init-type :ones
+                                 :array-type :int
+                                 :upper-limit upper-limit})
+        powers (t/make-table {:table-type :full
+                              :init-type :ones
+                              :array-type :short
+                              :upper-limit upper-limit})
+        multi-table (s/->MultiTable divisors quotients powers)
+        ]
+
+    (s/sieve (s/->MultiTable divisors quotients powers) 2)
+    (->FullMultiTableFactorization multi-table)))
 
 (defmethod f/make-factorization :odd-multi-table [{:keys [upper-limit]}]
   (when-not (pos-int? upper-limit)
@@ -55,12 +64,22 @@
   (let [odd-upper-limit (if (odd? upper-limit)
                           upper-limit
                           (dec upper-limit))
-        table (t/make-table {:table-type :odd
-                             :init-type :index
-                             :array-type :int
-                             :upper-limit odd-upper-limit})]
-    (s/sieve table 3)
-    (->OddTableFactorization table upper-limit)))
+        divisors (t/make-table {:table-type :odd
+                                :init-type :index
+                                :array-type :int
+                                :upper-limit odd-upper-limit})
+        quotients (t/make-table {:table-type :odd
+                                 :init-type :ones
+                                 :array-type :int
+                                 :upper-limit odd-upper-limit})
+        powers (t/make-table {:table-type :odd
+                              :init-type :ones
+                              :array-type :short
+                              :upper-limit odd-upper-limit})
+        multi-table (s/->MultiTable divisors quotients powers)
+        ]
+    (s/sieve multi-table 3)
+    (->OddMultiTableFactorization multi-table upper-limit)))
 
 
 
