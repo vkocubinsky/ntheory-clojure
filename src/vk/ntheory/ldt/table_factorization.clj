@@ -37,9 +37,7 @@
     (let [[power-of-two rest] (u/power-of-two-parts n)]
       (t/table-contains? table rest))))
 
-(defmulti make-factorization (fn [table-type upper-limit] table-type))
-
-(defmethod make-factorization :full [_ upper-limit]
+(defmethod f/make-factorization :full-table [{:keys [upper-limit]}]
   (when-not (pos-int? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
   (let [table (t/make-table {:table-type :full
@@ -49,7 +47,7 @@
     (s/sieve table 2)
     (->FullTableFactorization table)))
 
-(defmethod make-factorization :odd [_ upper-limit]
+(defmethod f/make-factorization :odd-table [{:keys [upper-limit]}]
   (when-not (pos-int? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
   (let [odd-upper-limit (if (odd? upper-limit)
@@ -61,7 +59,6 @@
                              :upper-limit odd-upper-limit})]
     (s/sieve table 3)
     (->OddTableFactorization table upper-limit)))
-
 
 
 

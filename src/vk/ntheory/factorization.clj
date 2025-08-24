@@ -24,3 +24,11 @@
 (defn counts->distinct [xs]
   (map first xs)
   )
+
+
+(defmulti make-factorization
+  "Make a factorization from factorization-spec."
+  (fn [factorization-spec] (:type factorization-spec)))
+
+
+

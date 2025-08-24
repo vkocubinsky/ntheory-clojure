@@ -2,23 +2,24 @@
   (:require
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.factorization :as f]
-   [vk.ntheory.ldt.table-factorization :as i]
+   [vk.ntheory.ldt.table-factorization :as tf]
    [vk.ntheory.ldt.table :as t]
+   [vk.ntheory.ldt.full-table :as ft]
+   [vk.ntheory.ldt.odd-table :as ot]
    [clojure.string :as str]))
 
-(def factorizer-names [:full :odd])
 (def test-prop-upper-limit 30)
 
-(defn run-for-all-factorizers [f]
-  (doseq [factorizer-name factorizer-names]
-    (testing (str "factorizer " factorizer-name)
-      (let [factorizer (i/make-factorization factorizer-name test-prop-upper-limit)]
-        (f factorizer)))))
+(def factorizer-specs [{:type :full-table
+                        :upper-limit test-prop-upper-limit}
+                       {:type :odd-table
+                        :upper-limit test-prop-upper-limit}])
 
-(defn run-for-all-factorizer-names [f]
-  (doseq [factorizer-name factorizer-names]
-    (testing (str "factorizer " factorizer-name)
-      (f factorizer-name))))
+(defn run-for-all-factorizers [f]
+  (doseq [factorizer-spec factorizer-specs]
+    (testing (str "factorizer " factorizer-spec)
+      (let [factorizer (f/make-factorization factorizer-spec)]
+        (f factorizer)))))
 
 (defn run-for-all-numbers [f]
   (letfn [(test-helper [factorizer]
@@ -94,7 +95,6 @@
               (is (= factors (sort factors)) "Factors must be ordered")))]
     (run-for-all-numbers test-helper)))
 
-
 (deftest distinct-factors-test
   (letfn [(test-helper [factorizer]
             (testing "Positive numbers"
@@ -120,7 +120,6 @@
                 19 [19]
                 20 [2 5])))]
     (run-for-all-factorizers test-helper)))
-
 
 (deftest prime?-test
   (letfn [(test-helper [factorizer]
@@ -149,29 +148,9 @@
     (run-for-all-factorizers test-helper)))
 
 (deftest primes-test
-  (letfn [(test-helper [factorizer-name]
-            (are [x y] (= y (f/primes (i/make-factorization factorizer-name x)))
-              1 []
-              2 [2]
-              3 [2 3]
-              4 [2 3]
-              5 [2 3 5]
-              6 [2 3 5]
-              7 [2 3 5 7]
-              8 [2 3 5 7]
-              9 [2 3 5 7]
-              10 [2 3 5 7]
-              11 [2 3 5 7 11]
-              12 [2 3 5 7 11]
-              13 [2 3 5 7 11 13]
-              14 [2 3 5 7 11 13]
-              15 [2 3 5 7 11 13]
-              16 [2 3 5 7 11 13]
-              17 [2 3 5 7 11 13 17]
-              18 [2 3 5 7 11 13 17]
-              19 [2 3 5 7 11 13 17 19]
-              20 [2 3 5 7 11 13 17 19]))]
-    (run-for-all-factorizer-names test-helper)))
+  (letfn [(test-helper [factorizer]
+            (is [2 3 5 7 11 13 17 19] (take-while #(< % 20) (f/primes factorizer))))]
+    (run-for-all-factorizers test-helper)))
 
 (deftest primes-prop-test
   (letfn [(test-helper [factorizer]
@@ -184,7 +163,7 @@
     (run-for-all-numbers test-helper)))
 
 (deftest odd-factorizer-test
-  (let [factorizer (i/make-factorization :odd test-prop-upper-limit)]
+  (let [factorizer (f/make-factorization {:type :odd-table :upper-limit test-prop-upper-limit})]
     (doseq [n (range 1 test-prop-upper-limit)
             k (range 1 3)]
       (testing (str "number: " n " power of 2: " k)

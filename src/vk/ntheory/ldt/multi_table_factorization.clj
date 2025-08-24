@@ -37,11 +37,9 @@
     (let [[power-of-two rest] (u/power-of-two-parts n)]
       (t/table-contains? multi-table rest))))
 
-;; Valery move this to share multi-table and table
-(defmulti make-factorization (fn [table-type upper-limit] table-type))
 
 ;; Valery make multi table here instead of table
-(defmethod make-factorization :multi-full [_ upper-limit]
+(defmethod f/make-factorization :full-multi-table [{:keys [upper-limit]}]
   (when-not (pos-int? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
   (let [table (t/make-table {:table-type :full
@@ -51,7 +49,7 @@
     (s/sieve table 2)
     (->FullTableFactorization table)))
 
-(defmethod make-factorization :multi-odd [_ upper-limit]
+(defmethod f/make-factorization :odd-multi-table [{:keys [upper-limit]}]
   (when-not (pos-int? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
   (let [odd-upper-limit (if (odd? upper-limit)
