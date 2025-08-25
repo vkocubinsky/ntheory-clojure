@@ -7,6 +7,7 @@
 
 (defrecord MultiTable [divisors quotients powers])
 
+;; Valery start debug here, powers is incorrect, think about names
 (defn sieve
   "Sieve of Erathosphene."
   [multi-table start]
@@ -15,13 +16,21 @@
       (if (> (* p p) (t/table-upper-limit divisors))
         multi-table
         (let [p' (t/table-get-number divisors p)
+              q (t/table-get-number quotients p)
               mark-step (if (= p 2) p (* p 2))
               iter-step (if (= p 2) 1 2)]
-          (when (= p' p)
-            (doseq [k (range (* p p) (inc (t/table-upper-limit divisors)) mark-step)]
-              (let [k' (t/table-get-number divisors k)]
-                (when (= k' k)
-                  (t/table-set-number! divisors k p)))))
+          (cond
+            (= p' p) (doseq [k (range (* p p) (inc (t/table-upper-limit divisors)) mark-step)]
+                       (let [k' (t/table-get-number divisors k)]
+                         (when (= k' k)
+                           (t/table-set-number! divisors k p)
+                           (t/table-set-number! quotients k (quot k p)))))
+            (= p' q) (doseq [k (range p (inc (t/table-upper-limit divisors)) p)]
+                       (let [k' (t/table-get-number divisors k)]
+                         (when (= k' p')
+                           (t/table-set-number! powers k (inc (t/table-get-number powers k)))
+                           (t/table-set-number! quotients k (quot (t/table-get-number quotients k) p'))))))
+
           (recur (+ p iter-step)))))))
 
 (defn table-factors

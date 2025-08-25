@@ -1,0 +1,7 @@
+#+title: Notes
+
+* Run tests
+
+#+begin_src shell
+clj -X:test
+#+end_src
