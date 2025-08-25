@@ -22,9 +22,7 @@
   (mapcat (fn [[p k]] (repeat k p)) xs))
 
 (defn counts->distinct [xs]
-  (map first xs)
-  )
-
+  (map first xs))
 
 (defmulti make-factorization
   "Make a factorization from factorization-spec."

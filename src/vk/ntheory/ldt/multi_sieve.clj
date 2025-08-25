@@ -34,15 +34,17 @@
                            (t/table-set-number! quotients k (quot (t/table-get-number quotients k) p'))))))
           (recur (+ p iter-step)))))))
 
-(defn table-factors
+(defn table-factor-counts
   "Factorize integer."
   [multi-table n]
   (let [{:keys [divisors quotients powers]} multi-table]
     (t/table-check-contains divisors n)
     (letfn [(factors [n] (lazy-seq
                           (when (> n 1)
-                            (let [d (t/table-get-number divisors n)]
-                              (cons d (factors (quot n d)))))))]
+                            (let [p (t/table-get-number divisors n)
+                                  q (t/table-get-number quotients n)
+                                  e (t/table-get-number powers n)]
+                              (cons [p e] (factors q))))))]
       (factors n))))
 
 (defn table-prime?

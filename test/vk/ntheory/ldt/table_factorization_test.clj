@@ -18,8 +18,7 @@
                        {:type :full-multi-table
                         :upper-limit test-prop-upper-limit}
                        {:type :odd-multi-table
-                        :upper-limit test-prop-upper-limit}
-                       ])
+                        :upper-limit test-prop-upper-limit}])
 
 (defn run-for-all-factorizers [f]
   (doseq [factorizer-spec factorizer-specs]
@@ -33,8 +32,6 @@
               (testing (str "number " n)
                 (f factorizer n))))]
     (run-for-all-factorizers test-helper)))
-
-
 
 (deftest factors-test
   (letfn [(test-helper [factorizer]
@@ -181,15 +178,8 @@
           (is (= (repeat k 2) (take k factors'))))))))
 
 (deftest multi-factorizer-test
-  (let [factorizer (f/make-factorization {:type :full-multi-table :upper-limit test-prop-upper-limit})
-        {:keys [divisors quotients powers]} (:multi-table factorizer)
-        ]
-    (is (not (nil? divisors)))
-    (is (not (nil? quotients)))
-    (is (not (nil? powers)))
-    )
-
-  )
+  (let [factorizer (f/make-factorization {:type :odd-multi-table :upper-limit test-prop-upper-limit})]
+    (is (= [[2 2] [3 1]] (f/factor-counts factorizer 12)))))
 
 
 
