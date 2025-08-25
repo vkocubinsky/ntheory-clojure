@@ -20,12 +20,14 @@
               mark-step (if (= p 2) p (* p 2))
               iter-step (if (= p 2) 1 2)]
           (cond
+            ;;prime
             (= p' p) (doseq [k (range (* p p) (inc (t/table-upper-limit divisors)) mark-step)]
                        (let [k' (t/table-get-number divisors k)]
                          (when (= k' k)
                            (t/table-set-number! divisors k p)
                            (t/table-set-number! quotients k (quot k p)))))
-            (= p' q) (doseq [k (range p (inc (t/table-upper-limit divisors)) p)]
+            ;;power of prime
+            (= p' q) (doseq [k (range p (inc (t/table-upper-limit divisors)) mark-step)]
                        (let [k' (t/table-get-number divisors k)]
                          (when (= k' p')
                            (t/table-set-number! powers k (inc (t/table-get-number powers k)))
