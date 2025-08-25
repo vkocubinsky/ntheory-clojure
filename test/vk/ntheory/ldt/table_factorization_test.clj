@@ -2,11 +2,11 @@
   (:require
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.factorization :as f]
-   [vk.ntheory.ldt.table-factorization :as tf]
-   [vk.ntheory.ldt.multi-table-factorization :as mf]
+   ;;[vk.ntheory.ldt.full-table]
+   ;;[vk.ntheory.ldt.odd-table]
+   [vk.ntheory.ldt.table-factorization]
+   [vk.ntheory.ldt.multi-table-factorization]
    [vk.ntheory.ldt.table :as t]
-   [vk.ntheory.ldt.full-table :as ft]
-   [vk.ntheory.ldt.odd-table :as ot]
    [clojure.string :as str]))
 
 (def test-prop-upper-limit 30)
@@ -35,11 +35,6 @@
     (run-for-all-factorizers test-helper)))
 
 
-
-(deftest temporary-test
-  (let [factorizer (f/make-factorization {:type :full-multi-table :upper-limit test-prop-upper-limit})]
-    (is (= [2 5] (f/factors factorizer 10)))
-    ))
 
 (deftest factors-test
   (letfn [(test-helper [factorizer]

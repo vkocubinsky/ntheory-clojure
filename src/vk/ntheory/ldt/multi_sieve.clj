@@ -29,10 +29,11 @@
   [multi-table n]
   (let [{:keys [divisors quotients powers]} multi-table]
     (t/table-check-contains divisors n)
-    (lazy-seq
-     (when (> n 1)
-       (let [d (t/table-get-number divisors n)]
-         (cons d (table-factors multi-table (quot n d))))))))
+    (letfn [(factors [n] (lazy-seq
+                          (when (> n 1)
+                            (let [d (t/table-get-number divisors n)]
+                              (cons d (factors (quot n d)))))))]
+      (factors n))))
 
 (defn table-prime?
   "Check does given integer is `n` prime."
@@ -54,9 +55,7 @@
 (defn table-contains?
   [multi-table n]
   (let [{:keys [divisors quotients powers]} multi-table]
-    (t/table-contains? divisors n)
-    )
-  )
+    (t/table-contains? divisors n)))
 
 
 
