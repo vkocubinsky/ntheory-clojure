@@ -10,7 +10,7 @@
 
 (defrecord FullMultiTableFactorization [multi-table]
   f/Factorization
-  (factors [this n] (f/counts->factors (f/factor-counts multi-table n)))
+  (factors [this n] (f/counts->factors (f/factor-counts this n)))
   (factor-counts [this n] (s/table-factor-counts multi-table n))
   (distinct-factors [this n] (f/counts->distinct (f/factor-counts this n)))
   (prime? [this n] (s/table-prime? multi-table n))
@@ -19,10 +19,14 @@
 
 (defrecord OddMultiTableFactorization [multi-table upper-limit]
   f/Factorization
-  (factors [this n] (u/check-pos-int n) (f/counts->factors (f/factor-counts multi-table n)))
+  (factors [this n] (u/check-pos-int n) (f/counts->factors (f/factor-counts this n)))
   (factor-counts [this n]
-    (let [[power-of-two rest] (u/power-of-two-parts n)]
-      (cons [2 power-of-two] (s/table-factor-counts multi-table rest))))
+    (let [[power-of-two rest] (u/power-of-two-parts n)
+          xs (s/table-factor-counts multi-table rest)]
+      (if (> power-of-two 0)
+        (cons [2 power-of-two] xs)
+        xs)))
+
   (distinct-factors [this n] (f/counts->distinct (f/factor-counts this n)))
   (prime? [this n] (u/check-pos-int n)
     (cond
@@ -81,4 +85,4 @@
     (->OddMultiTableFactorization multi-table upper-limit)))
 
 (comment
-  (f/make-factorization {:type :full-multi-table :upper-limit 15}))
+  (f/factors (f/make-factorization {:type :full-multi-table :upper-limit 15}) 12))
