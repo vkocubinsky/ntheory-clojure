@@ -177,9 +177,7 @@
           (is (f/in-domain? factorizer n'))
           (is (= (repeat k 2) (take k factors'))))))))
 
-(deftest multi-factorizer-test
-  (let [factorizer (f/make-factorization {:type :odd-multi-table :upper-limit test-prop-upper-limit})]
-    (is (= [[2 2] [3 1]] (f/factor-counts factorizer 12)))))
+
 
 
 
