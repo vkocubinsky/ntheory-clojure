@@ -180,4 +180,17 @@
           (is (f/in-domain? factorizer n'))
           (is (= (repeat k 2) (take k factors'))))))))
 
+(deftest multi-factorizer-test
+  (let [factorizer (f/make-factorization {:type :full-multi-table :upper-limit test-prop-upper-limit})
+        {:keys [divisors quotients powers]} (:multi-table factorizer)
+        ]
+    (is (not (nil? divisors)))
+    (is (not (nil? quotients)))
+    (is (not (nil? powers)))
+    )
+
+  )
+
+
+
 

@@ -13,26 +13,25 @@
   [multi-table start]
   (let [{:keys [divisors quotients powers]} multi-table]
     (loop [p  start]
-      (if (> (* p p) (t/table-upper-limit divisors))
+      (if (> p (t/table-upper-limit divisors))
         multi-table
         (let [p' (t/table-get-number divisors p)
               q (t/table-get-number quotients p)
-              mark-step (if (= p 2) p (* p 2))
-              iter-step (if (= p 2) 1 2)]
+              mark-step (if (even? p) p (* p 2))
+              iter-step (if (even? start) 1 2)]
           (cond
-            ;;prime
+            ;;prime case; p or p' is a prime
             (= p' p) (doseq [k (range (* p p) (inc (t/table-upper-limit divisors)) mark-step)]
                        (let [k' (t/table-get-number divisors k)]
                          (when (= k' k)
                            (t/table-set-number! divisors k p)
                            (t/table-set-number! quotients k (quot k p)))))
-            ;;power of prime
+            ;;power of prime, p is a power of prime, p' is a prime
             (= p' q) (doseq [k (range p (inc (t/table-upper-limit divisors)) mark-step)]
                        (let [k' (t/table-get-number divisors k)]
                          (when (= k' p')
                            (t/table-set-number! powers k (inc (t/table-get-number powers k)))
                            (t/table-set-number! quotients k (quot (t/table-get-number quotients k) p'))))))
-
           (recur (+ p iter-step)))))))
 
 (defn table-factors

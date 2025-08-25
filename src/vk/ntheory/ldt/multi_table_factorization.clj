@@ -83,6 +83,6 @@
 
 
 (comment
-  (f/make-factorization {:type :full-multi-table :upper-limit 10})
+  (f/make-factorization {:type :full-multi-table :upper-limit 15})
 
   )
