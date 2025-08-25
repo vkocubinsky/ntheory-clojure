@@ -1,9 +1,10 @@
 (ns vk.ntheory.ldt.table-factorization
   "Least divisor table namespace."
 
-  (:require [clojure.pprint :as pp]
-            [vk.ntheory.util :as u]
+  (:require [vk.ntheory.util :as u]
             [vk.ntheory.ldt.table :as t]
+            [vk.ntheory.ldt.full-table] ;; load multimethods
+            [vk.ntheory.ldt.odd-table] ;; load multimethods
             [vk.ntheory.ldt.sieve :as s]
             [vk.ntheory.factorization :as f]))
 

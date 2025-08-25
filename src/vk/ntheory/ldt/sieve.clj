@@ -1,9 +1,8 @@
 (ns vk.ntheory.ldt.sieve
   "Functions for table."
 
-  (:require
-   [vk.ntheory.util :as u]
-   [vk.ntheory.ldt.table :as t]))
+  (:require [vk.ntheory.util :as u]
+            [vk.ntheory.ldt.table :as t]))
 
 (defn sieve
   "Sieve of Erathosphene."

@@ -1,9 +1,10 @@
 (ns vk.ntheory.ldt.multi-table-factorization
   "Least divisor table namespace."
 
-  (:require [clojure.pprint :as pp]
-            [vk.ntheory.util :as u]
+  (:require [vk.ntheory.util :as u]
             [vk.ntheory.ldt.table :as t]
+            [vk.ntheory.ldt.full-table] ;; load multimethods
+            [vk.ntheory.ldt.odd-table] ;; load multimethods
             [vk.ntheory.ldt.multi-sieve :as s]
             [vk.ntheory.factorization :as f]))
 
@@ -52,8 +53,7 @@
                               :init-type :ones
                               :array-type :short
                               :upper-limit upper-limit})
-        multi-table (s/->MultiTable divisors quotients powers)
-        ]
+        multi-table (s/->MultiTable divisors quotients powers)]
 
     (s/sieve multi-table 2)
     (->FullMultiTableFactorization multi-table)))
@@ -76,8 +76,7 @@
                               :init-type :ones
                               :array-type :short
                               :upper-limit odd-upper-limit})
-        multi-table (s/->MultiTable divisors quotients powers)
-        ]
+        multi-table (s/->MultiTable divisors quotients powers)]
     (s/sieve multi-table 3)
     (->OddMultiTableFactorization multi-table upper-limit)))
 

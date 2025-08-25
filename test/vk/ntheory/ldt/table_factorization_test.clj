@@ -34,6 +34,13 @@
                 (f factorizer n))))]
     (run-for-all-factorizers test-helper)))
 
+
+
+(deftest temporary-test
+  (let [factorizer (f/make-factorization {:type :full-multi-table :upper-limit test-prop-upper-limit})]
+    (is (= [2 5] (f/factors factorizer 10)))
+    ))
+
 (deftest factors-test
   (letfn [(test-helper [factorizer]
             (testing "Positive numbers"

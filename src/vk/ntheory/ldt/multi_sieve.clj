@@ -32,7 +32,7 @@
     (lazy-seq
      (when (> n 1)
        (let [d (t/table-get-number divisors n)]
-         (cons d (table-factors divisors (quot n d))))))))
+         (cons d (table-factors multi-table (quot n d))))))))
 
 (defn table-prime?
   "Check does given integer is `n` prime."
