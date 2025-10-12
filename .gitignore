@@ -20,6 +20,6 @@ pom.xml.asc
 
 # my additions
 ltximg
-
+!.lsp/config.edn
 
 
