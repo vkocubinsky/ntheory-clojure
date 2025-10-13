@@ -19,3 +19,9 @@
   (let [k (Integer/numberOfTrailingZeros n)
         r (bit-shift-right n k)]
     [k r]))
+
+
+(comment
+  (power-of-two-parts 18)
+
+  )
