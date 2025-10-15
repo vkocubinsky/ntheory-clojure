@@ -21,6 +21,7 @@
     [k r]))
 
 
+
 (comment
   (power-of-two-parts 18)
 
