@@ -1,4 +1,6 @@
-{:repl-options {:init (set! *warn-on-reflection* true)}
+{
+ :paths ["src" "resources"]
+ :extra-paths ["test"]
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {io.github.cognitect-labs/test-runner {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
                   :main-opts ["-m" "cognitect.test-runner"]
