@@ -16,8 +16,8 @@
   (catch Exception e (println "Can't load clj-reload"))
 )
 
+
 ;; Load tools.namespace
-#_
 (try
   (require '[clojure.tools.namespace.repl :refer [refresh]])
   (println "Loaded tools.namespace" )
