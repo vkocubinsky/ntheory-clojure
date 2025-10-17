@@ -16,13 +16,19 @@
   (catch Exception e (println "Can't load clj-reload"))
 )
 
-
-;; Load tools.namespace, it is optional for emacs
+;; Load Decompiler, it is optional for emacs
 (try
-  (require '[clojure.tools.namespace.repl :refer [refresh]])
-  (println "Loaded tools.namespace" )
-  (catch Exception e (println "Can't load tools.namespace"))
+  (require '[clj-java-decompiler.core :refer [decompile]])
+  (println "Loaded decompiler" )
+  (catch Exception e (println "Can't load decompiler"))
 )
+
+
+(def foo (atom {}))
+
+;;(reset! foo {:a 5})
+
+(deref foo)
 
 (println "Hello, Valery.")
 
