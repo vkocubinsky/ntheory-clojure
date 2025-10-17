@@ -17,6 +17,7 @@
   (primes [this] (s/table-primes table))
   (in-domain? [this n] (t/table-contains? table n)))
 
+
 (defrecord OddTableFactorization [table upper-limit]
   f/Factorization
   (factors [this n] (u/check-pos-int n)
