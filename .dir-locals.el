@@ -1,3 +1,3 @@
 ((nil
-  (inf-clojure-custom-startup . "clojure -A:compliment:clj-reload")
+  (inf-clojure-custom-startup . "clojure -A:dev")
   (inf-clojure-custom-repl-type . clojure)))

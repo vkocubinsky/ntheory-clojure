@@ -2,34 +2,37 @@
 
 (set! *warn-on-reflection* true)
 
+
+
+
 ;; Load Compliment, it is optional for emacs
 (try
   (require 'compliment.core)
   (println "Loaded compliment" )
-  (catch Exception e (println "Can't load compliment"))
+  (catch Exception _ (println "Can't load compliment"))
   )
 
 ;; Load clj-reload, it is optional for emacs
 (try
   (require '[clj-reload.core :as reload])
+  ;;(reload/init {:dirs ["src" "dev" "test"]})
   (println "Loaded clj-reload" )
-  (catch Exception e (println "Can't load clj-reload"))
+  (catch Exception _ (println "Can't load clj-reload"))
 )
 
-;; Load Decompiler, it is optional for emacs
+;; Decompiler, it is optional for emacs
 (try
   (require '[clj-java-decompiler.core :refer [decompile]])
   (println "Loaded decompiler" )
-  (catch Exception e (println "Can't load decompiler"))
+  (catch Exception _ (println "Can't load decompiler"))
 )
 
+;; Compiling libraries
+;; (compile 'my.namespace)  
+;; (binding [*compile-files* true] (require 'user :reload-all))
 
-(def foo (atom {}))
+(println "Hello, Valery!")
 
-;;(reset! foo {:a 5})
 
-(deref foo)
-
-(println "Hello, Valery.")
 
 
