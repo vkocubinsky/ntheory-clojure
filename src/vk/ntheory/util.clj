@@ -25,4 +25,22 @@
 (comment
   (power-of-two-parts 18)
 
+
+  (concat "
+
+   
+   
+   
+")
+
+
+
+  
   )
+
+
+
+
+
+
+
