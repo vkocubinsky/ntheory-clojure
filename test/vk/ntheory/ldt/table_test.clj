@@ -6,18 +6,6 @@
    [vk.ntheory.ldt.full-table :as full]
    [clojure.string :as str]))
 
-(deftest full-index-table-vals-test
-  (doseq [array-type [:int :short]]
-    (are [upper-limit numbers] (= numbers (t/table-vals
-                                           (t/make-table {:table-type :full
-                                                    :init-type :index
-                                                    :array-type :int
-                                                    :upper-limit upper-limit})))
-      1  [1]
-      2  [1 2]
-      3  [1 2 3]
-      4  [1 2 3 4]
-      5  [1 2 3 4 5])))
 
 (deftest odd-index-table-vals-test
   (doseq [array-type [:int :short]]

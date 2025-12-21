@@ -3,19 +3,11 @@
 
   (:require [vk.ntheory.util :as u]
             [vk.ntheory.ldt.table :as t]
-            [vk.ntheory.ldt.full-table] ;; load multimethods
             [vk.ntheory.ldt.odd-table] ;; load multimethods
             [vk.ntheory.ldt.sieve :as s]
             [vk.ntheory.factorization :as f]))
 
-(defrecord FullTableFactorization [table]
-  f/Factorization
-  (factors [this n] (s/table-factors table n))
-  (factor-counts [this n] (f/factors->counts (f/factors this n)))
-  (distinct-factors [this n] (f/factors->distinct (f/factors this n)))
-  (prime? [this n] (s/table-prime? table n))
-  (primes [this] (s/table-primes table))
-  (in-domain? [this n] (t/table-contains? table n)))
+
 
 
 (defrecord OddTableFactorization [table upper-limit]

@@ -11,11 +11,7 @@
 
 (def test-prop-upper-limit 30)
 
-(def factorizer-specs [{:type :full-table
-                        :upper-limit test-prop-upper-limit}
-                       {:type :odd-table
-                        :upper-limit test-prop-upper-limit}
-                       {:type :full-multi-table
+(def factorizer-specs [{:type :odd-table
                         :upper-limit test-prop-upper-limit}
                        {:type :odd-multi-table
                         :upper-limit test-prop-upper-limit}])
