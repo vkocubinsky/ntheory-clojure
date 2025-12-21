@@ -16,7 +16,7 @@
   "Returns power of two and rest for given number."
   [n]
   (assert (pos-int? n))
-  (let [k (Integer/numberOfTrailingZeros n)
+  (let [k (Long/numberOfTrailingZeros n)
         r (bit-shift-right n k)]
     [k r]))
 

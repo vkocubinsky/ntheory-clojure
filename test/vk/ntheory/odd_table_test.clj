@@ -1,4 +1,4 @@
-(ns vk.ntheory.ldt.odd-table-test
+(ns vk.ntheory.odd-table-test
   (:require
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.odd-table :as t]
@@ -21,14 +21,14 @@
     7  [1 3 5 7]))
 
 (deftest table-contains?-test
-  (let [table (make-table 11)]
-    (doseq [k (table-keys table)]
+  (let [table (t/make-table 11)]
+    (doseq [k (t/table-keys table)]
       (is (t/table-contains? table k)))))
 
 (deftest table-set-get-test
-  (let [table (make-table 11)
+  (let [table (t/make-table 11)
         v 100]
-    (doseq [k (table-keys table)]
+    (doseq [k (t/table-keys table)]
       (t/table-set-number! table k v)
       (is (= v (t/table-get-number table k))))))
 
