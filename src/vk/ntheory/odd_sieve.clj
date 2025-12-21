@@ -1,12 +1,53 @@
-(ns vk.ntheory.ldt.table-factorization
-  "Least divisor table namespace."
+(ns vk.ntheory.odd-sieve
 
   (:require [vk.ntheory.util :as u]
-            [vk.ntheory.ldt.table :as t]
-            [vk.ntheory.ldt.odd-table] ;; load multimethods
-            [vk.ntheory.ldt.sieve :as s]
+            [vk.ntheory.odd-table :as t]
             [vk.ntheory.factorization :as f]))
 
+
+(defn sieve
+  "Sieve of Erathosphene."
+  [table start]
+  (loop [p  start]
+    (if (> (* p p) (t/table-upper-limit table))
+      table
+      (let [p' (t/table-get-number table p)
+            mark-step (if (= p 2) p (* p 2))
+            iter-step (if (= p 2) 1 2)]
+        (when (= p' p)
+          (doseq [k (range (* p p) (inc (t/table-upper-limit table)) mark-step)]
+            (let [k' (t/table-get-number table k)]
+              (when (= k' k)
+                (t/table-set-number! table k p)))))
+        (recur (+ p iter-step))))))
+
+(defn table-factors
+  "Factorize integer."
+  [table ^Integer n]
+  (t/table-check-contains table n)
+  (lazy-seq
+   (when (> n 1)
+     (let [d (t/table-get-number table n)]
+       (cons d (table-factors table (quot n d)))))))
+
+(defn table-prime?
+  "Check does given integer is `n` prime."
+  [table n]
+  (t/table-check-contains table n)
+  (let [n' (t/table-get-number table n)]
+    (and (> n' 1)
+         (= n' n))))
+
+(defn table-primes
+  [table]
+  (->> (map vector (t/table-keys table) (t/table-vals table))
+       (filter (fn [[k v]] (= k v)))
+       (map first)
+       (drop-while #(< % 2))))
+
+
+
+;; end of sieve
 
 
 
@@ -31,15 +72,7 @@
     (let [[power-of-two rest] (u/power-of-two-parts n)]
       (t/table-contains? table rest))))
 
-(defmethod f/make-factorization :full-table [{:keys [upper-limit]}]
-  (when-not (pos-int? upper-limit)
-    (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
-  (let [table (t/make-table {:table-type :full
-                             :init-type :index
-                             :array-type :int
-                             :upper-limit upper-limit})]
-    (s/sieve table 2)
-    (->FullTableFactorization table)))
+
 
 (defmethod f/make-factorization :odd-table [{:keys [upper-limit]}]
   (when-not (pos-int? upper-limit)
@@ -47,10 +80,7 @@
   (let [odd-upper-limit (if (odd? upper-limit)
                           upper-limit
                           (dec upper-limit))
-        table (t/make-table {:table-type :odd
-                             :init-type :index
-                             :array-type :int
-                             :upper-limit odd-upper-limit})]
+        table (t/make-table odd-upper-limit)]
     (s/sieve table 3)
     (->OddTableFactorization table upper-limit)))
 
