@@ -6,7 +6,7 @@
 (defn- factors->partitions [xs]
   (partition-by identity xs))
 
-(defn factors->counts [xs]
+(defn- factors->counts [xs]
   (map (fn [ys] [(first ys) (count ys)]) (factors->partitions xs)))
 
 ;;(defn counts->factors [xs]

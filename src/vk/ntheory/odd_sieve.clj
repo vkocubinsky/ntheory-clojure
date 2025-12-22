@@ -1,8 +1,7 @@
 (ns vk.ntheory.odd-sieve
-
-  (:require [vk.ntheory.util :as u]
-            [vk.ntheory.odd-table :as t]
-            [vk.ntheory.factorization :as f]))
+  (:require
+   [vk.ntheory.odd-table :as t]
+   [vk.ntheory.factorization :as f]))
 
 (defn sieve
   "Sieve of Erathosphene."
@@ -21,7 +20,7 @@
 (defn table-factors
   "Factorize integer."
   [table ^Integer n]
-  (assert (t/table-contains? table n))
+  (assert (t/table-contains-key? table n))
   (lazy-seq
    (when (> n 1)
      (let [d (t/table-get-number table n)]
@@ -30,7 +29,7 @@
 (defn table-prime?
   "Check does given integer is `n` prime."
   [table n]
-  (assert (t/table-contains? table n))
+  (assert (t/table-contains-key? table n))
   (let [n' (t/table-get-number table n)]
     (and (> n' 1)
          (= n' n))))
@@ -42,21 +41,17 @@
        (map first)
        (drop-while #(< % 2))))
 
-
-
-
-
 (defrecord OddTableFactorization [table]
   f/Factorization
-  (factors [this n]
+  (factors [_ n]
     (assert (pos-int? n))
     (table-factors table n))
-  (prime? [this n]
+  (prime? [_ n]
     (assert (pos-int? n))
     (table-prime? table n))
-  (primes [this] (table-primes table))
-  (in-domain? [this n]
-    (t/table-contains? table rest)))
+  (primes [_] (table-primes table))
+  (in-domain? [_ n]
+    (t/table-contains-key? table n)))
 
 (defmethod f/make-factorization :odd-table [{:keys [upper-limit]}]
   (assert (and (pos-int? upper-limit) (odd? upper-limit)))
@@ -64,11 +59,9 @@
     (sieve table)
     (->OddTableFactorization table)))
 
-
 (comment
-  (let [factorization (f/make-factorization {:type :odd-table :upper-limit 11})]
-    (f/primes factorization)
-    )
+  (let [factorization (f/make-factorization {:type :odd-table :upper-limit 101})]
+    (f/factors factorization 15))
 
   )
 
