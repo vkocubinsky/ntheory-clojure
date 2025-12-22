@@ -10,13 +10,6 @@
   [table k]
   (and (pos-int? k) (odd? k) (<= k (:upper-limit table))))
 
-(defn table-check-contains
-  "Check does given number n in table."
-  [table n]
-  (util/check-true (table-contains? table n)
-                   "Out of range."
-                   {:upper-limit (:upper-limit table) :value n}))
-
 (defn table-set-number!
   "Store value v for key k."
   [table k v]
@@ -46,7 +39,8 @@
   (assert (and (pos-int? upper-limit) (odd? upper-limit)))
   {:upper-limit upper-limit :array (int-array (table-index-keys upper-limit))})
 
-
+(comment
+  (make-table 11))
 
 
 

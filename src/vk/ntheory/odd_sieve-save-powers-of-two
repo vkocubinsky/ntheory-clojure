@@ -42,34 +42,41 @@
        (map first)
        (drop-while #(< % 2))))
 
+;; end of sieve
 
-
-
-
-(defrecord OddTableFactorization [table]
+(defrecord OddTableFactorization [table upper-limit]
   f/Factorization
-  (factors [this n]
-    (assert (pos-int? n))
-    (table-factors table n))
+  (factors [this n] (u/check-pos-int n)
+    (let [[power-of-two rest] (u/power-of-two-parts n)]
+      (concat (repeat power-of-two 2) (table-factors table rest))))
+  (factor-counts [this n] (f/factors->counts (f/factors this n)))
+  (distinct-factors [this n] (f/factors->distinct (f/factors this n)))
   (prime? [this n]
-    (assert (pos-int? n))
-    (table-prime? table n))
-  (primes [this] (table-primes table))
-  (in-domain? [this n]
-    (t/table-contains? table rest)))
+    (u/check-pos-int n)
+    (cond
+      (< upper-limit 2) false
+      (= n 2) true
+      :else (let [[power-of-two rest] (u/power-of-two-parts n)]
+              (and (zero? power-of-two) (table-prime? table rest)))))
+  (primes [this] (let [seq (table-primes table)]
+                   (if (>= upper-limit 2)
+                     (cons 2 seq)
+                     seq)))
+  (in-domain? [this n] (u/check-pos-int n)
+    (let [[power-of-two rest] (u/power-of-two-parts n)]
+      (t/table-contains? table rest))))
 
 (defmethod f/make-factorization :odd-table [{:keys [upper-limit]}]
-  (assert (and (pos-int? upper-limit) (odd? upper-limit)))
-  (let [table (t/make-table upper-limit)]
+  (when-not (pos-int? upper-limit)
+    (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
+  (let [odd-upper-limit (if (odd? upper-limit)
+                          upper-limit
+                          (dec upper-limit))
+        table (t/make-table odd-upper-limit)]
     (sieve table)
-    (->OddTableFactorization table)))
+    (->OddTableFactorization table upper-limit)))
 
 
-(comment
-  (let [factorization (f/make-factorization {:type :odd-table :upper-limit 11})]
-    (f/primes factorization)
-    )
 
-  )
 
 
