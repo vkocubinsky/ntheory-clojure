@@ -1,6 +1,6 @@
 (ns vk.ntheory.odd-table
   "Table of positive integers indexed by odd positive integers."
-  (:require [vk.ntheory.util :as util]))
+  )
 
 (defn- table-index-keys [upper-limit]
   (range 1 (inc upper-limit) 2))

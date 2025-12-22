@@ -27,7 +27,7 @@
        (cons d (table-factors table (quot n d)))))))
 
 (defn table-prime?
-  "Check does given integer is `n` prime."
+  "Check does given integer n is a prime."
   [table n]
   (assert (t/table-contains-key? table n))
   (let [n' (t/table-get-number table n)]
@@ -35,6 +35,7 @@
          (= n' n))))
 
 (defn table-primes
+  "Retrun primes in table."
   [table]
   (->> (map vector (t/table-keys table) (t/table-vals table))
        (filter (fn [[k v]] (= k v)))

@@ -19,7 +19,7 @@
 (defprotocol Factorization
   "Prime factorization protocol"
   (factors [this n] "Returns prime factors of n with multiplicity.")
-  (prime? [this n] "Returns true if `n` is a prime number, otherwise false.")
+  (prime? [this n] "Returns true if n is a prime number, otherwise false.")
   (primes [this] "Returns a lazy sequence of primes for this factorizer.")
   (in-domain? [this n] "Returns true if value a is supported by this factorizer, otherwise false."))
 
