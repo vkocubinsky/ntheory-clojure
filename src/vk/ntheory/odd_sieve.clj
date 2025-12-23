@@ -45,10 +45,8 @@
 (defrecord OddTableFactorization [table]
   f/Factorization
   (factors [_ n]
-    (assert (pos-int? n))
     (table-factors table n))
   (prime? [_ n]
-    (assert (pos-int? n))
     (table-prime? table n))
   (primes [_] (table-primes table))
   (in-domain? [_ n]
