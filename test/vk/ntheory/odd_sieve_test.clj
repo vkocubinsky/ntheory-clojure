@@ -1,10 +1,10 @@
 (ns vk.ntheory.odd-sieve-test
   (:require
-   [clojure.test :refer [deftest is are]]
+   [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.factorization :as f]
    [vk.ntheory.odd-table :as t]
    [vk.ntheory.odd-sieve :as s]
-   ))
+   [vk.ntheory.test-data :as d]))
 
 (deftest sieve-test
   (are [upper-limit numbers] (= numbers (let [table (t/make-table upper-limit)
@@ -19,107 +19,28 @@
     13 [1 3 5 7 3 11 13]
     15 [1 3 5 7 3 11 13 3]))
 
-(deftest factors-test
-  (let [factorizer (f/make-factorization {:type :odd-table :upper-limit 31})]
-    (are [x y] (= y (f/factors factorizer x))
-      1  []
-      3  [3]
-      5  [5]
-      7  [7]
-      9  [3 3]
-      11 [11]
-      13 [13]
-      15 [3 5]
-      17 [17]
-      19 [19]
-      21 [3 7]
-      23 [23]
-      25 [5 5]
-      27 [3 3 3]
-      29 [29]
-      31 [31])))
-
-
-(deftest factor-counts-test
-  (let [factorizer (f/make-factorization {:type :odd-table :upper-limit 31})]
-    (are [x y] (= y (f/factor-counts factorizer x))
-      1  []
-      3  [[3 1]]
-      5  [[5 1]]
-      7  [[7 1]]
-      9  [[3 2]]
-      11 [[11 1]]
-      13 [[13 1]]
-      15 [[3 1] [5 1]]
-      17 [[17 1]]
-      19 [[19 1]]
-      21 [[3 1] [7 1]]
-      23 [[23 1]]
-      25 [[5 2]]
-      27 [[3 3]]
-      29 [[29 1]]
-      31 [[31 1]]))
-  )
-
-
-(deftest distinct-factors-test
-  (let [factorizer (f/make-factorization {:type :odd-table :upper-limit 31})]
-    (are [x y] (= y (f/distinct-factors factorizer x))
-      1  []
-      3  [3]
-      5  [5]
-      7  [7]
-      9  [3]
-      11 [11]
-      13 [13]
-      15 [3 5]
-      17 [17]
-      19 [19]
-      21 [3 7]
-      23 [23]
-      25 [5]
-      27 [3]
-      29 [29]
-      31 [31])))
-
-
-(deftest prime?-test
-  (let [factorizer (f/make-factorization {:type :odd-table :upper-limit 31})]
-
-   (are [x y] (= (f/prime? factorizer x) y)
-                1  false
-                3  true
-                5  true
-                7  true
-                9  false
-                11 true
-                13 true
-                15 false
-                17 true
-                19 true
-                21 false
-                23 true
-                25 false
-                27 false
-                29 true
-                31 true
-                )))
+(deftest factorization-test
+  (let [factorizer (f/make-factorization {:type :odd-table :upper-limit d/factorization-data-upper-limit})]
+    (doseq [{:keys [number factors factor-counts distinct-factors prime? primes]} d/factorization-data
+            :when (odd? number)
+            ]
+      (testing (str "Test number " number)
+        (when (odd? number)
+          (is (f/in-domain? factorizer number) "in-domain?")
+            (is (= factors (f/factors factorizer number)) "factors")
+            (is (= factor-counts (f/factor-counts factorizer number)) "factor-counts")
+            (is (= distinct-factors (f/distinct-factors factorizer number)) "distinct-factors")
+            (is (= prime? (f/prime? factorizer number)) "prime?")
+          )))))
 
 (deftest primes-test
-  (let [factorizer (f/make-factorization {:type :odd-table :upper-limit 31})]
-    (is (= (f/primes factorizer) [3 5 7 11 13 17 19 23 29 31]))
-   )
-  )
+  (doseq [{:keys [number primes]} d/factorization-data
+          :when (odd? number)
+          :let [factorizer (f/make-factorization {:type :odd-table :upper-limit number})]
+          ] 
+         (testing (str "Test number " number)
+           (is (= (rest primes) (f/primes factorizer)) "primes"))))
 
-
-(deftest in-domain?-test
-  (let [factorizer (f/make-factorization {:type :odd-table :upper-limit 31})]
-    (doseq [n (range 1 32 2)]
-      (is (f/in-domain? factorizer n))
-      (is (not (f/in-domain? factorizer (inc n))))
-      )
-   )
-  )
 
 
 
