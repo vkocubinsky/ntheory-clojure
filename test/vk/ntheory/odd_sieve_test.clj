@@ -22,24 +22,22 @@
 (deftest factorization-test
   (let [factorizer (f/make-factorization {:type :odd-table :upper-limit d/factorization-data-upper-limit})]
     (doseq [{:keys [number factors factor-counts distinct-factors prime? primes]} d/factorization-data
-            :when (odd? number)
-            ]
+            :when (odd? number)]
       (testing (str "Test number " number)
         (when (odd? number)
           (is (f/in-domain? factorizer number) "in-domain?")
-            (is (= factors (f/factors factorizer number)) "factors")
-            (is (= factor-counts (f/factor-counts factorizer number)) "factor-counts")
-            (is (= distinct-factors (f/distinct-factors factorizer number)) "distinct-factors")
-            (is (= prime? (f/prime? factorizer number)) "prime?")
-          )))))
+          (is (= factors (f/factors factorizer number)) "factors")
+          (is (= factor-counts (f/factor-counts factorizer number)) "factor-counts")
+          (is (= distinct-factors (f/distinct-factors factorizer number)) "distinct-factors")
+          (is (= prime? (f/prime? factorizer number)) "prime?"))))))
 
 (deftest primes-test
   (doseq [{:keys [number primes]} d/factorization-data
           :when (odd? number)
-          :let [factorizer (f/make-factorization {:type :odd-table :upper-limit number})]
-          ] 
-         (testing (str "Test number " number)
-           (is (= (rest primes) (f/primes factorizer)) "primes"))))
+          :let [factorizer (f/make-factorization {:type :odd-table :upper-limit number})]]
+    (testing (str "Test number " number)
+      ;;rest for exclude 2
+      (is (= (rest primes) (f/primes factorizer)) "primes"))))
 
 
 
