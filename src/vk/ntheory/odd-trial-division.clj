@@ -7,18 +7,37 @@
   (let [{{upper-limit :upper-limit} :table} odd-table-factorization]
     (concat (f/primes odd-table-factorization) (iterate #(+ % 2) (+ upper-limit 2)))))
 
+(defn- first-divisor
+  "Try candidate x until x^2 < n, return x if x divides n otherwise nil."
+  [n candidates]
+  (some #(when (= (rem n %) 0) %) (take-while #(<= (* % %) n) candidates))
+  )
+
 (defn trial-factors [odd-table-factorization n]
-  (f/factors odd-table-factorization n))
+  (if (f/in-domain? odd-table-factorization n)
+    (f/factors odd-table-factorization n)
+    (loop [factors []
+           r n
+           candidates (prime-candidates odd-table-factorization)
+           ]
+      (if (f/in-domain? odd-table-factorization r)
+        (concat factors (f/factors odd-table-factorization r))
+        (if-let [p (first-divisor r candidates )]
+          (recur (conj factors p) (quot r p) candidates)
+          (conj factors r)
+        )))))
 
 (defn trial-prime? [odd-table-factorization n]
   (if (f/in-domain? odd-table-factorization n)
     (f/prime? odd-table-factorization n)
-    ;; Valery start here
+    (nil? (first-divisor n (prime-candidates odd-table-factorization)))
     )
   )
 
 (defn trial-primes [odd-table-factorization]
-  (f/primes odd-table-factorization))
+  (let [{{upper-limit :upper-limit} :table} odd-table-factorization]
+    (concat (f/primes odd-table-factorization) (filter #(trial-prime? odd-table-factorization %) (iterate #(+ % 2) (+ upper-limit 2)))))
+  )
 
 (defrecord OddTrialDivision [odd-table-factorization]
   f/Factorization
@@ -39,9 +58,14 @@
 
 (comment
   (let [factorization (f/make-factorization {:type :odd-trial-division :cache-upper-limit 11})]
-    (f/prime? factorization 13))
+    (f/prime? factorization 91))
 
-  (let [factorization (f/make-factorization {:type :odd-table :upper-limit 11})]
-    (take 10 (prime-candidates factorization))))
+  (let [factorization (f/make-factorization {:type :odd-trial-division :cache-upper-limit 11})]
+    (take 20 (f/primes factorization)))
+
+  (let [factorization (f/make-factorization {:type :odd-trial-division :cache-upper-limit 15})]
+    (f/factors factorization 45))
+
+  )
 
 
