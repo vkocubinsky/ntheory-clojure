@@ -3,7 +3,7 @@
    [vk.ntheory.odd-table :as t]
    [vk.ntheory.factorization :as f]))
 
-(defn sieve
+(defn- sieve
   "Sieve of Erathosphene."
   [table]
   (loop [p 3]
@@ -17,24 +17,22 @@
                 (t/table-set-number! table k p)))))
         (recur (+ p 2))))))
 
-(defn table-factors
+(defn- table-factors
   "Factorize integer."
   [table ^Integer n]
-  (assert (t/table-contains-key? table n))
   (lazy-seq
    (when (> n 1)
      (let [d (t/table-get-number table n)]
        (cons d (table-factors table (quot n d)))))))
 
-(defn table-prime?
+(defn- table-prime?
   "Check does given integer n is a prime."
   [table n]
-  (assert (t/table-contains-key? table n))
   (let [n' (t/table-get-number table n)]
     (and (> n' 1)
          (= n' n))))
 
-(defn table-primes
+(defn- table-primes
   "Retrun primes in table."
   [table]
   (->> (map vector (t/table-keys table) (t/table-vals table))
@@ -45,8 +43,10 @@
 (defrecord OddTableFactorization [table]
   f/Factorization
   (factors [_ n]
+    (assert (t/table-contains-key? table n))
     (table-factors table n))
   (prime? [_ n]
+    (assert (t/table-contains-key? table n))
     (table-prime? table n))
   (primes [_] (table-primes table))
   (in-domain? [_ n]

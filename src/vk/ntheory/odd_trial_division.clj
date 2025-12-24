@@ -14,9 +14,7 @@
   )
 
 (defn trial-factors [odd-table-factorization n]
-  (if (f/in-domain? odd-table-factorization n)
-    (f/factors odd-table-factorization n)
-    (loop [factors []
+  (loop [factors []
            r n
            candidates (prime-candidates odd-table-factorization)
            ]
@@ -25,7 +23,7 @@
         (if-let [p (first-divisor r candidates )]
           (recur (conj factors p) (quot r p) candidates)
           (conj factors r)
-        )))))
+        ))))
 
 (defn trial-prime? [odd-table-factorization n]
   (if (f/in-domain? odd-table-factorization n)
