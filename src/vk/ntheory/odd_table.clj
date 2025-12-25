@@ -2,45 +2,45 @@
   "Table of positive integers indexed by odd positive integers."
   )
 
-(defn- table-index-keys [upper-limit]
+(defn- odd-keys [upper-limit]
   (range 1 (inc upper-limit) 2))
 
-(defn table-contains-key?
+(defn tcontains-key?
   "Does the given positive integer k exist in table?"
   [table k]
   (and (pos-int? k) (odd? k) (<= k (:upper-limit table))))
 
-(defn table-set-number!
+(defn tset-number!
   "Store value v for key k, where k is positive odd integer."
   [table k v]
-  (assert (table-contains-key? table k))
+  (assert (tcontains-key? table k))
   (let [idx (bit-shift-right k 1)]
     (aset (:array table) idx v)))
 
-(defn table-get-number
+(defn tget-number
   "Get value for given key k, where k is positive odd integer."
   [table k]
-  (assert (table-contains-key? table k))
+  (assert (tcontains-key? table k))
   (let [idx (bit-shift-right k 1)]
     (aget (:array table) idx)))
 
-(defn table-keys
+(defn tkeys
   "Return all key numbers."
   [table]
-  (table-index-keys (:upper-limit table)))
+  (odd-keys (:upper-limit table)))
 
-(defn table-vals
+(defn tvals
   "Return all value numbers."
   [table] (seq (:array table)))
 
-(defn make-table
-  "Make odd table."
+(defn make
+  "Make odd table filled by odd number 1,3,5 ... ."
   [upper-limit]
   (assert (and (pos-int? upper-limit) (odd? upper-limit)))
-  {:upper-limit upper-limit :array (int-array (table-index-keys upper-limit))})
+  {:upper-limit upper-limit :array (int-array (odd-keys upper-limit))})
 
 (comment
-  (make-table 11)
+  (make 11)
   )
 
 

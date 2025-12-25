@@ -66,7 +66,7 @@
     (let [[power-of-two rest] (u/power-of-two-parts n)]
       (t/table-contains? table rest))))
 
-(defmethod f/make-factorization :odd-table [{:keys [upper-limit]}]
+(defmethod f/make-factorization :odd-sieve [{:keys [upper-limit]}]
   (when-not (pos-int? upper-limit)
     (throw (ex-info "Upper limit must be positive integer" {:upper-limit upper-limit})))
   (let [odd-upper-limit (if (odd? upper-limit)

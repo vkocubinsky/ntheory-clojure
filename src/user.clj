@@ -10,7 +10,7 @@
 
 (comment
   (require '[vk.ntheory.factorization :as f])
-  (def table (f/make-factorization {:type :odd-table
+  (def table (f/make-factorization {:type :odd-sieve
                                     :upper-limit 100}))
 
   )

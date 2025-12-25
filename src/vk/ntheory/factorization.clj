@@ -38,9 +38,9 @@
 
 
 
-(defmulti make-factorization
+(defmulti make
   "Make a factorization from factorization-spec."
-  (fn [factorization-spec] (:type factorization-spec)))
+  (fn [fz-spec] (:type fz-spec)))
 
 
 
