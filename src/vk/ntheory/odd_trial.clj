@@ -44,6 +44,12 @@
   (in-domain? [this n]
     (and (pos-int? n) (odd? n))))
 
+(defn cache-upper-limit
+  [odd-trial-fz]
+  (sieve/upper-limit (:odd-sieve-fz odd-trial-fz))
+  )
+
+
 (defmethod fz/make :odd-trial [{:keys [cache-upper-limit]}]
   (assert (and (pos-int? cache-upper-limit) (odd? cache-upper-limit)))
   (let [odd-sieve-fz (fz/make {:type :odd-sieve :upper-limit cache-upper-limit})]
@@ -56,11 +62,15 @@
   (let [fz (fz/make {:type :odd-trial :cache-upper-limit 11})]
     (take 20 (fz/primes fz)))
 
-  (let [fz (fz/make {:type :odd-trial :cache-upper-limit 1000001})]
-    (fz/factors fz 45234251242341234237))
+  (let [fz (fz/make {:type :odd-trial :cache-upper-limit 101})]
+    (fz/factors fz 45234257))
 
-  (let [fz (fz/make {:type :odd-trial :cache-upper-limit 1000001})]
-    (fz/factors fz 45234251234231))
+  (let [fz (fz/make {:type :odd-trial :cache-upper-limit 101})]
+    (fz/factors fz 1223411))
+
+
+  (let [fz (fz/make {:type :odd-trial :cache-upper-limit 101})]
+    (cache-upper-limit fz))
   
   )
 

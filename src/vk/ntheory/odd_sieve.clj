@@ -40,7 +40,7 @@
        (map first)
        (drop-while #(< % 2))))
 
-(defrecord OddTableFactorization [table]
+(defrecord OddSieveFactorization [table]
   fz/Factorization
   (factors [this n]
     (assert (fz/in-domain? this n))
@@ -63,7 +63,7 @@
   (assert (and (pos-int? upper-limit) (odd? upper-limit)))
   (let [table (tbl/make upper-limit)]
     (sieve table)
-    (->OddTableFactorization table)))
+    (->OddSieveFactorization table)))
 
 (comment
   (let [fz (fz/make {:type :odd-sieve :upper-limit 101})]
