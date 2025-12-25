@@ -1,11 +1,11 @@
 (ns vk.ntheory.odd-table-test
   (:require
    [clojure.test :refer [deftest is are]]
-   [vk.ntheory.odd-table :as t]))
+   [vk.ntheory.odd-table :as tbl]))
 
-(deftest table-vals-test
-  (are [upper-limit numbers] (= numbers (t/table-vals
-                                         (t/make-table upper-limit)))
+(deftest tvals-test
+  (are [upper-limit numbers] (= numbers (tbl/tvals
+                                         (tbl/make upper-limit)))
     1  [1]
     3  [1 3]
     5  [1 3 5]
@@ -13,23 +13,23 @@
     9  [1 3 5 7 9]
     11 [1 3 5 7 9 11]))
 
-(deftest table-keys-test
+(deftest tkeys-test
   (doseq [upper-limit (range 1 12 2)]
-    (let [table (t/make-table upper-limit)]
-      (is (= (t/table-vals table) (t/table-keys table))))))
+    (let [table (tbl/make upper-limit)]
+      (is (= (tbl/tvals table) (tbl/tkeys table))))))
 
-(deftest table-contains?-test
-  (let [table (t/make-table 11)]
-    (doseq [k (t/table-keys table)]
-      (is (t/table-contains-key? table k))
-      (is (not (t/table-contains-key? table (inc k)))))))
+(deftest tcontains?-test
+  (let [table (tbl/make 11)]
+    (doseq [k (tbl/tkeys table)]
+      (is (tbl/tcontains-key? table k))
+      (is (not (tbl/tcontains-key? table (inc k)))))))
 
 (deftest table-set-get-test
-  (let [table (t/make-table 11)
+  (let [table (tbl/make 11)
         v 100]
-    (doseq [k (t/table-keys table)]
-      (t/table-set-number! table k v)
-      (is (= v (t/table-get-number table k))))))
+    (doseq [k (tbl/tkeys table)]
+      (tbl/tset-number! table k v)
+      (is (= v (tbl/tget-number table k))))))
 
 
 
