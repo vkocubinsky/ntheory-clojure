@@ -42,11 +42,11 @@
 
 (defrecord OddTableFactorization [table]
   fz/Factorization
-  (factors [_ n]
-    (assert (tbl/tcontains-key? table n))
+  (factors [this n]
+    (assert (fz/in-domain? this n))
     (table-factors table n))
-  (prime? [_ n]
-    (assert (tbl/tcontains-key? table n))
+  (prime? [this n]
+    (assert (fz/in-domain? this n))
     (table-prime? table n))
   (primes [_] (table-primes table))
   (in-domain? [_ n]
