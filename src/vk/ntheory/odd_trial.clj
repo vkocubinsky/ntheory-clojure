@@ -17,14 +17,16 @@
 (defn trial-factors [odd-sieve-fz n]
   (loop [factors []
          r n
-         candidates (take-while #(<= (* % %) n) (prime-candidates odd-sieve-fz))]
+         candidates (take-while #(<= (* % %) n) (prime-candidates odd-sieve-fz))
+         changed true
+         ]
     (cond
       (= r 1) factors
       (empty? candidates) (conj factors r)
       (fz/in-domain? odd-sieve-fz r) (concat factors (fz/factors odd-sieve-fz r))
-      (= 0 (rem r (first candidates))) (recur (conj factors (first candidates)) (quot r (first candidates)) candidates)
-      (and probable-prime-enabled (> r (sieve/upper-limit odd-sieve-fz)) (.isProbablePrime (BigInteger/valueOf r) certainty)) (conj factors r)
-      :else (recur factors r (rest candidates)))))
+      (= 0 (rem r (first candidates))) (recur (conj factors (first candidates)) (quot r (first candidates)) candidates true)
+      (and changed probable-prime-enabled (> r (sieve/upper-limit odd-sieve-fz)) (.isProbablePrime (BigInteger/valueOf r) certainty)) (conj factors r)
+      :else (recur factors r (rest candidates) false))))
 
 (defn trial-prime? [odd-sieve-fz n]
   (if (fz/in-domain? odd-sieve-fz n)
