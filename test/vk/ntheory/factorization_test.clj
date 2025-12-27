@@ -2,9 +2,9 @@
   (:require
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.factorization :as fz]
-   [vk.ntheory.odd-factorization :as trial]
-   [vk.ntheory.odd-sieve :as sieve]
-   [vk.ntheory.even-wrapper :as even]
+   [vk.ntheory.odd-fz :as odd-fz]
+   [vk.ntheory.odd-sieve-fz :as odd-sieve-fz]
+   [vk.ntheory.even-fz :as even-fz]
    [vk.ntheory.odd-table :as tbl]
    [vk.ntheory.test-helpers :as helpers]))
 

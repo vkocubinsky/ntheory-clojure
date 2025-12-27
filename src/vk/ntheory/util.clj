@@ -29,10 +29,6 @@
   [n]
   (BigInteger/.nextProbablePrime (biginteger n)))
 
-(defn mod [k m]
-  (let [k' (biginteger k)
-        m' (biginteger m)]
-    (BigInteger/.mod k' m')))
 
 (defn mod-inverse [k m]
   (let [k' (biginteger k)

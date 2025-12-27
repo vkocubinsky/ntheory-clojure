@@ -1,42 +1,40 @@
 (ns vk.ntheory.odd-fz
   (:require
-   [vk.ntheory.odd-sieve :as sieve]
+   [vk.ntheory.odd-sieve-fz :as odd-sieve-fz]
    [vk.ntheory.util :as util]
    [vk.ntheory.factorization :as fz]))
 
 (def probable-prime-enabled true)
-(def certainty 20)
+(def certainty 100)
 
 (defn- trial-only-canidates [odd-sieve-fz]
-  (let [upper-limit (sieve/upper-limit odd-sieve-fz)]
-    (iterate #(+ % 2) (+ upper-limit 2))))
+  (let [upper-limit (odd-sieve-fz/upper-limit odd-sieve-fz)
+        start (+ upper-limit 2)]
+    (iterate #(+ % 2) start)))
 
 (defn- prime-candidates [odd-sieve-fz]
-  (let [upper-limit (sieve/upper-limit odd-sieve-fz)]
-    (concat (fz/primes odd-sieve-fz) (trial-only-canidates odd-sieve-fz))))
+  (concat (fz/primes odd-sieve-fz) (trial-only-canidates odd-sieve-fz)))
 
 (defn- trial-factors [odd-sieve-fz n]
   (loop [factors []
          r n
          candidates (take-while #(<= (* % %) n) (prime-candidates odd-sieve-fz))
-         changed true
-         ]
+         changed true]
     (cond
       (= r 1) factors
       (empty? candidates) (conj factors r)
       (fz/in-domain? odd-sieve-fz r) (concat factors (fz/factors odd-sieve-fz r))
       (= 0 (rem r (first candidates))) (recur (conj factors (first candidates)) (quot r (first candidates)) candidates true)
-      (and changed probable-prime-enabled (> r (sieve/upper-limit odd-sieve-fz)) (util/probable-prime r certainty)) (conj factors r)
+      (and changed probable-prime-enabled (> r (odd-sieve-fz/upper-limit odd-sieve-fz)) (util/probable-prime r certainty)) (conj factors r)
       :else (recur factors r (rest candidates) false))))
 
 (defn- trial-prime? [odd-sieve-fz n]
   (if (fz/in-domain? odd-sieve-fz n)
     (fz/prime? odd-sieve-fz n)
-    (every? #(> (rem n %) 0) (take-while #(<= (* % %) n) (prime-candidates odd-sieve-fz)))))
+    (util/probable-prime n certainty)))
 
 (defn- trial-primes [odd-sieve-fz]
-  (let [upper-limit (sieve/upper-limit odd-sieve-fz)]
-    (concat (fz/primes odd-sieve-fz) (filter #(trial-prime? odd-sieve-fz %) (trial-only-canidates odd-sieve-fz)))))
+  (concat (fz/primes odd-sieve-fz) (filter #(util/probable-prime % certainty) (trial-only-canidates odd-sieve-fz))))
 
 (defrecord OddTrialDivision [odd-sieve-fz]
   fz/Factorization
@@ -50,9 +48,6 @@
   (in-domain? [this n]
     (and (pos? n) (odd? n))))
 
-;;(defn cache-upper-limit
-;;  [odd-trial-fz]
-;;  (sieve/upper-limit (:odd-sieve-fz-fz odd-trial-fz)))
 
 (defmethod fz/make :odd-fz [{:keys [cache-upper-limit]}]
   (assert (and (pos-int? cache-upper-limit) (odd? cache-upper-limit)))

@@ -1,6 +1,5 @@
 (ns vk.ntheory.odd-table
-  "Table of positive integers indexed by odd positive integers."
-  )
+  "Table of positive integers indexed by odd positive integers.")
 
 (defn- odd-keys [upper-limit]
   (range 1 (inc upper-limit) 2))
@@ -12,17 +11,19 @@
 
 (defn tset-number!
   "Store value v for key k, where k is positive odd integer."
-  [table k v]
+  [table ^Integer k ^Integer v]
   (assert (tcontains-key? table k))
-  (let [idx (bit-shift-right k 1)]
-    (aset (:array table) idx v)))
+  (let [^ints arr (:array table)
+        idx (bit-shift-right k 1)]
+    (aset arr idx v)))
 
 (defn tget-number
   "Get value for given key k, where k is positive odd integer."
-  [table k]
+  [table ^Integer k]
   (assert (tcontains-key? table k))
-  (let [idx (bit-shift-right k 1)]
-    (aget (:array table) idx)))
+  (let [^ints arr (:array table)
+        idx (bit-shift-right k 1)]
+    (aget arr idx)))
 
 (defn tkeys
   "Return all key numbers."
@@ -40,8 +41,7 @@
   {:upper-limit upper-limit :array (int-array (odd-keys upper-limit))})
 
 (comment
-  (make 11)
-  )
+  (make 11))
 
 
 
