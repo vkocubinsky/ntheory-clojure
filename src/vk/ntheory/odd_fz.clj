@@ -4,7 +4,7 @@
    [vk.ntheory.util :as util]
    [vk.ntheory.factorization :as fz]))
 
-(def certainty 100)
+(def certainty 20)
 
 (defn- trial-only-canidates [odd-sieve-fz]
   (let [upper-limit (odd-sieve-fz/upper-limit odd-sieve-fz)
@@ -64,7 +64,7 @@
     (fz/factors fz 45234257))
 
   (let [fz (fz/make {:type :odd-fz :cache-upper-limit 45})]
-    (fz/factors fz (* 3 3 5 5 7 11 13)))
+    (fz/factors fz 12323425437863876837638763821123))
 
 
 

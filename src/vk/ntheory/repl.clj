@@ -14,13 +14,15 @@
     (session-new! cache-upper-limit)
     nil))
 
-(defn session-info []
-  {:cache-upper-limit (-> (get-fz) :odd-fz :odd-sieve-fz :table :upper-limit)})
+
 
 (defn get-fz []
   (if-let [fz @session-atom]
     fz
-    (new-session! 65535)))
+    (session-new! 65535)))
+
+(defn session-info []
+  {:cache-upper-limit (-> (get-fz) :odd-fz :odd-sieve-fz :table :upper-limit)})
 
 (defn primes [n]
   (take n (fz/primes (get-fz))))
@@ -40,3 +42,6 @@
 (defn next-prime [n]
   (util/next-probable-prime n))
 
+(comment
+ (factors  12323425437863876837638763829768932672389678394763)
+  )
