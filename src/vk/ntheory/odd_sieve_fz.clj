@@ -1,4 +1,4 @@
-(ns vk.ntheory.odd-sieve
+(ns vk.ntheory.odd-sieve-fz
   (:require
    [vk.ntheory.odd-table :as tbl]
    [vk.ntheory.factorization :as fz]))
@@ -59,14 +59,14 @@
   )
 
 
-(defmethod fz/make :odd-sieve [{:keys [upper-limit]}]
+(defmethod fz/make :odd-sieve-fz [{:keys [upper-limit]}]
   (assert (and (pos-int? upper-limit) (odd? upper-limit)))
   (let [table (tbl/make upper-limit)]
     (sieve table)
     (->OddSieveFactorization table)))
 
 (comment
-  (let [fz (fz/make {:type :odd-sieve :upper-limit 101})]
+  (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
     (fz/factors fz 45))
   )
 

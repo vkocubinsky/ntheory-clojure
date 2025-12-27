@@ -26,20 +26,31 @@
 
 (defn distinct-factors
   "Returns the distinct prime factors of n."
-  [factorization n]
-  (factors->distinct (factors factorization n)))
+  [fz n]
+  (factors->distinct (factors fz n)))
 
 
 (defn factor-counts
   "Returns a sequence of pairs [p k] where `p` is a prime and `k` is its exponent in factorization of n."
-  [factorization n]
-  (factors->counts (factors factorization n))
+  [fz n]
+  (factors->counts (factors fz n))
+  )
+
+(defn factors-partitions
+  "Returns a sequence of pairs [p k] where `p` is a prime and `k` is its exponent in factorization of n."
+  [fz n]
+  (factors->partitions (factors fz n))
   )
 
 
 
 (defmulti make
-  "Make a factorization from factorization-spec."
+  "Make a factorization from factorization-spec.
+  Factorization spec is a map with key :type and value on from
+  - :even-fz
+  - :odd-fz
+  - :odd-sieve-fz
+  "
   (fn [fz-spec] (:type fz-spec)))
 
 

@@ -1,4 +1,6 @@
-(ns vk.ntheory.util)
+(ns vk.ntheory.util
+  (:import [clojure.lang BigInt])
+  )
 
 (defmulti power-of-two-parts
   "Returns vector [k r] where k is p-adic order of 2 and r is a rest

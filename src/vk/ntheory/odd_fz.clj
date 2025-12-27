@@ -1,4 +1,4 @@
-(ns vk.ntheory.odd-trial
+(ns vk.ntheory.odd-fz
   (:require
    [vk.ntheory.odd-sieve :as sieve]
    [vk.ntheory.util :as util]
@@ -52,27 +52,27 @@
 
 ;;(defn cache-upper-limit
 ;;  [odd-trial-fz]
-;;  (sieve/upper-limit (:odd-sieve-fz odd-trial-fz)))
+;;  (sieve/upper-limit (:odd-sieve-fz-fz odd-trial-fz)))
 
-(defmethod fz/make :odd-trial [{:keys [cache-upper-limit]}]
+(defmethod fz/make :odd-fz [{:keys [cache-upper-limit]}]
   (assert (and (pos-int? cache-upper-limit) (odd? cache-upper-limit)))
-  (let [odd-sieve-fz (fz/make {:type :odd-sieve :upper-limit cache-upper-limit})]
+  (let [odd-sieve-fz (fz/make {:type :odd-sieve-fz :upper-limit cache-upper-limit})]
     (->OddTrialDivision odd-sieve-fz)))
 
 (comment
-  (let [fz (fz/make {:type :odd-trial :cache-upper-limit 11})]
+  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 11})]
     (fz/prime? fz 101))
 
-  (let [fz (fz/make {:type :odd-trial :cache-upper-limit 11})]
+  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 11})]
     (take 20 (fz/primes fz)))
 
-  (let [fz (fz/make {:type :odd-trial :cache-upper-limit 8191})]
+  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 8191})]
     (fz/factors fz 45234257))
 
-  (let [fz (fz/make {:type :odd-trial :cache-upper-limit 8191})]
+  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 8191})]
     (fz/factors fz 122341111111111111111111111))
 
-  (let [fz (fz/make {:type :odd-trial :cache-upper-limit 8191})]
+  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 8191})]
     (cache-upper-limit fz)))
 
 
