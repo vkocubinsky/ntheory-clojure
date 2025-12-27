@@ -4,23 +4,38 @@
    [vk.ntheory.factorization :as fz]
    [vk.ntheory.util :as util]))
 
-;; todo: use atom
-(defonce fz (fz/make {:type :even-fz :cache-upper-limit 8192}))
+(defonce session-atom (atom nil))
+
+(defn- session-new! [cache-upper-limit]
+  (reset! session-atom (fz/make {:type :even-fz :cache-upper-limit cache-upper-limit})))
+
+(defn session-init! [cache-upper-limit]
+  (do
+    (session-new! cache-upper-limit)
+    nil))
+
+(defn session-info []
+  {:cache-upper-limit (-> (get-fz) :odd-fz :odd-sieve-fz :table :upper-limit)})
+
+(defn get-fz []
+  (if-let [fz @session-atom]
+    fz
+    (new-session! 65535)))
 
 (defn primes [n]
-  (take n (fz/primes fz)))
+  (take n (fz/primes (get-fz))))
 
 (defn prime? [n]
-  (fz/prime? fz n))
+  (fz/prime? (get-fz) n))
 
 (defn factors [n]
-  (fz/factors fz n))
+  (fz/factors (get-fz) n))
 
 (defn factor-counts [n]
-  (fz/factor-counts fz n))
+  (fz/factor-counts (get-fz) n))
 
 (defn distinct-factors [n]
-  (fz/distinct-factors fz n))
+  (fz/distinct-factors (get-fz) n))
 
 (defn next-prime [n]
   (util/next-probable-prime n))

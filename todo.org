@@ -1,1 +1,3 @@
-- work with BigInteger
+- divisor factorizer
+  - odd/even question?
+  
