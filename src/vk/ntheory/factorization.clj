@@ -37,7 +37,7 @@
   )
 
 (defn factors-partitions
-  "Returns a sequence of pairs [p k] where `p` is a prime and `k` is its exponent in factorization of n."
+  "Returns a sequence of partitions groups by factor."
   [fz n]
   (factors->partitions (factors fz n))
   )
