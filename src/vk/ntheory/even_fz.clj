@@ -31,8 +31,8 @@
   (let [fz (fz/make {:type :even-fz :cache-upper-limit 10})]
     (fz/prime? fz 101))
 
-  (let [fz (fz/make {:type :even-fz :cache-upper-limit 100})]
-    (take 20 (fz/primes fz)))
+  (let [fz (fz/make {:type :even-fz :cache-upper-limit 10})]
+    (take-while #(< % 100) (fz/primes fz)))
 
   (let [fz (fz/make {:type :even-fz :cache-upper-limit 100})]
     (fz/factors fz 45234257))

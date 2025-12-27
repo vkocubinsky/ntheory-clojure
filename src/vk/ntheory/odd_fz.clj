@@ -63,11 +63,10 @@
   (let [fz (fz/make {:type :odd-fz :cache-upper-limit 8191})]
     (fz/factors fz 45234257))
 
-  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 8191})]
-    (fz/factors fz 122341111111111111111111111))
+  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 45})]
+    (fz/factors fz (* 3 3 5 5 7 11 13)))
 
-  (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 45})]
-    (trial-factors fz (* 3 3 5 5 7 11 13)))
+
 
   )
 

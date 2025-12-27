@@ -1,32 +1,27 @@
 (ns vk.ntheory.repl
   (:require
    [vk.ntheory.even-fz]
-   [vk.ntheory.factorization :as fz])
-  )
+   [vk.ntheory.factorization :as fz]
+   [vk.ntheory.util :as util]))
 
 ;; todo: use atom
 (defonce fz (fz/make {:type :even-fz :cache-upper-limit 8192}))
 
 (defn primes [n]
-  (take n (fz/primes fz))
-  )
+  (take n (fz/primes fz)))
 
 (defn prime? [n]
-  (fz/prime? fz n)
-  )
+  (fz/prime? fz n))
 
 (defn factors [n]
-  (fz/factors fz n)
-  )
+  (fz/factors fz n))
 
 (defn factor-counts [n]
-  (fz/factor-counts fz n)
-  )
-
+  (fz/factor-counts fz n))
 
 (defn distinct-factors [n]
-  (fz/distinct-factors fz n)
-  )
+  (fz/distinct-factors fz n))
 
-
+(defn next-prime [n]
+  (util/next-probable-prime n))
 

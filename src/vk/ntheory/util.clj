@@ -42,6 +42,13 @@
         ]
     (BigInteger/.modPow k' exp' m')))
 
+(defn pow [k exp]
+  (let [k' (biginteger k)
+        exp' (biginteger exp)
+        ]
+    (BigInteger/.pow k' exp')))
+
+
 (defn gcd [a b]
   (let [a' (biginteger a)
         b' (biginteger b)]
