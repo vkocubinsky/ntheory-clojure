@@ -4,7 +4,6 @@
    [vk.ntheory.util :as util]
    [vk.ntheory.factorization :as fz]))
 
-(def probable-prime-enabled true)
 (def certainty 100)
 
 (defn- trial-only-canidates [odd-sieve-fz]
@@ -15,18 +14,19 @@
 (defn- prime-candidates [odd-sieve-fz]
   (concat (fz/primes odd-sieve-fz) (trial-only-canidates odd-sieve-fz)))
 
+
 (defn- trial-factors [odd-sieve-fz n]
-  (loop [factors []
-         r n
-         candidates (take-while #(<= (* % %) n) (prime-candidates odd-sieve-fz))
-         changed true]
-    (cond
-      (= r 1) factors
-      (empty? candidates) (conj factors r)
-      (fz/in-domain? odd-sieve-fz r) (concat factors (fz/factors odd-sieve-fz r))
-      (= 0 (rem r (first candidates))) (recur (conj factors (first candidates)) (quot r (first candidates)) candidates true)
-      (and changed probable-prime-enabled (> r (odd-sieve-fz/upper-limit odd-sieve-fz)) (util/probable-prime r certainty)) (conj factors r)
-      :else (recur factors r (rest candidates) false))))
+  (letfn [(lazy-factors [r
+                         candidates
+                         r-changed]
+            (lazy-seq (cond
+                        (= r 1) ()
+                        (empty? candidates) (list r)
+                        (fz/in-domain? odd-sieve-fz r) (fz/factors odd-sieve-fz r)
+                        (= 0 (rem r (first candidates))) (cons (first candidates) (lazy-factors (quot r (first candidates)) candidates true))
+                        (and r-changed (util/probable-prime r certainty)) (list r)
+                        :else (lazy-factors r (rest candidates) false))))]
+    (lazy-factors n (take-while #(<= (* % %) n) (prime-candidates odd-sieve-fz)) true)))
 
 (defn- trial-prime? [odd-sieve-fz n]
   (if (fz/in-domain? odd-sieve-fz n)
@@ -48,7 +48,6 @@
   (in-domain? [this n]
     (and (pos? n) (odd? n))))
 
-
 (defmethod fz/make :odd-fz [{:keys [cache-upper-limit]}]
   (assert (and (pos-int? cache-upper-limit) (odd? cache-upper-limit)))
   (let [odd-sieve-fz (fz/make {:type :odd-sieve-fz :upper-limit cache-upper-limit})]
@@ -67,7 +66,9 @@
   (let [fz (fz/make {:type :odd-fz :cache-upper-limit 8191})]
     (fz/factors fz 122341111111111111111111111))
 
-  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 8191})]
-    (cache-upper-limit fz)))
+  (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 45})]
+    (trial-factors fz (* 3 3 5 5 7 11 13)))
+
+  )
 
 

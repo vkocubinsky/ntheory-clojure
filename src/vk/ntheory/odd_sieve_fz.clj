@@ -48,14 +48,14 @@
   (prime? [this n]
     (assert (fz/in-domain? this n))
     (table-prime? table n))
-  (primes [_] (table-primes table))
-  (in-domain? [_ n]
+  (primes [this] (table-primes table))
+  (in-domain? [this n]
     (tbl/tcontains-key? table n)))
 
 (defn upper-limit
   "Returns upper limit for odd sieve factorization."
-  [sieve-fz]
-  (get-in sieve-fz [:table :upper-limit])
+  [odd-sieve-fz]
+  (get-in odd-sieve-fz [:table :upper-limit])
   )
 
 
@@ -67,7 +67,7 @@
 
 (comment
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/factors fz 45))
+    (fz/primes fz))
   )
 
 
