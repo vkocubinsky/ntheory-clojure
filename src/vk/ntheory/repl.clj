@@ -7,22 +7,23 @@
 (defonce session-atom (atom nil))
 
 (defn- session-new! [cache-upper-limit]
-  (reset! session-atom (fz/make {:type :even-fz :cache-upper-limit cache-upper-limit})))
+  (reset! session-atom (fz/make
+                        {:type :even-fz
+                         :odd-fz {:type :odd-fz
+                                  :odd-sieve-fz {:type :odd-sieve-fz
+                                           :upper-limit cache-upper-limit}}})))
 
 (defn session-init! [cache-upper-limit]
   (do
     (session-new! cache-upper-limit)
     nil))
 
-
-
 (defn get-fz []
   (if-let [fz @session-atom]
     fz
     (session-new! 65535)))
 
-(defn session-info []
-  {:cache-upper-limit (-> (get-fz) :odd-fz :odd-sieve-fz :table :upper-limit)})
+
 
 (defn primes [n]
   (take n (fz/primes (get-fz))))
@@ -43,5 +44,4 @@
   (util/next-probable-prime n))
 
 (comment
- (factors  12323425437863876837638763829768932672389678394763)
-  )
+  (factors  12323425437863876837638763829768932672389678394763))
