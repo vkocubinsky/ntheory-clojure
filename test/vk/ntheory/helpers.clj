@@ -1,4 +1,4 @@
-(ns vk.ntheory.test-helpers
+(ns vk.ntheory.helpers
   (:require
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.factorization :as fz]))

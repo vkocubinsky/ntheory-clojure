@@ -14,7 +14,6 @@
 (defn- prime-candidates [odd-sieve-fz]
   (concat (fz/primes odd-sieve-fz) (trial-only-canidates odd-sieve-fz)))
 
-
 (defn- trial-factors [odd-sieve-fz n]
   (letfn [(lazy-factors [r
                          candidates
@@ -36,7 +35,7 @@
 (defn- trial-primes [odd-sieve-fz]
   (concat (fz/primes odd-sieve-fz) (filter #(util/probable-prime % certainty) (trial-only-canidates odd-sieve-fz))))
 
-(defrecord OddTrialDivision [odd-sieve-fz]
+(defrecord OddFactorization [odd-sieve-fz]
   fz/Factorization
   (factors [this n]
     (assert (fz/in-domain? this n))
@@ -48,26 +47,17 @@
   (in-domain? [this n]
     (and (pos? n) (odd? n))))
 
-(defmethod fz/make :odd-fz [{:keys [cache-upper-limit]}]
-  (assert (and (pos-int? cache-upper-limit) (odd? cache-upper-limit)))
-  (let [odd-sieve-fz (fz/make {:type :odd-sieve-fz :upper-limit cache-upper-limit})]
-    (->OddTrialDivision odd-sieve-fz)))
+(defmethod fz/make :odd-fz [{:keys [odd-sieve-fz]}]
+  (->OddFactorization (if (satisfies? fz/Factorization odd-sieve-fz)
+                        odd-sieve-fz
+                        (fz/make odd-sieve-fz))))
 
 (comment
-  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 11})]
-    (fz/prime? fz 101))
+  (let [odd-sieve-fz (fz/make {:type :odd-sieve-fz :upper-limit 11})
+        fz (fz/make {:type :odd-fz :odd-sieve-fz odd-sieve-fz})]
+    (fz/factors fz 49))
 
-  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 11})]
-    (take 20 (fz/primes fz)))
-
-  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 8191})]
-    (fz/factors fz 45234257))
-
-  (let [fz (fz/make {:type :odd-fz :cache-upper-limit 45})]
-    (fz/factors fz 12323425437863876837638763821123))
-
-
-
-  )
+  (let [fz (fz/make {:type :odd-fz :odd-sieve-fz {:type :odd-sieve-fz :upper-limit 11}})]
+    (fz/factors fz 49)))
 
 

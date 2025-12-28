@@ -19,27 +19,16 @@
   (in-domain? [this n]
     (pos? n)))
 
-(defmethod fz/make :even-fz [{:keys [cache-upper-limit]}]
-  (assert (pos? cache-upper-limit))
-  (let [odd-upper-limit (if (odd? cache-upper-limit)
-                          cache-upper-limit
-                          (dec cache-upper-limit))
-        odd-fz (fz/make {:type :odd-fz :cache-upper-limit odd-upper-limit})]
-    (->EvenFactorization odd-fz)))
 
+(defmethod fz/make :even-fz [{:keys [odd-fz]}]
+  (->EvenFactorization (if (satisfies? fz/Factorization odd-fz)
+                        odd-fz
+                        (fz/make odd-fz))))
 
 (comment
-  (let [fz (fz/make {:type :even-fz :cache-upper-limit 10})]
-    (fz/prime? fz 101))
 
-  (let [fz (fz/make {:type :even-fz :cache-upper-limit 10})]
-    (take-while #(< % 100) (fz/primes fz)))
-
-  (let [fz (fz/make {:type :even-fz :cache-upper-limit 100})]
-    (fz/factors fz 45234257))
-
-  (let [fz (fz/make {:type :even-fz :cache-upper-limit 100})]
-    (fz/factors fz  6035457813276241))
+  (fz/make {:type :even-fz :odd-fz {:type :odd-fz :odd-sieve-fz {:type :odd-sieve-fz :upper-limit 11}}})
+  
   )
 
 

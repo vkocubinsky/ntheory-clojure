@@ -38,18 +38,20 @@
     (fz/primes parent-fz))
 
   (in-domain? [this n]
-    (pos? value)))
+    (pos? n)))
 
 (defmethod fz/make :divisors-fz [{:keys [parent-fz value]}]
   (assert (pos? value))
-  (let [partitions (fz/factor-partitions parent-fz value)])
-  (->DivisorsFactorization parent-fz value (fz/factor-partitions parent-fz value)))
+  (let [parent-fz (if (satisfies? fz/Factorization parent-fz)
+                    parent-fz
+                    (fz/make parent-fz))]
+    (->DivisorsFactorization parent-fz
+                             value
+                             (fz/factor-partitions parent-fz value))))
 
 (comment
-  (divisors-in-domain? 98 49)
 
-  (let [even-fz (fz/make {:type :even-fz :cache-upper-limit 100})
-        fz (fz/make {:type :divisors-fz :parent-fz even-fz :value 98})]
-    (fz/factors fz  49))
+  (fz/make {:type :even-fz :odd-fz {:type :odd-fz :odd-sieve-fz {:type :odd-sieve-fz :upper-limit 11}}})
 
+  (fz/make {:type :divisors-fz :value 98 :parent-fz {:type :even-fz :odd-fz {:type :odd-fz :odd-sieve-fz {:type :odd-sieve-fz :upper-limit 11}}}})
   )
