@@ -1,6 +1,6 @@
 (ns vk.ntheory.helpers
   (:require
-   [clojure.test :refer [deftest is are testing]]
+   [clojure.test :refer [is testing]]
    [vk.ntheory.factorization :as fz]))
 
 (def factorization-data-upper-limit 31)
@@ -173,7 +173,7 @@
     :prime? true}])
 
 (defn factorization-test-helper [fz]
-  (doseq [{:keys [number factors factor-counts distinct-factors prime? primes]} factorization-data
+  (doseq [{:keys [number factors factor-counts distinct-factors prime?]} factorization-data
           :when (fz/in-domain? fz number)]
     (testing (str "Test number " number)
       (when (odd? number)

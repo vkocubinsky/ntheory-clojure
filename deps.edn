@@ -7,4 +7,5 @@
                   :exec-fn cognitect.test-runner.api/test}
            :dev {
                   :extra-paths ["classes"]
-                 }}}
+                 }
+           }}
