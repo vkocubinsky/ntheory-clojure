@@ -1,6 +1,6 @@
 (ns vk.ntheory.even-fz
   (:require [vk.ntheory.util :as util]
-            [vk.ntheory.odd-fz :as od-fz]
+            [vk.ntheory.odd-fz]
             [vk.ntheory.factorization :as fz]))
 
 (defrecord EvenFactorization [odd-fz]
@@ -15,8 +15,8 @@
         (= n 2) true
         :else (let [[power-of-two rest] (util/power-of-two-parts n)]
                 (and (zero? power-of-two) (fz/prime? odd-fz rest)))))
-  (primes [this] (cons 2 (fz/primes odd-fz)))
-  (in-domain? [this n]
+  (primes [_] (cons 2 (fz/primes odd-fz)))
+  (in-domain? [_ n]
     (pos? n)))
 
 
@@ -27,7 +27,7 @@
 
 (comment
 
-  (fz/make {:type :even-fz :odd-fz {:type :odd-fz :odd-sieve-fz {:type :odd-sieve-fz :upper-limit 11}}})
+  (fz/make {:type :even-fz :odd-fz {:type :odd-fz :odd-fz {:type :odd-sieve-fz :upper-limit 11}}})
   
   )
 

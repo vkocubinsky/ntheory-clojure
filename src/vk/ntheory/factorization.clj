@@ -15,7 +15,6 @@
 ;;(defn counts->distinct [xs]
 ;;  (map first xs))
 
-
 (defprotocol Factorization
   "Prime factorization protocol"
   (factors [this n] "Returns prime factors of n with multiplicity.")
@@ -23,35 +22,43 @@
   (primes [this] "Returns a lazy sequence of primes for this factorizer.")
   (in-domain? [this n] "Returns true if value a is supported by this factorizer, otherwise false."))
 
-
 (defn distinct-factors
   "Returns the distinct prime factors of n."
   [fz n]
   (factors->distinct (factors fz n)))
 
-
 (defn factor-counts
   "Returns a sequence of pairs [p k] where `p` is a prime and `k` is its exponent in factorization of n."
   [fz n]
-  (factors->counts (factors fz n))
-  )
+  (factors->counts (factors fz n)))
 
 (defn factor-partitions
   "Returns a sequence of partitions groups by factor."
   [fz n]
-  (factors->partitions (factors fz n))
-  )
-
-
+  (factors->partitions (factors fz n)))
 
 (defmulti make
   "Make a factorization from factorization-spec.
   Factorization spec is a map with key :type and value on from
-  - :even-fz
-  - :odd-fz
+  - :one-fz
   - :odd-sieve-fz
+  - :odd-fz
+  - :even-fz
   "
   (fn [fz-spec] (:type fz-spec)))
 
+(defrecord OneFactorization []
+  Factorization
+  (factors [this n]
+    (assert (in-domain? this n))
+    [])
+  (prime? [this n]
+    (assert (in-domain? this n))
+    false)
+  (primes [this] [])
+  (in-domain? [this n]
+    (= 1 n)))
 
 
+(defmethod make :one-fz []
+  (->OneFactorization))

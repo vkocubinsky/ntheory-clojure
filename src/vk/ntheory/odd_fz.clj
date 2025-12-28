@@ -6,7 +6,7 @@
 
 (def certainty 20)
 
-(defn- trial-only-canidates [odd-sieve-fz]
+(defn- trial-only-canidates [ odd-sieve-fz]
   (let [upper-limit (odd-sieve-fz/upper-limit odd-sieve-fz)
         start (+ upper-limit 2)]
     (iterate #(+ % 2) start)))
@@ -43,8 +43,8 @@
   (prime? [this n]
     (assert (fz/in-domain? this n))
     (trial-prime? odd-sieve-fz n))
-  (primes [this] (trial-primes odd-sieve-fz))
-  (in-domain? [this n]
+  (primes [_] (trial-primes odd-sieve-fz))
+  (in-domain? [_ n]
     (and (pos? n) (odd? n))))
 
 (defmethod fz/make :odd-fz [{:keys [odd-sieve-fz]}]
@@ -58,6 +58,8 @@
     (fz/factors fz 49))
 
   (let [fz (fz/make {:type :odd-fz :odd-sieve-fz {:type :odd-sieve-fz :upper-limit 11}})]
-    (fz/factors fz 49)))
+    (fz/factors fz 49))
+
+  )
 
 

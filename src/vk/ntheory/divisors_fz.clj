@@ -34,10 +34,10 @@
     (if (divides? n value)
       (some? (some #(= n %) (map first partitions)))
       (fz/prime? parent-fz n)))
-  (primes [this]
+  (primes [_]
     (fz/primes parent-fz))
 
-  (in-domain? [this n]
+  (in-domain? [_ n]
     (pos? n)))
 
 (defmethod fz/make :divisors-fz [{:keys [parent-fz value]}]
