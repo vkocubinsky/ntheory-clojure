@@ -21,6 +21,7 @@
     13 [1 3 5 7 3 11 13]
     15 [1 3 5 7 3 11 13 3]))
 
+(def one-spec {:type })
 (def odd-sieve-spec {:type :odd-sieve-fz :upper-limit helpers/factorization-data-upper-limit})
 (def odd-spec {:type :odd-fz :odd-sieve-fz odd-sieve-spec})
 (def even-spec {:type :even-fz :odd-fz odd-spec})
