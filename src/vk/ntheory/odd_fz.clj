@@ -23,7 +23,7 @@
                         (= r 1) ()
                         (empty? candidates) (list r)
                         (fz/in-domain? odd-sieve-fz r) (fz/factors odd-sieve-fz r)
-                        (= 0 (rem r (first candidates))) (cons (first candidates) (lazy-factors (quot r (first candidates)) candidates true))
+                        (zero? (mod r (first candidates))) (cons (first candidates) (lazy-factors (quot r (first candidates)) candidates true))
                         (and r-changed (util/probable-prime r certainty)) (list r)
                         :else (lazy-factors r (rest candidates) false))))]
     (lazy-factors n (take-while #(<= (* % %) n) (prime-candidates odd-sieve-fz)) true)))

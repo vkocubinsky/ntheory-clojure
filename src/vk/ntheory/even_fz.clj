@@ -27,6 +27,7 @@
         odd-fz (fz/make {:type :odd-fz :cache-upper-limit odd-upper-limit})]
     (->EvenFactorization odd-fz)))
 
+
 (comment
   (let [fz (fz/make {:type :even-fz :cache-upper-limit 10})]
     (fz/prime? fz 101))
@@ -40,5 +41,9 @@
   (let [fz (fz/make {:type :even-fz :cache-upper-limit 100})]
     (fz/factors fz  6035457813276241))
   )
+
+
+
+
 
 

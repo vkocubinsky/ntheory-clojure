@@ -36,7 +36,7 @@
   (factors->counts (factors fz n))
   )
 
-(defn factors-partitions
+(defn factor-partitions
   "Returns a sequence of partitions groups by factor."
   [fz n]
   (factors->partitions (factors fz n))
