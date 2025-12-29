@@ -1,4 +1,6 @@
-(ns user)
+(ns user
+  (:import java.math BigInteger)
+  )
 
 (set! *warn-on-reflection* true)
 
@@ -9,8 +11,9 @@
 (println "Hello, Valery!")
 
 (comment
-  
-
+  (BigInteger.)
+  (remove #{'user 'clojure.core 'clojure.string} (all-ns))
+  (remove-ns 'vk.ntheory.factorization)
   )
 
 
