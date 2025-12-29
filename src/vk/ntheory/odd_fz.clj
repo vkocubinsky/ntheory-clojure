@@ -48,10 +48,12 @@
   (in-domain? [_ n]
     (and (pos? n) (odd? n))))
 
-(defmethod fz/make :odd-fz [{:keys [odd-lim-fz]}]
-  (->OddFactorization (if (satisfies? fz/Factorization odd-lim-fz)
-                        odd-lim-fz
-                        (fz/make odd-lim-fz))))
+(defmethod fz/make :odd-fz [{:keys [odd-lim-fz] :as spec}]
+  (->OddFactorization (cond
+                        (satisfies? fz/Factorization odd-lim-fz) odd-lim-fz
+                        (contains? odd-lim-fz :type) (fz/make odd-lim-fz)
+                        :else (throw (ex-info "Expected either Factorization or a map" spec))
+                      )))
 
 (comment
 

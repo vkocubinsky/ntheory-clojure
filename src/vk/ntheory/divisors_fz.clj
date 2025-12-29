@@ -40,18 +40,20 @@
   (in-domain? [_ n]
     (pos? n)))
 
-(defmethod fz/make :divisors-fz [{:keys [parent-fz value]}]
+(defmethod fz/make :divisors-fz [{:keys [parent-fz value] :as spec}]
   (assert (pos? value))
-  (let [parent-fz (if (satisfies? fz/Factorization parent-fz)
-                    parent-fz
-                    (fz/make parent-fz))]
+  (let [parent-fz (cond
+                    (satisfies? fz/Factorization parent-fz) parent-fz
+                    (contains? parent-fz :type) (fz/make parent-fz)
+                    :else (throw (ex-info "Expected either Factorization or a map" spec))
+                    )]
     (->DivisorsFactorization parent-fz
                              value
                              (fz/factor-partitions parent-fz value))))
 
 (comment
 
-  (fz/make {:type :even-fz :odd-fz {:type :odd-fz :odd-sieve-fz {:type :odd-sieve-fz :upper-limit 11}}})
+  (fz/make {:type :even-fz :odd-fz {:type :odd-fz :odd-lim-fz {:type :odd-sieve-fz :upper-limit 11}}})
 
-  (fz/make {:type :divisors-fz :value 98 :parent-fz {:type :even-fz :odd-fz {:type :odd-fz :odd-sieve-fz {:type :odd-sieve-fz :upper-limit 11}}}})
+  (fz/make {:type :divisors-fz :value 98 :parent-fz {:type :even-fz :odd-fz {:type :odd-fz :odd-lim-fz {:type :odd-sieve-fz :upper-limit 11}}}})
   )

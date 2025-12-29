@@ -48,9 +48,9 @@
   (prime? [this n]
     (assert (fz/in-domain? this n))
     (table-prime? table n))
-  (primes [this] (table-primes table))
-  (upper-limit [this] (:upper-limit table))
-  (in-domain? [this n]
+  (primes [_] (table-primes table))
+  (upper-limit [_] (:upper-limit table))
+  (in-domain? [_ n]
     (tbl/tcontains-key? table n)))
 
 

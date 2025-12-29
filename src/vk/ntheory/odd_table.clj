@@ -35,13 +35,14 @@
   [table] (seq (:array table)))
 
 (defn make
-  "Make odd table filled by odd number 1,3,5 ... ."
+  "Make odd table filled by odd numbers 1,3,5 ... ."
   [upper-limit]
   (assert (and (pos-int? upper-limit) (odd? upper-limit)))
   {:upper-limit upper-limit :array (int-array (odd-keys upper-limit))})
 
 (comment
-  (make 11))
+  (make  11)
+  )
 
 
 

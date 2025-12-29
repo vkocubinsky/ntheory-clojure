@@ -21,19 +21,15 @@
     (pos? n)))
 
 
-(defmethod fz/make :even-fz [{:keys [odd-fz]}]
-  (->EvenFactorization (if (satisfies? fz/Factorization odd-fz)
-                        odd-fz
-                        (fz/make odd-fz))))
+(defmethod fz/make :even-fz [{:keys [odd-fz] :as spec}]
+  (->EvenFactorization (cond
+                         (satisfies? fz/Factorization odd-fz) odd-fz
+                         (contains? odd-fz :type)(fz/make odd-fz)
+                         :else (throw (ex-info "Expected either Factorization or a map" spec))
+                         )))
 
 (comment
 
-  (fz/make {:type :even-fz :odd-fz {:type :odd-fz :odd-fz {:type :odd-sieve-fz :upper-limit 11}}})
+  (fz/make {:type :even-fz :odd-fz {:type :odd-fz :odd-lim-fz {:type :odd-sieve-fz :upper-limit 11}}})
   
   )
-
-
-
-
-
-

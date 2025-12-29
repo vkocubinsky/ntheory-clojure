@@ -6,22 +6,18 @@
 
 (defonce session-atom (atom nil))
 
-(defn- session-new! [cache-upper-limit]
+(defn- session-init! [cache-upper-limit]
   (reset! session-atom (fz/make
                         {:type :even-fz
                          :odd-fz {:type :odd-fz
-                                  :odd-sieve-fz {:type :odd-sieve-fz
+                                  :odd-lim-fz {:type :odd-sieve-fz
                                            :upper-limit cache-upper-limit}}})))
 
-(defn session-init! [cache-upper-limit]
-  (do
-    (session-new! cache-upper-limit)
-    nil))
 
 (defn get-fz []
   (if-let [fz @session-atom]
     fz
-    (session-new! 65535)))
+    (session-init! 65535)))
 
 
 
