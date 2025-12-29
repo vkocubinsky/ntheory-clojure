@@ -49,14 +49,9 @@
     (assert (fz/in-domain? this n))
     (table-prime? table n))
   (primes [this] (table-primes table))
+  (upper-limit [this] (:upper-limit table))
   (in-domain? [this n]
     (tbl/tcontains-key? table n)))
-
-(defn upper-limit
-  "Returns upper limit for odd sieve factorization."
-  [odd-sieve-fz]
-  (get-in odd-sieve-fz [:table :upper-limit])
-  )
 
 
 (defmethod fz/make :odd-sieve-fz [{:keys [upper-limit]}]

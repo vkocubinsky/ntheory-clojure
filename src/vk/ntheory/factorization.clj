@@ -20,6 +20,7 @@
   (factors [this n] "Returns prime factors of n with multiplicity.")
   (prime? [this n] "Returns true if n is a prime number, otherwise false.")
   (primes [this] "Returns a lazy sequence of primes for this factorizer.")
+  (upper-limit [this] "Returns the max number supported, or nil if unlimited.")
   (in-domain? [this n] "Returns true if value a is supported by this factorizer, otherwise false."))
 
 (defn distinct-factors
@@ -56,9 +57,17 @@
     (assert (in-domain? this n))
     false)
   (primes [this] [])
+  (upper-limit [this] 1)
   (in-domain? [this n]
     (= 1 n)))
 
 
-(defmethod make :one-fz []
+(defmethod make :one-fz [_]
   (->OneFactorization))
+
+(comment
+  (make {:type :one-fz})
+  )
+
+
+

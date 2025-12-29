@@ -16,6 +16,7 @@
         :else (let [[power-of-two rest] (util/power-of-two-parts n)]
                 (and (zero? power-of-two) (fz/prime? odd-fz rest)))))
   (primes [_] (cons 2 (fz/primes odd-fz)))
+  (upper-limit [_] nil)
   (in-domain? [_ n]
     (pos? n)))
 

@@ -1,5 +1,5 @@
 (ns vk.ntheory.divisors-fz
-  (:require [vk.ntheory.even-fz :as even-fz]
+  (:require [vk.ntheory.even-fz]
             [vk.ntheory.factorization :as fz]))
 
 (defn divides?
@@ -36,7 +36,7 @@
       (fz/prime? parent-fz n)))
   (primes [_]
     (fz/primes parent-fz))
-
+  (upper-limit [_] nil)
   (in-domain? [_ n]
     (pos? n)))
 
