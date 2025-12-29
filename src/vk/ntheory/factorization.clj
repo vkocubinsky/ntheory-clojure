@@ -56,9 +56,9 @@
   (prime? [this n]
     (assert (in-domain? this n))
     false)
-  (primes [this] [])
-  (upper-limit [this] 1)
-  (in-domain? [this n]
+  (primes [_] [])
+  (upper-limit [_] 1)
+  (in-domain? [_ n]
     (= 1 n)))
 
 
