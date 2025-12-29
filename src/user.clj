@@ -1,5 +1,5 @@
 (ns user
-  (:import java.math BigInteger)
+  (:import (java.math BigInteger))
   )
 
 (set! *warn-on-reflection* true)
