@@ -1,11 +1,10 @@
 {
- :paths ["src" "resources"]
- :extra-paths ["test"]
+ :paths ["src" "resources" "test"]
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {io.github.cognitect-labs/test-runner {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
                   :main-opts ["-m" "cognitect.test-runner"]
                   :exec-fn cognitect.test-runner.api/test}
            :dev {
-                  :extra-paths ["classes"]
+                  :extra-paths ["test"]
                  }
            }}

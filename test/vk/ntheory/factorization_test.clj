@@ -6,10 +6,10 @@
    [vk.ntheory.odd-sieve-fz]
    [vk.ntheory.even-fz]
    [vk.ntheory.odd-table :as tbl]
-   [vk.ntheory.helpers :as helpers]))
+   [vk.ntheory.test-helpers :as helpers]))
 
 (deftest odd-table-content-test
-  (are [upper-limit numbers] (= numbers (let [fz (fz/make {:type :odd-sieve-fz :upper-limit upper-limit})
+  (Are [upper-limit numbers] (= numbers (let [fz (fz/make {:type :odd-sieve-fz :upper-limit upper-limit})
                                               table (:table fz)]
                                           (tbl/tvals table)))
     1  [1]

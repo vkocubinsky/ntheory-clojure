@@ -1,7 +1,8 @@
 (ns vk.ntheory.util-test
   (:require
    [clojure.test :refer [deftest is are]]
-   [vk.ntheory.util :as util]))
+   [vk.ntheory.util :as util]
+   ))
 
 
 (deftest power-of-two-parts-test
