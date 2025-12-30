@@ -17,8 +17,8 @@
 (println "Hello, Valery from dev/user.clj")
 
 
-(defn load-all-files []
-  (doseq [f (->> (io/file "src")
+(defn load-files [folder]
+  (doseq [f (->> (io/file folder)
       file-seq
       (filter File/.isFile)
       (filter #(-> % File/.getName (String/.endsWith ".clj")))
@@ -35,9 +35,9 @@
 
 
 (comment
-  (load-all-files)
-
-
+  (load-files "src")
+  (load-files "test")
+  
   
   )
 
