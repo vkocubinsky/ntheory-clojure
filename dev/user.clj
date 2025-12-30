@@ -14,7 +14,7 @@
 ;; (compile 'my.namespace)  
 ;; (binding [*compile-files* true] (require 'user :reload-all))
 
-(println "Hello, Valery!")
+(println "Hello, Valery from dev/user.clj")
 
 
 (defn load-all-files []
