@@ -1,14 +1,15 @@
 {
  :paths ["src" "resources"]
- :deps {org.clojure/java.doc {:git/url "https://github.com/clojure/java.doc"
-                              :git/tag "v0.1.2"
-                              :git/sha "fc518b1"}}
- 
+ :deps {}
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {io.github.cognitect-labs/test-runner {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
                   :main-opts ["-m" "cognitect.test-runner"]
                   :exec-fn cognitect.test-runner.api/test}
            :dev {
-                  :extra-paths ["test"]
-                 }
-           }}
+                 :extra-paths ["test" "classes"]
+                 :extra-deps {
+                              compliment/compliment {:mvn/version "0.7.1"}
+                              org.clojure/java.doc {:git/url "https://github.com/clojure/java.doc"
+                                                    :git/tag "v0.1.2"
+                                                    :git/sha "fc518b1"}
+                              }}}}
