@@ -1,4 +1,12 @@
-(ns user)
+(ns user
+  (:import [java.io File]
+           [java.sql Connection])
+  (:require [clojure.java.io :as io]
+            [clojure.pprint :as pp]
+            [clojure.java.doc.api :refer [jdoc jdoc-data sigs]]
+            )
+  
+  )
 
 (set! *warn-on-reflection* true)
 
@@ -8,11 +16,29 @@
 
 (println "Hello, Valery!")
 
-(comment
-  (BigInteger.)
-  (remove #{'user 'clojure.core 'clojure.string} (all-ns))
-  (remove-ns 'vk.ntheory.factorization)
+
+(defn load-all-files []
+  (doseq [f (->> (io/file "src")
+      file-seq
+      (filter File/.isFile)
+      (filter #(-> % File/.getName (String/.endsWith ".clj")))
+      (remove #(= (File/.getName %) "user.clj"))
+      (map File/.getPath)
+      )]
+    (println "Loading file " f " ...")
+    (load-file f)
+    (println "Done")
+    )
   )
+
+(comment
+
+  (load-all-files)
+  
+
+  )
+
+
 
 
 
