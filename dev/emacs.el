@@ -4,7 +4,7 @@
 
 (inf-clojure-query-string "(+ 1 1)\n")
 
-(comint-proc-query (inf-clojure-proc) "(source map)\n")
+(comint-proc-query (inf-clojure-proc) "(apropos \"map\")\n")
 
 
-(inf-clojure-query-old "(doc map)\n")
+(inf-clojure-query-old "(apropos \"map\")\n")
