@@ -8,3 +8,6 @@
 
 
 (inf-clojure-query-old "(apropos \"map\")\n")
+
+
+(inf-clojure--prompt-repl-type)
