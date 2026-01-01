@@ -4,7 +4,7 @@
    [vk.ntheory.util :as util]
    [vk.ntheory.factorization :as fz]))
 
-(def certainty 20)
+(def certainty 100)
 
 (defn- trial-only-canidates [ odd-lim-fz]
   (let [upper-limit (fz/upper-limit odd-lim-fz)
