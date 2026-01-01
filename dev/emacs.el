@@ -4,7 +4,9 @@
 
 (inf-clojure-query-string "(+ 1 1)\n")
 
-(comint-proc-query (inf-clojure-proc) "(apropos \"map\")\n")
+(comint-proc-query (inf-clojure-proc) "(+ 1 2)\n")
+(comint-send-string (inf-clojure-proc) "(+ 1 3)")
+
 
 
 (inf-clojure-query-old "(apropos \"map\")\n")
