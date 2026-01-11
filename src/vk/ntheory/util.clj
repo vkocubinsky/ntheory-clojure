@@ -2,10 +2,6 @@
   (:import [clojure.lang BigInt])
   )
 
-(println "Hello"
-
-         )
-
 (defmulti power-of-two-parts
   "Returns vector [k r] where k is p-adic order of 2 and r is a rest
   such that 2^k * r = n, r is odd."
