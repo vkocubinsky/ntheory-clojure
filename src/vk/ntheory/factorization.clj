@@ -66,7 +66,11 @@
   (->OneFactorization))
 
 (comment
-  (make {:type :one-fz})
+ (make {:type :one-fz})
+
+ (+ 1 2)
+ (+ 3 4)
+ 
   )
 
 
