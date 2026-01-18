@@ -1,4 +1,4 @@
-((nil . ((inf-clojure-program . "clojure -A:dev"))))
+((nil . ((clojure-repl-program . "clojure -A:dev"))))
 
 
 
