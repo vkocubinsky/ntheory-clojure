@@ -61,22 +61,12 @@
   (in-domain? [_ n]
     (= 1 n)))
 
-
 (defmethod make :one-fz [_]
   (->OneFactorization))
 
 (comment
- (make {:type :one-fz})
+  (make {:type :one-fz})
 
-
-
- 
- map
- 
- (+ 1 2)
- (+ 3 4)
- 
-  )
-
-
+  (+ 1 2)
+  (+ 3 4))
 
