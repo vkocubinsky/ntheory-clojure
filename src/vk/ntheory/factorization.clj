@@ -68,6 +68,10 @@
 (comment
  (make {:type :one-fz})
 
+
+
+ 
+ map
  
  (+ 1 2)
  (+ 3 4)
