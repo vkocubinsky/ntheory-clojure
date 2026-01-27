@@ -1,4 +1,4 @@
-((nil . ((clojure-repl-program . "clojure -A:dev"))))
+((clojure-mode . ((clojure-repl-program . "clojure -A:dev"))))
 
 
 
