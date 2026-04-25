@@ -1,3 +1,12 @@
-- divisor factorizer
-  - odd/even question?
-  
+- based on odd-pseudo-fz(last working) and odd-trial-fz
+- remove odd-trial-fz
+- remove odd-pseudo-fz
+- make parameter :probably-prime
+- depends of :probably-prime make different implementation
+  - may be use method
+  - may be use if
+
+
+
+
+r-changed: we just change candidate, but we already test that a b=number is not a prime
