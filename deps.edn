@@ -9,6 +9,6 @@
                  :extra-paths ["dev" "test" "classes"]
                  :extra-deps {
                               org.clojure/java.doc {:git/url "https://github.com/clojure/java.doc"
-                                                    :git/tag "v0.1.2"
-                                                    :git/sha "fc518b1"}
+                                                    :git/tag "v0.1.4"
+                                                    :git/sha "34e381e"}
                               }}}}

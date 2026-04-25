@@ -2,7 +2,7 @@
   (:require
    [clojure.test :refer [deftest is are testing]]
    [vk.ntheory.factorization :as fz]
-   [vk.ntheory.odd-fz]
+   [vk.ntheory.odd-trial-fz]
    [vk.ntheory.odd-sieve-fz]
    [vk.ntheory.even-fz]
    [vk.ntheory.odd-table :as tbl]
@@ -23,9 +23,9 @@
 
 (def one-spec {:type :one-fz})
 (def odd-sieve-spec {:type :odd-sieve-fz :upper-limit helpers/factorization-data-upper-limit})
-(def odd-spec {:type :odd-fz :odd-lim-fz odd-sieve-spec})
-(def odd-spec' {:type :odd-fz :odd-lim-fz one-spec})
-(def even-spec {:type :even-fz :odd-fz odd-spec})
+(def odd-spec {:type :odd-trial-fz :odd-lim-fz odd-sieve-spec})
+(def odd-spec' {:type :odd-trial-fz :odd-lim-fz one-spec})
+(def even-spec {:type :even-fz :odd-trial-fz odd-spec})
 
 (deftest factorization-test
   (doseq [spec [one-spec odd-sieve-spec odd-spec odd-spec' even-spec]]

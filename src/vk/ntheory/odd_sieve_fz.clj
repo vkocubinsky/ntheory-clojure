@@ -1,10 +1,15 @@
 (ns vk.ntheory.odd-sieve-fz
+  "Implementation of Factorization for odd numbers.
+
+  Implementation based on sieve of Erathosphene's. Keep
+  in table least prime divisor of a number.
+  "
   (:require
    [vk.ntheory.odd-table :as tbl]
    [vk.ntheory.factorization :as fz]))
 
-(defn- sieve
-  "Sieve of Erathosphene."
+(defn- sieve!
+  "Fill table Sieve of Erathosphene."
   [table]
   (loop [p 3]
     (if (> (* p p) (:upper-limit table))
@@ -53,17 +58,23 @@
   (in-domain? [_ n]
     (tbl/tcontains-key? table n)))
 
-
 (defmethod fz/make :odd-sieve-fz [{:keys [upper-limit]}]
   (assert (and (pos-int? upper-limit) (odd? upper-limit)))
   (let [table (tbl/make upper-limit)]
-    (sieve table)
+    (sieve! table)
     (->OddSieveFactorization table)))
 
 (comment
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
     (fz/primes fz))
-  Long1
-  )
+
+  (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
+    (fz/factors fz 15))
+
+  (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
+    (fz/prime? fz 11))
+
+  (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
+    (fz/in-domain? fz 11)))
 
 

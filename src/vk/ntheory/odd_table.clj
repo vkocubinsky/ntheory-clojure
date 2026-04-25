@@ -1,11 +1,18 @@
 (ns vk.ntheory.odd-table
-  "Table of positive integers indexed by odd positive integers.")
+  "Table of positive integers indexed by odd positive integer.
 
-(defn- odd-keys [upper-limit]
+  The table designed to keep least prime divisor of an odd number.
+  Internally array is used for store numbers. The size of array is
+  $(upper-limit + 1)/2$ which allow save around half of space.
+  ")
+
+(defn- odd-keys
+  "Returns sequence $1,3,5,...,upper-limit$."
+  [upper-limit]
   (range 1 (inc upper-limit) 2))
 
 (defn tcontains-key?
-  "Does the given positive integer k exist in table?"
+  "Does the given positive odd integer k exist in the table?"
   [table k]
   (and (pos-int? k) (odd? k) (<= k (:upper-limit table))))
 
@@ -35,14 +42,16 @@
   [table] (seq (:array table)))
 
 (defn make
-  "Make odd table filled by odd numbers 1,3,5 ... ."
+  "Make odd table filled by odd numbers 1,3,5, ..., upper-limit ."
   [upper-limit]
   (assert (and (pos-int? upper-limit) (odd? upper-limit)))
   {:upper-limit upper-limit :array (int-array (odd-keys upper-limit))})
 
 (comment
-  (make  11)
-  )
+  (let [t (make 11)]
+    (tget-number t 11))
+  (:upper-limit (make  11))
+  (:array (make  11)))
 
 
 
