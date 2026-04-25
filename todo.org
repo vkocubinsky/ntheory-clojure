@@ -5,7 +5,7 @@
 - depends of :probably-prime make different implementation
   - may be use method
   - may be use if
-
+- next prime
 
 
 
