@@ -5,7 +5,7 @@
    [vk.ntheory.util :as util]
    [vk.ntheory.factorization :as fz]))
 
-(defn- factors [{:keys [pseudo-prime? pseudo-certainty parent-upper-limit parent-fz]} n]
+(defn- odd-factors [{:keys [pseudo-prime? pseudo-certainty parent-upper-limit parent-fz]} n]
   (letfn [(prime-candidates []
             (concat (fz/primes parent-fz) (iterate #(+ % 2) (+ 2 parent-upper-limit))))
           (lazy-factors [r candidates r-changed?]
@@ -25,24 +25,24 @@
   (assert (<= start n))
   (first (filter #(zero? (mod n %)) (iterate #(+ % 2) start))))
 
-(defn- prime? [{:keys [pseudo-prime? pseudo-certainty parent-fz parent-upper-limit]} n]
+(defn- odd-prime? [{:keys [pseudo-prime? pseudo-certainty parent-fz parent-upper-limit]} n]
   (cond
     (fz/in-domain? parent-fz n) (fz/prime? parent-fz n)
     pseudo-prime? (util/probable-prime n pseudo-certainty)
     :else (= n (first-divisor (+ parent-upper-limit 2) n))))
 
-(defn- primes [{:keys [parent-upper-limit parent-fz] :as spec}]
-  (concat (fz/primes parent-fz) (filter #(prime? spec %) (iterate #(+ % 2) (+ 2 parent-upper-limit)))))
+(defn- odd-primes [{:keys [parent-upper-limit parent-fz] :as spec}]
+  (concat (fz/primes parent-fz) (filter #(odd-prime? spec %) (iterate #(+ % 2) (+ 2 parent-upper-limit)))))
 
 (defrecord OddFactorization [spec]
   fz/Factorization
   (factors [this n]
     (assert (fz/in-domain? this n))
-    (factors spec n))
+    (odd-factors spec n))
   (prime? [this n]
     (assert (fz/in-domain? this n))
-    (prime? spec n))
-  (primes [_] (primes spec))
+    (odd-prime? spec n))
+  (primes [_] (odd-primes spec))
   (upper-limit [_] nil)
   (in-domain? [_ n]
     (and (pos? n) (odd? n))))
