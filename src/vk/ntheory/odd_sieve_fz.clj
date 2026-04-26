@@ -45,8 +45,17 @@
        (map first)
        (drop-while #(< % 2))))
 
+(defn- table-next-prime [table n]
+  (first (filter #(> % n) (table-primes table)))
+  )
+
+
 (defrecord OddSieveFactorization [table]
   fz/Factorization
+  (next-prime [this n]
+    (assert (fz/in-domain? this n))
+    (table-next-prime table n)
+    )
   (factors [this n]
     (assert (fz/in-domain? this n))
     (table-factors table n))
@@ -65,11 +74,12 @@
     (->OddSieveFactorization table)))
 
 (comment
+  
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
     (fz/primes fz))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/factors fz 15))
+    (fz/next-prime fz 101))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
     (fz/prime? fz 11))

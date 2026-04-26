@@ -17,6 +17,7 @@
 
 (defprotocol Factorization
   "Prime factorization protocol"
+  (next-prime [this n] "Returns next prime more than given n or nil if no next prime for finite factorizer.")
   (factors [this n] "Returns prime factors of n with multiplicity.")
   (prime? [this n] "Returns true if n is a prime number, otherwise false.")
   (primes [this] "Returns a lazy sequence of primes for this factorizer.")
@@ -40,29 +41,15 @@
 
 (defmulti make
   "Make a factorization from factorization-spec.
-  Factorization spec is a map with key :type and value on from
-  - :one-fz
-  - :odd-sieve-fz
-  - :odd-fz
-  - :even-fz
+  Factorization spec is a map
+  1. with key :type and value on from
+    - :odd-sieve-fz
+    - :odd-fz
+    - :even-fz
+    - :divisors-fz
+  2. optional key :parent-fz with value which either Factorization or spec
   "
   (fn [fz-spec] (:type fz-spec)))
-
-(defrecord OneFactorization []
-  Factorization
-  (factors [this n]
-    (assert (in-domain? this n))
-    [])
-  (prime? [this n]
-    (assert (in-domain? this n))
-    false)
-  (primes [_] [])
-  (upper-limit [_] 1)
-  (in-domain? [_ n]
-    (= 1 n)))
-
-(defmethod make :one-fz [_]
-  (->OneFactorization))
 
 (defn get-or-make-parent
   "Extract or make parent factorization from spec."

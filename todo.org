@@ -1,12 +1,4 @@
-- based on odd-pseudo-fz(last working) and odd-trial-fz
-- remove odd-trial-fz
-- remove odd-pseudo-fz
-- make parameter :probably-prime
-- depends of :probably-prime make different implementation
-  - may be use method
-  - may be use if
-- next prime
-
-
-
-r-changed: we just change candidate, but we already test that a b=number is not a prime
+- impement next prime
+- fix tests
+- move test_helpers into factorization_test.clj
+ 

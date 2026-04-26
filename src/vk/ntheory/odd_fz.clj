@@ -36,6 +36,7 @@
 
 (defrecord OddFactorization [spec]
   fz/Factorization
+  (next-prime [this n] 1)
   (factors [this n]
     (assert (fz/in-domain? this n))
     (odd-factors spec n))
