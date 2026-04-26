@@ -64,9 +64,20 @@
 (defmethod make :one-fz [_]
   (->OneFactorization))
 
+(defn get-or-make-parent
+  "Extract or make parent factorization from spec."
+  [spec]
+  (let [parent-spec (spec :parent-fz)]
+    (cond
+      (satisfies? Factorization parent-spec) parent-spec
+      (and (map? parent-spec) (contains? parent-spec :type)) (make parent-spec)
+      :else (throw (ex-info "Expected either Factorization or a map contains :type key" spec)))))
+
+
 (comment
   (make {:type :one-fz})
 
-  (+ 1 2)
-  (+ 3 4))
+  (get-or-make-parent {:type :one-fz :parent-fz {:type :one-fz}})
+
+  )
 
