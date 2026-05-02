@@ -45,8 +45,20 @@
        (map first)
        (drop-while #(< % 2))))
 
+;; TODO: optimize this
 (defn- sieve-next-prime [table n]
   (first (filter #(> % n) (sieve-primes table))))
+
+;; TODO: finish this
+(defn- sieve-next-prime' [table n]
+  (let [k n
+        v (tbl/tget-number table n)]
+    (if (= k v)
+      k
+      (recur table (inc n))
+      )
+  ))
+
 
 (defrecord OddSieveFactorization [table]
   fz/Factorization
