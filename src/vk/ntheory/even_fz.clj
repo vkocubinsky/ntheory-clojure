@@ -8,13 +8,18 @@
 
 (defrecord EvenFactorization [parent-fz]
   fz/Factorization
-  (next-prime [this n] 1)
+  (next-prime [this n]
+    {:pre [(fz/in-domain? this n)]}
+    (if (= n 1)
+      2
+      (let [[_ rest] (util/power-of-two-parts n)]
+        (fz/next-prime parent-fz rest))))
   (factors [this n]
-    (assert (fz/in-domain? this n))
+    {:pre [(fz/in-domain? this n)]}
     (let [[power-of-two rest] (util/power-of-two-parts n)]
       (concat (repeat power-of-two 2) (fz/factors parent-fz rest))))
   (prime? [this n]
-    (assert (fz/in-domain? this n))
+    {:pre [(fz/in-domain? this n)]}
     (cond
       (= n 2) true
       :else (let [[power-of-two rest] (util/power-of-two-parts n)]
@@ -32,5 +37,8 @@
 
   (let [fz (fz/make {:type :even-fz :parent-fz {:type :odd-fz :parent-fz {:type :odd-sieve-fz :upper-limit 11}}})]
     (println fz)
-    (println (take 26 (fz/primes fz)))
-    (println (fz/factors fz 404))))
+    (println "prime?" (fz/prime? fz 13N))
+    (println "next-prime" (fz/next-prime fz 13N))
+    (println "factors" (fz/factors fz 52))
+    (println "primes" (take 26 (fz/primes fz)))
+    ))

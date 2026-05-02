@@ -1,5 +1,6 @@
 (ns vk.ntheory.odd-fz
-  "Trial factorization."
+  "Trial factorization for odd numbers.
+  "
   (:require
    [vk.ntheory.odd-sieve-fz] ;; load make for limited factorizer
    [vk.ntheory.util :as util]
@@ -22,7 +23,7 @@
 
 (defn- first-divisor
   [start n]
-  (assert (<= start n))
+  {:pre [(<= start n)]}
   (first (filter #(zero? (mod n %)) (iterate #(+ % 2) start))))
 
 (defn- odd-prime? [{:keys [pseudo-prime? pseudo-certainty parent-fz parent-upper-limit]} n]
@@ -34,14 +35,22 @@
 (defn- odd-primes [{:keys [parent-upper-limit parent-fz] :as spec}]
   (concat (fz/primes parent-fz) (filter #(odd-prime? spec %) (iterate #(+ % 2) (+ 2 parent-upper-limit)))))
 
+(defn- odd-next-prime [{:keys [pseudo-prime? parent-fz parent-upper-limit]} n]
+  (cond
+    pseudo-prime? (util/next-probable-prime n)
+    :else 1)
+  )
+
 (defrecord OddFactorization [spec]
   fz/Factorization
-  (next-prime [this n] 1)
+  (next-prime [this n]
+    {:pre (fz/in-domain? this n)}
+    (odd-next-prime spec n))
   (factors [this n]
-    (assert (fz/in-domain? this n))
+    {:pre (fz/in-domain? this n)}
     (odd-factors spec n))
   (prime? [this n]
-    (assert (fz/in-domain? this n))
+    {:pre (fz/in-domain? this n)}
     (odd-prime? spec n))
   (primes [_] (odd-primes spec))
   (upper-limit [_] nil)
@@ -69,13 +78,11 @@
 
   (let [parent-fz (fz/make {:type :odd-sieve-fz :upper-limit 11})
         fz (fz/make {:type :odd-fz :pseudo-prime? true :pseudo-certainty 100 :parent-fz parent-fz})]
-    (println (take 20 (fz/primes fz)))
-    (println (fz/factors fz 19981))
-    )
+    (println "primes" (take 20 (fz/primes fz)))
+    (println "factors" (fz/factors fz 1998111111111111111111111111))
+    (println "prime?" (fz/prime? fz 19981))
+    (println "next-prime" (fz/next-prime fz 19981)))
 
   (let [fz (fz/make {:type :odd-fz :pseudo-prime? true :pseudo-certainty 100 :parent-fz {:type :odd-sieve-fz :upper-limit 11}})]
-    (println (fz/factors fz 491111113331)))
-
-
-  )
+    (println (fz/factors fz 491111113331))))
 

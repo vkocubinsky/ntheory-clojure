@@ -1,35 +1,44 @@
 (ns vk.ntheory.odd-table
   "Table of positive integers indexed by odd positive integer.
-
   The table designed to keep least prime divisor of an odd number.
   Internally array is used for store numbers. The size of array is
   $(upper-limit + 1)/2$ which allow save around half of space.
   ")
 
-(defn- odd-keys
-  "Returns sequence $1,3,5,...,upper-limit$."
-  [^Integer upper-limit]
-  (range 1 (inc upper-limit) 2))
+(set! *warn-on-reflection* true)
 
-(defn tcontains-key?
-  "Does the given positive odd integer k exist in the table?"
+(defn odd-keys
+  "Returns sequence `1,3,5,...,upper-limit`."
+  ([^Integer upper-limit]
+   (odd-keys 1 upper-limit))
+  ([^Integer start ^Integer upper-limit]
+   (range start (inc upper-limit) 2)))
+
+(defn tcontains?
+  "Does the given positive odd integer `k` exist in the table?"
   [table ^Integer k]
   (and (pos-int? k) (odd? k) (<= k (:upper-limit table))))
 
-(defn tset-number!
-  "Store value v for key k, where k is positive odd integer."
+(defn- array-index
+  "Convert given number `k` to array index"
+  [k]
+  (bit-shift-right k 1))
+
+(defn tset!
+  "Set value `v` for key `k`, where k is positive odd integer."
   [table ^Integer k ^Integer v]
-  (assert (tcontains-key? table k))
+  {:pre [(tcontains? table k) (pos-int? v)]}
   (let [^ints arr (:array table)
-        idx (bit-shift-right k 1)]
+        idx (array-index k)]
     (aset arr idx v)))
 
-(defn tget-number
-  "Get value for given key k, where k is positive odd integer."
+(defn tget
+  "Get value for given key `k`, where `k` is positive odd integer."
   [table ^Integer k]
-  (assert (tcontains-key? table k))
+  {:pre [(tcontains? table k)]
+   :post [#(pos-int? %)]}
   (let [^ints arr (:array table)
-        idx (bit-shift-right k 1)]
+        idx (array-index k)]
     (aget arr idx)))
 
 (defn tkeys
@@ -44,12 +53,12 @@
 (defn make
   "Make odd table filled by odd numbers 1,3,5, ..., upper-limit ."
   [upper-limit]
-  (assert (and (pos-int? upper-limit) (odd? upper-limit)))
+  {:pre [(pos-int? upper-limit) (odd? upper-limit)]}
   {:upper-limit upper-limit :array (int-array (odd-keys upper-limit))})
 
 (comment
   (let [t (make 11)]
-    (tget-number t 11))
+    (tget t 11))
   (:upper-limit (make  11))
   (:array (make  11)))
 
