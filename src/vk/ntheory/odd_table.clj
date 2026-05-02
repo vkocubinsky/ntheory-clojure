@@ -8,12 +8,12 @@
 
 (defn- odd-keys
   "Returns sequence $1,3,5,...,upper-limit$."
-  [upper-limit]
+  [^Integer upper-limit]
   (range 1 (inc upper-limit) 2))
 
 (defn tcontains-key?
   "Does the given positive odd integer k exist in the table?"
-  [table k]
+  [table ^Integer k]
   (and (pos-int? k) (odd? k) (<= k (:upper-limit table))))
 
 (defn tset-number!

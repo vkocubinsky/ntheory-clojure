@@ -22,22 +22,22 @@
                 (tbl/tset-number! table k p)))))
         (recur (+ p 2))))))
 
-(defn- table-factors
+(defn- sieve-factors
   "Factorize integer."
   [table ^Integer n]
   (lazy-seq
    (when (> n 1)
      (let [d (tbl/tget-number table n)]
-       (cons d (table-factors table (quot n d)))))))
+       (cons d (sieve-factors table (quot n d)))))))
 
-(defn- table-prime?
+(defn- sieve-prime?
   "Check does given integer n is a prime."
   [table n]
   (let [n' (tbl/tget-number table n)]
     (and (> n' 1)
          (= n' n))))
 
-(defn- table-primes
+(defn- sieve-primes
   "Retrun primes in table."
   [table]
   (->> (map vector (tbl/tkeys table) (tbl/tvals table))
@@ -45,27 +45,25 @@
        (map first)
        (drop-while #(< % 2))))
 
-(defn- table-next-prime [table n]
-  (first (filter #(> % n) (table-primes table)))
-  )
-
+(defn- sieve-next-prime [table n]
+  (first (filter #(> % n) (sieve-primes table))))
 
 (defrecord OddSieveFactorization [table]
   fz/Factorization
   (next-prime [this n]
     (assert (fz/in-domain? this n))
-    (table-next-prime table n)
-    )
+    (sieve-next-prime table (int n)))
   (factors [this n]
     (assert (fz/in-domain? this n))
-    (table-factors table n))
+    (sieve-factors table (int n)))
   (prime? [this n]
     (assert (fz/in-domain? this n))
-    (table-prime? table n))
-  (primes [_] (table-primes table))
+    (sieve-prime? table (int n)))
+  (primes [_] (sieve-primes table))
   (upper-limit [_] (:upper-limit table))
   (in-domain? [_ n]
-    (tbl/tcontains-key? table n)))
+    (assert (integer? n))
+    (tbl/tcontains-key? table (int n))))
 
 (defmethod fz/make :odd-sieve-fz [{:keys [upper-limit]}]
   (assert (and (pos-int? upper-limit) (odd? upper-limit)))
@@ -74,17 +72,21 @@
     (->OddSieveFactorization table)))
 
 (comment
-  
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/primes fz))
+    (fz/next-prime fz 101N))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/next-prime fz 101))
+    (fz/factors fz 15N))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/prime? fz 11))
+    (fz/prime? fz 1))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/in-domain? fz 11)))
+    (take 10 (fz/primes fz)))
+
+  (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
+    (fz/in-domain? fz 101N))
+
+  )
 
 
