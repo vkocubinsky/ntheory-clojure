@@ -24,7 +24,7 @@
   (upper-limit [this] "Returns the max number supported, or nil if unlimited.")
   (in-domain? [this n] "Returns true if value a is supported by this factorizer, otherwise false."))
 
-(defn distinct-factors
+(defn factor-distincts
   "Returns the distinct prime factors of n."
   [fz n]
   (factors->distinct (factors fz n)))

@@ -5,10 +5,12 @@
 
 (defonce session-atom (atom nil))
 
-(defn- session-init! [cache-upper-limit]
+(defn session-init! [cache-upper-limit]
   (reset! session-atom (fz/make
                         {:type :even-fz
                          :parent-fz {:type :odd-fz
+                                     :pseudo-prime? true
+                                     :pseudo-certainty 100
                                      :parent-fz {:type :odd-sieve-fz
                                                  :upper-limit cache-upper-limit}}})))
 
@@ -32,8 +34,11 @@
 (defn factor-counts [n]
   (fz/factor-counts (get-fz) n))
 
-(defn distinct-factors [n]
-  (fz/distinct-factors (get-fz) n))
+(defn factor-distincts [n]
+  (fz/factor-distincts (get-fz) n))
+
+(defn factor-paritions [n]
+  (fz/factor-partitions (get-fz) n))
 
 (comment
-  (factors  12323425437863876837638763829768932672389678394763N))
+  (factors  12323425437863876837638763))

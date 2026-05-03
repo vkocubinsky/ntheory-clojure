@@ -78,7 +78,7 @@
     (fz/next-prime fz 101))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/factors fz 1511111111111111111111111111111111111N))
+    (fz/factors fz 11))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
     (fz/prime? fz -1))

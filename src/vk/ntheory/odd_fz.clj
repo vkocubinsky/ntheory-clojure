@@ -89,7 +89,7 @@
   (let [parent-fz (fz/make {:type :odd-sieve-fz :upper-limit 11})
         fz (fz/make {:type :odd-fz :pseudo-prime? true :pseudo-certainty 100 :parent-fz parent-fz})]
     (println "primes" (take 20 (fz/primes fz)))
-    (println "factors" (fz/factors fz 19981N))
+    (println "factors" (fz/factors fz 12323425437863876837638763N))
     (println "prime?" (fz/prime? fz 19981))
     (println "next-prime" (fz/next-prime fz 19991)))
 
