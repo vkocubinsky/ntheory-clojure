@@ -9,10 +9,14 @@
   (reset! session-atom (fz/make
                         {:type :even-fz
                          :parent-fz {:type :odd-fz
-                                     :pseudo-prime? true
-                                     :pseudo-certainty 100
+                                     :pseudo-prime? false
+                                     :pseudo-certanity 100
                                      :parent-fz {:type :odd-sieve-fz
                                                  :upper-limit cache-upper-limit}}})))
+
+
+(defn session-clear! []
+  (reset! session-atom nil))
 
 (defn get-fz []
   (if-let [fz @session-atom]
@@ -41,4 +45,4 @@
   (fz/factor-partitions (get-fz) n))
 
 (comment
-  (factors  12323425437863876837638763))
+  (factors  8081111111111111))

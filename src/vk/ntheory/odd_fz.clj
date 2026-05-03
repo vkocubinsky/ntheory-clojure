@@ -36,7 +36,6 @@
 (defn- odd-primes [{:keys [parent-upper-limit parent-fz] :as spec}]
   (concat (fz/primes parent-fz) (filter #(odd-prime? spec %) (iterate #(+ % 2) (+ 2 parent-upper-limit)))))
 
-
 (defn- next-prime-no-parent
   "Next prime after `n`"
   [{:keys [pseudo-prime?] :as spec} n]
@@ -67,16 +66,17 @@
   (in-domain? [_ n]
     (and (pos? n) (odd? n))))
 
-(defn- normalize-spec [spec parent-fz]
-  (let [parent-upper-limit (fz/upper-limit parent-fz)
-        pseudo-prime? (or (spec :pseudo-prime?) true)
-        pseudo-certainty (or (spec :pseudo-certainty) 100)]
-    (assert (fz/upper-limit parent-fz))
-    (assoc spec
-           :parent-fz parent-fz
-           :parent-upper-limit parent-upper-limit
-           :pseudo-prime? pseudo-prime?
-           :pseudo-certainty pseudo-certainty)))
+(defn- normalize-spec [{:keys [pseudo-prime?
+                               pseudo-certanity]
+                        :or {pseudo-prime? true
+                             pseudo-certanity 100} :as spec}
+                       parent-fz]
+  (assert (fz/upper-limit parent-fz))
+  (assoc spec
+         :parent-fz parent-fz
+         :parent-upper-limit (fz/upper-limit parent-fz)
+         :pseudo-prime? pseudo-prime?
+         :pseudo-certainty pseudo-certanity))
 
 (defmethod fz/make :odd-fz [spec]
   (let [parent-fz (fz/get-or-make-parent spec)
@@ -87,7 +87,7 @@
 (comment
 
   (let [parent-fz (fz/make {:type :odd-sieve-fz :upper-limit 11})
-        fz (fz/make {:type :odd-fz :pseudo-prime? true :pseudo-certainty 100 :parent-fz parent-fz})]
+        fz (fz/make {:type :odd-fz :pseudo-prime? false :pseudo-certainty 100 :parent-fz parent-fz})]
     (println "primes" (take 20 (fz/primes fz)))
     (println "factors" (fz/factors fz 12323425437863876837638763N))
     (println "prime?" (fz/prime? fz 19981))
