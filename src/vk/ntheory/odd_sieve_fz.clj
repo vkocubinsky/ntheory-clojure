@@ -52,19 +52,20 @@
 (defrecord OddSieveFactorization [table]
   fz/Factorization
   (next-prime [this n]
-    {:pre [(fz/in-domain? this n)]}
+    (assert (fz/in-domain? this n))
     (sieve-next-prime table (int n)))
   (factors [this n]
-    {:pre [(fz/in-domain? this n)]}
+    (assert (fz/in-domain? this n))
     (sieve-factors table (int n)))
   (prime? [this n]
-    {:pre [(fz/in-domain? this n)]}
+    (assert (fz/in-domain? this n))
     (sieve-prime? table (int n)))
   (primes [_] (sieve-primes table))
   (upper-limit [_] (:upper-limit table))
   (in-domain? [_ n]
-    {:pre [(integer? n)]}
-    (tbl/tcontains? table (int n))))
+    (if (<= n Integer/MAX_VALUE)
+      (tbl/tcontains? table (int n))
+      false)))
 
 (defmethod fz/make :odd-sieve-fz [{:keys [upper-limit]}]
   {:pre [(pos-int? upper-limit) (odd? upper-limit)]}
@@ -77,15 +78,17 @@
     (fz/next-prime fz 101))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/factors fz 15N))
+    (fz/factors fz 1511111111111111111111111111111111111N))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/prime? fz 1))
+    (fz/prime? fz -1))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
     (take 10 (fz/primes fz)))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/in-domain? fz 101N)))
+    (fz/in-domain? fz -1))
+
+  )
 
 

@@ -38,7 +38,7 @@
   (let [fz (fz/make {:type :even-fz :parent-fz {:type :odd-fz :parent-fz {:type :odd-sieve-fz :upper-limit 11}}})]
     (println fz)
     (println "prime?" (fz/prime? fz 13N))
-    (println "next-prime" (fz/next-prime fz 13N))
+    (println "next-prime" (fz/next-prime fz 135N))
     (println "factors" (fz/factors fz 52))
     (println "primes" (take 26 (fz/primes fz)))
     ))

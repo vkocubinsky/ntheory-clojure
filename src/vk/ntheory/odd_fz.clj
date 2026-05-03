@@ -22,8 +22,9 @@
     (lazy-factors n (take-while #(<= (* % %) n) (prime-candidates)) true)))
 
 (defn- first-divisor
+  "First divisor of `n` starts with `start` inclusive"
   [start n]
-  {:pre [(<= start n)]}
+  {:pre [(> start 1) (<= start n)]}
   (first (filter #(zero? (mod n %)) (iterate #(+ % 2) start))))
 
 (defn- odd-prime? [{:keys [pseudo-prime? pseudo-certainty parent-fz parent-upper-limit]} n]
@@ -35,11 +36,20 @@
 (defn- odd-primes [{:keys [parent-upper-limit parent-fz] :as spec}]
   (concat (fz/primes parent-fz) (filter #(odd-prime? spec %) (iterate #(+ % 2) (+ 2 parent-upper-limit)))))
 
-(defn- odd-next-prime [{:keys [pseudo-prime? parent-fz parent-upper-limit]} n]
-  (cond
-    pseudo-prime? (util/next-probable-prime n)
-    :else 1)
-  )
+
+(defn- next-prime-no-parent
+  "Next prime after `n`"
+  [{:keys [pseudo-prime?] :as spec} n]
+  (if pseudo-prime?
+    (util/next-probable-prime n)
+    (first (filter #(odd-prime? spec %) (iterate #(+ % 2) (+ 2 n))))))
+
+(defn- odd-next-prime [{:keys [parent-fz] :as spec} n]
+  (if (fz/in-domain? parent-fz n)
+    (if-let [p (fz/next-prime parent-fz n)]
+      p
+      (next-prime-no-parent spec n))
+    (next-prime-no-parent spec n)))
 
 (defrecord OddFactorization [spec]
   fz/Factorization
@@ -79,9 +89,9 @@
   (let [parent-fz (fz/make {:type :odd-sieve-fz :upper-limit 11})
         fz (fz/make {:type :odd-fz :pseudo-prime? true :pseudo-certainty 100 :parent-fz parent-fz})]
     (println "primes" (take 20 (fz/primes fz)))
-    (println "factors" (fz/factors fz 1998111111111111111111111111))
+    (println "factors" (fz/factors fz 19981N))
     (println "prime?" (fz/prime? fz 19981))
-    (println "next-prime" (fz/next-prime fz 19981)))
+    (println "next-prime" (fz/next-prime fz 19991)))
 
   (let [fz (fz/make {:type :odd-fz :pseudo-prime? true :pseudo-certainty 100 :parent-fz {:type :odd-sieve-fz :upper-limit 11}})]
     (println (fz/factors fz 491111113331))))
