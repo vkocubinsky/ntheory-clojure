@@ -1,10 +1,10 @@
 (ns vk.ntheory.repl
   (:require
+   [clojure.math :refer :all]
    [vk.ntheory.even-fz]
    [vk.ntheory.factorization :as fz]))
 
 (defonce session-atom (atom nil))
-
 
 (defn session-init! [cache-upper-limit]
   (reset! session-atom (fz/make
@@ -15,15 +15,13 @@
                                      :parent-fz {:type :odd-sieve-fz
                                                  :upper-limit cache-upper-limit}}})))
 
-
-
 (defn session-clear! []
   (reset! session-atom nil))
 
 (defn get-fz []
   (if-let [fz @session-atom]
     fz
-    (session-init! 65535)))
+    (session-init! 256001)))
 
 (defn next-prime [n]
   (fz/next-prime (get-fz) n))
@@ -40,7 +38,6 @@
 (defn factors [n]
   (fz/factors (get-fz) n))
 (alter-meta! #'factors assoc :doc (:doc (meta #'fz/factors)))
-
 
 (defn factor-counts [n]
   (fz/factor-counts (get-fz) n))
