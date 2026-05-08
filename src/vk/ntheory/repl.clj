@@ -15,6 +15,41 @@
                                      :parent-fz {:type :odd-sieve-fz
                                                  :upper-limit cache-upper-limit}}})))
 
+;; Performance tests
+(comment
+  (let [cache-upper-limit 100001
+        fz (fz/make
+            {:type :odd-sieve-fz
+             :upper-limit cache-upper-limit})]
+    (time
+     (doseq [x (range 1 cache-upper-limit 2)]
+       (doall (factors x)))))
+
+  (let [cache-upper-limit 1000001
+        fz (fz/make
+            {:type :odd-sieve-fz
+             :upper-limit cache-upper-limit})]
+    (println (fz/factors fz 33))
+    (time
+     (doseq [x (range 1 cache-upper-limit 2)]
+       (factors x))))
+
+
+  (let [cache-upper-limit 1000001
+        fz (fz/make
+            {:type :odd-fz
+             :pseudo-prime? false
+             :pseudo-certanity 100
+             :parent-fz {:type :odd-sieve-fz
+                         :upper-limit cache-upper-limit}})]
+    (println (fz/factors fz 33))
+    (time
+     (doseq [x (range 1 cache-upper-limit 2)]
+       (factors x))))
+
+;; nil to avoid format unwanted effect
+  nil)
+
 (defn session-clear! []
   (reset! session-atom nil))
 

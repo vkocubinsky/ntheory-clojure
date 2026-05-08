@@ -23,13 +23,25 @@
                 (tbl/tset! table k p)))))
         (recur (+ p 2))))))
 
-(defn- sieve-factors
+;; deprecated, lazy version
+(defn- sieve-factors'
   "Factorize integer."
   [table ^Integer n]
   (lazy-seq
    (when (> n 1)
      (let [d (tbl/tget table n)]
        (cons d (sieve-factors table (quot n d)))))))
+
+;; eager version
+(defn- sieve-factors
+  "Factorize integer."
+  [table ^Integer n]
+  (loop [r n
+         factors []]
+    (if (= r 1)
+      factors
+      (let [d (tbl/tget table r)]
+        (recur (quot r d) (conj factors d))))))
 
 (defn- sieve-prime?
   "Check does given integer n is a prime."
@@ -78,7 +90,7 @@
     (fz/next-prime fz 101))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/factors fz 11))
+    (fz/factors fz 33))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
     (fz/prime? fz -1))
@@ -87,8 +99,6 @@
     (take 10 (fz/primes fz)))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/in-domain? fz -1))
-
-  )
+    (fz/in-domain? fz -1)))
 
 

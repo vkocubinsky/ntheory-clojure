@@ -6,7 +6,7 @@
    [vk.ntheory.util :as util]
    [vk.ntheory.factorization :as fz]))
 
-
+;; lazy version
 (defn- odd-factors [{:keys [pseudo-prime? pseudo-certainty parent-upper-limit parent-fz]} n]
   (letfn [(prime-candidates []
             (concat (fz/primes parent-fz) (iterate #(+ % 2) (+ 2 parent-upper-limit))))
@@ -21,6 +21,8 @@
                         (and pseudo-prime? r-changed? (util/probable-prime r pseudo-certainty)) (list r)
                         :else (lazy-factors r (rest candidates) false))))]
     (lazy-factors n (take-while #(<= (* % %) n) (prime-candidates)) true)))
+
+
 
 (defn- first-divisor
   "First divisor of `n` starts with `start` inclusive"
