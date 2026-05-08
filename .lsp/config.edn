@@ -1,2 +1,3 @@
-{:linters {:clojure-lsp/unused-public-var {:level :off
-                                           }}}
+{:linters
+ {:clj-kondo {:level :off}
+  :clojure-lsp/unused-public-var {:level :off}}}

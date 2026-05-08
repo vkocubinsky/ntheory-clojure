@@ -6,6 +6,7 @@
    [vk.ntheory.util :as util]
    [vk.ntheory.factorization :as fz]))
 
+
 (defn- odd-factors [{:keys [pseudo-prime? pseudo-certainty parent-upper-limit parent-fz]} n]
   (letfn [(prime-candidates []
             (concat (fz/primes parent-fz) (iterate #(+ % 2) (+ 2 parent-upper-limit))))
