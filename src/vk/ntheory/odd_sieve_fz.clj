@@ -93,11 +93,6 @@
     )
 
   
-  (satisfies? fz/Factorization (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 105})]
-    fz) )
-
-  (do (println "start")(Thread/sleep 2000) (println "end"))
-
 (+ 1 2)
   
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 105})]
