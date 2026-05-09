@@ -20,7 +20,7 @@
   (next-prime [this n] "Returns next prime more than given n or nil if no next prime for finite factorizer.")
   (factors [this n] "Returns prime factors of n with multiplicity.")
   (prime? [this n] "Returns true if n is a prime number, otherwise false.")
-  (primes [this] "Returns a lazy sequence of primes for this factorizer.")
+  (primes [this] "Returns sequence of primes for this factorizer.")
   (upper-limit [this] "Returns the max number supported, or nil if unlimited.")
   (in-domain? [this n] "Returns true if value a is supported by this factorizer, otherwise false."))
 

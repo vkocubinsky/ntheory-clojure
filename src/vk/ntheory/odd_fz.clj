@@ -6,23 +6,29 @@
    [vk.ntheory.util :as util]
    [vk.ntheory.factorization :as fz]))
 
-;; lazy version
-(defn- odd-factors [{:keys [pseudo-prime? pseudo-certainty parent-upper-limit parent-fz]} n]
-  (letfn [(prime-candidates []
-            (concat (fz/primes parent-fz) (iterate #(+ % 2) (+ 2 parent-upper-limit))))
-          (lazy-factors [r candidates r-changed?]
-            (lazy-seq (cond
-                        (= r 1) ()
-                        (empty? candidates) (list r)
-                        (fz/in-domain? parent-fz r) (fz/factors parent-fz r)
-                        (zero? (mod r (first candidates))) (cons
-                                                            (first candidates)
-                                                            (lazy-factors (quot r (first candidates)) candidates true))
-                        (and pseudo-prime? r-changed? (util/probable-prime r pseudo-certainty)) (list r)
-                        :else (lazy-factors r (rest candidates) false))))]
-    (lazy-factors n (take-while #(<= (* % %) n) (prime-candidates)) true)))
+;; todo: assume that primes is an array
+(defn- next-trial [{:keys [parent-fz parent-upper-limit] :as spec}
+                   idx
+                   val]
+  (let [primes (fz/primes parent-fz)
+        next-idx (inc idx)]
+    (if (< next-idx (count primes))
+      (aget primes next-idx)
+      (+ val 2))))
 
-
+;; eager version
+(defn- odd-factors [{:keys [pseudo-prime? pseudo-certainty parent-upper-limit parent-fz] :as spec} n]
+  (loop [r n
+         factors []
+         r-changed? true
+         trial-idx 0
+         trial-val 3]
+    (cond
+      (= r 1) []
+      (fz/in-domain? parent-fz r) (into factors (fz/factors parent-fz r))
+      (zero? (mod r trial-val)) (recur (quot r trial-val) (conj factors trial-val) true trial-idx trial-val)
+      (and pseudo-prime? r-changed? (util/probable-prime r pseudo-certainty)) (conj factors r)
+      :else (recur r factors false (inc trial-idx) (next-trial spec trial-idx trial-val)))))
 
 (defn- first-divisor
   "First divisor of `n` starts with `start` inclusive"
@@ -91,11 +97,10 @@
 
   (let [parent-fz (fz/make {:type :odd-sieve-fz :upper-limit 11})
         fz (fz/make {:type :odd-fz :pseudo-prime? false :pseudo-certainty 100 :parent-fz parent-fz})]
-    (println "primes" (take 20 (fz/primes fz)))
-    (println "factors" (fz/factors fz 12323425437863876837638763N))
-    (println "prime?" (fz/prime? fz 19981))
-    (println "next-prime" (fz/next-prime fz 19991)))
+      (fz/factors fz 77)
+    )
 
   (let [fz (fz/make {:type :odd-fz :pseudo-prime? true :pseudo-certainty 100 :parent-fz {:type :odd-sieve-fz :upper-limit 11}})]
-    (println (fz/factors fz 491111113331))))
+    (println (fz/factors fz 491111113331)))
+  nil)
 

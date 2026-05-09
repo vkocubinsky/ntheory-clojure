@@ -23,17 +23,14 @@
              :upper-limit cache-upper-limit})]
     (time
      (doseq [x (range 1 cache-upper-limit 2)]
-       (doall (factors x)))))
+       (factors x))))
 
   (let [cache-upper-limit 1000001
         fz (fz/make
             {:type :odd-sieve-fz
              :upper-limit cache-upper-limit})]
-    (println (fz/factors fz 33))
-    (time
-     (doseq [x (range 1 cache-upper-limit 2)]
-       (factors x))))
-
+    (time (doseq [x (range 1 1000001 2)]
+      (fz/factors fz x))))
 
   (let [cache-upper-limit 1000001
         fz (fz/make
@@ -42,10 +39,10 @@
              :pseudo-certanity 100
              :parent-fz {:type :odd-sieve-fz
                          :upper-limit cache-upper-limit}})]
-    (println (fz/factors fz 33))
-    (time
-     (doseq [x (range 1 cache-upper-limit 2)]
-       (factors x))))
+  
+    (time (doseq [x (range 1 1000001 2)]
+      (fz/factors fz x)))
+    )
 
 ;; nil to avoid format unwanted effect
   nil)

@@ -3,6 +3,7 @@
   Implementation based on sieve of Erathosphene's. Keep
   in table least prime divisor of a number.
   "
+  (:import [java.util ArrayList])
   (:require
    [vk.ntheory.odd-table :as tbl]
    [vk.ntheory.factorization :as fz]))
@@ -23,17 +24,27 @@
                 (tbl/tset! table k p)))))
         (recur (+ p 2))))))
 
-;; deprecated, lazy version
-(defn- sieve-factors'
-  "Factorize integer."
-  [table ^Integer n]
-  (lazy-seq
-   (when (> n 1)
-     (let [d (tbl/tget table n)]
-       (cons d (sieve-factors table (quot n d)))))))
+(defn- table-prime?
+  "Check does given integer n is a prime."
+  [table n]
+  (let [d (tbl/tget table n)]
+    (and (> d 1)
+         (= d n))))
 
-;; eager version
-(defn- sieve-factors
+(defn- make-primes
+  "Make primes array for sieve table."
+  [table]
+  (letfn [(gather-primes [table]
+            (let [upper-limit (:upper-limit table)
+                  primes (ArrayList.)]
+              (loop [c 1]
+                (cond
+                  (= c upper-limit) primes
+                  (table-prime? table c) (do (.add primes c) (recur (+ c 2)))
+                  :else (recur (+ c 2))))))]
+    (int-array (gather-primes table))))
+
+(defn-  table-factors
   "Factorize integer."
   [table ^Integer n]
   (loop [r n
@@ -43,36 +54,21 @@
       (let [d (tbl/tget table r)]
         (recur (quot r d) (conj factors d))))))
 
-(defn- sieve-prime?
-  "Check does given integer n is a prime."
-  [table n]
-  (let [d (tbl/tget table n)]
-    (and (> d 1)
-         (= d n))))
-
-(defn- sieve-primes
-  "Return primes in table."
-  [table]
-  (->> (map vector (tbl/tkeys table) (tbl/tvals table))
-       (filter (fn [[k v]] (= k v)))
-       (map first)
-       (drop-while #(< % 2))))
-
 (defn- sieve-next-prime [table n]
   (first (filter #(= % (tbl/tget table %)) (tbl/odd-keys (+ n 2) (:upper-limit table)))))
 
-(defrecord OddSieveFactorization [table]
+(defrecord OddSieveFactorization [table primes]
   fz/Factorization
   (next-prime [this n]
     (assert (fz/in-domain? this n))
     (sieve-next-prime table (int n)))
   (factors [this n]
     (assert (fz/in-domain? this n))
-    (sieve-factors table (int n)))
+    (table-factors table (int n)))
   (prime? [this n]
     (assert (fz/in-domain? this n))
-    (sieve-prime? table (int n)))
-  (primes [_] (sieve-primes table))
+    (table-prime? table (int n)))
+  (primes [_] primes)
   (upper-limit [_] (:upper-limit table))
   (in-domain? [_ n]
     (if (<= n Integer/MAX_VALUE)
@@ -83,9 +79,19 @@
   {:pre [(pos-int? upper-limit) (odd? upper-limit)]}
   (let [table (tbl/make upper-limit)]
     (sieve! table)
-    (->OddSieveFactorization table)))
+    (->OddSieveFactorization table (make-primes table))))
 
 (comment
+  (let [table (tbl/make 35)]
+    (sieve! table)
+    table
+    (make-primes table)
+    )
+
+  
+  (satisfies? fz/Factorization (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 105})]
+    fz) )
+
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 105})]
     (fz/next-prime fz 101))
 
@@ -99,6 +105,7 @@
     (take 10 (fz/primes fz)))
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 101})]
-    (fz/in-domain? fz -1)))
+    (fz/in-domain? fz -1))
+  nil)
 
 
