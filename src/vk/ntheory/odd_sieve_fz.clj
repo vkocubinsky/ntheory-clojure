@@ -94,7 +94,9 @@
 (+ 1 3)
   
 (+ 1 2)
-  
+
+  (map) 
+
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 105})]
     (fz/next-prime fz 101))
 
