@@ -81,6 +81,10 @@
     (sieve! table)
     (->OddSieveFactorization table (make-primes table))))
 
+(def foo 1)
+
+(def bar 2)
+
 (comment
   (let [table (tbl/make 35)]
     (sieve! table)
@@ -92,6 +96,10 @@
   (satisfies? fz/Factorization (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 105})]
     fz) )
 
+  (do (println "start")(Thread/sleep 2000) (println "end"))
+
+(+ 1 2)
+  
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 105})]
     (fz/next-prime fz 101))
 
