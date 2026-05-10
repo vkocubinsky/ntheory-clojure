@@ -91,11 +91,18 @@
     table
     (make-primes table)
     )
+
+
+(time (print "timing"))
+  
+  
 (+ 1 3)
   
 (+ 1 2)
 
-  (map inc '(1 2 3)) 
+(map inc '(1 2 3))
+
+
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 105})]
     (fz/next-prime fz 101))
