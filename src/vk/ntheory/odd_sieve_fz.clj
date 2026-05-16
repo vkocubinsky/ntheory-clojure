@@ -101,9 +101,11 @@
 
 (+ 1 2)
 
+(/ 1 0)
+
 (map inc '(1 2 3))
 
-
+String
 
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 105})]
     (fz/next-prime fz 101))
