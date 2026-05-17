@@ -2,33 +2,38 @@
   "Trial factorization for odd numbers.
   "
   (:require
+   [clojure.math :refer [sqrt]]
    [vk.ntheory.odd-sieve-fz] ;; load make for limited factorizer
    [vk.ntheory.util :as util]
    [vk.ntheory.factorization :as fz]))
 
-;; todo: assume that primes is an array
-(defn- next-trial [{:keys [parent-fz parent-upper-limit] :as spec}
-                   idx
-                   val]
-  (let [primes (fz/primes parent-fz)
-        next-idx (inc idx)]
-    (if (< next-idx (count primes))
-      (aget primes next-idx)
-      (+ val 2))))
+(defn trials
+  "Trials for find factors."
+  [{:keys [parent-fz parent-upper-limit] :as spec} start end]
+  {:pre [(odd? start)]}
+  (let [primes (fz/primes parent-fz)]
+     (cond
+       (not (<= start end)) ()
+       (<= parent-upper-limit start end)  (range start (inc end) 2)
+       (<= start parent-upper-limit end)  (concat (take-while #(<= start % parent-upper-limit) primes)
+                                                  (range (+ 2 parent-upper-limit) (inc end) 2))
+       (<= start end parent-upper-limit)  (take-while #(<= start % end) primes))))
 
 ;; eager version
 (defn- odd-factors [{:keys [pseudo-prime? pseudo-certainty parent-upper-limit parent-fz] :as spec} n]
   (loop [r n
          factors []
          r-changed? true
-         trial-idx 0
-         trial-val 3]
-    (cond
-      (= r 1) []
-      (fz/in-domain? parent-fz r) (into factors (fz/factors parent-fz r))
-      (zero? (mod r trial-val)) (recur (quot r trial-val) (conj factors trial-val) true trial-idx trial-val)
-      (and pseudo-prime? r-changed? (util/probable-prime r pseudo-certainty)) (conj factors r)
-      :else (recur r factors false (inc trial-idx) (next-trial spec trial-idx trial-val)))))
+         trials (trials spec 3 (sqrt (+ n 0.5)))]
+    (let [trial (first trials)]
+      (cond
+        (nil? trial) (conj factors r)
+        (= r 1) factors
+        (> (* trial trial) r) (conj factors r)
+        (fz/in-domain? parent-fz r) (into factors (fz/factors parent-fz r))
+        (zero? (mod r trial)) (recur (quot r trial) (conj factors trial) true trials)
+        (and pseudo-prime? r-changed? (util/probable-prime r pseudo-certainty)) (conj factors r)
+        :else (recur r factors false (next trials))))))
 
 (defn- first-divisor
   "First divisor of `n` starts with `start` inclusive"
@@ -101,7 +106,7 @@
      (doseq [x (range 1 100000 2)]
        (fz/factors fz x))))
 
-  (let [parent-fz (fz/make {:type :odd-sieve-fz :upper-limit 11})
+  (let [parent-fz (fz/make {:type :odd-sieve-fz :upper-limit 1})
         fz (fz/make {:type :odd-fz :pseudo-prime? false :pseudo-certainty 100 :parent-fz parent-fz})]
     (fz/factors fz 77))
 
