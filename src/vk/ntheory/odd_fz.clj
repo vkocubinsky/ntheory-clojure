@@ -105,6 +105,10 @@
     (println "next prime:" (fz/next-prime fz 19))
     (println "primes:" (take 10 (fz/primes fz)))
     (println "next prime of 23:" (fz/next-prime fz 23))
+
+    (println "factor partitions:" (fz/factor-partitions fz 77))
+    (println "factors:" (fz/factor-distincts fz 77))
+    (println "factor-counts:" (fz/factor-counts fz 77))
     )
 
   (let [fz (fz/make {:type :odd-fz :pseudo-prime? true :pseudo-certainty 100 :parent-fz {:type :odd-sieve-fz :upper-limit 11}})]

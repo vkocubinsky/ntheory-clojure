@@ -2,13 +2,15 @@
   (:require [vk.ntheory.even-fz]
             [vk.ntheory.factorization :as fz]))
 
+;; convert to cache
+
 (defn divides?
   "Returns true if d divides n, otherwise false."
   [d n]
   (assert (and (pos? d) (pos? n)))
   (zero? (mod n d)))
 
-;; todo: get rid from lazy
+
 (defn divisors-factors [n partitions]
   (letfn [(shift [partitions]
             (let [head (first partitions)

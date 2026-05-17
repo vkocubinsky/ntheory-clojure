@@ -58,4 +58,9 @@
     (println "prime?" (fz/prime? fz 13N))
     (println "next-prime" (fz/next-prime fz 135N))
     (println "factors" (fz/factors fz 52))
-    (println "primes" (take 26 (fz/primes fz)))))
+    (println "primes" (take 26 (fz/primes fz)))
+    (println "factor partitions:" (fz/factor-partitions fz 77))
+    (println "distinct:" (fz/factor-distincts fz 77))
+    (println "factor-counts:" (fz/factor-counts fz (* 2 3 5 7 11 13 17 ))))
+
+  nil)
