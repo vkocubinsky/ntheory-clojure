@@ -10,7 +10,7 @@
   (assert (and (pos? d) (pos? n)))
   (zero? (mod n d)))
 
-
+;; todo: eager
 (defn divisors-factors [n partitions]
   (letfn [(shift [partitions]
             (let [head (first partitions)
