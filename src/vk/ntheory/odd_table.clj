@@ -29,7 +29,7 @@
 (defn tset!
   "Set value `v` for key `k`, where k is positive odd integer."
   [table ^Integer k ^Integer v]
-  {:pre [(tcontains? table k) (pos-int? v)]}
+  (assert (and (tcontains? table k) (pos-int? v)])
   (let [^ints arr (:array table)
         idx (array-index k)]
     (aset arr idx v)))
@@ -37,8 +37,7 @@
 (defn tget
   "Get value for given key `k`, where `k` is positive odd integer."
   [table ^Integer k]
-  {:pre [(tcontains? table k)]
-   :post [#(pos-int? %)]}
+  (assert (tcontains? table k))
   (let [^ints arr (:array table)
         idx (array-index k)]
     (aget arr idx)))
@@ -59,7 +58,7 @@
 (defn make
   "Make odd table filled by odd numbers 1,3,5, ..., upper-limit ."
   [upper-limit]
-  {:pre [(pos-int? upper-limit) (odd? upper-limit)]}
+  (assert (and (pos-int? upper-limit) (odd? upper-limit)))
   {:upper-limit upper-limit :array (int-array (odd-keys upper-limit))})
 
 (comment

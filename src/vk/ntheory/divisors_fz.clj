@@ -8,6 +8,7 @@
   (assert (and (pos? d) (pos? n)))
   (zero? (mod n d)))
 
+;; todo: get rid from lazy
 (defn divisors-factors [n partitions]
   (letfn [(shift [partitions]
             (let [head (first partitions)
@@ -24,6 +25,9 @@
 
 (defrecord DivisorsFactorization [parent-fz value partitions]
   fz/Factorization
+  (next-prime [this n]
+    (assert (fz/in-domain? this n))
+    (fz/next-prime parent-fz n))
   (factors [this n]
     (assert (fz/in-domain? this n))
     (if (divides? n value)
@@ -36,24 +40,46 @@
       (fz/prime? parent-fz n)))
   (primes [_]
     (fz/primes parent-fz))
-  (upper-limit [_] nil)
+  (upper-limit [_] (fz/primes parent-fz))
   (in-domain? [_ n]
-    (pos? n)))
+    (fz/in-domain? parent-fz n)))
 
 (defmethod fz/make :divisors-fz [{:keys [parent-fz value] :as spec}]
   (assert (pos? value))
-  (let [parent-fz (cond
-                    (satisfies? fz/Factorization parent-fz) parent-fz
-                    (contains? parent-fz :type) (fz/make parent-fz)
-                    :else (throw (ex-info "Expected either Factorization or a map" spec))
-                    )]
+  (let [parent-fz (fz/get-or-make-parent spec)]
     (->DivisorsFactorization parent-fz
                              value
                              (fz/factor-partitions parent-fz value))))
 
 (comment
 
-  (fz/make {:type :even-fz :odd-fz {:type :odd-fz :odd-lim-fz {:type :odd-sieve-fz :upper-limit 11}}})
+  (let [even-fz (fz/make {:type :even-fz
+                          :parent-fz {:type :odd-fz
+                                      :parent-fz {:type :odd-sieve-fz
+                                                  :upper-limit 10001}}})
+        fz  (fz/make {:type :divisors-fz :value 98
+                      :parent-fz even-fz})
+        limit 1000000]
+    (println "test" limit)
+    (time
+     (doseq [x (range 1 limit 2)]
+       (fz/factors fz x))))
 
-  (fz/make {:type :divisors-fz :value 98 :parent-fz {:type :even-fz :odd-fz {:type :odd-fz :odd-lim-fz {:type :odd-sieve-fz :upper-limit 11}}}})
-  )
+  (let [even-fz (fz/make {:type :even-fz
+                          :parent-fz {:type :odd-fz
+                                      :parent-fz {:type :odd-sieve-fz
+                                                  :upper-limit 10001}}})
+        fz  (fz/make {:type :divisors-fz :value 98
+                      :parent-fz even-fz})]
+    (doseq [x (range 1 10 1)]
+      (println (fz/factors fz 98))))
+
+  (let [sieve-fz (fz/make {:type :odd-sieve-fz :upper-limit 1})
+        even-fz (fz/make {:type :odd-fz :pseudo-prime? false :pseudo-certainty 100 :parent-fz sieve-fz})
+        fz  (fz/make {:type :divisors-fz :value 98
+                      :parent-fz even-fz})]
+    (println "factors:" (fz/factors fz 77))
+    (println "next prime:" (fz/next-prime fz 19))
+    (println "primes:" (take 10 (fz/primes fz)))
+    (println "next prime of 23:" (fz/next-prime fz 23)))
+  nil)

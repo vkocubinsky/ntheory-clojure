@@ -10,7 +10,7 @@
 (defn trials
   "Trials for find factors."
   [{:keys [parent-fz parent-upper-limit] :as spec} start end]
-  {:pre [(odd? start)]}
+  (assert (odd? start))
   (let [primes (fz/primes parent-fz)]
     (cond
       (not (<= start end)) ()
@@ -58,13 +58,13 @@
 (defrecord OddFactorization [spec]
   fz/Factorization
   (next-prime [this n]
-    {:pre (fz/in-domain? this n)}
+    (assert (fz/in-domain? this n))
     (odd-next-prime spec n))
   (factors [this n]
-    {:pre (fz/in-domain? this n)}
+    (assert (fz/in-domain? this n))
     (odd-factors spec n))
   (prime? [this n]
-    {:pre (fz/in-domain? this n)}
+    (assert (fz/in-domain? this n))
     (odd-prime? spec n))
   (primes [_] (odd-primes spec))
   (upper-limit [_] nil)
@@ -93,8 +93,10 @@
 
   (time
    (let [parent-fz (fz/make {:type :odd-sieve-fz :upper-limit 100001})
-         fz (fz/make {:type :odd-fz :pseudo-prime? false :pseudo-certainty 100 :parent-fz parent-fz})]
-     (doseq [x (range 1 1000000 2)]
+         fz (fz/make {:type :odd-fz :pseudo-prime? false :pseudo-certainty 100 :parent-fz parent-fz})
+         limit 1000000]
+     (println "test" limit)
+     (doseq [x (range 1 limit 2)]
        (fz/factors fz x))))
 
   (let [parent-fz (fz/make {:type :odd-sieve-fz :upper-limit 1})

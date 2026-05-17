@@ -76,7 +76,7 @@
       false)))
 
 (defmethod fz/make :odd-sieve-fz [{:keys [upper-limit]}]
-  {:pre [(pos-int? upper-limit) (odd? upper-limit)]}
+  (assert (and (pos-int? upper-limit) (odd? upper-limit)))
   (let [table (tbl/make upper-limit)]
     (sieve! table)
     (->OddSieveFactorization table (make-primes table))))
