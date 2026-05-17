@@ -95,10 +95,15 @@
 
 (comment
 
+  (time
+   (let [parent-fz (fz/make {:type :odd-sieve-fz :upper-limit 1})
+         fz (fz/make {:type :odd-fz :pseudo-prime? true :pseudo-certainty 100 :parent-fz parent-fz})]
+     (doseq [x (range 1 100000 2)]
+       (fz/factors fz x))))
+
   (let [parent-fz (fz/make {:type :odd-sieve-fz :upper-limit 11})
         fz (fz/make {:type :odd-fz :pseudo-prime? false :pseudo-certainty 100 :parent-fz parent-fz})]
-      (fz/factors fz 77)
-    )
+    (fz/factors fz 77))
 
   (let [fz (fz/make {:type :odd-fz :pseudo-prime? true :pseudo-certainty 100 :parent-fz {:type :odd-sieve-fz :upper-limit 11}})]
     (println (fz/factors fz 491111113331)))
