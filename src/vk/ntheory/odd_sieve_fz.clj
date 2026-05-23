@@ -1,8 +1,7 @@
 (ns vk.ntheory.odd-sieve-fz
   "Implementation of Factorization for odd numbers.
   Implementation based on sieve of Erathosphene's. Keep
-  in table least prime divisor of a number.
-  "
+  in table least prime divisor of a number."
   (:import [java.util ArrayList])
   (:require
    [vk.ntheory.odd-table :as tbl]
@@ -81,9 +80,6 @@
     (sieve! table)
     (->OddSieveFactorization table (make-primes table))))
 
-(def foo 1)
-
-(def bar 2)
 
 (comment
   (let [table (tbl/make 35)]
@@ -92,6 +88,8 @@
     (make-primes table)
     )
 
+  (+ 1 3)
+  
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 105})]
     (fz/next-prime fz 101))
 

@@ -25,11 +25,10 @@
   (bit-shift-right k 1))
 
 
-
 (defn tset!
   "Set value `v` for key `k`, where k is positive odd integer."
   [table ^Integer k ^Integer v]
-  (assert (and (tcontains? table k) (pos-int? v)])
+  (assert (and (tcontains? table k) (pos-int? v)))
   (let [^ints arr (:array table)
         idx (array-index k)]
     (aset arr idx v)))
@@ -41,10 +40,6 @@
   (let [^ints arr (:array table)
         idx (array-index k)]
     (aget arr idx)))
-
-
-
-
 
 (defn tkeys
   "Return all key numbers."
