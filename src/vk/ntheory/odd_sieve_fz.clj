@@ -88,7 +88,7 @@
     (make-primes table)
     )
 
-  (+ 1 3)
+  (+ 1 4)
   
   (let [fz (fz/make {:type :odd-sieve-fz :upper-limit 105})]
     (fz/next-prime fz 101))
